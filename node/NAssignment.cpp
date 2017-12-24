@@ -323,7 +323,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
 
     if (returnMode != CTM_Undefined && returnMode != rightType->typeMode && rightType->typeMode != CTM_Value) {
         if (returnMode == CTM_Local) {
-            return rightType->getLocalType();
+            return rightType->getTempType();
         }
         else {
             compiler->addError(loc, CErrorCode::TypeMismatch, "cannot convert right side to %s", returnMode == CTM_Heap ? "heap" : "stack");

@@ -1,8 +1,4 @@
-anon1(animations'stack list!#animation:, current'i32=)'stack anon1 {
-  this
-}
-
-anon2()'stack anon2 {
+animator(animations'stack list!#animation:, current'i32=)'stack animator {
   this
 }
 
@@ -139,6 +135,10 @@ shader(vertex'stack string:, pixel'stack string:)'stack shader {
 }
 
 string(count'i32=, data'stack array!char=)'stack string {
+  this
+}
+
+style()'stack style {
   this
 }
 
@@ -424,7 +424,7 @@ global()'void {
   ))
   modelsbyid'stack hash![string, #model?] : hash![stack string, weak #model](this = hash![stack string, weak #model]())
   elementsbyid'stack hash![string, #element?] : hash![stack string, weak #element](this = hash![stack string, weak #element]())
-  animator'stack anon1 : anon1(this = anon1(
+  animator'stack animator : animator(this = animator(
     animations'stack list!#animation : animations,
     current'i32 = current
   ))
@@ -1491,7 +1491,7 @@ global()'void {
   return handle;
   }
   --cfunction--
-  style'stack anon2 : anon2(this = anon2())
+  style'stack style : style(this = style())
   {
     left'texthorizontal : 0
     right'texthorizontal : 1

@@ -15,7 +15,7 @@ public:
         else {
             auto type = argVar->getType(compiler);
             if (type->typeMode != CTM_Heap && type->typeMode != CTM_Weak) {
-                type = type->getLocalType();
+                type = type->getTempType();
             }
             return type;
         }
@@ -56,17 +56,10 @@ private:
     shared_ptr<CVar> argVar;
 };
 
-NFunction::NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : NBaseFunction(NodeType_Function, loc), type(type), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), attributes(attributes), interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
-    boost::algorithm::to_lower(this->name);
-
-    if (this->name == "^") {
-        this->name = TrBlock::nextVarName("anon");
-        isAnonymous = true;
-    }
-    else {
-        isAnonymous = false;
-    }
-    
+NFunction::NFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) : 
+    NBaseFunction(NodeType_Function, loc), returnTypeName(returnTypeName), name(name), templateTypeNames(templateTypeNames), attributes(attributes), 
+    interfaceTypeNames(interfaceTypeNames), block(block), catchBlock(catchBlock), copyBlock(copyBlock), destroyBlock(destroyBlock) {
+    boost::algorithm::to_lower(this->name);    
     if (arguments) {
         for (auto it : *arguments) {
             if (it->nodeType == NodeType_Assignment) {
@@ -146,7 +139,7 @@ void NFunction::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CType
 }
 
 shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction) {
-    return CFunctionDefinition::create(compiler, importNamespaces, parentFunction, type, packageNamespace, name, interfaceTypeNames, shared_from_this());
+    return CFunctionDefinition::create(compiler, importNamespaces, parentFunction, packageNamespace, name, interfaceTypeNames, shared_from_this());
 }
 
 shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
@@ -158,10 +151,9 @@ shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     return nullptr;
 }
 
-CFunction::CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis) :
+CFunction::CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis) :
 CBaseFunction(CFT_Function, definition.lock()->name, definition.lock()->safeName, parent, definition, false),
 loc(CLoc::undefined),
-type(type),
 templateTypes(templateTypes),
 interfaces(interfaces),
 ccodes(ccodes),
@@ -505,7 +497,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
 
                 _isReturnThis = _data[returnMode].blockVar->getReturnThis();
                 auto bodyReturnValue = (returnType != compiler->typeVoid && !_isReturnThis) ? trFunctionBlock->createReturnStoreVariable(loc, nullptr, returnType) : trFunctionBlock->createVoidStoreVariable(loc, returnType);
-                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), make_shared<TrValue>(nullptr, calleeVar->getType(compiler)->getLocalType(), "_this", false), bodyReturnValue);
+                _data[returnMode].blockVar->transpile(compiler, trOutput, trFunctionBlock.get(), make_shared<TrValue>(nullptr, calleeVar->getType(compiler)->getTempType(), "_this", false), bodyReturnValue);
 
                 string structName = getCStructName(calleeVar->getTypeMode());
                 stringstream functionDefinition;
@@ -733,7 +725,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
             }
         }
         else {
-            auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, static_pointer_cast<CFunction>(parent.lock())->hasHeapThis ? parentVar->getType(compiler)->getHeapType() : parentVar->getType(compiler)->getLocalType(), "parent");
+            auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, static_pointer_cast<CFunction>(parent.lock())->hasHeapThis ? parentVar->getType(compiler)->getHeapType() : parentVar->getType(compiler)->getTempType(), "parent");
             parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
             auto parentValue = parentStoreValue->getValue();
             parentName = TrValue::convertToLocalName(parentValue->type, parentValue->name, false);
@@ -772,7 +764,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
                 assert(compiler->errors.size() > 0);
                 return;
             }
-            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, (argType->typeMode == CTM_Heap || argType->typeMode == CTM_Weak) ? argType : argType->getLocalType(), "functionParam");
+            auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, (argType->typeMode == CTM_Heap || argType->typeMode == CTM_Weak) ? argType : argType->getTempType(), "functionParam");
             parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
@@ -1227,7 +1219,7 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
 
             if (!hasThis) {
                 if (ctype->typeMode == CTM_Stack) {
-                    ctype = ctype->getLocalType();
+                    ctype = ctype->getTempType();
                 }
             }
 
@@ -1433,7 +1425,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
                     auto argVarType = thisArgVar->getType(compiler);
                     if (!argVarType->parent.expired()) {
                         if (argVarType->typeMode == CTM_Stack) {
-                            argVarType = argVarType->getLocalType();
+                            argVarType = argVarType->getTempType();
                         }
                     }
                     return make_shared<CFunctionParameterVar>(loc, thisArgVar->scope.lock(), thisArgVar->isMutable, thisArgVar);
@@ -1647,10 +1639,9 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
     return nullptr;
 }
 
-shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node) {
+shared_ptr<CFunctionDefinition> CFunctionDefinition::create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node) {
     auto c = make_shared<CFunctionDefinition>();
     c->parent = parent;
-    c->type = type;
     c->name = name;
     c->safeName = name;
     c->implementedInterfaceTypeNames = implementedInterfaceTypeNames;
@@ -1739,7 +1730,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             }
         }
         
-        func = make_shared<CFunction>(importNamespaces, shared_from_this(), type, templateTypes, funcParent, interfaces, ccodes, isHeapThis);
+        func = make_shared<CFunction>(importNamespaces, shared_from_this(), templateTypes, funcParent, interfaces, ccodes, isHeapThis);
         if (func == nullptr) {
             return nullptr;
         }

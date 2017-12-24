@@ -1,8 +1,9 @@
-class(
-    data : ^(
-        x : 0
-    ) { this }
+data(
+    x : 0
+) { this }
 
+class(
+    data : data()
     get() { copy data }
 ) { this }
 

@@ -111,7 +111,7 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
                 dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
             }
             else {
-                auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getLocalType(), name + "._parent", AssignOp::immutableCreate);
+                auto parentValue = make_shared<TrStoreValue>(loc, scope.lock(), dotVar->getType(compiler)->getTempType(), name + "._parent", AssignOp::immutableCreate);
                 parentValue->isObjectCast = true;
                 dotVar->transpile(compiler, trOutput, trBlock, thisValue, parentValue);
             }
@@ -311,7 +311,7 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
         }
 
         auto argType = parameter.var->getType(compiler);
-        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "functionParam");
+        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getTempType(), "functionParam");
         parameterVar->transpile(compiler, trOutput, trBlock, thisValue, argStoreValue);
 
         if (!argStoreValue->hasSetValue) {
@@ -494,7 +494,7 @@ string CCallback::getCBName(Compiler* compiler, bool includeNames, CTypeMode ret
         if (includeNames) {
             ss << " ";
         }
-        ss << argType->getLocalType()->cname;
+        ss << argType->getTempType()->cname;
     }
 
     auto returnType = (returnMode == CTM_Heap) ? heapReturnType : stackReturnType;

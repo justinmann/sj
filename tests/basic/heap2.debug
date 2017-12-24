@@ -1,16 +1,16 @@
-class(data'stack anon1:)'stack class {
+class(data'stack data:)'stack class {
   this
 }
 
-class_get()'stack anon1 {
+class_get()'stack data {
   copy parent.data
 }
 
 global()'void {
   c'stack class : class(this = class(
-    data'stack anon1 : data
+    data'stack data : data
   ))
-  d'stack anon1 : class_get(
+  d'stack data : class_get(
     parent: this
   )
   void

@@ -182,7 +182,7 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         }
 
         underscoreName = TrBlock::nextVarName("underscore");
-        underscoreType = valueVar->getType(compiler)->getLocalType();
+        underscoreType = valueVar->getType(compiler)->getTempType();
         underscoreVar = make_shared<CTempVar>(loc, scope, underscoreType, underscoreName);
     }
 

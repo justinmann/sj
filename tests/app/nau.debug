@@ -1,8 +1,4 @@
-anon1(animations'stack list!#animation:, current'i32=)'stack anon1 {
-  this
-}
-
-anon2()'stack anon2 {
+animator(animations'stack list!#animation:, current'i32=)'stack animator {
   this
 }
 
@@ -203,6 +199,10 @@ fieldcontroller()'heap fieldcontroller {
 }
 
 filllayout #element (children'stack array!#element:, margin'stack margin=, effect'heap #effect?=, _rect'stack rect=)'heap filllayout {
+  this
+}
+
+forestcontroller()'heap forestcontroller {
   this
 }
 
@@ -844,6 +844,10 @@ string(count'i32=, data'stack array!char=)'stack string {
   this
 }
 
+style()'stack style {
+  this
+}
+
 texture(size'stack size:, id'u32:)'stack texture {
   this
 }
@@ -1171,7 +1175,7 @@ global()'void {
   ))
   modelsbyid'stack hash![string, #model?] : hash![stack string, weak #model](this = hash![stack string, weak #model]())
   elementsbyid'stack hash![string, #element?] : hash![stack string, weak #element](this = hash![stack string, weak #element]())
-  animator'stack anon1 : anon1(this = anon1(
+  animator'stack animator : animator(this = animator(
     animations'stack list!#animation : animations,
     current'i32 = current
   ))
@@ -2238,7 +2242,7 @@ global()'void {
   return handle;
   }
   --cfunction--
-  style'stack anon2 : anon2(this = anon2())
+  style'stack style : style(this = style())
   {
     left'texthorizontal : 0
     right'texthorizontal : 1
@@ -5583,8 +5587,39 @@ global()'void {
     effect'heap #effect? = effect,
     _rect'stack rect = _rect
   ))
+  forestscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  forestelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  forestbuyelement'heap filllayout = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  ))
   menucontroller'heap menucontroller : heap menucontroller(this = menucontroller())
   fieldcontroller'heap fieldcontroller : heap fieldcontroller(this = fieldcontroller())
+  forestcontroller'heap forestcontroller : heap forestcontroller(this = forestcontroller())
   fieldbuyelement'heap filllayout = heap filllayout(this = filllayout(
     children'stack array!#element : children,
     margin'stack margin = margin,
@@ -5616,6 +5651,40 @@ global()'void {
     _rect'stack rect = _rect
   )) as heap #element
   fieldtexture'stack texture : texture_fromelement(
+    element'local #element : element,
+    size'stack size : size
+  )
+  forestbuyelement'heap filllayout = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  ))
+  forestscene'heap nauscene3delement = heap nauscene3delement(this = nauscene3delement(
+    children'stack array!#model : children,
+    lookatmin'stack vec3 = lookatmin,
+    lookatmax'stack vec3 = lookatmax,
+    cameradistance'f32 = cameradistance,
+    fieldofview'f32 = fieldofview,
+    znear'f32 = znear,
+    zfar'f32 = zfar,
+    light'stack light = light,
+    projection'stack mat4 = projection,
+    view'stack mat4 = view,
+    world'stack mat4 = world,
+    _rect'stack rect = _rect,
+    _isdragging'bool = _isdragging,
+    _startdrag'stack point = _startdrag,
+    _lookat'stack vec3 = _lookat,
+    _lookatdrag'stack vec3 = _lookatdrag
+  ))
+  forestelement'heap #element = heap filllayout(this = filllayout(
+    children'stack array!#element : children,
+    margin'stack margin = margin,
+    effect'heap #effect? = effect,
+    _rect'stack rect = _rect
+  )) as heap #element
+  foresttexture'stack texture : texture_fromelement(
     element'local #element : element,
     size'stack size : size
   )

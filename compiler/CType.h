@@ -40,7 +40,8 @@ enum CTypeMode {
     CTM_Heap,
     CTM_Weak,
     CTM_Local,
-    CTM_Value
+    CTM_Value,
+    CTM_ValuePtr
 };
 
 class AssignOp {
@@ -102,6 +103,7 @@ public:
     shared_ptr<CType> getHeapOptionType();
     shared_ptr<CType> getStackType();
     shared_ptr<CType> getStackValueType();
+    shared_ptr<CType> getTempType();
     shared_ptr<CType> getLocalType();
     shared_ptr<CType> getLocalValueType();
     shared_ptr<CType> getLocalOptionType();

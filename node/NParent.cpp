@@ -19,7 +19,7 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
 
     if (dotVar) {
-        auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getLocalType(), "dot");
+        auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
         dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
         storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, dotValue->getName(trBlock) + "->_parent", false));
     }

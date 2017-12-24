@@ -11,7 +11,7 @@ shared_ptr<CType> CCompareVar::getType(Compiler* compiler) {
 void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto varType = leftVar->getType(compiler);
     if (!varType->parent.expired() && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
-        varType = varType->getLocalType();
+        varType = varType->getTempType();
     }
     auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
     auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");

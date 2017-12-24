@@ -724,7 +724,7 @@ struct vertex_buffer_td
 #define sjs_hash_string_weak_iface_element_typeId 22
 #define sjs_array_heap_iface_animation_typeId 23
 #define sjs_list_heap_iface_animation_typeId 24
-#define sjs_anon1_typeId 25
+#define sjs_animator_typeId 25
 #define sji_animation_vtbl_typeId 26
 #define sji_animation_typeId 27
 #define sjs_shader_typeId 28
@@ -735,7 +735,7 @@ struct vertex_buffer_td
 #define sjs_list_rect_typeId 33
 #define sjs_array_u32_typeId 34
 #define sjs_list_u32_typeId 35
-#define sjs_anon2_typeId 36
+#define sjs_style_typeId 36
 #define sjs_array_heap_iface_element_typeId 37
 #define sjs_margin_typeId 38
 #define sjs_array_gridunit_typeId 39
@@ -804,7 +804,7 @@ typedef struct td_sji_element sji_element;
 typedef struct td_sjs_hash_string_weak_iface_element sjs_hash_string_weak_iface_element;
 typedef struct td_sjs_array_heap_iface_animation sjs_array_heap_iface_animation;
 typedef struct td_sjs_list_heap_iface_animation sjs_list_heap_iface_animation;
-typedef struct td_sjs_anon1 sjs_anon1;
+typedef struct td_sjs_animator sjs_animator;
 typedef struct td_sji_animation_vtbl sji_animation_vtbl;
 typedef struct td_sji_animation sji_animation;
 typedef struct td_sjs_shader sjs_shader;
@@ -815,7 +815,7 @@ typedef struct td_sjs_array_rect sjs_array_rect;
 typedef struct td_sjs_list_rect sjs_list_rect;
 typedef struct td_sjs_array_u32 sjs_array_u32;
 typedef struct td_sjs_list_u32 sjs_list_u32;
-typedef struct td_sjs_anon2 sjs_anon2;
+typedef struct td_sjs_style sjs_style;
 typedef struct td_sjs_array_heap_iface_element sjs_array_heap_iface_element;
 typedef struct td_sjs_margin sjs_margin;
 typedef struct td_sjs_array_gridunit sjs_array_gridunit;
@@ -1040,7 +1040,7 @@ struct td_sjs_list_heap_iface_animation {
     sjs_array_heap_iface_animation array;
 };
 
-struct td_sjs_anon1 {
+struct td_sjs_animator {
     int _refCount;
     sjs_list_heap_iface_animation animations;
     int32_t current;
@@ -1109,7 +1109,7 @@ struct td_sjs_list_u32 {
     sjs_array_u32 array;
 };
 
-struct td_sjs_anon2 {
+struct td_sjs_style {
     int _refCount;
 };
 
@@ -2406,7 +2406,7 @@ sjs_array_heap_iface_element* sjt_parent47 = 0;
 sji_effect sjt_value1 = { 0 };
 sji_effect sjt_value2 = { 0 };
 sji_effect sjt_value3 = { 0 };
-sjs_anon1 sjv_animator = { -1 };
+sjs_animator sjv_animator = { -1 };
 sjs_shader sjv_blurhorizontalshader = { -1 };
 sjs_shader sjv_blurverticalshader = { -1 };
 sjs_shader sjv_boxshader = { -1 };
@@ -2435,21 +2435,16 @@ sji_element sjv_root = { 0 };
 sjs_scene2d sjv_rootscene = { -1 };
 sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
 sjs_shader sjv_saturateshader = { -1 };
-sjs_anon2 sjv_style = { -1 };
+sjs_style sjv_style = { -1 };
 sjs_shader sjv_textshader = { -1 };
 uint32_t sjv_u32_maxvalue;
 sjs_string sjv_vertex_location_texture_normal_format = { -1 };
 
-void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
-void sjf_anon1_destroy(sjs_anon1* _this);
-void sjf_anon1_heap(sjs_anon1* _this);
-void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time);
-void sjf_anon2(sjs_anon2* _this);
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from);
-void sjf_anon2_destroy(sjs_anon2* _this);
-void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return);
-void sjf_anon2_heap(sjs_anon2* _this);
+void sjf_animator(sjs_animator* _this);
+void sjf_animator_copy(sjs_animator* _this, sjs_animator* _from);
+void sjf_animator_destroy(sjs_animator* _this);
+void sjf_animator_heap(sjs_animator* _this);
+void sjf_animator_nextframe(sjs_animator* _parent, int32_t time);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
@@ -2865,6 +2860,11 @@ void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_hash(sjs_string* _parent, uint32_t* _return);
 void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
+void sjf_style(sjs_style* _this);
+void sjf_style_copy(sjs_style* _this, sjs_style* _from);
+void sjf_style_destroy(sjs_style* _this);
+void sjf_style_getfont_heap(sjs_style* _parent, sjs_font** _return);
+void sjf_style_heap(sjs_style* _this);
 void sjf_testscene_heap(sji_element* _return);
 void sjf_textelement_as_sji_element(sjs_textelement* _this, sji_element* _return);
 void sjf_textelement_as_sji_textelement(sjs_textelement* _this, sji_textelement* _return);
@@ -5830,26 +5830,26 @@ shader_read( const char *filename )
         self->state = DIRTY;
     }
     #include <lib/ui/obj_parser.c>
-void sjf_anon1(sjs_anon1* _this) {
+void sjf_animator(sjs_animator* _this) {
 }
 
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
+void sjf_animator_copy(sjs_animator* _this, sjs_animator* _from) {
     _this->animations._refCount = 1;
     sjf_list_heap_iface_animation_copy(&_this->animations, &_from->animations);
     _this->current = _from->current;
 }
 
-void sjf_anon1_destroy(sjs_anon1* _this) {
+void sjf_animator_destroy(sjs_animator* _this) {
 }
 
-void sjf_anon1_heap(sjs_anon1* _this) {
+void sjf_animator_heap(sjs_animator* _this) {
 }
 
-void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
+void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
     int32_t sjt_compare121;
     int32_t sjt_compare122;
-    sjs_anon1* sjt_dot1838 = 0;
-    sjs_anon1* sjt_dot1841 = 0;
+    sjs_animator* sjt_dot1838 = 0;
+    sjs_animator* sjt_dot1841 = 0;
     bool sjt_ifElse72;
     sjs_list_heap_iface_animation* sjt_parent306 = 0;
 
@@ -5862,7 +5862,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
     sjt_ifElse72 = sjt_compare121 > sjt_compare122;
     if (sjt_ifElse72) {
         int32_t i;
-        sjs_anon1* sjt_dot1842 = 0;
+        sjs_animator* sjt_dot1842 = 0;
         int32_t sjt_forEnd28;
         int32_t sjt_forStart28;
         sjs_list_heap_iface_animation* sjt_parent307 = 0;
@@ -5873,7 +5873,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
         sjf_list_heap_iface_animation_getcount(sjt_parent307, &sjt_forEnd28);
         i = sjt_forEnd28 - 1;
         while (i >= sjt_forStart28) {
-            sjs_anon1* sjt_dot1844 = 0;
+            sjs_animator* sjt_dot1844 = 0;
             int32_t sjt_functionParam653;
             bool sjt_ifElse73;
             int32_t sjt_interfaceParam19;
@@ -5889,7 +5889,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
             sjt_interfaceParam19 = time;
             sjt_parent310._vtbl->nextframe(sjt_parent310._parent, sjt_interfaceParam19, &sjt_ifElse73);
             if (sjt_ifElse73) {
-                sjs_anon1* sjt_dot1845 = 0;
+                sjs_animator* sjt_dot1845 = 0;
                 int32_t sjt_functionParam654;
                 sjs_list_heap_iface_animation* sjt_parent311 = 0;
 
@@ -5910,39 +5910,6 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
             }
         }
     }
-}
-
-void sjf_anon2(sjs_anon2* _this) {
-}
-
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from) {
-}
-
-void sjf_anon2_destroy(sjs_anon2* _this) {
-}
-
-void sjf_anon2_getfont_heap(sjs_anon2* _parent, sjs_font** _return) {
-    sjs_string sjt_call127 = { -1 };
-    sjs_string* sjt_functionParam396 = 0;
-    float sjt_functionParam397;
-
-    sjt_call127._refCount = 1;
-    sjt_call127.count = 16;
-    sjt_call127.data._refCount = 1;
-    sjt_call127.data.datasize = 17;
-    sjt_call127.data.data = (void*)sjg_string27;
-    sjt_call127.data._isglobal = true;
-    sjt_call127.data.count = 17;
-    sjf_array_char(&sjt_call127.data);
-    sjf_string(&sjt_call127);
-    sjt_functionParam396 = &sjt_call127;
-    sjt_functionParam397 = 24.0f;
-    sjf_font_load_heap(sjt_functionParam396, sjt_functionParam397, _return);
-
-    if (sjt_call127._refCount == 1) { sjf_string_destroy(&sjt_call127); }
-}
-
-void sjf_anon2_heap(sjs_anon2* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
@@ -11924,7 +11891,7 @@ void sjf_mainloop(void) {
     bool sjt_isEmpty53;
     int32_option sjt_isEmpty54;
     bool sjt_not17;
-    sjs_anon1* sjt_parent312 = 0;
+    sjs_animator* sjt_parent312 = 0;
     sjs_windowrenderer* sjt_parent313 = 0;
     sjs_scene2d* sjt_parent314 = 0;
     sjs_scene2d* sjt_parent315 = 0;
@@ -11945,7 +11912,7 @@ void sjf_mainloop(void) {
     sjv_ticks = SDL_GetTicks();
     sjt_parent312 = &sjv_animator;
     sjt_functionParam655 = sjv_ticks;
-    sjf_anon1_nextframe(sjt_parent312, sjt_functionParam655);
+    sjf_animator_nextframe(sjt_parent312, sjt_functionParam655);
     sjt_parent313 = &sjv_rootwindowrenderer;
     sjf_windowrenderer_getsize(sjt_parent313, &sjv_size);
     sjt_parent314 = &sjv_rootscene;
@@ -21541,6 +21508,39 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjf_array_char_isequal(sjt_parent1, sjt_functionParam9, _return);
 }
 
+void sjf_style(sjs_style* _this) {
+}
+
+void sjf_style_copy(sjs_style* _this, sjs_style* _from) {
+}
+
+void sjf_style_destroy(sjs_style* _this) {
+}
+
+void sjf_style_getfont_heap(sjs_style* _parent, sjs_font** _return) {
+    sjs_string sjt_call127 = { -1 };
+    sjs_string* sjt_functionParam396 = 0;
+    float sjt_functionParam397;
+
+    sjt_call127._refCount = 1;
+    sjt_call127.count = 16;
+    sjt_call127.data._refCount = 1;
+    sjt_call127.data.datasize = 17;
+    sjt_call127.data.data = (void*)sjg_string27;
+    sjt_call127.data._isglobal = true;
+    sjt_call127.data.count = 17;
+    sjf_array_char(&sjt_call127.data);
+    sjf_string(&sjt_call127);
+    sjt_functionParam396 = &sjt_call127;
+    sjt_functionParam397 = 24.0f;
+    sjf_font_load_heap(sjt_functionParam396, sjt_functionParam397, _return);
+
+    if (sjt_call127._refCount == 1) { sjf_string_destroy(&sjt_call127); }
+}
+
+void sjf_style_heap(sjs_style* _this) {
+}
+
 void sjf_testscene_heap(sji_element* _return) {
     sjs_model* object1 = 0;
     float result10;
@@ -21573,7 +21573,7 @@ void sjf_testscene_heap(sji_element* _return) {
     sji_element sjt_functionParam64 = { 0 };
     float sjt_negate3;
     sjs_array_heap_iface_element* sjt_parent244 = 0;
-    sjs_anon2* sjt_parent260 = 0;
+    sjs_style* sjt_parent260 = 0;
     sjs_array_heap_iface_element* sjt_parent48 = 0;
     sjs_array_heap_iface_element* sjt_parent53 = 0;
     sjs_array_heap_iface_model* sjt_parent97 = 0;
@@ -21851,7 +21851,7 @@ void sjf_testscene_heap(sji_element* _return) {
     sjt_call120->_refCount = 1;
     sjt_call120->id._refCount = -1;
     sjt_parent260 = &sjv_style;
-    sjf_anon2_getfont_heap(sjt_parent260, &sjt_call120->font);
+    sjf_style_getfont_heap(sjt_parent260, &sjt_call120->font);
     sjt_call120->text._refCount = 1;
     sjt_call120->text.count = 5;
     sjt_call120->text.data._refCount = 1;
@@ -25327,7 +25327,7 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_animation(&sjv_animator.animations.array);
     sjf_list_heap_iface_animation(&sjv_animator.animations);
     sjv_animator.current = 0;
-    sjf_anon1(&sjv_animator);
+    sjf_animator(&sjv_animator);
     sjv_blurhorizontalshader._refCount = 1;
     sjv_blurhorizontalshader.vertex._refCount = 1;
     sjv_blurhorizontalshader.vertex.count = 20;
@@ -25551,7 +25551,7 @@ int main(int argc, char** argv) {
     sjf_string(&sjv_textshader.pixel);
     sjf_shader(&sjv_textshader);
     sjv_style._refCount = 1;
-    sjf_anon2(&sjv_style);
+    sjf_style(&sjv_style);
     sjv_vertex_location_texture_normal_format._refCount = 1;
     sjv_vertex_location_texture_normal_format.count = 32;
     sjv_vertex_location_texture_normal_format.data._refCount = 1;
@@ -26226,7 +26226,7 @@ void main_destroy() {
     if (sjt_call167._refCount == 1) { sjf_gridunit_destroy(&sjt_call167); }
     if (sjt_call168._refCount == 1) { sjf_gridunit_destroy(&sjt_call168); }
     if (sjt_call169._refCount == 1) { sjf_gridunit_destroy(&sjt_call169); }
-    if (sjv_animator._refCount == 1) { sjf_anon1_destroy(&sjv_animator); }
+    if (sjv_animator._refCount == 1) { sjf_animator_destroy(&sjv_animator); }
     if (sjv_blurhorizontalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurhorizontalshader); }
     if (sjv_blurverticalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurverticalshader); }
     if (sjv_boxshader._refCount == 1) { sjf_shader_destroy(&sjv_boxshader); }
@@ -26249,7 +26249,7 @@ void main_destroy() {
     if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
     if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
     if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
-    if (sjv_style._refCount == 1) { sjf_anon2_destroy(&sjv_style); }
+    if (sjv_style._refCount == 1) { sjf_style_destroy(&sjv_style); }
     if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
     if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }
 }

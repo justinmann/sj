@@ -12,11 +12,6 @@
 #include "NBlock.h"
 #include "NBaseFunction.h"
 
-enum CFunctionType {
-    FT_Private,
-    FT_Public
-};
-
 class CFunctionName {
 public:
     CFunctionName(string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes) : name(name), templateTypeNames(templateTypeNames), attributes(attributes) {}
@@ -34,7 +29,7 @@ class CThisVar;
 
 class NFunction : public NBaseFunction {
 public:
-    NFunction(CLoc loc, CFunctionType type, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock);
+    NFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock);
     shared_ptr<CFunctionDefinition> getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction);
     void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& namespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> parentFunction);
     void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
@@ -44,7 +39,6 @@ public:
     string name;
 
 private:    
-    CFunctionType type;
     shared_ptr<CTypeName> returnTypeName;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> interfaceTypeNames;
@@ -57,7 +51,6 @@ private:
     shared_ptr<NBase> copyBlock;
     shared_ptr<NBase> catchBlock;
     shared_ptr<NBase> destroyBlock;
-    bool isAnonymous;
     shared_ptr<vector<string>> attributes;
 
     friend class CFunctionDefinition;
@@ -135,7 +128,7 @@ enum FunctionState {
 
 class CFunction : public CBaseFunction, public enable_shared_from_this<CFunction> {
 public:
-    CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, CFunctionType type, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis);
+    CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis);
     bool init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCaller);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
     void initArgs(Compiler* compiler);
@@ -170,7 +163,6 @@ public:
     string getCAsInterfaceFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
 
     CLoc loc;
-    CFunctionType type;
     vector<shared_ptr<CType>> templateTypes;
     map<string, shared_ptr<CType>> templateTypesByName;
     shared_ptr<vector<shared_ptr<CInterface>>> interfaces;
@@ -198,7 +190,6 @@ private:
 class CFunctionDefinition : public CBaseFunctionDefinition, public enable_shared_from_this<CFunctionDefinition> {
 public:
     CLoc loc;
-    CFunctionType type;
     shared_ptr<NFunction> node;
     map<vector<string>, map<string, shared_ptr<CFunctionDefinition>>> funcsByName;
     shared_ptr<CTypeNameList> implementedInterfaceTypeNames;
@@ -208,7 +199,7 @@ public:
     bool isPrivate;
 
     CFunctionDefinition() : CBaseFunctionDefinition(CFT_Function) {}
-    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, CFunctionType type, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
+    static shared_ptr<CFunctionDefinition> create(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CFunctionDefinition> parent, vector<string> packageNamespace, const string& name, shared_ptr<CTypeNameList> implementedInterfaceTypeNames, shared_ptr<NFunction> node);
     string fullName();
     void addChildFunction(Compiler* compiler, CLoc loc, vector<string> packageNamespace, string& name, shared_ptr<CBaseFunctionDefinition> childFunction);
     void dump(Compiler* compiler, int level);

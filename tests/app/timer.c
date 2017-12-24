@@ -715,7 +715,7 @@ struct vertex_buffer_td
 #define sjs_hash_string_weak_iface_element_typeId 22
 #define sjs_array_heap_iface_animation_typeId 23
 #define sjs_list_heap_iface_animation_typeId 24
-#define sjs_anon1_typeId 25
+#define sjs_animator_typeId 25
 #define sji_animation_vtbl_typeId 26
 #define sji_animation_typeId 27
 #define sjs_shader_typeId 28
@@ -726,7 +726,7 @@ struct vertex_buffer_td
 #define sjs_list_rect_typeId 33
 #define sjs_array_u32_typeId 34
 #define sjs_list_u32_typeId 35
-#define sjs_anon2_typeId 36
+#define sjs_style_typeId 36
 #define sjs_array_heap_iface_element_typeId 37
 #define sjs_margin_typeId 38
 #define sji_effect_vtbl_typeId 39
@@ -781,7 +781,7 @@ typedef struct td_sji_element sji_element;
 typedef struct td_sjs_hash_string_weak_iface_element sjs_hash_string_weak_iface_element;
 typedef struct td_sjs_array_heap_iface_animation sjs_array_heap_iface_animation;
 typedef struct td_sjs_list_heap_iface_animation sjs_list_heap_iface_animation;
-typedef struct td_sjs_anon1 sjs_anon1;
+typedef struct td_sjs_animator sjs_animator;
 typedef struct td_sji_animation_vtbl sji_animation_vtbl;
 typedef struct td_sji_animation sji_animation;
 typedef struct td_sjs_shader sjs_shader;
@@ -792,7 +792,7 @@ typedef struct td_sjs_array_rect sjs_array_rect;
 typedef struct td_sjs_list_rect sjs_list_rect;
 typedef struct td_sjs_array_u32 sjs_array_u32;
 typedef struct td_sjs_list_u32 sjs_list_u32;
-typedef struct td_sjs_anon2 sjs_anon2;
+typedef struct td_sjs_style sjs_style;
 typedef struct td_sjs_array_heap_iface_element sjs_array_heap_iface_element;
 typedef struct td_sjs_margin sjs_margin;
 typedef struct td_sji_effect_vtbl sji_effect_vtbl;
@@ -1003,7 +1003,7 @@ struct td_sjs_list_heap_iface_animation {
     sjs_array_heap_iface_animation array;
 };
 
-struct td_sjs_anon1 {
+struct td_sjs_animator {
     int _refCount;
     sjs_list_heap_iface_animation animations;
     int32_t current;
@@ -1072,7 +1072,7 @@ struct td_sjs_list_u32 {
     sjs_array_u32 array;
 };
 
-struct td_sjs_anon2 {
+struct td_sjs_style {
     int _refCount;
 };
 
@@ -2243,7 +2243,7 @@ sjs_array_heap_iface_element* sjt_parent172 = 0;
 sjs_array_heap_iface_element* sjt_parent177 = 0;
 sjs_array_heap_iface_element* sjt_parent24 = 0;
 sjs_array_heap_iface_model* sjt_parent68 = 0;
-sjs_anon1 sjv_animator = { -1 };
+sjs_animator sjv_animator = { -1 };
 sjs_shader sjv_blurhorizontalshader = { -1 };
 sjs_shader sjv_blurverticalshader = { -1 };
 sjs_shader sjv_boxshader = { -1 };
@@ -2272,20 +2272,16 @@ sji_element sjv_root = { 0 };
 sjs_scene2d sjv_rootscene = { -1 };
 sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
 sjs_shader sjv_saturateshader = { -1 };
-sjs_anon2 sjv_style = { -1 };
+sjs_style sjv_style = { -1 };
 sjs_shader sjv_textshader = { -1 };
 uint32_t sjv_u32_maxvalue;
 sjs_string sjv_vertex_location_texture_normal_format = { -1 };
 
-void sjf_anon1(sjs_anon1* _this);
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from);
-void sjf_anon1_destroy(sjs_anon1* _this);
-void sjf_anon1_heap(sjs_anon1* _this);
-void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time);
-void sjf_anon2(sjs_anon2* _this);
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from);
-void sjf_anon2_destroy(sjs_anon2* _this);
-void sjf_anon2_heap(sjs_anon2* _this);
+void sjf_animator(sjs_animator* _this);
+void sjf_animator_copy(sjs_animator* _this, sjs_animator* _from);
+void sjf_animator_destroy(sjs_animator* _this);
+void sjf_animator_heap(sjs_animator* _this);
+void sjf_animator_nextframe(sjs_animator* _parent, int32_t time);
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
@@ -2620,6 +2616,10 @@ void sjf_string_destroy(sjs_string* _this);
 void sjf_string_hash(sjs_string* _parent, uint32_t* _return);
 void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
+void sjf_style(sjs_style* _this);
+void sjf_style_copy(sjs_style* _this, sjs_style* _from);
+void sjf_style_destroy(sjs_style* _this);
+void sjf_style_heap(sjs_style* _this);
 void sjf_texture(sjs_texture* _this);
 void sjf_texture_copy(sjs_texture* _this, sjs_texture* _from);
 void sjf_texture_destroy(sjs_texture* _this);
@@ -5558,26 +5558,26 @@ shader_read( const char *filename )
         self->state = DIRTY;
     }
     #include <lib/ui/obj_parser.c>
-void sjf_anon1(sjs_anon1* _this) {
+void sjf_animator(sjs_animator* _this) {
 }
 
-void sjf_anon1_copy(sjs_anon1* _this, sjs_anon1* _from) {
+void sjf_animator_copy(sjs_animator* _this, sjs_animator* _from) {
     _this->animations._refCount = 1;
     sjf_list_heap_iface_animation_copy(&_this->animations, &_from->animations);
     _this->current = _from->current;
 }
 
-void sjf_anon1_destroy(sjs_anon1* _this) {
+void sjf_animator_destroy(sjs_animator* _this) {
 }
 
-void sjf_anon1_heap(sjs_anon1* _this) {
+void sjf_animator_heap(sjs_animator* _this) {
 }
 
-void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
+void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
     int32_t sjt_compare131;
     int32_t sjt_compare132;
-    sjs_anon1* sjt_dot1662 = 0;
-    sjs_anon1* sjt_dot1665 = 0;
+    sjs_animator* sjt_dot1662 = 0;
+    sjs_animator* sjt_dot1665 = 0;
     bool sjt_ifElse58;
     sjs_list_heap_iface_animation* sjt_parent178 = 0;
 
@@ -5590,7 +5590,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
     sjt_ifElse58 = sjt_compare131 > sjt_compare132;
     if (sjt_ifElse58) {
         int32_t i;
-        sjs_anon1* sjt_dot1666 = 0;
+        sjs_animator* sjt_dot1666 = 0;
         int32_t sjt_forEnd21;
         int32_t sjt_forStart21;
         sjs_list_heap_iface_animation* sjt_parent179 = 0;
@@ -5601,7 +5601,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
         sjf_list_heap_iface_animation_getcount(sjt_parent179, &sjt_forEnd21);
         i = sjt_forEnd21 - 1;
         while (i >= sjt_forStart21) {
-            sjs_anon1* sjt_dot1668 = 0;
+            sjs_animator* sjt_dot1668 = 0;
             int32_t sjt_functionParam352;
             bool sjt_ifElse59;
             int32_t sjt_interfaceParam19;
@@ -5617,7 +5617,7 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
             sjt_interfaceParam19 = time;
             sjt_parent182._vtbl->nextframe(sjt_parent182._parent, sjt_interfaceParam19, &sjt_ifElse59);
             if (sjt_ifElse59) {
-                sjs_anon1* sjt_dot1669 = 0;
+                sjs_animator* sjt_dot1669 = 0;
                 int32_t sjt_functionParam353;
                 sjs_list_heap_iface_animation* sjt_parent183 = 0;
 
@@ -5638,18 +5638,6 @@ void sjf_anon1_nextframe(sjs_anon1* _parent, int32_t time) {
             }
         }
     }
-}
-
-void sjf_anon2(sjs_anon2* _this) {
-}
-
-void sjf_anon2_copy(sjs_anon2* _this, sjs_anon2* _from) {
-}
-
-void sjf_anon2_destroy(sjs_anon2* _this) {
-}
-
-void sjf_anon2_heap(sjs_anon2* _this) {
 }
 
 void sjf_array_char(sjs_array_char* _this) {
@@ -10029,7 +10017,7 @@ void sjf_mainloop(void) {
     bool sjt_isEmpty22;
     int32_option sjt_isEmpty23;
     bool sjt_not6;
-    sjs_anon1* sjt_parent184 = 0;
+    sjs_animator* sjt_parent184 = 0;
     sjs_windowrenderer* sjt_parent185 = 0;
     sjs_scene2d* sjt_parent186 = 0;
     sjs_scene2d* sjt_parent187 = 0;
@@ -10050,7 +10038,7 @@ void sjf_mainloop(void) {
     sjv_ticks = SDL_GetTicks();
     sjt_parent184 = &sjv_animator;
     sjt_functionParam354 = sjv_ticks;
-    sjf_anon1_nextframe(sjt_parent184, sjt_functionParam354);
+    sjf_animator_nextframe(sjt_parent184, sjt_functionParam354);
     sjt_parent185 = &sjv_rootwindowrenderer;
     sjf_windowrenderer_getsize(sjt_parent185, &sjv_size);
     sjt_parent186 = &sjv_rootscene;
@@ -20103,6 +20091,18 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjf_array_char_isequal(sjt_parent1, sjt_functionParam9, _return);
 }
 
+void sjf_style(sjs_style* _this) {
+}
+
+void sjf_style_copy(sjs_style* _this, sjs_style* _from) {
+}
+
+void sjf_style_destroy(sjs_style* _this) {
+}
+
+void sjf_style_heap(sjs_style* _this) {
+}
+
 void sjf_texture(sjs_texture* _this) {
 }
 
@@ -21775,7 +21775,7 @@ int main(int argc, char** argv) {
     sjf_array_heap_iface_animation(&sjv_animator.animations.array);
     sjf_list_heap_iface_animation(&sjv_animator.animations);
     sjv_animator.current = 0;
-    sjf_anon1(&sjv_animator);
+    sjf_animator(&sjv_animator);
     sjv_blurhorizontalshader._refCount = 1;
     sjv_blurhorizontalshader.vertex._refCount = 1;
     sjv_blurhorizontalshader.vertex.count = 20;
@@ -21999,7 +21999,7 @@ int main(int argc, char** argv) {
     sjf_string(&sjv_textshader.pixel);
     sjf_shader(&sjv_textshader);
     sjv_style._refCount = 1;
-    sjf_anon2(&sjv_style);
+    sjf_style(&sjv_style);
     sjv_vertex_location_texture_normal_format._refCount = 1;
     sjv_vertex_location_texture_normal_format.count = 32;
     sjv_vertex_location_texture_normal_format.data._refCount = 1;
@@ -22587,7 +22587,7 @@ void main_destroy() {
     if (sjt_call30._refCount == 1) { sjf_vec3_destroy(&sjt_call30); }
     if (sjt_call31._refCount == 1) { sjf_vec3_destroy(&sjt_call31); }
     if (sjt_call42._refCount == 1) { sjf_string_destroy(&sjt_call42); }
-    if (sjv_animator._refCount == 1) { sjf_anon1_destroy(&sjv_animator); }
+    if (sjv_animator._refCount == 1) { sjf_animator_destroy(&sjv_animator); }
     if (sjv_blurhorizontalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurhorizontalshader); }
     if (sjv_blurverticalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurverticalshader); }
     if (sjv_boxshader._refCount == 1) { sjf_shader_destroy(&sjv_boxshader); }
@@ -22610,7 +22610,7 @@ void main_destroy() {
     if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
     if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
     if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
-    if (sjv_style._refCount == 1) { sjf_anon2_destroy(&sjv_style); }
+    if (sjv_style._refCount == 1) { sjf_style_destroy(&sjv_style); }
     if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
     if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }
 }

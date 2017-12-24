@@ -110,6 +110,8 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
 
     auto stackValueType = make_shared<CType>();
     auto stackOptionType = make_shared<CType>();
+    auto localValueType = make_shared<CType>();
+    auto localOptionType = make_shared<CType>();
 
     stackValueType->isOption = false;
     stackValueType->typeMode = CTM_Value;
@@ -133,7 +135,29 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
     stackOptionType->safeName = valueName + "_option";
     stackOptionType->_defaultValue = defaultValueOption;
 
-    return make_shared<CTypes>(stackValueType, stackOptionType, nullptr, nullptr, stackValueType, stackOptionType, nullptr);
+    localValueType->isOption = false;
+    localValueType->typeMode = CTM_ValuePtr;
+    localValueType->category = CTC_Value;
+    localValueType->packageNamespace = packageNamespace;
+    localValueType->valueName = valueName;
+    localValueType->shortName = valueName;
+    localValueType->fullName = "local " + valueName;
+    localValueType->cname = cname + "*";
+    localValueType->safeName = valueName;
+    localValueType->_defaultValue = defaultValue;
+
+    localOptionType->isOption = true;
+    localOptionType->typeMode = CTM_ValuePtr;
+    localOptionType->category = CTC_Value;
+    localOptionType->packageNamespace = packageNamespace;
+    localOptionType->valueName = valueName;
+    localOptionType->shortName = valueName + "?";
+    localOptionType->fullName = "local " + valueName + "?";
+    localOptionType->cname = cnameOption + "*";
+    localOptionType->safeName = valueName + "_option";
+    localOptionType->_defaultValue = defaultValueOption;
+
+    return make_shared<CTypes>(stackValueType, stackOptionType, nullptr, nullptr, localValueType, localOptionType, nullptr);
 }
 
 shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageNamespace, string valueName, string safeName, weak_ptr<CFunction> parent) {
@@ -507,6 +531,10 @@ shared_ptr<CType> CType::getStackType() {
 shared_ptr<CType> CType::getStackValueType() {
     assert(stackValueType.lock().get() != this);
     return stackValueType.lock();
+}
+
+shared_ptr<CType> CType::getTempType() {
+    return category == CTC_Value && parent.expired() ? getStackType() : getLocalType();
 }
 
 shared_ptr<CType> CType::getLocalType() {

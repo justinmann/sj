@@ -9,7 +9,7 @@ shared_ptr<CType> CIsEmptyOrValidVar::getType(Compiler* compiler) {
 }
 
 void CIsEmptyOrValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler)->getLocalType(), "isEmpty");
+    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler)->getTempType(), "isEmpty");
     var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;

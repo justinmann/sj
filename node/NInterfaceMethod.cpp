@@ -164,7 +164,7 @@ string CInterfaceMethod::getCTypeName(Compiler* compiler, bool includeNames) {
         if (includeNames) {
             ss << " ";
         }
-        ss << argVar->getType(compiler)->getLocalType()->cname;
+        ss << argVar->getType(compiler)->getTempType()->cname;
         if (includeNames) {
             ss << " " << argVar->name;
         }
@@ -302,7 +302,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
         return;
     }
 
-    auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, parentVar->getType(compiler)->getLocalType(), "parent");
+    auto parentStoreValue = trBlock->createTempStoreVariable(loc, nullptr, parentVar->getType(compiler)->getTempType(), "parent");
     parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
     auto parentValue = parentStoreValue->getValue();
 
@@ -328,7 +328,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
             assert(compiler->errors.size() > 0);
             return;
         }
-        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getLocalValueType(), "interfaceParam");
+        auto argStoreValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, argType->typeMode == CTM_Heap ? argType : argType->getTempType(), "interfaceParam");
         parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
         
         if (!argStoreValue->hasSetValue) {

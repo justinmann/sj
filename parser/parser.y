@@ -77,7 +77,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF TQUOTEDIDENTIFIER
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT TCARET
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
@@ -214,23 +214,23 @@ enum_arg 			: TIDENTIFIER 										{ $$ = new EnumArg(*$1); delete $1; }
 					;
 
 func_decl 			: func_type_name func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
+						$$ = new NFunction(LOC, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($3), shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6));
 						delete $1; 
 					}
 					| func_type_name implement func_block block catch copy destroy			{ 
-						$$ = new NFunction(LOC, FT_Private, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
+						$$ = new NFunction(LOC, nullptr, $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($3), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
+						$$ = new NFunction(LOC, shared_ptr<CTypeName>($3), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							nullptr, shared_ptr<NodeList>($2), 
 							shared_ptr<NBase>($4), shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7)); 
 					}
 					| func_type_name implement func_block return_type_quote block catch copy destroy { 
-						$$ = new NFunction(LOC, FT_Private, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
+						$$ = new NFunction(LOC, shared_ptr<CTypeName>($4), $1->name.c_str(), $1->templateTypeNames, $1->attributes, 
 							shared_ptr<CTypeNameList>($2), shared_ptr<NodeList>($3), 
 							shared_ptr<NBase>($5), shared_ptr<NBase>($6), shared_ptr<NBase>($7), shared_ptr<NBase>($8)); 
 					}
@@ -406,6 +406,8 @@ var_right			: TLPAREN expr TRPAREN							{ $$ = new NVariableStub(shared_ptr<NBa
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
 					| TVALID TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
 	 				| func_type_name								{ $$ = new NVariable(LOC, $1->name.c_str(), $1->templateTypeNames); delete $1; }
+	 				| TCARET func_block block        				{ $$ = new NVariableStub(make_shared<NLambda>(LOC, shared_ptr<NodeList>($2), shared_ptr<NBase>($3))); }
+	 				| TCARET block       							{ $$ = new NVariableStub(make_shared<NLambda>(LOC, nullptr, shared_ptr<NBase>($2))); }
 	 				| TPARENT										{ $$ = new NParent(LOC); }
 	 				| TTHIS											{ $$ = new NThis(LOC); }
 					| const											{ $$ = $1; }

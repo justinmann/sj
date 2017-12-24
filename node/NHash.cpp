@@ -11,8 +11,8 @@ shared_ptr<CType> CHashVar::getType(Compiler* compiler) {
 void CHashVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     createHashVar->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
 
-    trBlock->statements.push_back(TrStatement(loc, storeValue->type->getLocalType()->cname + " " + name));
-    auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getLocalType(), name, AssignOp::immutableCreate);
+    trBlock->statements.push_back(TrStatement(loc, storeValue->type->getTempType()->cname + " " + name));
+    auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getTempType(), name, AssignOp::immutableCreate);
     arrayTemp->retainValue(compiler, loc, trBlock, storeValue->getValue());
 
     auto returnType = resizeHashVar->getType(compiler);
@@ -109,7 +109,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    auto tempVar = make_shared<CTempVar>(loc, scope, createHashCallee->getReturnType(compiler, returnMode)->getLocalType(), tempName);
+    auto tempVar = make_shared<CTempVar>(loc, scope, createHashCallee->getReturnType(compiler, returnMode)->getTempType(), tempName);
 
     int buckets = (int)(((double)elements.size() - 0.5) / 0.77);
     auto resizeHashParameters = CCallVar::getParameters(compiler, loc, scope, resizeCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(buckets))), false, nullptr, CTM_Stack);

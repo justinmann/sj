@@ -54,3 +54,5 @@ tests/app/vs/.vs/
 *.js
 tests/app/nau.html
 tests/app/layout.html
+tests/basic/vs/.vs/
+tests/basic/vs/test.c

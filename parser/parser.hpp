@@ -157,7 +157,8 @@ struct OPTIONANDTYPELIST {
     TBOOLSHL = 358,
     TBOOLSHR = 359,
     TBOOLNOT = 360,
-    TAT = 361
+    TAT = 361,
+    TCARET = 362
   };
 #endif
 

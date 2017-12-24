@@ -141,8 +141,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
     auto globalFile = genNodeFile(fileName);
     if (errors.size() == 0) {
         auto globalBlock = globalFile->block;
-        anonFunction = make_shared<NFunction>(CLoc::undefined, FT_Public, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
-        currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, FT_Public, packageNamespace, "", nullptr, nullptr);
+        anonFunction = make_shared<NFunction>(CLoc::undefined, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
+        currentFunctionDefintion = CFunctionDefinition::create(this, importNamespaces, nullptr, packageNamespace, "", nullptr, nullptr);
         state = CompilerState::Define;
         anonFunction->initFunctions(this, importNamespaces, packageNamespace, currentFunctionDefintion);
 
@@ -160,7 +160,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
             globalBlock->statements.push_back(make_shared<NVoid>(CLoc::undefined));
 
             if (errors.size() == 0) {
-                currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, FT_Public, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>(), false);
+                currentFunction = make_shared<CFunction>(importNamespaces, currentFunctionDefintion, templateTypes, weak_ptr<CFunction>(), nullptr, vector<shared_ptr<NCCode>>(), false);
                 currentFunction->init(this, nullptr, CLoc::undefined);
                 auto currentScope = currentFunction->getScope(this, CTM_Stack);
                 globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, CLoc::undefined, "global", nullptr, nullptr, CTM_Stack));

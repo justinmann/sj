@@ -1,9 +1,11 @@
-math: ^(
+math(
     test: 1
     sub(x: 'i32, y: 'i32) {
         x - y - test
     }
 ) { this }
+
+math : math()
 
 class(
     foo(x: 0)'i32 {

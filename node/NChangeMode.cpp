@@ -14,7 +14,7 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
         shared_ptr<CType> changeType = varType;
         switch (typeMode) {
         case CTM_Local:
-            return varType->getLocalType();
+            return varType->getTempType();
         case CTM_Weak:
             return varType->getWeakType();
         case CTM_Stack:

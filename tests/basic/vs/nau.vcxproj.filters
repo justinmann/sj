@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{b7128b02-c92c-4aa7-b2ac-928aa23a78d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\common\array.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\bool.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\common.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\console.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\debug.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\f32.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\halt.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\hash.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\i32.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\list.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\string.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\tuple.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\lib\common\weakptr.sj">
+      <Filter>Source Files\common</Filter>
+    </None>
+    <None Include="..\..\..\..\..\src\sj\tests\app\nau.sj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\lib\common\khash.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\common\value_option_types.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

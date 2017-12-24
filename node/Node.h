@@ -72,6 +72,7 @@ enum NodeType {
     NodeType_Interface,
     NodeType_InterfaceMethod,
     NodeType_IsEmptyOrValid,
+    NodeType_Lambda,
     NodeType_List,
     NodeType_Math,
     NodeType_MathAssignment,
@@ -128,6 +129,7 @@ enum NodeType {
 #include "NInterface.h"
 #include "NInterfaceMethod.h"
 #include "NIsEmptyOrValid.h"
+#include "NLambda.h"
 #include "NPackage.h"
 #include "NParent.h"
 #include "NMath.h"

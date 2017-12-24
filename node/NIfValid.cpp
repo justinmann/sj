@@ -132,7 +132,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
                 return nullptr;
             }
             if (storeType->typeMode == CTM_Stack) {
-                storeType = storeType->getLocalType();
+                storeType = storeType->getTempType();
             }
             param.storeVar = make_shared<CNormalVar>(loc, scope, storeType, assignment->name, cname, false, CVarType::Var_Local, nullptr);
             optionalVars.push_back(param);
@@ -151,7 +151,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
                 return nullptr;
             }
             if (storeType->typeMode == CTM_Stack) {
-                storeType = storeType->getLocalType();
+                storeType = storeType->getTempType();
             }
             param.storeVar = make_shared<CNormalVar>(loc, scope, storeType, variable->name, cname, false, CVarType::Var_Local, nullptr);
             optionalVars.push_back(param);

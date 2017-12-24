@@ -11,8 +11,8 @@ shared_ptr<CType> CArrayVar::getType(Compiler* compiler) {
 void CArrayVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     createArrayVar->transpile(compiler, trOutput, trBlock, thisValue, storeValue);
 
-    trBlock->statements.push_back(TrStatement(loc, storeValue->type->getLocalType()->cname + " " + name));
-    auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getLocalType(), name, AssignOp::immutableCreate);
+    trBlock->statements.push_back(TrStatement(loc, storeValue->type->getTempType()->cname + " " + name));
+    auto arrayTemp = make_shared<TrStoreValue>(loc, scope.lock(), storeValue->type->getTempType(), name, AssignOp::immutableCreate);
     arrayTemp->retainValue(compiler, loc, trBlock, storeValue->getValue());
 
     for (auto initAtVar : initAtVars) {
@@ -100,7 +100,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
-    auto tempVar = make_shared<CTempVar>(loc, scope, createArrayCallee->getReturnType(compiler, returnMode)->getLocalType(), tempName);
+    auto tempVar = make_shared<CTempVar>(loc, scope, createArrayCallee->getReturnType(compiler, returnMode)->getTempType(), tempName);
     
     auto initAtCallee = createArrayCallee->getCFunction(compiler, loc, "initat", scope, nullptr, CTM_Undefined);
     if (!initAtCallee) {

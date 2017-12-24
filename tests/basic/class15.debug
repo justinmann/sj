@@ -1,7 +1,3 @@
-anon1(test'i32:)'stack anon1 {
-  this
-}
-
 class()'stack class {
   this
 }
@@ -24,8 +20,12 @@ class_foo(x'i32:)'i32 {
   }
 }
 
+math(test'i32:)'stack math {
+  this
+}
+
 global()'void {
-  math'stack anon1 : anon1(this = anon1(
+  math'stack math : math(this = math(
     test'i32 : test
   ))
   c'stack class : class(this = class())

@@ -219,6 +219,9 @@
     <ClInclude Include="..\node\NIsEmptyOrValid.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NLambda.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -411,6 +414,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NIsEmptyOrValid.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NLambda.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

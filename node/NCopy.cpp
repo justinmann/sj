@@ -24,7 +24,7 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
     else {
         auto destType = returnMode == CTM_Heap ? type->getHeapType() : type->getStackType();
-        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->getLocalType(), "copy");
+        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->getTempType(), "copy");
         var->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
         if (!CType::isSameExceptMode(rightValue->type, storeValue->type)) {
