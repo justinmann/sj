@@ -1,44 +1,28 @@
 # sj
 
 # Development
-This will only run on OS X in XCode right now
 
-The xcodeproj is built assuming LLVM will build into a specific relative path, so you need to follow the directory structure.
-```
-mkdir lang
-cd lang
-brew install flex
-brew install bison
-brew install cmake
+## Dependencies
+* FreeType
+* SDL
+* Boost
+* LibPNG
+* GLEW (Windows only)
+* OpenGL
+* Flex
+* Bison
 
-# From http://llvm.org/docs/GettingStarted.html
-git clone http://llvm.org/git/llvm.git
-git checkout release_39
-cd llvm/tools
-git clone http://llvm.org/git/clang.git
-git checkout release_39
-cd ../..
-mkdir install
-cd install
-pwd # remember this path for below
-cd ..
-mkdir build
-cd build
-cmake -G Xcode -DCMAKE_INSTALL_PREFIX=[full path from previous line] ../llvm
-cd ..
-# Open .xcodeproj
-# Do not autocreate schema
-# Create new schema, select target: install
-# Compile
-git clone https://github.com/justinmann/sj.git
-# Open .xcodeproj and compile it
-```
+## Windows
+1) Open the sj.sln file in the "vs" folder
+2) Compile
+3) Open the VS command prompt
+4) Run `tests.cmd basic` in "tests" folder
+5) Open the app.sln file in the "test\app\vs" folder
 
-If you need update the parser
-```
-cd sj/parser
-make
-```
+## OS/X
+1) Open sjc.xcodeproj
+2) Compile
+3) Open layout.xcodeproj in the "test\app\xcode" folder
 
-
-
+## Linux
+1) Run make
