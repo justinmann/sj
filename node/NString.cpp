@@ -69,7 +69,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
             make_shared<CConstantVar>(loc, scope, compiler->typeBool, "true"),
             make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size() + 1))
         ), false, nullptr, CTM_Stack);
-    auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, CTM_Stack);
+    auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, CTM_Stack);
     if (!createArrayVar) {
         return nullptr;
     }
@@ -85,7 +85,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
             make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size())),
             createArrayVar
         ), false, nullptr, returnMode);
-    auto createStringVar = CCallVar::create(compiler, loc, "string", nullptr, createStringParameters, scope, creatStringCallee, returnMode);
+    auto createStringVar = make_shared<CCallVar>(loc, scope, nullptr, createStringParameters, creatStringCallee, returnMode);
     if (!createStringVar) {
         return nullptr;
     }

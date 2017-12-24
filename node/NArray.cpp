@@ -95,7 +95,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     }
 
     auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(elements->size()))), false, nullptr, returnMode);
-    auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, returnMode);
+    auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, returnMode);
     if (!createArrayVar) {
         return nullptr;
     }
@@ -111,7 +111,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     vector<shared_ptr<CVar>> initAtVars;
     for (auto element : *elements) {
         auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(index)), element->getVar(compiler, scope, CTM_Undefined)), false, nullptr, CTM_Stack);
-        auto initAtVar = CCallVar::create(compiler, loc, "initat", tempVar, initAtParameters, scope, initAtCallee, CTM_Stack);
+        auto initAtVar = make_shared<CCallVar>(loc, scope, tempVar, initAtParameters, initAtCallee, CTM_Stack);
         if (!initAtVar) {
             return nullptr;
         }

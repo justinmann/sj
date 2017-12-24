@@ -130,18 +130,6 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     return parameters;
 }
 
-shared_ptr<CCallVar> CCallVar::create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters_, shared_ptr<CScope> scope, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode) {
-    assert(callee_);
-    assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-    // TODO: assert(callee_->getIsReturnModeValid(compiler, returnMode));
-    
-    auto c = make_shared<CCallVar>(loc_, scope, dotVar, returnMode);
-    c->parameters = parameters_;
-    c->scope = scope;
-    c->callee = callee_;
-    return c;
-}
-
 bool CCallVar::getReturnThis() {
     return false;
 }
@@ -413,5 +401,9 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    return CCallVar::create(compiler, loc, name, isHelperFunction ? nullptr : dotVar, parameters, scope, callee, returnMode);
+    return createCallVar(loc, scope, isHelperFunction ? nullptr : dotVar, parameters, callee, returnMode);
+}
+
+shared_ptr<CCallVar> NCall::createCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode) {
+    return make_shared<CCallVar>(loc, scope, dotVar, parameters, callee, returnMode);
 }

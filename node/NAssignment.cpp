@@ -148,7 +148,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         }
 
         auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, CallArgument::createList(rightSide->getVar(compiler, scope, CTM_Undefined)), false, nullptr, returnMode);
-        return CCallVar::create(compiler, loc, setFunctionName, parentVar, parameters, scope, setFunction, returnMode);
+        return make_shared<CCallVar>(loc, scope, parentVar, parameters, setFunction, returnMode);
     }
     else {
         if (!rightSide) {

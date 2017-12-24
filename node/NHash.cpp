@@ -99,7 +99,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     auto createHashParameters = CCallVar::getParameters(compiler, loc, scope, createHashCallee, CallArgument::emptyList, false, nullptr, returnMode);
-    auto createHashVar = CCallVar::create(compiler, loc, "hash", nullptr, createHashParameters, scope, createHashCallee, returnMode);
+    auto createHashVar = make_shared<CCallVar>(loc, scope, nullptr, createHashParameters, createHashCallee, returnMode);
     if (!createHashVar) {
         return nullptr;
     }
@@ -113,7 +113,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
 
     int buckets = (int)(((double)elements.size() - 0.5) / 0.77);
     auto resizeHashParameters = CCallVar::getParameters(compiler, loc, scope, resizeCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(buckets))), false, nullptr, CTM_Stack);
-    auto resizeHashVar = CCallVar::create(compiler, loc, "resize", tempVar, resizeHashParameters, scope, resizeCallee, CTM_Stack);
+    auto resizeHashVar = make_shared<CCallVar>(loc, scope, tempVar, resizeHashParameters, resizeCallee, CTM_Stack);
     if (!resizeHashVar) {
         return nullptr;
     }
@@ -127,7 +127,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     vector<shared_ptr<CVar>> setAtVars;
     for (auto element : elements) {
         auto setAtParameters = CCallVar::getParameters(compiler, loc, scope, setAtCallee, CallArgument::createList(element.first->getVar(compiler, scope, CTM_Undefined), element.second->getVar(compiler, scope, CTM_Undefined)), false, nullptr, CTM_Stack);
-        auto setAtVar = CCallVar::create(compiler, loc, "setat", tempVar, setAtParameters, scope, setAtCallee, CTM_Stack);
+        auto setAtVar = make_shared<CCallVar>(loc, scope, tempVar, setAtParameters, setAtCallee, CTM_Stack);
         if (!setAtVar) {
             return nullptr;
         }

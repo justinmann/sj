@@ -31,11 +31,10 @@ public:
 
 class CCallVar : public CVar {
 public:
-    CCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) : CVar(loc, scope), dotVar(dotVar), returnMode(returnMode) {}
+    CCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode) : CVar(loc, scope), dotVar(dotVar), parameters(parameters), callee(callee), returnMode(returnMode) {}
     bool getReturnThis();
-    static shared_ptr<CCallVar> create(Compiler* compiler, CLoc loc_, const string& name_, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CScope> scope, shared_ptr<CBaseFunction> callee_, CTypeMode returnMode);
     shared_ptr<CType> getType(Compiler* compiler);
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    virtual void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
     void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     static shared_ptr<vector<FunctionParameter>> getParameters(Compiler* compiler, CLoc loc, shared_ptr<CScope> callerScope, shared_ptr<CBaseFunction> callee, vector<CallArgument> arguments, bool isHelperFunction, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
@@ -58,6 +57,9 @@ public:
     void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
     static shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction);
+
+protected:
+    virtual shared_ptr<CCallVar> createCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode);
 
 private:
     shared_ptr<NCall> shared_from_this() { return static_pointer_cast<NCall>(NBase::shared_from_this()); };
