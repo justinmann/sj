@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PARSER_HPP_INCLUDED
-# define YY_YY_PARSER_HPP_INCLUDED
+#ifndef YY_YY_PARSER_PARSER_HPP_INCLUDED
+# define YY_YY_PARSER_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -39,6 +39,15 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+
+
+struct OPTIONANDTYPELIST {
+	bool isOption;
+	CTypeNameList* templateTypeNames;	
+};
+
+
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -48,55 +57,107 @@ extern int yydebug;
     TIDENTIFIER = 258,
     TINTEGER = 259,
     TDOUBLE = 260,
-    TINVALID = 261,
-    TSTRING = 262,
-    TCHAR = 263,
-    TCEQ = 264,
-    TCNE = 265,
-    TCLT = 266,
-    TCLE = 267,
-    TCGT = 268,
-    TCGE = 269,
-    TEQUAL = 270,
-    TEND = 271,
-    TLPAREN = 272,
-    TRPAREN = 273,
-    TLBRACE = 274,
-    TRBRACE = 275,
-    TCOMMA = 276,
-    TCOLON = 277,
-    TQUOTE = 278,
-    TPLUS = 279,
-    TMINUS = 280,
-    TMUL = 281,
-    TDIV = 282,
-    TTRUE = 283,
-    TFALSE = 284,
-    TAS = 285,
-    TVOID = 286,
-    TIF = 287,
-    TELSE = 288,
-    TTHROW = 289,
-    TCATCH = 290,
-    TEXTERN = 291,
-    TFOR = 292,
-    TTO = 293,
-    TWHILE = 294,
-    TPLUSPLUS = 295,
-    TMINUSMINUS = 296,
-    TPLUSEQUAL = 297,
-    TMINUSEQUAL = 298,
-    TLBRACKET = 299,
-    TRBRACKET = 300,
-    TEXCLAIM = 301,
-    TDOT = 302,
-    TTHIS = 303,
-    TINCLUDE = 304,
-    TAND = 305,
-    TOR = 306,
-    TDESTROY = 307,
-    TMOD = 308,
-    THASH = 309
+    TSTRING = 261,
+    TCHAR = 262,
+    TCBLOCK = 263,
+    TCFUNCTION = 264,
+    TCDEFINE = 265,
+    TCSTRUCT = 266,
+    TCINCLUDE = 267,
+    TCVAR = 268,
+    TCTYPEDEF = 269,
+    TQUOTEDIDENTIFIER = 270,
+    TCEQ = 271,
+    TCNE = 272,
+    TCLT = 273,
+    TCLE = 274,
+    TCGT = 275,
+    TCGE = 276,
+    TEQUAL = 277,
+    TEND = 278,
+    TLPAREN = 279,
+    TRPAREN = 280,
+    TLBRACE = 281,
+    TRBRACE = 282,
+    TCOMMA = 283,
+    TCOLON = 284,
+    TQUOTE = 285,
+    TPLUS = 286,
+    TMINUS = 287,
+    TMUL = 288,
+    TDIV = 289,
+    TTRUE = 290,
+    TFALSE = 291,
+    TAS = 292,
+    TVOID = 293,
+    TIF = 294,
+    TELSE = 295,
+    TTHROW = 296,
+    TCATCH = 297,
+    TFOR = 298,
+    TTO = 299,
+    TWHILE = 300,
+    TPLUSPLUS = 301,
+    TMINUSMINUS = 302,
+    TPLUSEQUAL = 303,
+    TMINUSEQUAL = 304,
+    TLBRACKET = 305,
+    TRBRACKET = 306,
+    TEXCLAIM = 307,
+    TDOT = 308,
+    TTHIS = 309,
+    TINCLUDE = 310,
+    TAND = 311,
+    TOR = 312,
+    TCOPY = 313,
+    TDESTROY = 314,
+    TMOD = 315,
+    THASH = 316,
+    TCPEQ = 317,
+    TCPNE = 318,
+    TMULEQUAL = 319,
+    TDIVEQUAL = 320,
+    TISEMPTY = 321,
+    TISVALID = 322,
+    TGETVALUE = 323,
+    TQUESTION = 324,
+    TEMPTY = 325,
+    TVALID = 326,
+    TQUESTIONCOLON = 327,
+    TQUESTIONDOT = 328,
+    TPARENT = 329,
+    TSTACK = 330,
+    THEAP = 331,
+    TWEAK = 332,
+    TLOCAL = 333,
+    TTYPEI32 = 334,
+    TTYPEU32 = 335,
+    TTYPEF32 = 336,
+    TTYPEI64 = 337,
+    TTYPEU64 = 338,
+    TTYPEF64 = 339,
+    TTYPECHAR = 340,
+    TTYPEBOOL = 341,
+    TTYPEPTR = 342,
+    TINVALID = 343,
+    TCOLONEQUAL = 344,
+    TIFVALID = 345,
+    TELSEEMPTY = 346,
+    TTOREVERSE = 347,
+    TENUM = 348,
+    TSWITCH = 349,
+    TDEFAULT = 350,
+    TPACKAGE = 351,
+    TIMPORT = 352,
+    TUNDERSCORE = 353,
+    TNULLPTR = 354,
+    TBOOLXOR = 355,
+    TBOOLOR = 356,
+    TBOOLAND = 357,
+    TBOOLSHL = 358,
+    TBOOLSHR = 359,
+    TBOOLNOT = 360,
+    TAT = 361
   };
 #endif
 
@@ -109,14 +170,29 @@ union YYSTYPE
 
 	NBase* node;
 	NBlock* block;
-	NIf* nif;
 	NVariableBase* var;
 	NodeList* exprvec;
 	std::string* string;
 	CTypeName* typeName;
 	CTypeNameList* templateTypeNames;
 	int token;
-	bool isMutable;
+	AssignOp assignOp;
+	OPTIONANDTYPELIST optionAndTypeList;
+	NTupleAssignmentArgList* tupleAssignmentArgList;
+	NTupleAssignmentArg* tupleAssignmentArg;
+	CTypeMode typeMode;
+	EnumArg* enumArg;
+	EnumArgs* enumArgs;
+	std::vector<std::string>* strings;
+	std::vector<std::pair<std::string, std::vector<std::string>>>* import_namespaces;
+	std::pair<std::string, std::vector<std::string>>* import_namespace;
+	NCCode* ccode;
+	CTypeNameParts* typeNameParts;
+	vector<shared_ptr<NSwitchClause>>* switchClauses;
+	NSwitchClause* switchClause;
+	vector<pair<shared_ptr<NBase>, shared_ptr<NBase>>>* hashArgs;
+	pair<shared_ptr<NBase>, shared_ptr<NBase>>* hashArg;
+	CFunctionName* functionName;
 
 
 };
@@ -142,6 +218,6 @@ struct YYLTYPE
 
 
 
-int yyparse (void *scanner, CResult* result);
+int yyparse (void *scanner, Compiler* compiler, CParseFile* parseFile);
 
-#endif /* !YY_YY_PARSER_HPP_INCLUDED  */
+#endif /* !YY_YY_PARSER_PARSER_HPP_INCLUDED  */

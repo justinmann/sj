@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{47F9460B-09F0-4507-A828-8C1F2456AB94}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>sj</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectName>sjc</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalOptions> -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\boost\lib</AdditionalLibraryDirectories>
+      <OutputFile>$(ProjectDir)..\$(TargetName)$(TargetExt)</OutputFile>
+      <ProgramDatabaseFile>$(ProjectDir)..\$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\boost\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\boost\lib</AdditionalLibraryDirectories>
+      <OutputFile>$(ProjectDir)..\$(TargetName)$(TargetExt)</OutputFile>
+      <ProgramDatabaseFile>$(ProjectDir)..\$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\boost\lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\compiler\Compiler.h" />
+    <ClInclude Include="..\compiler\CType.h" />
+    <ClInclude Include="..\compiler\CTypeName.h" />
+    <ClInclude Include="..\compiler\CVar.h" />
+    <ClInclude Include="..\compiler\Exception.h" />
+    <ClInclude Include="..\node\CCallback.h" />
+    <ClInclude Include="..\node\NAnd.h" />
+    <ClInclude Include="..\node\NArray.h" />
+    <ClInclude Include="..\node\NChangeMode.h" />
+    <ClInclude Include="..\node\NCopy.h" />
+    <ClInclude Include="..\node\NEmpty.h" />
+    <ClInclude Include="..\node\NEnum.h" />
+    <ClInclude Include="..\node\NFunction.h" />
+    <ClInclude Include="..\node\NGetOrElse.h" />
+    <ClInclude Include="..\node\NGetValue.h" />
+    <ClInclude Include="..\node\NHash.h" />
+    <ClInclude Include="..\node\NIfValid.h" />
+    <ClInclude Include="..\node\NImport.h" />
+    <ClInclude Include="..\node\NIsEmptyOrValid.h" />
+    <ClInclude Include="..\node\NNegate.h" />
+    <ClInclude Include="..\node\NNullPtr.h" />
+    <ClInclude Include="..\node\NOptionDot.h" />
+    <ClInclude Include="..\node\NPackage.h" />
+    <ClInclude Include="..\node\NParent.h" />
+    <ClInclude Include="..\node\NSwitch.h" />
+    <ClInclude Include="..\node\NTuple.h" />
+    <ClInclude Include="..\node\NTupleAssignment.h" />
+    <ClInclude Include="..\node\NAssignment.h" />
+    <ClInclude Include="..\node\NBase.h" />
+    <ClInclude Include="..\node\NBaseFunction.h" />
+    <ClInclude Include="..\node\NBlock.h" />
+    <ClInclude Include="..\node\NBool.h" />
+    <ClInclude Include="..\node\NCall.h" />
+    <ClInclude Include="..\node\NCast.h" />
+    <ClInclude Include="..\node\NCCode.h" />
+    <ClInclude Include="..\node\NChar.h" />
+    <ClInclude Include="..\node\NCompare.h" />
+    <ClInclude Include="..\node\NDot.h" />
+    <ClInclude Include="..\node\NDouble.h" />
+    <ClInclude Include="..\node\NFor.h" />
+    <ClInclude Include="..\node\NIf.h" />
+    <ClInclude Include="..\node\NInclude.h" />
+    <ClInclude Include="..\node\NInteger.h" />
+    <ClInclude Include="..\node\NInterface.h" />
+    <ClInclude Include="..\node\NInterfaceMethod.h" />
+    <ClInclude Include="..\node\NMath.h" />
+    <ClInclude Include="..\node\NMathAssignment.h" />
+    <ClInclude Include="..\node\NNot.h" />
+    <ClInclude Include="..\node\Node.h" />
+    <ClInclude Include="..\node\NOr.h" />
+    <ClInclude Include="..\node\NString.h" />
+    <ClInclude Include="..\node\NThis.h" />
+    <ClInclude Include="..\node\NThrow.h" />
+    <ClInclude Include="..\node\NUnderscore.h" />
+    <ClInclude Include="..\node\NValue.h" />
+    <ClInclude Include="..\node\NVariable.h" />
+    <ClInclude Include="..\node\NVoid.h" />
+    <ClInclude Include="..\node\NWhile.h" />
+    <ClInclude Include="..\parser\parser.hpp" />
+    <ClInclude Include="..\transpile\TrBlock.h" />
+    <ClInclude Include="..\transpile\TrOutput.h" />
+    <ClInclude Include="..\transpile\TrStatement.h" />
+    <ClInclude Include="..\transpile\TrVariable.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\compiler\Compiler.cpp" />
+    <ClCompile Include="..\compiler\CType.cpp" />
+    <ClCompile Include="..\compiler\CTypeName.cpp" />
+    <ClCompile Include="..\compiler\CVar.cpp" />
+    <ClCompile Include="..\compiler\Exception.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\node\CCallback.cpp" />
+    <ClCompile Include="..\node\NAnd.cpp" />
+    <ClCompile Include="..\node\NArray.cpp" />
+    <ClCompile Include="..\node\NChangeMode.cpp" />
+    <ClCompile Include="..\node\NCopy.cpp" />
+    <ClCompile Include="..\node\NEmpty.cpp" />
+    <ClCompile Include="..\node\NEnum.cpp" />
+    <ClCompile Include="..\node\NGetOrElse.cpp" />
+    <ClCompile Include="..\node\NGetValue.cpp" />
+    <ClCompile Include="..\node\NHash.cpp" />
+    <ClCompile Include="..\node\NIfValid.cpp" />
+    <ClCompile Include="..\node\NImport.cpp" />
+    <ClCompile Include="..\node\NIsEmptyOrValid.cpp" />
+    <ClCompile Include="..\node\NNegate.cpp" />
+    <ClCompile Include="..\node\NNullPtr.cpp" />
+    <ClCompile Include="..\node\NOptionDot.cpp" />
+    <ClCompile Include="..\node\NPackage.cpp" />
+    <ClCompile Include="..\node\NParent.cpp" />
+    <ClCompile Include="..\node\NSwitch.cpp" />
+    <ClCompile Include="..\node\NTuple.cpp" />
+    <ClCompile Include="..\node\NTupleAssignment.cpp" />
+    <ClCompile Include="..\node\NAssignment.cpp" />
+    <ClCompile Include="..\node\NBase.cpp" />
+    <ClCompile Include="..\node\NBaseFunction.cpp" />
+    <ClCompile Include="..\node\NBlock.cpp" />
+    <ClCompile Include="..\node\NBool.cpp" />
+    <ClCompile Include="..\node\NCall.cpp" />
+    <ClCompile Include="..\node\NCast.cpp" />
+    <ClCompile Include="..\node\NCCode.cpp" />
+    <ClCompile Include="..\node\NChar.cpp" />
+    <ClCompile Include="..\node\NCompare.cpp" />
+    <ClCompile Include="..\node\NDot.cpp" />
+    <ClCompile Include="..\node\NDouble.cpp" />
+    <ClCompile Include="..\node\NFor.cpp" />
+    <ClCompile Include="..\node\NFunction.cpp" />
+    <ClCompile Include="..\node\NIf.cpp" />
+    <ClCompile Include="..\node\NInclude.cpp" />
+    <ClCompile Include="..\node\NInteger.cpp" />
+    <ClCompile Include="..\node\NInterface.cpp" />
+    <ClCompile Include="..\node\NInterfaceMethod.cpp" />
+    <ClCompile Include="..\node\NMath.cpp" />
+    <ClCompile Include="..\node\NMathAssignment.cpp" />
+    <ClCompile Include="..\node\NNot.cpp" />
+    <ClCompile Include="..\node\NOr.cpp" />
+    <ClCompile Include="..\node\NString.cpp" />
+    <ClCompile Include="..\node\NThis.cpp" />
+    <ClCompile Include="..\node\NThrow.cpp" />
+    <ClCompile Include="..\node\NUnderscore.cpp" />
+    <ClCompile Include="..\node\NValue.cpp" />
+    <ClCompile Include="..\node\NVariable.cpp" />
+    <ClCompile Include="..\node\NVoid.cpp" />
+    <ClCompile Include="..\node\NWhile.cpp" />
+    <ClCompile Include="..\parser\parser.cpp" />
+    <ClCompile Include="..\parser\tokens.cpp" />
+    <ClCompile Include="..\transpile\TrBlock.cpp" />
+    <ClCompile Include="..\transpile\TrOutput.cpp" />
+    <ClCompile Include="..\transpile\TrStatement.cpp" />
+    <ClCompile Include="..\transpile\TrVariable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sj.pch" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

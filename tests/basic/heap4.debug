@@ -1,0 +1,11 @@
+c(b'stack b:)'stack c {
+  this
+}
+
+global()'void {
+  c(this = c(
+    b'stack b : b
+  ))
+  void
+}
+

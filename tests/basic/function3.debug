@@ -1,0 +1,9 @@
+func()'void {
+  func()
+}
+
+global()'void {
+  func()
+  void
+}
+

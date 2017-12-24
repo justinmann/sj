@@ -14,24 +14,40 @@ enum NMathOp {
     Sub,
     Div,
     Mul,
-    Mod
+    Mod,
+    Xor,
+    Or,
+    And,
+    ShiftLeft,
+    ShiftRight
 };
 
-class NMath : public NBase {
+class CMathVar : public CVar {
+public:
+    CMathVar(CLoc loc, shared_ptr<CScope> scope, NMathOp op, shared_ptr<CVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope), op(op), leftVar(leftVar), rightVar(rightVar) { assert(leftVar); assert(rightVar); }
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    
+private:
+    NMathOp op;
+    shared_ptr<CVar> leftVar;
+    shared_ptr<CVar> rightVar;
+};
+
+class NMath : public NVariableBase {
 public:
     NMathOp op;
-    const shared_ptr<NBase> leftSide;
-    const shared_ptr<NBase> rightSide;
+    const shared_ptr<NVariableBase> leftSide;
+    const shared_ptr<NVariableBase> rightSide;
     
-    NMath(CLoc loc, shared_ptr<NBase> leftSide, NMathOp op, shared_ptr<NBase> rightSide) : leftSide(leftSide), rightSide(rightSide), op(op), NBase(NodeType_Math, loc) { }
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    NMath(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathOp op, shared_ptr<NVariableBase> rightSide) : NVariableBase(NodeType_Math, loc), op(op), leftSide(leftSide), rightSide(rightSide) { }
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
-protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
+    shared_ptr<NBase> operatorOverloadNode;
 };
 
 #endif /* NMath_h */

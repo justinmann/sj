@@ -1,82 +1,54 @@
 #include "Node.h"
 
-void NWhile::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    cond->define(compiler, result, thisFunction);
-    body->define(compiler, result, thisFunction);
+bool CWhileVar::getReturnThis() {
+    return false;
 }
 
-shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    cond->getVar(compiler, result, thisFunction, thisVar);
-    body->getVar(compiler, result, thisFunction, thisVar);
-    return nullptr;
-}
-
-shared_ptr<CType> NWhile::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
+shared_ptr<CType> CWhileVar::getType(Compiler* compiler) {
     return compiler->typeVoid;
 }
 
-int NWhile::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = cond->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    count += body->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    return count;
+void CWhileVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto whileValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "while");
+    
+    condVar->transpile(compiler,trOutput, trBlock, thisValue, whileValue);
+    stringstream whileLine;
+    whileLine << "while (" << whileValue->getName(trBlock) << ")";
+    auto trWhileBlock = make_shared<TrBlock>();
+    trWhileBlock->hasThis = trBlock->hasThis;
+    auto bodyType = bodyVar->getType(compiler);
+    bodyVar->transpile(compiler, trOutput, trWhileBlock.get(), thisValue, trBlock->createVoidStoreVariable(loc, bodyType));
+    condVar->transpile(compiler, trOutput, trWhileBlock.get(), thisValue, whileValue);    
+    trBlock->statements.push_back(TrStatement(loc, whileLine.str(), trWhileBlock));
 }
 
-shared_ptr<ReturnValue> NWhile::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    Function *TheFunction = builder->GetInsertBlock()->getParent();
-    auto loopBB = BasicBlock::Create(compiler->context, "loop");
-    auto continueBB = BasicBlock::Create(compiler->context, "continue");
-    auto afterBB = BasicBlock::Create(compiler->context, "afterloop");
-    
-    builder->CreateBr(loopBB);
-    
-    // Make the new basic block for the loop header, inserting after current block.
-    TheFunction->getBasicBlockList().push_back(loopBB);
-    builder->SetInsertPoint(loopBB);
-    
-    auto condition = cond->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!condition->value->getType()->isIntegerTy(1)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "condition for while must be a bool");
+void CWhileVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    ss << "while ";
+    condVar->dump(compiler, functions, ss, level);
+    bodyVar->dump(compiler, functions, ss, level);
+}
+
+void NWhile::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    assert(compiler->state == CompilerState::Define);
+    cond->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    body->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NWhile::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    cond->initVars(compiler, scope, returnMode);
+    body->initVars(compiler, scope, returnMode);
+}
+
+shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    auto condVar = cond->getVar(compiler, scope, CTM_Undefined);
+    if (!condVar) {
         return nullptr;
     }
-    assert(condition->type == RVT_SIMPLE);
-
-    builder->CreateCondBr(condition->value, continueBB, afterBB);
     
-    TheFunction->getBasicBlockList().push_back(continueBB);
-    builder->SetInsertPoint(continueBB);
-    
-    // Emit the body of the loop.  This, like any other expr, can change the
-    // current BB.  Note that we ignore the value computed by the body, but don't
-    // allow an error.
-    auto bodyResult = body->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (bodyResult) {
-        bodyResult->releaseIfNeeded(compiler, result, builder);
+    auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
+    if (!bodyVar) {
+        return nullptr;
     }
     
-    builder->CreateBr(loopBB);
-    
-    // Any new code will be inserted in AfterBB.
-    TheFunction->getBasicBlockList().push_back(afterBB);
-    builder->SetInsertPoint(afterBB);
-    
-    return nullptr;
+    return make_shared<CWhileVar>(loc, scope, condVar, bodyVar);
 }
-
-void NWhile::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "while ";
-
-    if (cond) {
-        cond->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    }
-
-    if (body) {
-        body->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    }
-}
-

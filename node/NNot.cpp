@@ -1,44 +1,69 @@
 #include "Node.h"
 
-void NNot::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+bool CNotVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CNotVar::getType(Compiler* compiler) {
+    if (isLogicalNot) {
+        return var->getType(compiler);
+    }
+    else {
+        return compiler->typeBool;
+    }
+}
+
+void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto value = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "not");
+    var->transpile(compiler, trOutput, trBlock, thisValue, value);
+    auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
+    stringstream line;
+    line << resultValue->name << " = ";
+    if (isLogicalNot) {
+        line << "!";
+    }
+    else {
+        line << "~";
+    }
+    line << value->getName(trBlock);
+    trBlock->statements.push_back(TrStatement(loc, line.str()));
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
+}
+
+void CNotVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    ss << (isLogicalNot ? "!" : "not ");
+    var->dump(compiler, functions, ss, level);
+}
+
+void NNot::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
-    node->define(compiler, result, thisFunction);
+    node->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
 }
 
-shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    node->getVar(compiler, result, thisFunction, thisVar);
-    return nullptr;
+void NNot::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CType> NNot::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    return compiler->typeBool;
-}
-
-int NNot::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    return node->setHeapVar(compiler, result, thisFunction, thisVar, false);
-}
-
-shared_ptr<ReturnValue> NNot::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto v = node->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!v)
-        return nullptr;
-    
-    assert(v->type == RVT_SIMPLE);
-    
-    if (!v->value->getType()->isIntegerTy(1)) {
-        result.addError(loc, CErrorCode::TypeMismatch, "must be bool");
+shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto var = node->getVar(compiler, scope, CTM_Undefined);
+    if (!var) {
         return nullptr;
     }
-    
-    return make_shared<ReturnValue>(false, builder->CreateNot(v->value));
+
+    auto varType = var->getType(compiler);
+    if (isLogicalNot) {
+        if (varType != compiler->typeBool) {
+            compiler->addError(loc, CErrorCode::InvalidType, "! only works for bool type");
+            return nullptr;
+        }
+    }
+    else {
+        if (varType != compiler->typeI32 && varType != compiler->typeI64 && varType != compiler->typeU32 && varType != compiler->typeU64) {
+            compiler->addError(loc, CErrorCode::InvalidType, "not only works for integer types i32, i64, u32, u64");
+            return nullptr;
+        }
+    }
+
+    return make_shared<CNotVar>(loc, scope, var, isLogicalNot);
 }
 
-void NNot::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "!";
-    node->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-}

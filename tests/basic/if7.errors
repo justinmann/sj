@@ -1,0 +1,1 @@
+if7.sj(1,1): error SJC0002: if block return type 'i32' does not match else block return type 'f64'

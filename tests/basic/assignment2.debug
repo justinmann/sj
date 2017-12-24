@@ -1,0 +1,5 @@
+global()'void {
+  x'i64 = 1i as i64
+  void
+}
+

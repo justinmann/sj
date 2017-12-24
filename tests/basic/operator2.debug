@@ -1,0 +1,16 @@
+i32_addclass![i32, char](x'i32:, y'stack class![i32, char]:)'i32 {
+  x + y.x
+}
+
+global()'void {
+  a'i32 : i32_addclass![i32, char](
+    x'i32 : x,
+    y'stack class![i32, char] : y
+  )
+  b'i32 : i32_addclass![i32, char](
+    x'i32 : x,
+    y'stack class![i32, char] : y
+  )
+  void
+}
+

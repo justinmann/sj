@@ -1,0 +1,10 @@
+class!i32()'stack class!i32 {
+  this
+}
+
+global()'void {
+  c'stack class!i32 : class!i32(this = class!i32())
+  1i
+  void
+}
+

@@ -1,0 +1,5 @@
+global()'void {
+  x'bool : 4i <= 4i
+  void
+}
+

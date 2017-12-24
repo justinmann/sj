@@ -16,44 +16,33 @@ public:
     vector<shared_ptr<NAssignment>> assignments;
     shared_ptr<CTypeName> returnTypeName;
 
-    NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-
-protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) { return nullptr; }
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) { return 0; } 
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
+    NInterfaceMethod(CLoc loc, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<NodeList> arguments, shared_ptr<CTypeName> returnTypeName);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {}
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) { return nullptr; }
 };
 
 class CInterfaceMethodReturnVar : public CVar {
 public:
-    CInterfaceMethodReturnVar(shared_ptr<CType> returnType) : returnType(returnType), isHeapVar(false) { }
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
-    Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    CInterfaceMethodReturnVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> returnType) : CVar(loc, scope), returnType(returnType) { }
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
     shared_ptr<CType> returnType;
-    bool isHeapVar;
     vector<shared_ptr<CVar>> returnVars;
 };
 
 class CInterfaceMethodArgVar : public CVar {
 public:
-    CInterfaceMethodArgVar(shared_ptr<CType> returnType) : returnType(returnType), isHeapVar(false) { }
-    shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
-    Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
+    CInterfaceMethodArgVar(CLoc loc, shared_ptr<CInterfaceMethod> interfaceMethod, shared_ptr<CType> returnType, string name) : CVar(loc, nullptr, name, name, false), returnType(returnType) { }
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    virtual void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
     
     shared_ptr<CType> returnType;
-    bool isHeapVar;
     vector<shared_ptr<CVar>> functionVars;
 };
 
@@ -61,37 +50,42 @@ class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CI
 public:
     shared_ptr<CType> returnType;
     vector<shared_ptr<CType>> argTypes;
-    vector<shared_ptr<CBaseFunction>> implementations;
-    
-    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex);
-    shared_ptr<CInterfaceMethod> init(Compiler* compiler, CResult& result, shared_ptr<NInterfaceMethod> method);
+    vector<shared_ptr<CVar>> argVars;
+
+    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode);
+    shared_ptr<CInterfaceMethod> init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     
-    bool getHasThis();
-    shared_ptr<CType> getThisType(Compiler* compiler, CResult& result);
-    int getThisIndex(const string& name) const;
-    void createThisVar(Compiler* compiler, CResult& result, shared_ptr<CVar>& thisVar);
-    Type* getStructType(Compiler* compiler, CResult& result);
-    Value* getRefCount(Compiler* compiler, CResult& result, IRBuilder<>* builder, Value* thisValue);
+    shared_ptr<CTypes> getThisTypes(Compiler* compiler);
+    int getArgIndex(const string& name, CTypeMode returnMode);
+    int getArgCount(CTypeMode returnMode);
+    shared_ptr<CVar> getArgVar(int index, CTypeMode returnMode);
+    shared_ptr<CVar> getThisVar(Compiler* compiler);
     
-    shared_ptr<CVar> getCVar(Compiler* compiler, CResult& result, const string& name);
-    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CResult& result, const string& name, shared_ptr<CBaseFunction> callerFunction, shared_ptr<CTypeNameList> templateTypeNames);
-    Value* getParentValue(Compiler* compiler, CResult& result, IRBuilder<>* builder, bool thisInEntry, Value* thisValue);
-    shared_ptr<CType> getVarType(Compiler* compiler, CResult& result, shared_ptr<CTypeName> typeName);
-    shared_ptr<CType> getReturnType(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    shared_ptr<CVar> getReturnVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    
-    shared_ptr<ReturnValue> call(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, shared_ptr<CVar> calleeVar, shared_ptr<CVar> dotVar, IRBuilder<>* builder, BasicBlock* catchBB, vector<shared_ptr<NBase>>& parameters, ReturnRefType returnRefType);
-    void dumpBody(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    bool getReturnMustRelease(Compiler* compiler, CResult& result);
-    Function* getDestructor(Compiler* compiler, CResult& result);
-    Type* getFunctionType(Compiler* compiler, CResult& result);
+    shared_ptr<CBaseFunction> getCFunction(Compiler* compiler, CLoc locCaller, const string& name, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode) { assert(false); return nullptr; }
+    pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>> getFunctionDefinition(vector<string> packageNamespace, string name) { assert(false); return make_pair<shared_ptr<CFunction>, shared_ptr<CBaseFunctionDefinition>>(nullptr, nullptr); }
+    shared_ptr<CType> getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode);
+    bool getIsReturnModeValid(Compiler* compiler, CTypeMode returnMode);
+    shared_ptr<CType> getReturnType(Compiler* compiler, CTypeMode returnMode);
+    string getCTypeName(Compiler* compiler, bool includeNames);
+    string getCStructName(CTypeMode typeMode) { assert(false); return ""; }
+    string getCFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
+    string getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
+    string getCCopyFunctionName();
+    string getCDestroyFunctionName();
+
+    void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);
+    void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
+    void transpile(Compiler* compiler, shared_ptr<CScope> callerScope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<CVar> parentVar, CLoc& calleeLoc, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue, CTypeMode returnMode);
+    void dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode);
+    bool getReturnMustRelease(Compiler* compiler);
+
+    CTypeMode returnMode;
     
 private:
     shared_ptr<CInterfaceMethodReturnVar> returnVar;
-    Type* functionType;
-    int methodIndex;
     CLoc loc;
+    map<string, int> argIndex;
 };
 
 #endif /* NInterfaceMethod_h */

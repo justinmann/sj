@@ -1,130 +1,136 @@
 #include "Node.h"
 
-NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> var, NMathAssignmentOp op, shared_ptr<NBase> rightSide) : var(var), op(op), rightSide(rightSide), NBase(NodeType_MathAssignment, loc) {
+NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> numberSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), numberSide(numberSide) {
 }
 
-void NMathAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    if (rightSide) {
-        rightSide->define(compiler, result, thisFunction);
+void NMathAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    if (leftSide) {
+        leftSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    }
+
+    if (numberSide) {
+        numberSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    if (rightSide) {
-        rightSide->getVar(compiler, result, thisFunction, thisVar);
+void NMathAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (leftSide) {
+        leftSide->initVars(compiler, scope, returnMode);
     }
-    return nullptr;
+
+    if (numberSide) {
+        numberSide->initVars(compiler, scope, returnMode);
+    }
 }
 
-shared_ptr<CType> NMathAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
-    auto ctype = cvar->getType(compiler, result);
-    if (ctype != compiler->typeInt) {
-        result.addError(loc, CErrorCode::TypeMismatch, "operation only valid on int");
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+    if (!leftVar) {
+        compiler->addError(loc, CErrorCode::InvalidVariable, "left side is empty");
         return nullptr;
     }
-    return ctype;
-}
 
-int NMathAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = var->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, false);
-    if (rightSide) {
-        count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    }
-    return count;
-}
-
-shared_ptr<ReturnValue> NMathAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto cvar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
-    if (!cvar) {
+    auto leftType = leftVar->getType(compiler);
+    if (!leftType) {
+        compiler->addError(loc, CErrorCode::InvalidType, "left type is empty");
         return nullptr;
     }
-    
-    if (!cvar->isMutable) {
-        result.addError(loc, CErrorCode::ImmutableAssignment, "invalid on immutable variable");
-        return nullptr;
+
+    // Check to see if we have operator overloading
+    shared_ptr<CVar> rightVar;
+    if (!leftType->parent.expired()) {
+        string rightTypeName;
+        if (numberSide) {
+            auto numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+            auto numberType = numberVar->getType(compiler);
+            if (!CType::isSameExceptMode(leftType, numberType)) {
+                rightTypeName = numberType->valueName;
+            }
+        }
+
+        shared_ptr<NDot> operatorOverloadNode;
+        switch (op) {
+        case NMathAssignmentOp::NMAO_Inc:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "increment", nullptr, nullptr));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        case NMathAssignmentOp::NMAO_Dec:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "decrement", nullptr, nullptr));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        case NMathAssignmentOp::NMAO_Add:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        case NMathAssignmentOp::NMAO_Sub:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        case NMathAssignmentOp::NMAO_Mul:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        case NMathAssignmentOp::NMAO_Div:
+            operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            break;
+        default:
+            assert(false);
+            break;
+        }
     }
-    
-    auto leftValue = cvar->getLoadValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB, RRT_Auto);
-    
-    // Compute value
-    shared_ptr<ReturnValue> rightValue = nullptr;
-    if (rightSide) {
-        rightValue = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
+    else {
+        shared_ptr<CVar> numberVar;
+        if (numberSide) {
+            numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+            if (!numberVar) {
+                return nullptr;
+            }
+            
+            auto numberType = numberVar->getType(compiler);
+            if (!numberType) {
+                return nullptr;
+            }
+            
+            if (leftType != numberType) {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), numberType->fullName.c_str());
+                return nullptr;
+            }
+        } else {
+            numberVar = make_shared<CConstantVar>(loc, scope, leftType, "1");
+        }
+        
+        NMathOp mathOp;
+        switch (op) {
+            case NMathAssignmentOp::NMAO_Inc:
+                mathOp = NMathOp::Add;
+                break;
+            case NMathAssignmentOp::NMAO_Dec:
+                mathOp = NMathOp::Sub;
+                break;
+            case NMathAssignmentOp::NMAO_Add:
+                mathOp = NMathOp::Add;
+                break;
+            case NMathAssignmentOp::NMAO_Sub:
+                mathOp = NMathOp::Sub;
+                break;
+            case NMathAssignmentOp::NMAO_Mul:
+                mathOp = NMathOp::Mul;
+                break;
+            case NMathAssignmentOp::NMAO_Div:
+                mathOp = NMathOp::Div;
+                break;
+            default:
+                assert(false);
+                break;
+        }
+        
+        rightVar = make_shared<CMathVar>(loc, scope, mathOp, leftVar, numberVar);
     }
 
-    Value* resultValue = nullptr;
-    switch (op) {
-        case NMAO_Add:
-            if (!rightValue) {
-                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
-                return nullptr;
-            }
-            
-            if (!rightValue->value->getType()->isIntegerTy(64)) {
-                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
-                return nullptr;
-            }
-            
-            resultValue = builder->CreateAdd(leftValue->value, rightValue->value);
-            break;
-        case NMAO_Sub:
-            if (!rightValue) {
-                result.addError(loc, CErrorCode::ExpressionEmpty, "add by an empty value");
-                return nullptr;
-            }
-            
-            if (!rightValue->value->getType()->isIntegerTy(64)) {
-                result.addError(loc, CErrorCode::TypeMismatch, "can only add by int");
-                return nullptr;
-            }
-            
-            resultValue = builder->CreateSub(leftValue->value, rightValue->value);
-            break;
-        case NMAO_Inc:
-            resultValue = builder->CreateAdd(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
-            break;
-        case NMAO_Dec:
-            resultValue = builder->CreateSub(leftValue->value, ConstantInt::get(compiler->context, APInt(64, 1)));
-            break;
+    auto leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+    if (!leftStoreVar) {
+        assert(false);
     }
-    
-    leftValue->releaseIfNeeded(compiler, result, builder);
-    if (rightValue) {
-        rightValue->releaseIfNeeded(compiler, result, builder);
-    }
-
-    // Store value
-    Value* destValue = cvar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
-    builder->CreateStore(resultValue, destValue);
-    return make_shared<ReturnValue>(false, resultValue);
-}
-
-void NMathAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    var->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    
-    switch (op) {
-        case NMAO_Add:
-            ss << " += ";
-            break;
-        case NMAO_Sub:
-            ss << " -= ";
-            break;
-        case NMAO_Inc:
-            ss << "++";
-            break;
-        case NMAO_Dec:
-            ss << "--";
-            break;
-    }
-    
-    if (rightSide) {
-        rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    }
+    return make_shared<CAssignVar>(loc, scope, AssignOp::mutableUpdate, leftStoreVar, rightVar);
 }

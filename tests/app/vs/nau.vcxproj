@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{E6E02553-F3BE-4AD4-AB26-C11084E35ED5}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ConsoleApplication1</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>c:\src\sj;C:\src\zlib-1.2.3\include;C:\src\libpng-1.6.34;$(VC_IncludePath);$(WindowsSDK_IncludePath);c:\src\sdl\include;c:\src\sdl2_ttf\include;C:\src\SDL2_image-2.0.2\include</IncludePath>
+    <LibraryPath>C:\src\libpng-1.6.34\projects\vstudio\Debug;C:\src\freetype-2.8.1\objs\vc2010\Win32;C:\src\glew-2.1.0\lib\Release\Win32;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;c:\src\sdl\lib;c:\src\sdl2_ttf\lib\x86;C:\src\SDL2_image-2.0.2\lib\x86</LibraryPath>
+    <CustomBuildBeforeTargets>BuildGenerateSources</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>c:\src\glew-2.1.0\include;C:\src\freetype-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libpng16.lib;freetype281d.lib;sdl2.lib;sdl2main.lib;sdl2_ttf.lib;SDL2_Image.lib;glew32s.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuild>
+      <Command>C:\src\sj\sjc.exe %(FullPath)</Command>
+      <Outputs>c:\src\sj\tests\app\main.c</Outputs>
+      <Message>SJC</Message>
+    </CustomBuild>
+    <CustomBuildStep>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\nau.sj --vs-errors</Command>
+      <Message>SJC build step</Message>
+      <Outputs>c:\src\sj\tests\app\main.c</Outputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\src\sj\tests\app\nau.sj">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\nau\fieldController.sj" />
+    <None Include="..\nau\menuController.sj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c" />
+    <ClCompile Include="..\lib\ui\obj_parser.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\common\array.sj" />
+    <None Include="..\lib\common\bool.sj" />
+    <None Include="..\lib\common\common.sj" />
+    <None Include="..\lib\common\console.sj" />
+    <None Include="..\lib\common\debug.sj" />
+    <None Include="..\lib\common\f32.sj" />
+    <None Include="..\lib\common\halt.sj" />
+    <None Include="..\lib\common\hash.sj" />
+    <None Include="..\lib\common\i32.sj" />
+    <None Include="..\lib\common\list.sj" />
+    <None Include="..\lib\common\string.sj" />
+    <None Include="..\lib\common\tuple.sj" />
+    <None Include="..\lib\common\weakptr.sj" />
+    <None Include="..\lib\ui\animation.sj" />
+    <None Include="..\lib\ui\blurEffect.sj" />
+    <None Include="..\lib\ui\borderLayout.sj" />
+    <None Include="..\lib\ui\boxElement.sj" />
+    <None Include="..\lib\ui\boxRenderer.sj" />
+    <None Include="..\lib\ui\boxVertexBuffer.sj" />
+    <None Include="..\lib\ui\buttonElement.sj" />
+    <None Include="..\lib\ui\centerLayout.sj" />
+    <None Include="..\lib\ui\clickGesture.sj" />
+    <None Include="..\lib\ui\color.sj" />
+    <None Include="..\lib\ui\crossFadeElement.sj" />
+    <None Include="..\lib\ui\crossHairsElement.sj" />
+    <None Include="..\lib\ui\distanceField.sj" />
+    <None Include="..\lib\ui\edtaa3func.sj" />
+    <None Include="..\lib\ui\effect.sj" />
+    <None Include="..\lib\ui\element.sj" />
+    <None Include="..\lib\ui\fadeEffect.sj" />
+    <None Include="..\lib\ui\fillLayout.sj" />
+    <None Include="..\lib\ui\flowLayout.sj" />
+    <None Include="..\lib\ui\font.sj" />
+    <None Include="..\lib\ui\framebuffer.sj" />
+    <None Include="..\lib\ui\gl.sj" />
+    <None Include="..\lib\ui\gridLayout.sj" />
+    <None Include="..\lib\ui\image.sj" />
+    <None Include="..\lib\ui\imageElement.sj" />
+    <None Include="..\lib\ui\imageRenderer.sj" />
+    <None Include="..\lib\ui\init.sj" />
+    <None Include="..\lib\ui\listLayout.sj" />
+    <None Include="..\lib\ui\loop.sj" />
+    <None Include="..\lib\ui\margin.sj" />
+    <None Include="..\lib\ui\mat4.sj" />
+    <None Include="..\lib\ui\model.sj" />
+    <None Include="..\lib\ui\mouse.sj" />
+    <None Include="..\lib\ui\panel3d.sj" />
+    <None Include="..\lib\ui\point.sj" />
+    <None Include="..\lib\ui\property.sj" />
+    <None Include="..\lib\ui\rect.sj" />
+    <None Include="..\lib\ui\renderbuffer.sj" />
+    <None Include="..\lib\ui\saturateEffect.sj" />
+    <None Include="..\lib\ui\scene2d.sj" />
+    <None Include="..\lib\ui\scene2dModel.sj" />
+    <None Include="..\lib\ui\scene3dElement.sj" />
+    <None Include="..\lib\ui\scenebuffer.sj" />
+    <None Include="..\lib\ui\shader.sj" />
+    <None Include="..\lib\ui\size.sj" />
+    <None Include="..\lib\ui\style.sj" />
+    <None Include="..\lib\ui\textElement.sj" />
+    <None Include="..\lib\ui\textRenderer.sj" />
+    <None Include="..\lib\ui\texture.sj" />
+    <None Include="..\lib\ui\textureAtlas.sj" />
+    <None Include="..\lib\ui\textureFont.sj" />
+    <None Include="..\lib\ui\ui.sj" />
+    <None Include="..\lib\ui\utf8.sj" />
+    <None Include="..\lib\ui\vec2.sj" />
+    <None Include="..\lib\ui\vec3.sj" />
+    <None Include="..\lib\ui\vec4.sj" />
+    <None Include="..\lib\ui\vector.sj" />
+    <None Include="..\lib\ui\vectorAttribute.sj" />
+    <None Include="..\lib\ui\vertexBuffer.sj" />
+    <None Include="..\lib\ui\vertexBufferBuilders.sj" />
+    <None Include="..\lib\ui\windowRenderer.sj" />
+    <None Include="..\nau\fieldScene.sj" />
+    <None Include="..\nau\init.sj" />
+    <None Include="..\nau\leafPanel.sj" />
+    <None Include="..\nau\mainPanel.sj" />
+    <None Include="..\nau\menuScene.sj" />
+    <None Include="..\nau\nauScene3dElement.sj" />
+    <None Include="..\nau\peoplePanel.sj" />
+    <None Include="..\nau\personElement.sj" />
+    <None Include="..\shaders\blur-horizontal.frag" />
+    <None Include="..\shaders\blur-vertical.frag" />
+    <None Include="..\shaders\cube.frag" />
+    <None Include="..\shaders\cube.vert" />
+    <None Include="..\shaders\distance-field-2.frag" />
+    <None Include="..\shaders\distance-field.frag" />
+    <None Include="..\shaders\distance-field.vert" />
+    <None Include="..\shaders\fade.frag" />
+    <None Include="..\shaders\saturate.frag" />
+    <None Include="..\shaders\text.frag" />
+    <None Include="..\shaders\text.vert" />
+    <None Include="..\shaders\v3f-c4f.frag" />
+    <None Include="..\shaders\v3f-c4f.vert" />
+    <None Include="..\shaders\v3f-n3f-phong.frag" />
+    <None Include="..\shaders\v3f-n3f-phong.vert" />
+    <None Include="..\shaders\v3f-n3f.frag" />
+    <None Include="..\shaders\v3f-n3f.vert" />
+    <None Include="..\shaders\v3f-t2f-c4f.frag" />
+    <None Include="..\shaders\v3f-t2f-c4f.vert" />
+    <None Include="..\shaders\v3f-t2f-n3f-phong.frag" />
+    <None Include="..\shaders\v3f-t2f-n3f-phong.vert" />
+    <None Include="..\shaders\v3f-t2f.frag" />
+    <None Include="..\shaders\v3f-t2f.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\lib\common\khash.h" />
+    <ClInclude Include="..\lib\common\value_option_types.h" />
+    <ClInclude Include="..\lib\ui\obj_parser.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

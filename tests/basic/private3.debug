@@ -1,0 +1,25 @@
+class(x'i32:, _y'i32:)'stack class {
+  this
+}
+
+class__func()'i32 {
+  parent.x
+}
+
+class_foo()'i32 {
+  class__func(
+    parent: this
+  ) + parent._y
+}
+
+global()'void {
+  c'stack class : class(this = class(
+    x'i32 : x,
+    _y'i32 : _y
+  ))
+  a'i32 : class_foo(
+    parent: this
+  )
+  void
+}
+

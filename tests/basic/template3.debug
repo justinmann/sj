@@ -1,0 +1,14 @@
+class![bool, f32]()'i32 {
+  1i
+}
+
+class![i32, bool]()'i32 {
+  1i
+}
+
+global()'void {
+  a'i32 : class![i32, bool]()
+  c'i32 : class![bool, f32]()
+  void
+}
+

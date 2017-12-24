@@ -1,0 +1,11 @@
+func(x'i32:)'i32 {
+  x
+}
+
+global()'void {
+  func(
+    x'i32 : x
+  )
+  void
+}
+

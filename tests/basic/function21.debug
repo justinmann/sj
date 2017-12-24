@@ -1,0 +1,15 @@
+func()'i32 {
+  func_bar(
+    parent: this
+  )
+}
+
+func_bar()'i32 {
+  9i
+}
+
+global()'void {
+  func(this = func())
+  void
+}
+

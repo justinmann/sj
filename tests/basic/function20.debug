@@ -1,0 +1,13 @@
+bar()'i32 {
+  9i
+}
+
+func()'i32 {
+  bar()
+}
+
+global()'void {
+  func()
+  void
+}
+

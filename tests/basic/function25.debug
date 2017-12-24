@@ -1,0 +1,9 @@
+func()'heap func {
+  this
+}
+
+global()'void {
+  a'stack func : stack func(this = func())
+  void
+}
+

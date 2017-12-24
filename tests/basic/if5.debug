@@ -1,0 +1,21 @@
+global()'void {
+  if false {
+    1i
+  } else if false {
+    2i
+  } else if false {
+    2i
+  } else if false {
+    2i
+  } else if false {
+    2i
+  } else if false {
+    2i
+  } else if false {
+    2i
+  } else {
+    3i
+  }
+  void
+}
+

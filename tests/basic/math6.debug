@@ -1,0 +1,5 @@
+global()'void {
+  -4i + 5i
+  void
+}
+

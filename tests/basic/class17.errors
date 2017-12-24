@@ -1,0 +1,2 @@
+class17.sj(3,1): error SJC0004: function argument 'x' cannot be local type
+class17.sj(3,1): error SJC0004: var 'x' is local which is not allowed

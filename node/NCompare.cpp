@@ -1,97 +1,73 @@
 #include "Node.h"
 
-void NCompare::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
-    assert(compiler->state == CompilerState::Define);
-    leftSide->define(compiler, result, thisFunction);
-    rightSide->define(compiler, result, thisFunction);
+bool CCompareVar::getReturnThis() {
+    return false;
 }
 
-shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
-    leftSide->getVar(compiler, result, thisFunction, thisVar);
-    rightSide->getVar(compiler, result, thisFunction, thisVar);
-    return nullptr;
-}
-
-shared_ptr<CType> NCompare::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
+shared_ptr<CType> CCompareVar::getType(Compiler* compiler) {
     return compiler->typeBool;
 }
 
-int NCompare::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = leftSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, false);
-    return count;
+void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    auto varType = leftVar->getType(compiler);
+    if (!varType->parent.expired() && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        varType = varType->getLocalType();
+    }
+    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
+    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
+    leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
+
+    stringstream line;
+    line << leftValue->getName(trBlock);
+    if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        line << "._parent";
+    }
+    switch (op) {
+    case NCompareOp::EQ:
+    case NCompareOp::PEQ:
+        line << " == ";
+        break;
+    case NCompareOp::NE:
+    case NCompareOp::PNE:
+        line << " != ";
+        break;
+    case NCompareOp::LT:
+        line << " < ";
+        break;
+    case NCompareOp::LE:
+        line << " <= ";
+        break;
+    case NCompareOp::GT:
+        line << " > ";
+        break;
+    case NCompareOp::GE:
+        line << " >= ";
+        break;
+    }
+    line << rightValue->getName(trBlock);
+    if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
+        line << "._parent";
+    }
+
+    auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-shared_ptr<ReturnValue> NCompare::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    auto L = leftSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    auto R = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    if (!L || !R)
-        return nullptr;
-    
-    assert(L->type == RVT_SIMPLE);
-    assert(R->type == RVT_SIMPLE);
-    
-    if (L->value->getType() != R->value->getType()) {
-        result.addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", Type_print(L->value->getType()).c_str(), Type_print(R->value->getType()).c_str());
-        return nullptr;
-    }
-    
-    if ((L->value->getType()->isIntegerTy(64) || L->value->getType()->isIntegerTy(8)) && L->value->getType()->getScalarSizeInBits() == R->value->getType()->getScalarSizeInBits()) {
-        switch (op) {
-            case NCompareOp::EQ:
-                return make_shared<ReturnValue>(false, builder->CreateICmpEQ(L->value, R->value, "eqtmp"));
-            case NCompareOp::NE:
-                return make_shared<ReturnValue>(false, builder->CreateICmpNE(L->value, R->value, "netmp"));
-            case NCompareOp::LT:
-                return make_shared<ReturnValue>(false, builder->CreateICmpSLT(L->value, R->value, "lttmp"));
-            case NCompareOp::LE:
-                return make_shared<ReturnValue>(false, builder->CreateICmpSLE(L->value, R->value, "letmp"));
-            case NCompareOp::GT:
-                return make_shared<ReturnValue>(false, builder->CreateICmpSGT(L->value, R->value, "gttmp"));
-            case NCompareOp::GE:
-                return make_shared<ReturnValue>(false, builder->CreateICmpSGE(L->value, R->value, "getmp"));
-            default:
-                result.addError(loc, CErrorCode::Internal, "unknown comparison type");
-                return nullptr;
-        }
-    } else if (L->value->getType()->isDoubleTy()) {
-        switch (op) {
-            case NCompareOp::EQ:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpOEQ(L->value, R->value, "eqtmp"));
-            case NCompareOp::NE:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpONE(L->value, R->value, "netmp"));
-            case NCompareOp::LT:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpOLT(L->value, R->value, "lttmp"));
-            case NCompareOp::LE:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpOLE(L->value, R->value, "letmp"));
-            case NCompareOp::GT:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpOGT(L->value, R->value, "gttmp"));
-            case NCompareOp::GE:
-                return make_shared<ReturnValue>(false, builder->CreateFCmpOGE(L->value, R->value, "getmp"));
-            default:
-                result.addError(loc, CErrorCode::Internal, "unknown comparison type");
-                return nullptr;
-        }
-    } else {
-        result.addError(loc, CErrorCode::InvalidType, "comparison is not supported on this type");
-    }
-    
-    return nullptr;
-}
-
-void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    leftSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+void CCompareVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    leftVar->dump(compiler, functions, ss, level);
     switch (op) {
         case NCompareOp::EQ:
             ss << " == ";
             break;
+        case NCompareOp::PEQ:
+            ss << " === ";
+            break;
         case NCompareOp::NE:
             ss << " != ";
+            break;
+        case NCompareOp::PNE:
+            ss << " !== ";
             break;
         case NCompareOp::LT:
             ss << " < ";
@@ -106,5 +82,71 @@ void NCompare::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctio
             ss << " >= ";
             break;
     }
-    rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
+    rightVar->dump(compiler, functions, ss, level);
+}
+
+void NCompare::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+    leftSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+}
+
+void NCompare::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    leftSide->initVars(compiler, scope, returnMode);
+    rightSide->initVars(compiler, scope, returnMode);
+}
+
+shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, CTM_Undefined);
+    auto rightVar = rightSide->getVar(compiler, scope, CTM_Undefined);
+    
+    if (!leftVar || !rightVar) {
+        return nullptr;
+    }
+    
+    auto leftType = leftVar->getType(compiler);
+    auto rightType = rightVar->getType(compiler);
+    if (!leftType || !rightType) {
+        return nullptr;
+    }
+
+    if (!CType::isSameExceptMode(leftType, rightType)) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s'", leftType->fullName.c_str(), rightType->fullName.c_str());
+        return nullptr;
+    }
+
+    // Check to see if we have operator overloading
+    if (!leftType->parent.expired() && op != NCompareOp::PEQ && op != NCompareOp::PNE) {
+        auto leftNVar = make_shared<NVariableStub>(leftSide);
+        switch (op) {
+            case NCompareOp::EQ:
+                operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            case NCompareOp::NE:
+                operatorOverloadNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))), true);
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            case NCompareOp::LT:
+                operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isLess", nullptr, make_shared<NodeList>(rightSide)));
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            case NCompareOp::LE:
+                operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isLessOrEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            case NCompareOp::GT:
+                operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isGreater", nullptr, make_shared<NodeList>(rightSide)));
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            case NCompareOp::GE:
+                operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
+                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                break;
+            default:
+                assert(false);
+                return nullptr; // These operator cannot be overriden, this is reserved for pointer comparison
+        }
+    }
+    
+    return make_shared<CCompareVar>(loc, scope, op, leftVar, rightVar);
 }

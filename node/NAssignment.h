@@ -12,10 +12,29 @@
 #include "NBase.h"
 #include "NVariable.h"
 
+class CCallVar;
+
+class CAssignVar : public CVar {
+public:
+    CAssignVar(CLoc loc, shared_ptr<CScope> scope, AssignOp op,shared_ptr<CStoreVar> leftVar, shared_ptr<CVar> rightVar) : CVar(loc, scope, "INVALID", "INVALID", op.isMutable), op(op), leftVar(leftVar), rightVar(rightVar) { }
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    
+private:
+    AssignOp op;
+    shared_ptr<CStoreVar> leftVar;
+    shared_ptr<CVar> rightVar;
+};
+
 class NAssignment : public NBase {
 public:
-    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, bool isMutable);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide, AssignOp op);
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    shared_ptr<CType> getType(Compiler* compiler, shared_ptr<CScope> scope, CVarType varType, CTypeMode returnMode);
     
     shared_ptr<NVariableBase> var;
     shared_ptr<CTypeName> typeName;
@@ -23,19 +42,14 @@ public:
     bool inFunctionDeclaration;
     shared_ptr<NBase> rightSide;
     shared_ptr<NFunction> nfunction;
-    bool isMutable;
-
-protected:
-    virtual void defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction);
-    virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
-    virtual shared_ptr<CType> getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar);
-    virtual int setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar);
-    virtual shared_ptr<ReturnValue> compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
+    AssignOp op;
 
 private:
     bool _isFirstAssignment;
     shared_ptr<CVar> _assignVar;
     shared_ptr<NAssignment> shared_from_this();
+    shared_ptr<CCallVar> _callVar;
+    vector<string> packageNamespace;
 };
 
 #endif /* NAssignment_h */

@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Node">
+      <UniqueIdentifier>{39f2df17-dfb8-4a16-9b12-93877491c5d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Compiler">
+      <UniqueIdentifier>{fe69b69c-418a-4fa6-9800-948b3d7085d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{95ed43c8-bb5f-48b8-9ebc-a3b697340b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transpile">
+      <UniqueIdentifier>{f4fa1fbd-4468-4f50-ae86-5eb40757c57d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NAnd.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NArray.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NAssignment.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NBase.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NBaseFunction.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NBlock.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NBool.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NCall.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NCast.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NChar.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NCompare.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NDot.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NDouble.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NFor.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIf.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NInclude.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NInteger.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NInterface.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NInterfaceMethod.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NMath.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NMathAssignment.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NNot.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\Node.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NOr.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NString.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NThis.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NThrow.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NVariable.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NVoid.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NWhile.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compiler\Compiler.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compiler\CType.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compiler\CTypeName.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compiler\CVar.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compiler\Exception.h">
+      <Filter>Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\parser\parser.hpp">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrOutput.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrVariable.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrBlock.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\transpile\TrStatement.h">
+      <Filter>Transpile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NCCode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NTupleAssignment.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NTuple.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NEmpty.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NOptionDot.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NGetValue.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NValue.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NGetOrElse.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NParent.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NFunction.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NChangeMode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\CCallback.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NNegate.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NCopy.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NEnum.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NPackage.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NImport.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NNullPtr.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NSwitch.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NUnderscore.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NHash.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIfValid.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\node\NIsEmptyOrValid.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\node\NAnd.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NArray.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NAssignment.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NBase.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NBaseFunction.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NBlock.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NBool.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCall.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCast.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NChar.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCompare.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NDot.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NDouble.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NFor.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NFunction.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIf.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NInclude.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NInteger.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NInterface.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NInterfaceMethod.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NMath.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NMathAssignment.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NNot.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NOr.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NString.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NThis.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NThrow.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NVariable.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NVoid.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NWhile.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compiler\Compiler.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compiler\CType.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compiler\CTypeName.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compiler\CVar.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compiler\Exception.cpp">
+      <Filter>Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parser\parser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\parser\tokens.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrOutput.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrVariable.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrBlock.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\transpile\TrStatement.cpp">
+      <Filter>Transpile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCCode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NTupleAssignment.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NTuple.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NEmpty.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NOptionDot.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NGetValue.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NValue.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NGetOrElse.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NParent.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NChangeMode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\CCallback.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NNegate.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NCopy.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NEnum.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NPackage.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NImport.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NNullPtr.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NSwitch.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NUnderscore.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NHash.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIfValid.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NIsEmptyOrValid.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\sj.pch">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

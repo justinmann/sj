@@ -1,0 +1,14 @@
+class![f32, stack func]()'i32 {
+  1i
+}
+
+class![stack func, i32]()'i32 {
+  1i
+}
+
+global()'void {
+  b'i32 : class![f32, stack func]()
+  d'i32 : class![stack func, i32]()
+  void
+}
+

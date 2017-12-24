@@ -1,0 +1,6 @@
+global()'void {
+  a'i32 = 0i
+  a'i32 = a + 1i
+  void
+}
+

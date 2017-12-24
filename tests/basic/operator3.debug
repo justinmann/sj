@@ -1,0 +1,20 @@
+
+
+i32_add#foo(x'i32:, y'local #foo:)'i32 {
+  x + getx(
+    parent: this
+  )
+}
+
+global()'void {
+  a'i32 : i32_add#foo(
+    x'i32 : x,
+    y'local #foo : y
+  )
+  b'i32 : i32_add#foo(
+    x'i32 : x,
+    y'local #foo : y
+  )
+  void
+}
+

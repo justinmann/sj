@@ -1,0 +1,5 @@
+global()'void {
+  4.0d + 5.0d
+  void
+}
+

@@ -1,0 +1,12 @@
+foo(x'i32:)'stack foo {
+  this
+}
+
+global()'void {
+  f'stack foo : foo(this = foo(
+    x'i32 : x
+  ))
+  a'i32 : -f.x
+  void
+}
+

@@ -1,26 +1,20 @@
 #include "Node.h"
+#include <boost/filesystem.hpp>
 
-void NInclude::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+namespace fs = boost::filesystem;
+
+void NInclude::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (thisFunction->name != "global") {
-        result.addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
+        compiler->addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use include in the global scope");
     }
     
-    compiler->includeFile(result, fileName);
+    auto path = (fs::path(loc.fullFileName).remove_filename() / fs::path(fileName)).lexically_normal();
+    compiler->includeFile(path.string());
 }
 
-shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
+void NInclude::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+}
+
+shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     return nullptr;
 }
-
-shared_ptr<CType> NInclude::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    return compiler->typeVoid;
-}
-
-shared_ptr<ReturnValue> NInclude::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    return nullptr;
-}
-
-void NInclude::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-}
-

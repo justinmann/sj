@@ -1,0 +1,18 @@
+class(x'i32:)'stack class {
+  this
+}
+
+class_func()'i32 {
+  parent.x
+}
+
+global()'void {
+  c'stack class : class(this = class(
+    x'i32 : x
+  ))
+  class_func(
+    parent: this
+  )
+  void
+}
+

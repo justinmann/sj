@@ -1,0 +1,15 @@
+class(x'i32:)'stack class {
+  this
+}
+
+func()'stack class {
+  class(this = class(
+    x'i32 : x
+  ))
+}
+
+global()'void {
+  func().x
+  void
+}
+

@@ -1,0 +1,16 @@
+class()'stack class {
+  this
+}
+
+func()'stack class {
+  a'stack class = copy class(this = class())
+  a'stack class = copy class(this = class())
+  copy a
+}
+
+global()'void {
+  b'stack class : func()
+  void
+  void
+}
+

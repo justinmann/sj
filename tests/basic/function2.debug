@@ -1,0 +1,9 @@
+func()'i32 {
+  1i
+}
+
+global()'void {
+  func()
+  void
+}
+

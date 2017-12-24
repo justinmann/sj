@@ -1,0 +1,7 @@
+global()'void {
+  y'i32 : 1i
+  x'i32 = 2i
+  x + y
+  void
+}
+

@@ -1,0 +1,15 @@
+foo()'heap foo {
+  this
+}
+
+global()'void {
+  heap_y'heap foo : foo(this = foo())
+  stack_y'stack foo : foo(this = foo())
+  local_y'local foo : foo(this = foo())
+  heap_x2'heap foo : stack_y
+  heap_x3'heap foo : local_y
+  stack_x2'stack foo : heap_y
+  stack_x4'stack foo : local_y
+  void
+}
+

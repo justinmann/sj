@@ -1,0 +1,5 @@
+global()'void {
+  x'f32 : 5i as f32
+  void
+}
+

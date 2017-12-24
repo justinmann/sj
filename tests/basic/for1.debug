@@ -1,0 +1,6 @@
+global()'void {
+  for x : 1i to 10i {
+  }
+  void
+}
+

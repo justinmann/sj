@@ -12,7 +12,7 @@
 #include "../sj.pch"
 
 // #define YYDEBUG 1
-#define DWARF_ENABLED
+// #define DWARF_ENABLED
 // #define VAR_OUTPUT
 // #define NODE_OUTPUT
 // #define MODULE_OUTPUT
@@ -22,33 +22,38 @@
 // #define EXCEPTION_OUTPUT
 // #define DEBUG_CALLSTACK
 // #define DEBUG_ALLOC
+#define YY_NO_UNISTD_H
 
-using namespace llvm;
 using namespace std;
+namespace fs = boost::filesystem;
 
 class CLoc {
 public:
-    shared_ptr<string> fileName;
+    string fullFileName;
+    string shortFileName;
     unsigned line;
     unsigned col;
     
-    CLoc() : fileName(nullptr), line(0), col(0) {}
-    CLoc(shared_ptr<string> fileName, const unsigned line, const unsigned col) : fileName(fileName), line(line), col(col) {}
+    CLoc() : fullFileName(""), shortFileName(""), line(0), col(0) {}
+    CLoc(string fullFileName, string shortFileName, const unsigned line, const unsigned col) : fullFileName(fullFileName), shortFileName(shortFileName), line(line), col(col) {}
     static CLoc undefined;
 };
 
 #include "CType.h"
 #include "CTypeName.h"
+#include "../transpile/TrOutput.h"
 #include "CVar.h"
-#include "CArrayType.h"
 #include "Exception.h"
-
-#pragma clang diagnostic ignored "-Wformat-security"
 
 #define STACK_REF_COUNT         1000000000000
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wformat-security"
+#endif
+
 template< typename... Args >
 std::string strprintf( const char* format, Args... args ) {
+
     int length = std::snprintf( nullptr, 0, format, args... );
     assert( length >= 0 );
     
@@ -60,26 +65,12 @@ std::string strprintf( const char* format, Args... args ) {
     return str;
 }
 
-Function* getFunctionFromBuilder(IRBuilder<>* builder);
-
-std::string Type_print(Type* type);
-
 class NFunction;
-class KaleidoscopeJIT;
 class NBlock;
 class NBase;
 class NAssignment;
 class CInterfaceDefinition;
-
-enum CResultType {
-    RESULT_ERROR,
-    RESULT_VOID,
-    RESULT_INT,
-    RESULT_BOOL,
-    RESULT_CHAR,
-    RESULT_FLOAT,
-    RESULT_STR
-};
+class CFunctionDefinition;
 
 enum CErrorCode {
     Internal,
@@ -113,64 +104,32 @@ enum CErrorCode {
     InterfaceDoesNotExist,
     InterfaceMethodDoesNotExist,
     InterfaceMethodTypeMismatch,
-    InterfaceMethodConflict
+    InterfaceMethodConflict,
+    InvalidMacro
 };
 
 class CError {
 public:
-    const CErrorCode code;
-    shared_ptr<string> fileName;
-    const unsigned line;
-    const unsigned col;
-    const string msg;
+    CErrorCode code;
+    string fileName;
+    unsigned line;
+    unsigned col;
+    string msg;
     
-    CError(const CLoc& loc, const CErrorCode code): fileName(loc.fileName), line(loc.line), col(loc.col), code(code) { }
-    CError(const CLoc& loc, const CErrorCode code, const string& msg): fileName(loc.fileName), line(loc.line), col(loc.col), code(code), msg(msg) { }
-};
-
-class CResult {
-public:
-    CResultType type;
-    union {
-        int64_t iResult;
-        bool bResult;
-        double fResult;
-        char cResult;
-    };
-    string strResult;
-    
-    vector<CError> errors;
-    vector<CError> warnings;
-    shared_ptr<string> fileName;
-    shared_ptr<NBlock> block;
-    shared_ptr<CType> returnType;
-    
-    template< typename... Args >
-    void addError(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
-        string str = strprintf(format, args...);
-#ifdef ERROR_OUTPUT
-        printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
-#endif
-        errors.push_back(CError(loc, code, str));
-#ifdef ASSERT_ON_ERROR
-        assert(false);
-#endif
-    }
-
-    template< typename... Args >
-    void addWarning(const CLoc& loc, const CErrorCode code, const char* format, Args... args) {
-        string str = strprintf(format, args...);
-        warnings.push_back(CError(loc, code, str));
-#ifdef ERROR_OUTPUT
-        printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
-#endif
-    }
+    void writeToStream(ostream& stream);
 };
 
 enum CompilerState {
     Define,
-    FixVar,
     Compile
+};
+
+class CParseFile {
+public:
+    Compiler* compiler;
+    string fullFileName;
+    string shortFileName;
+    shared_ptr<NBlock> block;
 };
 
 class SJException : public exception { };
@@ -178,64 +137,75 @@ class SJException : public exception { };
 class Compiler
 {
 public:
-    Compiler();
+    Compiler(bool outputLines, bool outputVSErrors);
+    bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
+    shared_ptr<CType> getType(const string& name, bool isOption) const;
+    void includeFile(const string& fileName);
 
-    shared_ptr<CResult> run(const string& code);
-    shared_ptr<CResult> compile(const string& fileName);
-    
-    void emitLocation(IRBuilder<>* builder, const CLoc *loc);
-    shared_ptr<CType> getType(const string& name) const;
-    void includeFile(CResult& result, const string& fileName);
-    shared_ptr<IRBuilder<>> getEntryBuilder(Function* function);
-    Function* getAllocFunction();
-    Function* getReallocFunction();
-    Function* getFreeFunction();
-    void callPushFunction(IRBuilder<>* builder, const string& name);
-    void callPopFunction(IRBuilder<>* builder);
-    void callDebug(IRBuilder<>* builder, const string& name, Value* valuePtr, Value* valueInt);
-    void recordRetain(IRBuilder<>* builder, Value* value, const string& name);
-    void recordRelease(IRBuilder<>* builder, Value* value, const string& name);
-    shared_ptr<CInterfaceDefinition> getInterfaceDefinition(string& name);
-
-    // llvm vars
-    CompilerState state;
-    LLVMContext context;
-    unique_ptr<Module> module;
-    unique_ptr<legacy::FunctionPassManager> TheFPM;
-    unique_ptr<Exception> exception;
-#ifdef DWARF_ENABLED
-    DICompileUnit *TheCU;
-    vector<DIScope *> LexicalBlocks;
-    unique_ptr<DIBuilder> DBuilder;
+    template< typename... Args >
+    void addError(CLoc loc, const CErrorCode code, const char* format, Args... args) {
+        string str = strprintf(format, args...);
+#ifdef ERROR_OUTPUT
+        printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
 #endif
+        errors[loc.fullFileName][loc.line][str].code = code;
+        errors[loc.fullFileName][loc.line][str].fileName = outputVSErrors ? fs::path(loc.fullFileName).string() : loc.shortFileName;
+        errors[loc.fullFileName][loc.line][str].line = loc.line;
+        errors[loc.fullFileName][loc.line][str].col = loc.col;
+        errors[loc.fullFileName][loc.line][str].msg = str;
+        
+#ifdef ASSERT_ON_ERROR
+        assert(false);
+#endif
+    }
     
-    shared_ptr<CType> typeInt;
-    shared_ptr<CType> typeFloat;
+    template< typename... Args >
+    void addWarning(CLoc loc, const CErrorCode code, const char* format, Args... args) {
+        string str = strprintf(format, args...);
+
+        warnings[loc.fullFileName][loc.line][str].code = code;
+        warnings[loc.fullFileName][loc.line][str].fileName = outputVSErrors ? fs::path(loc.fullFileName).string() : loc.shortFileName;
+        warnings[loc.fullFileName][loc.line][str].line = loc.line;
+        warnings[loc.fullFileName][loc.line][str].col = loc.col;
+        warnings[loc.fullFileName][loc.line][str].msg = str;
+
+#ifdef ERROR_OUTPUT
+        printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
+#endif
+    }
+    
+    bool outputLines;
+    bool outputVSErrors;
+    boost::filesystem::path rootPath;
+    CompilerState state;
+    map<string, map<unsigned, map<string, CError>>> errors;
+    map<string, map<unsigned, map<string, CError>>> warnings;
+    shared_ptr<CType> typeI32;
+    shared_ptr<CType> typeI64;
+    shared_ptr<CType> typeU32;
+    shared_ptr<CType> typeU64;
+    shared_ptr<CType> typePtr;
+    shared_ptr<CType> typeF32;
+    shared_ptr<CType> typeF64;
     shared_ptr<CType> typeBool;
     shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;
-    
+    map<string, shared_ptr<CTypes>> types;
+    map<vector<string>, bool> namespaces;
+
 private:
-    void reset();
-    shared_ptr<CResult> genNodeFile(const string& fileName);
-    shared_ptr<CResult> genNode(const string& fileName, const string& code);
-    shared_ptr<CFunction> nodeToIL(CResult& result);
+    shared_ptr<CParseFile> genNodeFile(const string& fileName);
+    shared_ptr<CParseFile> genNode(const string& fileName, const string& code);
     
     map<string, bool> includedBlockFileNames;
     vector<pair<string, shared_ptr<NBlock>>> includedBlocks;
-    map<string, GlobalValue*> functionNames;
-    map<Function*, shared_ptr<IRBuilder<>>> entryBuilders;
-    map<string, shared_ptr<CInterfaceDefinition>> interfaceDefinitions;
-    Function* allocFunction;
-    Function* reallocFunction;
-    Function* freeFunction;
-    Function* debugFunction;
-#ifdef DEBUG_CALLSTACK
-    Function* pushFunction;
-    Function* popFunction;
-    Function* recordRetainFunction;
-    Function* recordReleaseFunction;
-#endif
+
+    shared_ptr<NBlock> globalBlock;
+    vector<pair<string, vector<string>>> importNamespaces;
+    vector<string> packageNamespace;
+    shared_ptr<CFunctionDefinition> globalFunctionDefinition;
+    shared_ptr<NFunction> anonFunction;
+    shared_ptr<CFunctionDefinition> currentFunctionDefintion;
 };
 
 #endif /* Compiler_h */

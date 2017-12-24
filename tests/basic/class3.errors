@@ -1,0 +1,1 @@
+class3.sj(1,7): error SJC0008: cannot use '.' in variable declaration for a function: 'b'

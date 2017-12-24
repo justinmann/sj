@@ -1,0 +1,7 @@
+global()'void {
+  if false {
+    1i
+  }
+  void
+}
+

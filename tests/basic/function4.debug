@@ -1,0 +1,9 @@
+func()'f64 {
+  -3.0d
+}
+
+global()'void {
+  func() < 4.0d
+  void
+}
+

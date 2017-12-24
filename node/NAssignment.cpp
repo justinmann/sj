@@ -1,6 +1,48 @@
 #include "Node.h"
 
-NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, bool isMutable) : var(var), typeName(typeName), name(name), rightSide(rightSide_), isMutable(isMutable), inFunctionDeclaration(false), _isFirstAssignment(false), NBase(NodeType_Assignment, loc) {
+bool CAssignVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CAssignVar::getType(Compiler* compiler) {
+    return leftVar->getType(compiler);
+}
+
+void CAssignVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    assert(compiler->state == CompilerState::Compile);
+   
+    auto leftType = leftVar->getType(compiler);
+    auto leftStoreValue = leftVar->getStoreValue(compiler, scope.lock(), trOutput, trBlock, thisValue, op);
+    if (!leftStoreValue) {
+        return;
+    }
+
+    leftStoreValue->loc = loc;
+    rightVar->transpile(compiler, trOutput, trBlock, thisValue, leftStoreValue);
+    if (!leftStoreValue->hasSetValue) {
+        compiler->addError(loc, CErrorCode::TypeMismatch, "no return value");
+        return;
+    }
+    
+    storeValue->retainValue(compiler, loc, trBlock, leftStoreValue->getValue());
+}
+
+void CAssignVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+    auto type = getType(compiler);
+    leftVar->dump(compiler, functions, ss, level);
+    auto leftType = leftVar->getType(compiler);
+    ss << "'" << (leftType ? leftType->fullName.c_str() : "unknown");
+    ss << (isMutable ? " = " : " : ");
+    if (rightVar) {
+        rightVar->dump(compiler, functions, ss, level);
+    } else {
+        ss << "undefined";
+    }
+}
+
+NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTypeName> typeName, const char* name, shared_ptr<NBase> rightSide_, AssignOp op) : NBase(NodeType_Assignment, loc), var(var), typeName(typeName), name(name), inFunctionDeclaration(false), rightSide(rightSide_), op(op), _isFirstAssignment(false) {
+    boost::algorithm::to_lower(this->name);
+
     // If we are assigning a function to a var then we will call the function to get its value
     if (rightSide && rightSide->nodeType == NodeType_Function) {
         nfunction = static_pointer_cast<NFunction>(rightSide);
@@ -8,197 +50,287 @@ NAssignment::NAssignment(CLoc loc, shared_ptr<NVariableBase> var, shared_ptr<CTy
     }
 }
 
-void NAssignment::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+void NAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
     
+    this->packageNamespace = packageNamespace;
+
     if (var) {
-        var->define(compiler, result, thisFunction);
+        var->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (nfunction) {
-        nfunction->define(compiler, result, thisFunction);
+        nfunction->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
     
     if (rightSide) {
-        rightSide->define(compiler, result, thisFunction);
+        rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
     }
 }
 
-shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state == CompilerState::FixVar);
+void NAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    if (var) {
+        var->initVars(compiler, scope, returnMode);
+    }
 
+    if (nfunction) {
+        nfunction->initVars(compiler, scope, returnMode);
+    }
+
+    if (rightSide) {
+        rightSide->initVars(compiler, scope, returnMode);
+    }
+
+    if (!var && !inFunctionDeclaration && op.isFirstAssignment && typeName) {
+        auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+        if (leftVar) {
+            compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
+            return;
+        }
+
+        auto leftType = scope->getVarType(loc, compiler, typeName, CTM_Undefined);
+
+        string nameNS;
+        bool isFirst = true;
+        for (auto ns : packageNamespace) {
+            if (isFirst) {
+                isFirst = false;
+            }
+            else {
+                nameNS += "_";
+            }
+            nameNS += ns;
+        }
+        if (!isFirst) {
+            nameNS += "_";
+        }
+        nameNS += name;
+
+        if (name[0] == '_') {
+            compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
+            return;
+        }
+
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+        scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
+    }
+}
+
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     // function vars are not created here, this is only for local vars
-    if (!inFunctionDeclaration) {
-        // We need to see if var already exists, if not create a new local var
-        auto cfunction = thisFunction;
-        shared_ptr<CVar> parentVar = nullptr;
-        if (var) {
-            parentVar = var->getVar(compiler, result, thisFunction, thisVar, nullptr);
-            if (!parentVar) {
-                return nullptr;
-            }
-            cfunction = static_pointer_cast<CFunction>(parentVar->getCFunctionForValue(compiler, result));
-            if (!cfunction) {
-                result.addError(loc, CErrorCode::InvalidVariable, "var must be a function: '%s'", parentVar->fullName().c_str());
-                return nullptr;
-            }
+    if (inFunctionDeclaration) {
+        return nullptr;
+    }
+    
+    // We need to see if var already exists, if not create a new local var
+    auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
+    shared_ptr<CVar> parentVar = nullptr;
+    if (var) {
+        parentVar = var->getVar(compiler, scope, nullptr, returnMode);
+        if (!parentVar) {
+            return nullptr;
+        }
+
+        auto parentType = parentVar->getType(compiler);
+        cfunction = parentType->parent.lock();
+        if (!cfunction) {
+            compiler->addError(loc, CErrorCode::InvalidVariable, "var must be a function");
+            return nullptr;
+        }
+    }
+    
+    // Check for operator overload first
+    string setFunctionName = "set" + name;
+    auto setFunction = cfunction->getCFunction(compiler, loc, setFunctionName, scope, nullptr, returnMode);
+    if (parentVar && setFunction) {
+        if (returnMode != CTM_Heap) {
+            returnMode = CTM_Stack;
+        }
+
+        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, CallArgument::createList(rightSide->getVar(compiler, scope, CTM_Undefined)), false, nullptr, returnMode);
+        return CCallVar::create(compiler, loc, setFunctionName, parentVar, parameters, scope, setFunction, returnMode);
+    }
+    else {
+        if (!rightSide) {
+            compiler->addError(loc, CErrorCode::InvalidVariable, "assignment needs a right side");
+            return nullptr;
         }
         
-        _assignVar = cfunction->getCVar(compiler, result, name);
-        if (_assignVar) {
-            if (!isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
-                return nullptr;
-            } else if (!_assignVar->isMutable) {
-                result.addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var");
+        shared_ptr<CStoreVar> leftStoreVar;
+        if (var) {
+            auto dotVar = var->getVar(compiler, scope, nullptr, CTM_Undefined);
+            if (!dotVar) {
                 return nullptr;
             }
-        } else {
-            if (!var) {
-                auto fun = static_pointer_cast<CFunction>(cfunction);
-            
-                auto iter = fun->localVarsByName.find(name);
-                if (iter != fun->localVarsByName.end()) {
-                    result.addError(loc, CErrorCode::Internal, "the previous search on NVariable should find a local value with same name");
+
+            auto dotScope = CScope::getScopeForType(compiler, dotVar->getType(compiler));
+            auto leftVar = dotScope->getCVar(compiler, scope, dotVar, name, VSM_ThisOnly);
+            if (!leftVar) {
+                return nullptr;
+            }
+
+            if (!op.isMutable) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                return nullptr;
+            }
+            else if (!leftVar->isMutable) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                return nullptr;
+            }
+
+            if (op.isFirstAssignment) {
+                compiler->addError(loc, CErrorCode::ImmutableAssignment, "use '=' to assign value to class variables instead of ':' or ':='");
+                return nullptr;
+            }
+
+            leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+            if (!leftStoreVar) {
+                assert(false);
+            }
+        }
+        else {
+            if (op.isFirstAssignment) {
+                if (typeName) {
+                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                    if (!leftVar) {
+                        compiler->addError(loc, CErrorCode::Internal, "var '%s' should have been initialized already", name.c_str());
+                        return nullptr;
+                    }
+
+                    leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+                }
+                else {
+                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                    if (leftVar) {
+                        compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", name.c_str());
+                        return nullptr;
+                    }
+
+                    auto fun = static_pointer_cast<CFunction>(cfunction);
+
+                    auto leftType = getType(compiler, scope, CVarType::Var_Local, (op.typeMode == CTM_Undefined) ? returnMode : op.typeMode);
+                    if (!leftType) {
+                        return nullptr;
+                    }
+
+                    string nameNS;
+                    bool isFirst = true;
+                    for (auto ns : packageNamespace) {
+                        if (isFirst) {
+                            isFirst = false;
+                        }
+                        else {
+                            nameNS += "_";
+                        }
+                        nameNS += ns;
+                    }
+                    if (!isFirst) {
+                        nameNS += "_";
+                    }
+                    nameNS += name;
+
+                    if (name[0] == '_') {
+                        compiler->addError(loc, CErrorCode::InvalidType, "local var cannot be private '%s'", name.c_str());
+                        return nullptr;
+                    }
+
+                    leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+
+                    scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
+                }
+            }
+            else {
+                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                if (!leftVar) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' does not exist", name.c_str());
                     return nullptr;
                 }
-                _assignVar = CNormalVar::createLocalVar(loc, name, thisFunction, shared_from_this());
-                fun->localVarsByName[name] = _assignVar;
-                _isFirstAssignment = true;
+
+                leftStoreVar = dynamic_pointer_cast<CStoreVar>(leftVar);
+                if (!leftStoreVar) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "cannot assign to var '%s'", name.c_str());
+                    return nullptr;
+                }
+
+                if (!op.isMutable) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                    return nullptr;
+                }
+                else if (!leftStoreVar->getCanStoreValue()) {
+                    compiler->addError(loc, CErrorCode::ImmutableAssignment, "immutable assignment to existing var '%s'", name.c_str());
+                    return nullptr;
+                }
             }
         }
-        
-        if (var) {
-            _assignVar = CDotVar::create(parentVar, _assignVar);
+
+        auto leftType = leftStoreVar->getType(compiler);
+        if (!leftType) {
+            return nullptr;
         }
+
+        if (op.typeMode != CTM_Undefined && leftType->typeMode != op.typeMode) {
+            compiler->addError(loc, CErrorCode::Internal, "var '%s' was already defined as '%s' cannot convert to %s", name.c_str(), leftType->fullName.c_str(), op.typeMode == CTM_Heap ? "heap" : op.typeMode == CTM_Stack ? "stack" : "local");
+            return nullptr;
+        }
+
+        auto rightVar = rightSide->getVar(compiler, scope, leftType->typeMode);
+        if (!rightVar) {
+            assert(compiler->errors.size() > 0);
+            return nullptr;
+        }
+
+        return make_shared<CAssignVar>(loc, scope, op, leftStoreVar, rightVar);
     }
-    
-    if (nfunction) {
-        nfunction->getVar(compiler, result, thisFunction, thisVar);
-    }
-    
-    if (rightSide) {
-        return rightSide->getVar(compiler, result, thisFunction, thisVar);
-    }
-    
+
     return nullptr;
 }
 
-shared_ptr<CType> NAssignment::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-
+shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> scope, CVarType varType, CTypeMode returnMode) {
     if (typeName) {
-        auto valueType = thisFunction->getVarType(compiler, result, typeName);
+        auto valueType = scope->getVarType(loc, compiler, typeName, returnMode);
         if (!valueType) {
-            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
+            compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", typeName->getFullName().c_str());
             return nullptr;
         }
         return valueType;
     }
     
     if (!rightSide) {
-        result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they must have typeName");
+        compiler->addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they must have typeName");
         return nullptr;
     }
     
-    return rightSide->getType(compiler, result, thisFunction, thisVar);
-}
-
-int NAssignment::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    auto count = 0;
-    
-    if (_assignVar != nullptr && _assignVar->mode != Var_Local) {
-        // TODO: does not need to be a heap var if parent is a local var
-        isHeapVar = true;
+    auto rightVar = rightSide->getVar(compiler, scope, returnMode);
+    if (!rightVar) {
+        compiler->addError(loc, CErrorCode::Internal, "no right side");
+        return nullptr;
     }
-    
-    if (rightSide) {
-        count += rightSide->setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
-        
-        // Check if right side is heap, if so the var being assigned must also be heap
-        if (_assignVar) {
-            auto rightVar = rightSide->getVar(compiler, result, thisFunction, thisVar);
-            if (rightVar && rightVar->getHeapVar(compiler, result, thisVar)) {
-                count += _assignVar->setHeapVar(compiler, result, thisVar);
-            }
-            
-            if (rightVar) {
-                auto t = rightVar->getType(compiler, result);
-                if (!t->parent.expired()) {
-                    t->parent.lock()->setHasRefCount();
-                }
-            }
+
+    auto rightType = rightVar->getType(compiler);
+    if (!rightType) {
+        compiler->addError(loc, CErrorCode::Internal, "right type is undefined");
+        return nullptr;
+    }
+
+    if (rightType->typeMode != CTM_Value && op.isCopy) {
+        if (returnMode == CTM_Heap) {
+            return rightType->getHeapType();
+        }
+        else {
+            return rightType->getStackType();
         }
     }
-    
-    return count;
-}
 
-shared_ptr<ReturnValue> NAssignment::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    
-    if (!rightSide) {
-        result.addError(loc, CErrorCode::Internal, "only required assignment should not have a right side, and they should not be compiled");
-        return nullptr;
-    }
-
-    if (!inFunctionDeclaration && nfunction) {
-        nfunction->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, RRT_Auto);
-    }
-    
-    // Compute value
-    auto value = rightSide->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
-    if (!value) {
-        result.addError(loc, CErrorCode::ExpressionEmpty, "trying to assign an empty value");
-        return nullptr;
-    }
-    
-    if (typeName) {
-        shared_ptr<CType> valueType = thisFunction->getVarType(compiler, result, typeName);
-        if (!valueType) {
-            result.addError(loc, CErrorCode::InvalidType, "explicit type does not exist");
-            return nullptr;
+    if (returnMode != CTM_Undefined && returnMode != rightType->typeMode && rightType->typeMode != CTM_Value) {
+        if (returnMode == CTM_Local) {
+            return rightType->getLocalType();
         }
-
-        if (value->value->getType() != valueType->llvmRefType(compiler, result)) {
-            result.addError(loc, CErrorCode::TypeMismatch, "returned type '%s' does not match explicit type '%s'", Type_print(value->value->getType()).c_str(), Type_print(valueType->llvmRefType(compiler, result)).c_str());
+        else {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "cannot convert right side to %s", returnMode == CTM_Heap ? "heap" : "stack");
             return nullptr;
         }
     }
-    
-    value->retainIfNeeded(compiler, result, builder);
-    
-    // Get place to store data
-    auto alloca = _assignVar->getStoreValue(compiler, result, thisVar, thisValue, true, thisValue, builder, catchBB);
-    if (!alloca) {
-        result.addError(loc, CErrorCode::InvalidVariable, "var cannot be assigned '%s'", name.c_str());
-        return nullptr;
-    }
-    
-    if (value->valueFunction && !_isFirstAssignment) {
-        auto currentValue = builder->CreateLoad(alloca);
-        value->valueFunction->releaseHeap(compiler, result, builder, currentValue);
-    }
-    
-    // Store value
-    builder->CreateStore(value->value, alloca);
-    return make_shared<ReturnValue>(value->valueFunction, RVR_MustRetain, value->type, value->inEntry, value->value);
-}
-
-void NAssignment::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    auto type = getType(compiler, result, thisFunction, thisVar);
-    if (_assignVar) {
-        ss << alloc_mode(compiler, result, thisVar, _assignVar);
-    }
-    ss << name;
-    ss << "'" << (type ? type->name.c_str() : "unknown");
-    ss << (isMutable ? " = " : " : ");
-    if (rightSide) {
-        rightSide->dump(compiler, result, thisFunction, thisVar, functions, ss, level);
-    } else {
-        ss << "undefined";
-    }
+    return rightType;
 }
 
 shared_ptr<NAssignment> NAssignment::shared_from_this() {

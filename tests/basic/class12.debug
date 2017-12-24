@@ -1,0 +1,31 @@
+class()'stack class {
+  this
+}
+
+class_bar(x'i32:)'i32 {
+  class_foo(
+    parent: this,
+    x'i32 : x
+  )
+}
+
+class_foo(x'i32:)'i32 {
+  if x > 0i {
+    class_bar(
+      parent: this,
+      x'i32 : x
+    )
+  } else {
+    0i
+  }
+}
+
+global()'void {
+  c'stack class : class(this = class())
+  class_foo(
+    parent: this,
+    x'i32 : x
+  )
+  void
+}
+

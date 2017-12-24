@@ -1,0 +1,7 @@
+global()'void {
+  --c--
+  printf("hi");
+  --c--
+  void
+}
+

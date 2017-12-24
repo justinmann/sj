@@ -1,0 +1,32 @@
+class(bob'i32:)'stack class {
+  this
+}
+
+class_isequal(r'stack class:)'bool {
+  parent.bob == r.bob
+}
+
+global()'void {
+  a'stack class : class(this = class(
+    bob'i32 : bob
+  ))
+  y'i32 : switch a {
+    class_isequal(
+      parent: this,
+      r'stack class : r
+    ) {
+        1i
+      }
+    class_isequal(
+      parent: this,
+      r'stack class : r
+    ) {
+        2i
+      }
+    default {
+        3i
+      }
+  }
+  void
+}
+

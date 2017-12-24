@@ -14,13 +14,18 @@ class CBaseFunction;
 class CFunction;
 class CInterface;
 class CResult;
-class ReturnValue;
+class TrValue;
+class TrStoreValue;
+class TrBlock;
 class CVar;
+class CThisVar;
+class CBaseFunctionDefinition;
+class CCallback;
 
 enum CTypeImmutability {
-    CTM_Undefined,
-    CTM_Mutable,
-    CTM_Immutable,
+    CTI_Undefined,
+    CTI_Mutable,
+    CTI_Immutable,
 };
 
 enum CTypeCategory {
@@ -29,34 +34,90 @@ enum CTypeCategory {
     CTC_Function
 };
 
-class CType {
-public:
-#ifdef DWARF_ENABLED
-    CType(const char* name, Type* llvmType, DIType* diType, Value* value);
-#else
-    CType(const char* name, Type* llvmType, Value* value);
-#endif
+enum CTypeMode {
+    CTM_Undefined,
+    CTM_Stack,
+    CTM_Heap,
+    CTM_Weak,
+    CTM_Local,
+    CTM_Value
+};
 
-    CType(const char* name, weak_ptr<CFunction> parent);
-    CType(const char* name, weak_ptr<CInterface> parent);
-#ifdef DWARF_ENABLED
-    DIType* getDIType(Compiler* compiler, CResult& result);
-#endif
+class AssignOp {
+public:
+    bool isFirstAssignment;
+    bool isMutable;
+    bool isCopy;
+    CTypeMode typeMode;
+
+    static AssignOp create(bool isFirstAssignment, bool isMutable, bool isCopy, CTypeMode typeMode);
+    static AssignOp immutableCreate;
+    static AssignOp mutableCreate;
+    static AssignOp mutableUpdate;
+};
+
+class CType;
+
+class CTypes {
+public:
+    CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType, shared_ptr<CType> localValueType, shared_ptr<CType> localOptionType, shared_ptr<CType> weakType);
+    shared_ptr<CType> stackValueType;
+    shared_ptr<CType> stackOptionType;
+    shared_ptr<CType> heapValueType;
+    shared_ptr<CType> heapOptionType;
+    shared_ptr<CType> localValueType;
+    shared_ptr<CType> localOptionType;
+    shared_ptr<CType> weakType;
+};
+
+class CType : public enable_shared_from_this<CType> {
+public:
+    static shared_ptr<CTypes> create(vector<string>& packageNamespace, string valueName, string cname, string defaultValue, string cnameOption, string defaultValueOption);
+    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, string safeName, weak_ptr<CFunction> parent);
+    static shared_ptr<CTypes> create(Compiler* compiler, vector<string>& packageNamespace, string valueName, string safeName, weak_ptr<CInterface> parent);
+    static shared_ptr<CTypes> create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback);
 
     CTypeCategory category;
-    string name;
+    CTypeMode typeMode;
+    string fullName;
+    vector<string> packageNamespace;
+    string valueName;
+    string shortName;
+    string cname;
+    string safeName;
     weak_ptr<CBaseFunction> parent;
-    virtual Type* llvmAllocType(Compiler* compiler, CResult& result);
-    virtual Type* llvmRefType(Compiler* compiler, CResult& result);
-    virtual shared_ptr<ReturnValue> getDefaultValue(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB);
+    bool isOption;
+    weak_ptr<CCallback> callback;
+    vector<shared_ptr<CType>> argTypes;
+    shared_ptr<CType> stackReturnType;
+    shared_ptr<CType> heapReturnType;
+
+    void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
+    static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
+    static bool isSameExceptModeAndOption(shared_ptr<CType> l, shared_ptr<CType> r);
+    shared_ptr<CType> getValueType();
+    shared_ptr<CType> getOptionType();
+    shared_ptr<CType> getHeapType();
+    shared_ptr<CType> getHeapValueType();
+    shared_ptr<CType> getHeapOptionType();
+    shared_ptr<CType> getStackType();
+    shared_ptr<CType> getStackValueType();
+    shared_ptr<CType> getLocalType();
+    shared_ptr<CType> getLocalValueType();
+    shared_ptr<CType> getLocalOptionType();
+    shared_ptr<CType> getWeakType();
 
 private:
-    Type* _llvmAllocType;
-    Type* _llvmRefType;
-    Value* _value;
-#ifdef DWARF_ENABLED
-    DIType* _diType;
-#endif
+    string _defaultValue;
+    weak_ptr<CType> stackValueType;
+    weak_ptr<CType> stackOptionType;
+    weak_ptr<CType> heapValueType;
+    weak_ptr<CType> heapOptionType;
+    weak_ptr<CType> localValueType;
+    weak_ptr<CType> localOptionType;
+    weak_ptr<CType> weakType;
+
+    friend class CTypes;
 };
 
 #endif /* CType_h */

@@ -1,24 +1,16 @@
 #include "Node.h"
 
-shared_ptr<CType> NDouble::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    return compiler->typeFloat;
-}
-
-shared_ptr<ReturnValue> NDouble::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-
-    char* e;
-    auto t = strtod(value.c_str(), &e);
-    if (*e != '\0') {
-        result.addError(loc, CErrorCode::InvalidNumber, "not a valid float '%s'", value.c_str());
-        return nullptr;
+NDouble::NDouble(CLoc loc, const char* value_) : NVariableBase(NodeType_Double, loc), isF64(true), value(value_) {
+    if (value.back() == 'f') {
+        isF64 = false;
+        value = value.substr(0, value.size() - 1);
     }
-    
-    return make_shared<ReturnValue>(false, ConstantFP::get(compiler->context, APFloat(t)));
+    else if (value.back() == 'd') {
+        value = value.substr(0, value.size() - 1);
+    }
 }
 
-void NDouble::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << value;
+shared_ptr<CVar> NDouble::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    auto type = isF64 ? compiler->typeF64 : compiler->typeF32;
+    return make_shared<CConstantVar>(loc, scope, type, isF64 ? value : value + "f");
 }

@@ -1,0 +1,9 @@
+global()'void {
+  y'i32 = 0i
+  for x : 2i to 4i {
+    y'i32 = y + x
+  }
+  y
+  void
+}
+

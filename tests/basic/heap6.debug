@@ -1,0 +1,13 @@
+bar()'stack foo {
+  foo(this = foo())
+}
+
+foo()'stack foo {
+  this
+}
+
+global()'void {
+  a'stack foo : bar()
+  void
+}
+

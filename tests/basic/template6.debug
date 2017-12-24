@@ -1,0 +1,9 @@
+class!stack func!i32()'i32 {
+  1i
+}
+
+global()'void {
+  d'i32 : class!stack func!i32()
+  void
+}
+

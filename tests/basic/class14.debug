@@ -1,0 +1,17 @@
+class(m'i32:)'i32 {
+  class_inner(
+    parent: this
+  )
+}
+
+class_inner()'i32 {
+  parent.m
+}
+
+global()'void {
+  class(this = class(
+    m'i32 : m
+  ))
+  void
+}
+

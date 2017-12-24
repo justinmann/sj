@@ -1,0 +1,1 @@
+func(x: 'i32) { x }; func()

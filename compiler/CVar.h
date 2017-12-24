@@ -13,64 +13,60 @@ class CFunction;
 class CBaseFunction;
 class NAssignment;
 class CResult;
-class ReturnValue;
+class TrValue;
+class TrOutput;
+class TrBlock;
+class NBase;
+class CScope;
 
 enum CVarType {
-    Var_This,
     Var_Local,
     Var_Private,
-    Var_Public
-};
-
-enum ReturnRefType {
-    RRT_Auto,
-    RRT_MustRelease,
-    RRT_MustRetain
+    Var_Public,
 };
 
 class CVar {
 public:
-    CVar() { }
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result) = 0;
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) = 0;
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB) = 0;
-    string fullName();
-    shared_ptr<CBaseFunction> getCFunctionForValue(Compiler* compiler, CResult& result);
-    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
-    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar) = 0;
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level) = 0;
-
+    CVar(CLoc loc, shared_ptr<CScope> scope) : loc(loc), scope(scope), name("INVALID"), cname("INVALID"), isMutable(false) { }
+    CVar(CLoc loc, shared_ptr<CScope> scope, string name, string cname, bool isMutable) : loc(loc), scope(scope), name(name), cname(cname), isMutable(isMutable) { }
+    virtual bool getReturnThis() = 0;
+    virtual shared_ptr<CType> getType(Compiler* compiler) = 0;
+    virtual void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) = 0;
+    virtual void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) = 0;
+    
+    CLoc loc;
+    weak_ptr<CScope> scope;
     string name;
-    CVarType mode;
+    string cname;
     bool isMutable;
-    weak_ptr<CBaseFunction> parent;
-    shared_ptr<NAssignment> nassignment;
+};
+
+class CStoreVar : public CVar {
+public:
+    CStoreVar(CLoc loc, shared_ptr<CScope> scope, string name, string cname, bool isMutable) : CVar(loc, scope, name, cname, isMutable) { }
+    virtual bool getCanStoreValue() = 0;
+    virtual shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op) = 0;
 };
 
 class NFunction;
 
-class CNormalVar : public CVar {
+class CNormalVar : public CStoreVar {
 public:
-    static shared_ptr<CNormalVar> createThisVar(const CLoc& loc, shared_ptr<CBaseFunction> parent, shared_ptr<CType> type);
-    
-    static shared_ptr<CNormalVar> createLocalVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, shared_ptr<NAssignment> nassignment);
-    static shared_ptr<CNormalVar> createFunctionVar(const CLoc& loc, const string& name, shared_ptr<CBaseFunction> parent, int index, shared_ptr<NAssignment> nassignment, shared_ptr<CType> type, shared_ptr<CVar> interfaceMethodArgVar_);
-    virtual shared_ptr<CType> getType(Compiler* compiler, CResult& result);
-    virtual shared_ptr<ReturnValue> getLoadValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType);
-    virtual Value* getStoreValue(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar, Value* thisValue, bool dotInEntry, Value* dotValue, IRBuilder<>* builder, BasicBlock* catchBB);
-    void makeFunctionVar(int index);
-    virtual bool getHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    virtual int setHeapVar(Compiler* compiler, CResult& result, shared_ptr<CVar> thisVar);
-    virtual void dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, shared_ptr<CVar> dotVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, stringstream& dotSS, int level);
-    
+    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isMutable, CVarType mode) : CStoreVar(loc, scope, name, mode == Var_Local ? "sjv_" + name : name, isMutable), mode(mode), type(type) {}
+    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, string cname, bool isMutable, CVarType mode, shared_ptr<CVar> dotVar) : CStoreVar(loc, scope, name, cname, isMutable), mode(mode), type(type), dotVar(dotVar) {}
+    shared_ptr<CNormalVar> createForDot(shared_ptr<CVar> dotVar);
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    bool getCanStoreValue();
+    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+
+    CVarType mode;
+    shared_ptr<CVar> dotVar;
+
 private:
-    CLoc loc;
-    bool isInGetType;
-    int index;
     shared_ptr<CType> type;
-    Value* value;
-    bool isHeapVar;
-    shared_ptr<CVar> interfaceMethodArgVar;
 };
 
 #endif /* CVar_h */

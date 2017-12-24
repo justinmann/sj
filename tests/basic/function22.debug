@@ -1,0 +1,9 @@
+foo()'void {
+  void
+}
+
+global()'void {
+  foo()
+  void
+}
+

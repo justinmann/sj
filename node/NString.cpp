@@ -1,108 +1,97 @@
 #include "Node.h"
 
-void NStringArray::defineImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunctionDefinition> thisFunction) {
+class CGlobalPtrVar : public CVar {
+public:
+    CGlobalPtrVar(CLoc loc, shared_ptr<CScope> scope, string varName, string str) : CVar(loc, scope), varName(varName), str(str) { }
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    
+private:
+    string varName;
+    string str;
+};
+
+bool CGlobalPtrVar::getReturnThis() {
+    return false;
 }
 
-shared_ptr<CVar> NStringArray::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    createCall = make_shared<NCall>(loc, "array", make_shared<CTypeNameList>(CTC_Value, "char"), nullptr);
-    return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
+shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler) {
+    return compiler->typePtr;
 }
 
-shared_ptr<CType> NStringArray::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    return createCall->getType(compiler, result, thisFunction, thisVar);
+void CGlobalPtrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    trOutput->strings[varName] = str;
+    auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "(void*)" + varName, false);
+    storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
-int NStringArray::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    return createCall->NBase::setHeapVar(compiler, result, thisFunction, thisVar, isHeapVar);
+void CGlobalPtrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
 }
 
-shared_ptr<ReturnValue> NStringArray::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    compiler->emitLocation(builder, &this->loc);
-    auto varFunction = createCall->getVar(compiler, result, thisFunction, thisVar, nullptr)->getCFunctionForValue(compiler, result);
-    return make_shared<ReturnValue>(varFunction, RVR_Value, RVT_SIMPLE, false, builder->CreateGlobalStringPtr(str));
+class NGlobalPtrVar : public NBase {
+public:
+    NGlobalPtrVar(CLoc loc, const string& varName, const string& str) : NBase(NodeType_Integer, loc), varName(varName), str(str) {}
+    void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {}
+    void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {}
+    shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
+    
+private:
+    string varName;
+    string str;
+};
+
+shared_ptr<CVar> NGlobalPtrVar::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    return make_shared<CGlobalPtrVar>(loc, scope, varName, str);
 }
 
-void NStringArray::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    // dumpf(level, "value: %s", value.c_str());
-}
-
-NString::NString(CLoc loc, const string& str_) : NBase(NodeType_String, loc) {
-    isValid = true;
-    stringstream ss;
-    bool isEscaped = false;
-    for (auto it : str_) {
-        if (isEscaped) {
-            switch (it) {
-                case '\'': ss << '\''; break;
-                case '\"': ss << '\"'; break;
-                case '\\': ss << '\\'; break;
-                case 'a': ss << '\a'; break;
-                case 'b': ss << '\b'; break;
-                case 'f': ss << '\f'; break;
-                case 'n': ss << '\n'; break;
-                case 'r': ss << '\r'; break;
-                case 't': ss << '\t'; break;
-                case 'v': ss << '\v'; break;
-                default: isValid = false; break;
-            }
-            isEscaped = false;
-        } else if (it == '\\') {
-            isEscaped = true;
-        } else {
-            ss << it;
-        }
+shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+    if (returnMode != CTM_Heap) {
+        returnMode = CTM_Stack;
     }
     
-    if (isEscaped) {
-        isValid = false;
+    string varName = varNames[str];
+    if (varName.size() == 0) {
+        varName = TrBlock::nextVarName("sjg_string");
+        varNames[str] = varName;
     }
-    
-    str = ss.str();
-}
 
-shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    if (!isValid) {
-        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
-        return nullptr;
-    }
-    
-    auto size = make_shared<NInteger>(loc, str.size());
-    auto stringArray = make_shared<NStringArray>(loc, str);
-    createCall = make_shared<NCall>(loc, "list", make_shared<CTypeNameList>(CTC_Value, "char"), make_shared<NodeList>(size, size, stringArray));
-    return createCall->getVar(compiler, result, thisFunction, thisVar, nullptr);
-}
-
-shared_ptr<CType> NString::getTypeImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar) {
-    assert(compiler->state >= CompilerState::FixVar);
-    if (!isValid) {
-        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(CTC_Value, CTM_Stack, emptyNamespace, compiler->typeChar->valueName, false), CTM_Stack);
+    if (!createArrayCallee) {
         return nullptr;
     }
 
-    return createCall->getType(compiler, result, thisFunction, thisVar);
-}
-
-int NString::setHeapVarImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, bool isHeapVar) {
-    if (!isValid) {
-        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
-        return 0;
-    }
-
-    return createCall->setHeapVar(compiler, result, thisFunction, thisVar, nullptr, isHeapVar);
-}
-
-shared_ptr<ReturnValue> NString::compileImpl(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, Value* thisValue, IRBuilder<>* builder, BasicBlock* catchBB, ReturnRefType returnRefType) {
-    assert(compiler->state == CompilerState::Compile);
-    if (!isValid) {
-        result.addError(loc, CErrorCode::InvalidString, "string contains an invalid escape");
+    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, 
+        CallArgument::createList(
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size() + 1)),
+            make_shared<CGlobalPtrVar>(loc, scope, varName, str),
+            make_shared<CConstantVar>(loc, scope, compiler->typeBool, "true"),
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size() + 1))
+        ), false, nullptr, CTM_Stack);
+    auto createArrayVar = CCallVar::create(compiler, loc, "array", nullptr, createArrayParameters, scope, createArrayCallee, CTM_Stack);
+    if (!createArrayVar) {
         return nullptr;
     }
 
-    return createCall->compile(compiler, result, thisFunction, thisVar, thisValue, builder, catchBB, returnRefType);
+
+    auto creatStringCallee = scope->function->getCFunction(compiler, loc, "string", scope, nullptr, returnMode);
+    if (!creatStringCallee) {
+        return nullptr;
+    }
+
+    auto createStringParameters = CCallVar::getParameters(compiler, loc, scope, creatStringCallee,
+        CallArgument::createList(
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size())),
+            createArrayVar
+        ), false, nullptr, returnMode);
+    auto createStringVar = CCallVar::create(compiler, loc, "string", nullptr, createStringParameters, scope, creatStringCallee, returnMode);
+    if (!createStringVar) {
+        return nullptr;
+    }
+
+    return createStringVar;
 }
 
-void NString::dump(Compiler* compiler, CResult& result, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CVar> thisVar, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << "\"" << str << "\"";
-}
+
+map<string, string> NString::varNames;
