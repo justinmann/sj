@@ -24,12 +24,17 @@ textElement #element #textElement (
     margin := margin()
     halign := textHorizontal.left
     valign := textVertical.top
+    idealSize := empty'size
     _rect := rect()
     _textRenderer := empty'textRenderer
 
     getSize(maxSize : 'size) {
-        textSize : font.getTextSize(text) + margin
-        textSize.min(maxSize)   
+        ifValid idealSize {
+            idealSize.min(maxSize)
+        } elseEmpty {
+            textSize : font.getTextSize(text) + margin
+            textSize.min(maxSize)
+        }
     }
 
     getRect() { copy _rect }
