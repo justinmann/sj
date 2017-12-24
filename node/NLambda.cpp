@@ -21,7 +21,7 @@ shared_ptr<CVar> CLambdaInvokeFunction::getCVar(Compiler* compiler, shared_ptr<C
 }
 
 NLambdaClassFunction::NLambdaClassFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) :
-    NFunction(loc, returnTypeName, name, templateTypeNames, attributes, interfaceTypeNames, arguments, block, catchBlock, copyBlock, destroyBlock) { }
+    NFunction(loc, returnTypeName, name, templateTypeNames, attributes, interfaceTypeNames, arguments, block, catchBlock, copyBlock, destroyBlock), returnMode(CTM_Undefined) { }
 
 shared_ptr<CFunctionDefinition> NLambdaClassFunction::getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction) {
     auto functionDefinition = make_shared<CLambdaClassFunctionDefinition>();
@@ -40,16 +40,27 @@ shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CS
     auto r = CFunction::getCVar(compiler, callerScope, localVarScopes, ns, dotVar, name, scanMode, returnMode);
     if (!r) {
         auto lambdaFunction = static_pointer_cast<NLambdaClassFunction>(node);
+        assert(lambdaFunction->returnMode != CTM_Undefined);
         auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParent);
         if (callerVar) {
-            auto lambdaArgVar = vars[returnMode][callerVar];
+            auto lambdaArgVar = vars[lambdaFunction->returnMode][callerVar];
             if (!lambdaArgVar) {
                 auto paramName = TrBlock::nextVarName("lambdaparam");
                 auto calleeScope = getScope(compiler, returnMode);
-                lambdaArgVar = make_shared<CNormalVar>(loc, calleeScope, callerVar->getType(compiler)->getLocalType(), paramName, callerVar->isMutable, CVarType::Var_Public);
-                vars[returnMode][callerVar] = lambdaArgVar;
-                _data[returnMode].thisArgVarsByName[lambdaArgVar->name] = pair<int, shared_ptr<CNormalVar>>(_data[returnMode].thisArgVars.size(), lambdaArgVar);
-                _data[returnMode].thisArgVars.push_back(lambdaArgVar);
+                auto lambdaArgType = callerVar->getType(compiler);
+                if (lambdaFunction->returnMode == CTM_Stack) {
+                    lambdaArgType = lambdaArgType->getLocalType();
+                }
+                else {
+                    assert(lambdaArgType->typeMode != CTM_Local);
+                }
+                lambdaArgVar = make_shared<CNormalVar>(loc, calleeScope, lambdaArgType, paramName, callerVar->isMutable, CVarType::Var_Public);
+                vars[CTM_Stack][callerVar] = lambdaArgVar;
+                _data[CTM_Stack].thisArgVarsByName[lambdaArgVar->name] = pair<int, shared_ptr<CNormalVar>>(_data[CTM_Stack].thisArgVars.size(), lambdaArgVar);
+                _data[CTM_Stack].thisArgVars.push_back(lambdaArgVar);
+                vars[CTM_Heap][callerVar] = lambdaArgVar;
+                _data[CTM_Heap].thisArgVarsByName[lambdaArgVar->name] = pair<int, shared_ptr<CNormalVar>>(_data[CTM_Heap].thisArgVars.size(), lambdaArgVar);
+                _data[CTM_Heap].thisArgVars.push_back(lambdaArgVar);
             }
 
             auto parentFunction = static_pointer_cast<CFunction>(callerScope->function->parent.lock());
@@ -87,16 +98,23 @@ void CLambdaCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* 
             return;
         }
 
+        bool isCopy = false;
+        if (it.second->getType(compiler)->typeMode == CTM_Stack && it.first->getType(compiler)->typeMode == CTM_Stack) {
+            // If lambda arg is stack then we need to copy the data
+            // the arg will only be stack because the lambda callback is being stored heap
+            isCopy = true;
+        }
+
         (*parameters)[index].isDefaultValue = false;
-        (*parameters)[index].op = AssignOp::immutableCreate;
+        (*parameters)[index].op = AssignOp::create(true, false, isCopy, CTM_Undefined);
         (*parameters)[index].var = it.first;
     }
 
     CCallVar::transpile(compiler, trOutput, trBlock, thisValue, storeValue);
 }
 
-NLambdaCall::NLambdaCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) :
-    NCall(loc, name, templateTypeNames, arguments) {}
+NLambdaCall::NLambdaCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NLambdaClassFunction> lambdaClassFunction) :
+    NCall(loc, name, templateTypeNames, arguments), lambdaClassFunction(lambdaClassFunction) {}
 
 shared_ptr<CVar> NLambdaCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
     bool isHelperFunction = false;
@@ -125,12 +143,41 @@ shared_ptr<CVar> NLambdaCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         return nullptr;
     }
 
+    assert(lambdaClassFunction->returnMode == CTM_Undefined || lambdaClassFunction->returnMode == returnMode);
+    lambdaClassFunction->returnMode = returnMode;
+
     return createCallVar(loc, scope, isHelperFunction ? nullptr : dotVar, nullptr, callee, returnMode);
 }
 
 shared_ptr<CCallVar> NLambdaCall::createCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode) {
     return make_shared<CLambdaCallVar>(loc, scope, dotVar, parameters, callee, returnMode);
 }
+
+bool CTempStoreVar::getReturnThis() {
+    return false;
+}
+
+shared_ptr<CType> CTempStoreVar::getType(Compiler* compiler) {
+    return type;
+}
+
+void CTempStoreVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    assert(false);
+}
+
+void CTempStoreVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+
+}
+
+bool CTempStoreVar::getCanStoreValue() {
+    return true;
+}
+
+shared_ptr<TrStoreValue> CTempStoreVar::getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op) {
+    trBlock->statements.push_back(TrStatement(loc, type->getTempType()->cname + " " + name));
+    return make_shared<TrStoreValue>(loc, scope, type->getTempType(), name, AssignOp::immutableCreate);
+}
+
 
 void NLambda::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     auto lambdaName = TrBlock::nextVarName("lambda");
@@ -146,20 +193,29 @@ void NLambda::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<s
 
     // Init class
     auto initArguments = make_shared<NodeList>();
-    auto initFunction = make_shared<NLambdaCall>(loc, lambdaName, nullptr, initArguments);
-
-    // Get callback
-    auto getInvokeCallback = make_shared<NVariable>(loc, "invoke", nullptr);
-    result = make_shared<NDot>(loc, initFunction, getInvokeCallback);
-
-    result->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+    initFunction = make_shared<NLambdaCall>(loc, lambdaName, nullptr, initArguments, lambdaClassFunction);
+    initFunction->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
 }
 
 void NLambda::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    result->initVars(compiler, scope, returnMode);
+    initFunction->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NLambda::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
     lambdaClassFunction->callerScope = scope;
-    return result->getVar(compiler, scope, returnMode);
+
+    vector<shared_ptr<CVar>> statementVars;
+    auto tempName = TrBlock::nextVarName("lambainit");
+    auto initVar = initFunction->getVar(compiler, scope, returnMode);
+    auto initType = initVar->getType(compiler);
+    auto tempStoreVar = make_shared<CTempStoreVar>(loc, scope, initType, tempName);
+    auto assignVar = make_shared<CAssignVar>(loc, scope, AssignOp::immutableCreate, tempStoreVar, initVar);
+    statementVars.push_back(assignVar);
+
+    auto tempVar = make_shared<CTempVar>(loc, scope, initType->typeMode == CTM_Heap ? initType : initType->getTempType(), tempName);
+    auto getInvokeCallback = make_shared<NVariable>(loc, "invoke", nullptr);
+    auto rightVar = getInvokeCallback->getVar(compiler, scope, tempVar, returnMode);
+    statementVars.push_back(rightVar);
+
+    return  make_shared<CBlockVar>(loc, scope, statementVars);
 }

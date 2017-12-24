@@ -35,6 +35,7 @@ public:
     virtual shared_ptr<CFunctionDefinition> getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction);
 
     shared_ptr<CScope> callerScope;
+    CTypeMode returnMode;
 };
 
 class CLambdaClassFunctionDefinition : public CFunctionDefinition {
@@ -62,12 +63,30 @@ public:
 
 class NLambdaCall : public NCall {
 public:
-    NLambdaCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
+    NLambdaCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NLambdaClassFunction> lambdaClassFunction);
     virtual shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode);
 
 protected:
     virtual shared_ptr<CCallVar> createCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode);
+
+private:
+    shared_ptr<NLambdaClassFunction> lambdaClassFunction;
 };
+
+class CTempStoreVar : public CStoreVar {
+public:
+    CTempStoreVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name) : CStoreVar(loc, scope, "", "", false), type(type), name(name) {}
+    bool getReturnThis();
+    shared_ptr<CType> getType(Compiler* compiler);
+    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
+    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
+    bool getCanStoreValue();
+    shared_ptr<TrStoreValue> getStoreValue(Compiler* compiler, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, AssignOp op);
+
+private:
+    shared_ptr<CType> type;
+    string name;
+}; 
 
 class NLambda : public NBase {
 public:
@@ -80,7 +99,7 @@ public:
 private:
     shared_ptr<NodeList> arguments;
     shared_ptr<NBase> block;
-    shared_ptr<NBase> result;
+    shared_ptr<NBase> initFunction;
     shared_ptr<NLambdaClassFunction> lambdaClassFunction;
 };
 

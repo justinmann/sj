@@ -448,9 +448,11 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjs_lambda1* lambainit1;
     sjt_call1._refCount = 1;
     sjf_lambda1(&sjt_call1);
-    sjt_functionParam1._parent = (sjs_object*)&sjt_call1;
+    lambainit1 = &sjt_call1;
+    sjt_functionParam1._parent = (sjs_object*)lambainit1;
     sjt_functionParam1._cb = (void(*)(sjs_object*, int32_t*))sjf_lambda1_invoke;
     sjf_func(sjt_functionParam1, &sjv_a);
     sjt_functionParam3 = sjv_a;

@@ -95,7 +95,7 @@ struct td_cb_i32_heap {
 
 struct td_sjs_do_lambda1 {
     int _refCount;
-    sjs_class* lambdaparam1;
+    sjs_class lambdaparam1;
 };
 
 struct td_sjs_array_char {
@@ -155,7 +155,7 @@ void sjf_do_lambda1_copy(sjs_do_lambda1* _this, sjs_do_lambda1* _from);
 void sjf_do_lambda1_destroy(sjs_do_lambda1* _this);
 void sjf_do_lambda1_heap(sjs_do_lambda1* _this, sjs_do* _parent);
 void sjf_do_lambda1_invoke(sjs_do_lambda1* _parent, int32_t* _return);
-void sjf_func(cb_i32 cb, int32_t* _return);
+void sjf_func(cb_i32_heap cb, int32_t* _return);
 void sjf_i32_asstring(int32_t val, sjs_string* _return);
 void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_string(sjs_string* _this);
@@ -370,9 +370,9 @@ void sjf_debug_writeline(sjs_string* data) {
 }
 
 void sjf_do(sjs_do* _this) {
-    sjs_do_lambda1 sjt_call1 = { -1 };
+    sjs_do_lambda1* sjt_call1 = 0;
     sjs_string sjt_call2 = { -1 };
-    cb_i32 sjt_functionParam1;
+    cb_i32_heap sjt_functionParam1;
     sjs_string* sjt_functionParam2 = 0;
     int32_t sjt_functionParam3;
     int32_t sjv_a;
@@ -382,19 +382,35 @@ void sjf_do(sjs_do* _this) {
     sjv_c.x = 12;
     sjf_class(&sjv_c);
     sjs_do_lambda1* lambainit1;
-    sjt_call1._refCount = 1;
-    sjt_call1.lambdaparam1 = &sjv_c;
-    sjf_do_lambda1(&sjt_call1, _this);
-    lambainit1 = &sjt_call1;
-    sjt_functionParam1._parent = (sjs_object*)lambainit1;
-    sjt_functionParam1._cb = (void(*)(sjs_object*, int32_t*))sjf_do_lambda1_invoke;
+    sjt_call1 = (sjs_do_lambda1*)malloc(sizeof(sjs_do_lambda1));
+    sjt_call1->_refCount = 1;
+    sjt_call1->lambdaparam1._refCount = 1;
+    sjf_class_copy(&sjt_call1->lambdaparam1, &sjv_c);
+    sjf_do_lambda1_heap(sjt_call1, _this);
+    lambainit1 = sjt_call1;
+    sjt_functionParam1.inner._parent = (sjs_object*)lambainit1;
+    sjt_functionParam1.inner._parent->_refCount++;
+    sjt_functionParam1._destroy = (void(*)(sjs_object*))sjf_do_lambda1_destroy;
+    sjt_functionParam1.inner._cb = (void(*)(sjs_object*, int32_t*))sjf_do_lambda1_invoke;
     sjf_func(sjt_functionParam1, &sjv_a);
     sjt_functionParam3 = sjv_a;
     sjf_i32_asstring(sjt_functionParam3, &sjt_call2);
     sjt_functionParam2 = &sjt_call2;
     sjf_debug_writeline(sjt_functionParam2);
 
-    if (sjt_call1._refCount == 1) { sjf_do_lambda1_destroy(&sjt_call1); }
+    sjt_call1->_refCount--;
+    if (sjt_call1->_refCount <= 0) {
+        weakptr_release(sjt_call1);
+        sjf_do_lambda1_destroy(sjt_call1);
+        free(sjt_call1);
+    }
+    if ((uintptr_t)sjt_functionParam1.inner._parent > 1) {
+        sjt_functionParam1.inner._parent->_refCount--;
+        if (sjt_functionParam1.inner._parent->_refCount <= 0) {
+            sjt_functionParam1._destroy(sjt_functionParam1.inner._parent);
+            free(sjt_functionParam1.inner._parent);
+        }
+    }
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
     if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
 }
@@ -409,7 +425,8 @@ void sjf_do_lambda1(sjs_do_lambda1* _this, sjs_do* _parent) {
 }
 
 void sjf_do_lambda1_copy(sjs_do_lambda1* _this, sjs_do_lambda1* _from) {
-    _this->lambdaparam1 = _from->lambdaparam1;
+    _this->lambdaparam1._refCount = 1;
+    sjf_class_copy(&_this->lambdaparam1, &_from->lambdaparam1);
 }
 
 void sjf_do_lambda1_destroy(sjs_do_lambda1* _this) {
@@ -423,14 +440,14 @@ void sjf_do_lambda1_invoke(sjs_do_lambda1* _parent, int32_t* _return) {
     sjs_do_lambda1* sjt_dot2 = 0;
 
     sjt_dot2 = _parent;
-    sjt_dot1 = (sjt_dot2)->lambdaparam1;
+    sjt_dot1 = &(sjt_dot2)->lambdaparam1;
     (*_return) = (sjt_dot1)->x;
 }
 
-void sjf_func(cb_i32 cb, int32_t* _return) {
+void sjf_func(cb_i32_heap cb, int32_t* _return) {
     cb_i32 sjt_callback1;
 
-    sjt_callback1 = cb;
+    sjt_callback1 = cb.inner;
     sjt_callback1._cb(sjt_callback1._parent, _return);
 }
 
