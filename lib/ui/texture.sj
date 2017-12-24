@@ -1,30 +1,46 @@
-textureFromPng(fileName : 'string) {
-	id := 0u
-	w := 0
-	h := 0
-	--c--
-	sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
-	--c--
-	texture(size(w, h), id)
+texture(
+    size : size()
+    id : 0u
+
+    getSize() { size(size.w, size.h) }
+) {
+    this
+} copy {
+    --c--
+    glid_retain(_this->id);
+    --c--
+} destroy {
+    --c--
+    if (glid_release(_this->id)) {
+        glDeleteTextures(1, &_this->id);
+    }
+    --c--
 }
 
-texture(
-	size : size()
-	id : 0u
+texture_fromElement(element : '#element, size : 'size) {
+    scenebuffer : scenebuffer(copy size)
 
-	getSize() { size(size.w, size.h) }
-) {
-	this
-} copy {
-	--c--
-	glid_retain(_this->id);
-	--c--
-} destroy {
-	--c--
-	if (glid_release(_this->id)) {
-		glDeleteTextures(1, &_this->id);
-	}
-	--c--
+    element.setRect(rect(0, 0, size.w, size.h))
+
+    scene : scene2d()
+    scene.setSize(size)
+    glPushFramebuffer(scenebuffer.framebuffer)
+    scene.start()
+    element.render(scene)
+    scene.end()
+    glPopFramebuffer(scenebuffer.framebuffer)
+
+    copy scenebuffer.texture
+}
+
+texture_fromPng(fileName : 'string) {
+    id := 0u
+    w := 0
+    h := 0
+    --c--
+    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
+    --c--
+    texture(size(w, h), id)
 }
 
 --cfunction--

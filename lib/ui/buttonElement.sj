@@ -3,9 +3,9 @@ buttonElement #element #clickable(
 	text := ""
 	textColor := copy colors.black
 	font := style.getFont()
-	normalImage := valid(image(textureFromPng("assets/buttonNormal.png"), margin := margin(2, 2, 2, 2)))
-	hotImage := valid(image(textureFromPng("assets/buttonHot.png"), margin := margin(2, 2, 2, 2)))
-	pressedImage := valid(image(textureFromPng("assets/buttonPressed.png"), margin := margin(2, 2, 2, 2)))
+	normalImage := valid(image(texture_fromPng("assets/buttonNormal.png"), margin := margin(2, 2, 2, 2)))
+	hotImage := valid(image(texture_fromPng("assets/buttonHot.png"), margin := margin(2, 2, 2, 2)))
+	pressedImage := valid(image(texture_fromPng("assets/buttonPressed.png"), margin := margin(2, 2, 2, 2)))
 	margin := margin(10, 10, 10, 10)
 	onClick := empty'heap ()void
 	_rect := rect()

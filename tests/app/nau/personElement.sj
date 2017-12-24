@@ -38,7 +38,7 @@ personElement #element (
 
 				debug.writeLine(c.asString() + " => " + l.asString() + " & " + d.asString())
 
-				nauScene.animateLookAt(d, 2000)
+				fieldScene.animateLookAt(d, 2000)
 			} elseEmpty {
 				debug.writeLine("cannot find parent mode by id: " + id)		
 			}
