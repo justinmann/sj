@@ -24,7 +24,7 @@ void main() {
     // specular = pow(specAngle, 4.0);
 
     // the exponent controls the shininess (try mode 2)
-    specular = pow(specAngle, 16.0);
+    specular = pow(specAngle, 16.0) / 4.0;
 
     // according to the rendering equation we would need to multiply
     // with the the "lambertian", but this has little visual effect
