@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     sjv_f.x = 1;
     sjf_foo(&sjv_f);
     sjt_dot1 = &sjv_f;
-    sjt_negate1 = (sjt_dot1)->x;
+    sjt_negate1 = sjt_dot1->x;
     result1 = -sjt_negate1;
     sjv_a = result1;
     main_destroy();

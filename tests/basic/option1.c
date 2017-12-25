@@ -380,7 +380,7 @@ int main(int argc, char** argv) {
         int32_option value1;
 
         sjt_dot1 = sjv_n;
-        sjt_value2 = (sjt_dot1)->bob;
+        sjt_value2 = sjt_dot1->bob;
         value1.isvalid = true;
         value1.value = sjt_value2;
         sjv_p = value1;

@@ -648,7 +648,7 @@ int main(int argc, char** argv) {
         sjt_functionParam6 = 0;
         sjf_hash_i32_weak_class_getat(sjt_parent3, sjt_functionParam6, &sjt_call3);
         sjt_dot1 = sjt_call3;
-        sjt_value1 = (sjt_dot1)->x;
+        sjt_value1 = sjt_dot1->x;
         value1.isvalid = true;
         value1.value = sjt_value1;
         sjt_isEmpty1 = value1;
@@ -685,7 +685,7 @@ int main(int argc, char** argv) {
             sjt_functionParam8 = 0;
             sjf_hash_i32_weak_class_getat(sjt_parent5, sjt_functionParam8, &sjt_call5);
             sjt_dot2 = sjt_call5;
-            sjt_value2 = (sjt_dot2)->x;
+            sjt_value2 = sjt_dot2->x;
             value2.isvalid = true;
             value2.value = sjt_value2;
             sjt_getValue1 = value2;
@@ -740,7 +740,7 @@ int main(int argc, char** argv) {
         sjt_functionParam12 = 0;
         sjf_hash_i32_weak_class_getat(sjt_parent7, sjt_functionParam12, &sjt_call8);
         sjt_dot3 = sjt_call8;
-        sjt_value3 = (sjt_dot3)->x;
+        sjt_value3 = sjt_dot3->x;
         value3.isvalid = true;
         value3.value = sjt_value3;
         sjt_isEmpty4 = value3;
@@ -777,7 +777,7 @@ int main(int argc, char** argv) {
             sjt_functionParam14 = 0;
             sjf_hash_i32_weak_class_getat(sjt_parent9, sjt_functionParam14, &sjt_call10);
             sjt_dot4 = sjt_call10;
-            sjt_value4 = (sjt_dot4)->x;
+            sjt_value4 = sjt_dot4->x;
             value4.isvalid = true;
             value4.value = sjt_value4;
             sjt_getValue2 = value4;

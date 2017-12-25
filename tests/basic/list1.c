@@ -352,7 +352,7 @@ newp[i]->_refCount++;
     _return->data = sjv_newdata;
     _return->_isglobal = false;
     sjt_dot6 = _parent;
-    _return->count = (sjt_dot6)->count;
+    _return->count = sjt_dot6->count;
     sjf_array_heap_class(_return);
 }
 
@@ -384,7 +384,7 @@ newp[i]->_refCount++;
     (*_return)->data = sjv_newdata;
     (*_return)->_isglobal = false;
     sjt_dot7 = _parent;
-    (*_return)->count = (sjt_dot7)->count;
+    (*_return)->count = sjt_dot7->count;
     sjf_array_heap_class_heap((*_return));
 }
 
@@ -461,11 +461,11 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     sjs_array_heap_class* sjt_parent2 = 0;
 
     sjt_dot2 = _parent;
-    sjt_dot1 = &(sjt_dot2)->array;
-    sjt_compare1 = (sjt_dot1)->count;
+    sjt_dot1 = &sjt_dot2->array;
+    sjt_compare1 = sjt_dot1->count;
     sjt_dot4 = _parent;
-    sjt_dot3 = &(sjt_dot4)->array;
-    sjt_compare2 = (sjt_dot3)->datasize;
+    sjt_dot3 = &sjt_dot4->array;
+    sjt_compare2 = sjt_dot3->datasize;
     sjt_ifElse1 = sjt_compare1 >= sjt_compare2;
     if (sjt_ifElse1) {
         sjs_list_heap_class* sjt_dot10 = 0;
@@ -481,11 +481,11 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
 
         sjt_dot5 = _parent;
         sjt_dot8 = _parent;
-        sjt_parent1 = &(sjt_dot8)->array;
+        sjt_parent1 = &sjt_dot8->array;
         sjt_functionParam2 = 10;
         sjt_dot10 = _parent;
-        sjt_dot9 = &(sjt_dot10)->array;
-        sjt_math3 = (sjt_dot9)->datasize;
+        sjt_dot9 = &sjt_dot10->array;
+        sjt_math3 = sjt_dot9->datasize;
         sjt_math4 = 2;
         sjt_functionParam3 = sjt_math3 * sjt_math4;
         sjf_i32_max(sjt_functionParam2, sjt_functionParam3, &sjt_functionParam1);
@@ -493,10 +493,10 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     }
 
     sjt_dot11 = _parent;
-    sjt_parent2 = &(sjt_dot11)->array;
+    sjt_parent2 = &sjt_dot11->array;
     sjt_dot13 = _parent;
-    sjt_dot12 = &(sjt_dot13)->array;
-    sjt_functionParam4 = (sjt_dot12)->count;
+    sjt_dot12 = &sjt_dot13->array;
+    sjt_functionParam4 = sjt_dot12->count;
     sjt_functionParam5 = item;
     sjt_functionParam5->_refCount++;
     sjf_array_heap_class_initat(sjt_parent2, sjt_functionParam4, sjt_functionParam5);
@@ -523,7 +523,7 @@ void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index,
     sjs_array_heap_class* sjt_parent4 = 0;
 
     sjt_dot14 = _parent;
-    sjt_parent4 = &(sjt_dot14)->array;
+    sjt_parent4 = &sjt_dot14->array;
     sjt_functionParam7 = index;
     sjf_array_heap_class_getat_heap(sjt_parent4, sjt_functionParam7, _return);
 }

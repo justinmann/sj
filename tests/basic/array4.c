@@ -371,7 +371,7 @@ int main(int argc, char** argv) {
     sjt_functionParam3 = 0;
     sjf_array_class_getat(sjt_parent2, sjt_functionParam3, &sjv_b);
     sjt_dot1 = &sjv_b;
-    sjv_c = (sjt_dot1)->x;
+    sjv_c = sjt_dot1->x;
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");

@@ -429,7 +429,7 @@ int main(int argc, char** argv) {
 
         ifValue1 = (sjv_a._refCount != -1 ? &sjv_a : 0);
         sjt_dot1 = ifValue1;
-        sjv_b = (sjt_dot1)->x;
+        sjv_b = sjt_dot1->x;
     } else {
         sjv_b = 0;
     }

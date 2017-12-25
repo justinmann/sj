@@ -317,7 +317,7 @@ void sjf_class_test(sjs_class* _parent, int32_t* _return) {
     sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    (*_return) = (sjt_dot1)->x;
+    (*_return) = sjt_dot1->x;
 }
 
 int main(int argc, char** argv) {

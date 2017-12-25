@@ -276,7 +276,7 @@ void sjf_func(sjs_class* c, int32_t* _return) {
         int32_option value3;
 
         sjt_dot3 = c;
-        sjt_value4 = (sjt_dot3)->x;
+        sjt_value4 = sjt_dot3->x;
         value3.isvalid = true;
         value3.value = sjt_value4;
         sjt_isEmpty7 = value3;
@@ -298,7 +298,7 @@ void sjf_func(sjs_class* c, int32_t* _return) {
             int32_option value4;
 
             sjt_dot4 = c;
-            sjt_value5 = (sjt_dot4)->x;
+            sjt_value5 = sjt_dot4->x;
             value4.isvalid = true;
             value4.value = sjt_value5;
             sjt_getValue2 = value4;
@@ -336,7 +336,7 @@ int main(int argc, char** argv) {
         int32_option value1;
 
         sjt_dot1 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-        sjt_value1 = (sjt_dot1)->x;
+        sjt_value1 = sjt_dot1->x;
         value1.isvalid = true;
         value1.value = sjt_value1;
         sjt_isEmpty1 = value1;
@@ -358,7 +358,7 @@ int main(int argc, char** argv) {
             int32_option value2;
 
             sjt_dot2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-            sjt_value2 = (sjt_dot2)->x;
+            sjt_value2 = sjt_dot2->x;
             value2.isvalid = true;
             value2.value = sjt_value2;
             sjt_getValue1 = value2;

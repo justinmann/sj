@@ -61,7 +61,7 @@ void sjf_i32_addclass_bang_i32_char(int32_t x, sjs_class_i32_char* y, int32_t* _
 
     sjt_math1 = x;
     sjt_dot1 = y;
-    sjt_math2 = (sjt_dot1)->x;
+    sjt_math2 = sjt_dot1->x;
     (*_return) = sjt_math1 + sjt_math2;
 }
 

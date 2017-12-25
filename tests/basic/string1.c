@@ -369,7 +369,7 @@ void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     sjs_array_char* sjt_parent1 = 0;
 
     sjt_dot1 = _parent;
-    sjt_parent1 = &(sjt_dot1)->data;
+    sjt_parent1 = &sjt_dot1->data;
     sjt_functionParam1 = index;
     sjf_array_char_getat(sjt_parent1, sjt_functionParam1, _return);
 }
@@ -384,9 +384,9 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjs_array_char* sjt_parent3 = 0;
 
     sjt_dot2 = _parent;
-    sjt_parent3 = &(sjt_dot2)->data;
+    sjt_parent3 = &sjt_dot2->data;
     sjt_dot3 = test;
-    sjt_functionParam3 = &(sjt_dot3)->data;
+    sjt_functionParam3 = &sjt_dot3->data;
     sjf_array_char_isequal(sjt_parent3, sjt_functionParam3, _return);
 }
 
@@ -397,9 +397,9 @@ void sjf_string_islessorequal(sjs_string* _parent, sjs_string* test, bool* _retu
     sjs_array_char* sjt_parent5 = 0;
 
     sjt_dot4 = _parent;
-    sjt_parent5 = &(sjt_dot4)->data;
+    sjt_parent5 = &sjt_dot4->data;
     sjt_dot5 = test;
-    sjt_functionParam5 = &(sjt_dot5)->data;
+    sjt_functionParam5 = &sjt_dot5->data;
     sjf_array_char_islessorequal(sjt_parent5, sjt_functionParam5, _return);
 }
 

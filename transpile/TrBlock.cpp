@@ -620,7 +620,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
     switch (type->typeMode) {
     case CTM_Value:
-        break;
+    case CTM_ValuePtr:
     case CTM_Local:
         break;
     case CTM_Weak:
@@ -645,6 +645,8 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             return;
         }
         break;
+    default:
+        assert(false);
     }
 
     TrValue leftValue(scope, type, name, isReturnValue);
@@ -670,6 +672,9 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             }
             if (type->typeMode == CTM_Stack || type->typeMode == CTM_Local) {
                 lineStream << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
+            }
+            else if (type->typeMode == CTM_ValuePtr && rightValue->type->typeMode == CTM_Value) {
+                lineStream << "&" << rightValue->name;
             }
             else {
                 lineStream << rightValue->name;
@@ -713,7 +718,12 @@ string TrStoreValue::getName(TrBlock* block) {
     if (name.size() == 0) {
         name = block->createTempVariable(scope, type, "void")->name;
     }
-    return name;
+    if (type->typeMode == CTM_ValuePtr) {
+        return "*" + name;
+    }
+    else {
+        return name;
+    }
 }
 
 shared_ptr<TrValue> TrStoreValue::getValue() {

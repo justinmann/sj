@@ -45,7 +45,7 @@ void sjf_class__func(sjs_class* _parent, int32_t* _return) {
     sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    (*_return) = (sjt_dot1)->x;
+    (*_return) = sjt_dot1->x;
 }
 
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
@@ -63,7 +63,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t* _return) {
 
     sjf_class__func(_parent, &sjt_math1);
     sjt_dot2 = _parent;
-    sjt_math2 = (sjt_dot2)->_y;
+    sjt_math2 = sjt_dot2->_y;
     (*_return) = sjt_math1 + sjt_math2;
 }
 

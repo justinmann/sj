@@ -268,7 +268,7 @@ void sjf_class_func(sjs_class* _parent, int32_t x) {
 
     sjt_dot1 = _parent;
     sjt_dot2 = _parent;
-    sjt_math3 = (sjt_dot2)->total;
+    sjt_math3 = sjt_dot2->total;
     sjt_math4 = x;
     sjt_dot1->total = sjt_math3 + sjt_math4;
 }
@@ -286,7 +286,7 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return) {
     sjt_functionParam3.inner._cb = (void(*)(sjs_object*,int32_t))sjf_class_func;
     sjf_domath(sjt_functionParam3);
     sjt_dot3 = _parent;
-    (*_return) = (sjt_dot3)->total;
+    (*_return) = sjt_dot3->total;
 
     if ((uintptr_t)sjt_functionParam3.inner._parent > 1) {
         sjt_functionParam3.inner._parent->_refCount--;

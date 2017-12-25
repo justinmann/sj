@@ -385,7 +385,7 @@ void sjf_class_hash(sjs_class* _parent, uint32_t* _return) {
     sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    sjt_cast1 = (sjt_dot1)->x;
+    sjt_cast1 = sjt_dot1->x;
     (*_return) = (uint32_t)sjt_cast1;
 }
 
@@ -399,9 +399,9 @@ void sjf_class_isequal(sjs_class* _parent, sjs_class* c, bool* _return) {
     sjs_class* sjt_dot3 = 0;
 
     sjt_dot2 = _parent;
-    sjt_compare1 = (sjt_dot2)->x;
+    sjt_compare1 = sjt_dot2->x;
     sjt_dot3 = c;
-    sjt_compare2 = (sjt_dot3)->x;
+    sjt_compare2 = sjt_dot3->x;
     (*_return) = sjt_compare1 == sjt_compare2;
 }
 

@@ -405,7 +405,7 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
     sjv_newdata = malloc(_parent->count * sizeof(float));
     sjt_forStart3 = 0;
     sjt_dot7 = _parent;
-    sjt_forEnd3 = (sjt_dot7)->count;
+    sjt_forEnd3 = sjt_dot7->count;
     i = sjt_forStart3;
     while (i < sjt_forEnd3) {
         cb_f32_bool sjt_callback3;
@@ -436,7 +436,7 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
 
     _return->_refCount = 1;
     sjt_dot8 = _parent;
-    _return->datasize = (sjt_dot8)->count;
+    _return->datasize = sjt_dot8->count;
     _return->data = sjv_newdata;
     _return->_isglobal = false;
     _return->count = sjv_newcount;
@@ -457,7 +457,7 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
     sjv_newdata = malloc(_parent->count * sizeof(float));
     sjt_forStart4 = 0;
     sjt_dot9 = _parent;
-    sjt_forEnd4 = (sjt_dot9)->count;
+    sjt_forEnd4 = sjt_dot9->count;
     i = sjt_forStart4;
     while (i < sjt_forEnd4) {
         cb_f32_bool sjt_callback4;
@@ -489,7 +489,7 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
     (*_return) = (sjs_array_f32*)malloc(sizeof(sjs_array_f32));
     (*_return)->_refCount = 1;
     sjt_dot10 = _parent;
-    (*_return)->datasize = (sjt_dot10)->count;
+    (*_return)->datasize = sjt_dot10->count;
     (*_return)->data = sjv_newdata;
     (*_return)->_isglobal = false;
     (*_return)->count = sjv_newcount;
@@ -507,7 +507,7 @@ void sjf_array_f32_foldl_sum(sjs_array_f32* _parent, sjs_sum* initial, cb_sum_f3
     sjv_r = initial;
     sjt_forStart5 = 0;
     sjt_dot11 = _parent;
-    sjt_forEnd5 = (sjt_dot11)->count;
+    sjt_forEnd5 = sjt_dot11->count;
     i = sjt_forStart5;
     while (i < sjt_forEnd5) {
         sjs_sum sjt_call1 = { -1 };
@@ -543,7 +543,7 @@ void sjf_array_f32_foldl_sum_heap(sjs_array_f32* _parent, sjs_sum* initial, cb_s
     sjv_r = initial;
     sjt_forStart6 = 0;
     sjt_dot12 = _parent;
-    sjt_forEnd6 = (sjt_dot12)->count;
+    sjt_forEnd6 = sjt_dot12->count;
     i = sjt_forStart6;
     while (i < sjt_forEnd6) {
         sjs_sum sjt_call2 = { -1 };
@@ -672,7 +672,7 @@ void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32*
     sjv_newdata = malloc(_parent->count * sizeof(float));
     sjt_forStart1 = 0;
     sjt_dot1 = _parent;
-    sjt_forEnd1 = (sjt_dot1)->count;
+    sjt_forEnd1 = sjt_dot1->count;
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
         cb_i32_f32 sjt_callback1;
@@ -692,11 +692,11 @@ void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32*
 
     _return->_refCount = 1;
     sjt_dot2 = _parent;
-    _return->datasize = (sjt_dot2)->count;
+    _return->datasize = sjt_dot2->count;
     _return->data = sjv_newdata;
     _return->_isglobal = false;
     sjt_dot3 = _parent;
-    _return->count = (sjt_dot3)->count;
+    _return->count = sjt_dot3->count;
     sjf_array_f32(_return);
 }
 
@@ -713,7 +713,7 @@ void sjf_array_i32_map_f32_heap(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array
     sjv_newdata = malloc(_parent->count * sizeof(float));
     sjt_forStart2 = 0;
     sjt_dot4 = _parent;
-    sjt_forEnd2 = (sjt_dot4)->count;
+    sjt_forEnd2 = sjt_dot4->count;
     i = sjt_forStart2;
     while (i < sjt_forEnd2) {
         cb_i32_f32 sjt_callback2;
@@ -734,11 +734,11 @@ void sjf_array_i32_map_f32_heap(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array
     (*_return) = (sjs_array_f32*)malloc(sizeof(sjs_array_f32));
     (*_return)->_refCount = 1;
     sjt_dot5 = _parent;
-    (*_return)->datasize = (sjt_dot5)->count;
+    (*_return)->datasize = sjt_dot5->count;
     (*_return)->data = sjv_newdata;
     (*_return)->_isglobal = false;
     sjt_dot6 = _parent;
-    (*_return)->count = (sjt_dot6)->count;
+    (*_return)->count = sjt_dot6->count;
     sjf_array_f32_heap((*_return));
 }
 
@@ -790,7 +790,7 @@ void sjf_sumadd(sjs_sum* sum, float x, sjs_sum* _return) {
 
     _return->_refCount = 1;
     sjt_dot13 = sum;
-    sjt_math9 = (sjt_dot13)->x;
+    sjt_math9 = sjt_dot13->x;
     sjt_math10 = x;
     _return->x = sjt_math9 + sjt_math10;
     sjf_sum(_return);
@@ -808,7 +808,7 @@ void sjf_sumadd_heap(sjs_sum* sum, float x, sjs_sum** _return) {
     (*_return) = (sjs_sum*)malloc(sizeof(sjs_sum));
     (*_return)->_refCount = 1;
     sjt_dot14 = sum;
-    sjt_math11 = (sjt_dot14)->x;
+    sjt_math11 = sjt_dot14->x;
     sjt_math12 = x;
     (*_return)->x = sjt_math11 + sjt_math12;
     sjf_sum_heap((*_return));

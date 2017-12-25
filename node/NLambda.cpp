@@ -43,7 +43,7 @@ shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CS
         assert(lambdaFunction->returnMode != CTM_Undefined);
         auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParent);
         if (callerVar) {
-            auto lambdaArgVar = vars[lambdaFunction->returnMode][callerVar];
+            auto lambdaArgVar = vars[CTM_Stack][callerVar];
             if (!lambdaArgVar) {
                 auto paramName = TrBlock::nextVarName("lambdaparam");
                 auto calleeScope = getScope(compiler, returnMode);

@@ -64,7 +64,7 @@ void sjf_class_get(sjs_class* _parent, sjs_data* _return) {
     sjs_class* sjt_dot1 = 0;
 
     sjt_dot1 = _parent;
-    sjt_copy1 = &(sjt_dot1)->data;
+    sjt_copy1 = &sjt_dot1->data;
     _return->_refCount = 1;
     sjf_data_copy(_return, sjt_copy1);
 }
@@ -74,7 +74,7 @@ void sjf_class_get_heap(sjs_class* _parent, sjs_data** _return) {
     sjs_class* sjt_dot2 = 0;
 
     sjt_dot2 = _parent;
-    sjt_copy2 = &(sjt_dot2)->data;
+    sjt_copy2 = &sjt_dot2->data;
     (*_return) = (sjs_data*)malloc(sizeof(sjs_data));
     (*_return)->_refCount = 1;
     sjf_data_copy((*_return), sjt_copy2);

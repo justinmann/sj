@@ -58,9 +58,9 @@ int main(int argc, char** argv) {
     sjv_c.y = 2;
     sjf_class(&sjv_c);
     sjt_dot1 = &sjv_c;
-    sjt_math1 = (sjt_dot1)->x;
+    sjt_math1 = sjt_dot1->x;
     sjt_dot2 = &sjv_c;
-    sjt_math2 = (sjt_dot2)->y;
+    sjt_math2 = sjt_dot2->y;
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");

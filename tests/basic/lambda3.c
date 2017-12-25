@@ -440,8 +440,8 @@ void sjf_do_lambda1_invoke(sjs_do_lambda1* _parent, int32_t* _return) {
     sjs_do_lambda1* sjt_dot2 = 0;
 
     sjt_dot2 = _parent;
-    sjt_dot1 = &(sjt_dot2)->lambdaparam1;
-    (*_return) = (sjt_dot1)->x;
+    sjt_dot1 = &sjt_dot2->lambdaparam1;
+    (*_return) = sjt_dot1->x;
 }
 
 void sjf_func(cb_i32_heap cb, int32_t* _return) {

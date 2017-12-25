@@ -83,7 +83,7 @@ void sjf_class_foo(sjs_class* _parent, int32_t x, int32_t* _return) {
         sjs_math* sjt_parent1 = 0;
 
         sjt_dot1 = _parent;
-        sjt_parent1 = &(sjt_dot1)->m;
+        sjt_parent1 = &sjt_dot1->m;
         sjt_functionParam3 = x;
         sjt_functionParam4 = 1;
         sjf_math_sub(sjt_parent1, sjt_functionParam3, sjt_functionParam4, &sjt_functionParam2);

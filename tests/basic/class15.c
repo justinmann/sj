@@ -117,7 +117,7 @@ void sjf_math_sub(sjs_math* _parent, int32_t x, int32_t y, int32_t* _return) {
     sjt_math4 = y;
     sjt_math1 = sjt_math3 - sjt_math4;
     sjt_dot1 = _parent;
-    sjt_math2 = (sjt_dot1)->test;
+    sjt_math2 = sjt_dot1->test;
     (*_return) = sjt_math1 - sjt_math2;
 }
 

@@ -60,9 +60,9 @@ void sjf_class_isequal(sjs_class* _parent, sjs_class* r, bool* _return) {
     sjs_class* sjt_dot2 = 0;
 
     sjt_dot1 = _parent;
-    sjt_compare1 = (sjt_dot1)->bob;
+    sjt_compare1 = sjt_dot1->bob;
     sjt_dot2 = r;
-    sjt_compare2 = (sjt_dot2)->bob;
+    sjt_compare2 = sjt_dot2->bob;
     (*_return) = sjt_compare1 == sjt_compare2;
 }
 

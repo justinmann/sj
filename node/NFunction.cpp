@@ -1136,6 +1136,11 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
             auto calleeVar = getThisVar(compiler, returnMode);
             auto calleeScope = getScope(compiler, returnMode);
             auto type = _data[returnMode].blockVar->getType(compiler);
+
+            if (type && type->typeMode == CTM_ValuePtr) {
+                type = type->getStackType();
+            }
+
             _data[returnMode].returnType = type;
         }
         

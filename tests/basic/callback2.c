@@ -335,7 +335,7 @@ void sjf_array_i32_each(sjs_array_i32* _parent, cb_i32_void cb) {
 
     sjt_forStart1 = 0;
     sjt_dot5 = _parent;
-    sjt_forEnd1 = (sjt_dot5)->count;
+    sjt_forEnd1 = sjt_dot5->count;
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
         cb_i32_void sjt_callback3;
@@ -405,11 +405,11 @@ void sjf_class_i32_each(sjs_class_i32* _parent, cb_i32_void_heap cb) {
 
     sjt_callback1 = cb.inner;
     sjt_dot1 = _parent;
-    sjt_functionParam1 = (sjt_dot1)->item1;
+    sjt_functionParam1 = sjt_dot1->item1;
     sjt_callback1._cb(sjt_callback1._parent, sjt_functionParam1);
     sjt_callback2 = cb.inner;
     sjt_dot2 = _parent;
-    sjt_functionParam2 = (sjt_dot2)->item2;
+    sjt_functionParam2 = sjt_dot2->item2;
     sjt_callback2._cb(sjt_callback2._parent, sjt_functionParam2);
 }
 
@@ -437,7 +437,7 @@ void sjf_sum_invoke(sjs_sum* _parent, int32_t a) {
 
     sjt_dot3 = _parent;
     sjt_dot4 = _parent;
-    sjt_math3 = (sjt_dot4)->total;
+    sjt_math3 = sjt_dot4->total;
     sjt_math4 = a;
     sjt_dot3->total = sjt_math3 + sjt_math4;
 }

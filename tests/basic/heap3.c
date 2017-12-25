@@ -86,7 +86,7 @@ void sjf_func(sjs_bar* b, sjs_foo* _return) {
     sjt_dot2->f.x = 2;
     sjf_foo(&sjt_dot2->f);
     sjt_dot3 = b;
-    sjt_copy1 = &(sjt_dot3)->f;
+    sjt_copy1 = &sjt_dot3->f;
     _return->_refCount = 1;
     sjf_foo_copy(_return, sjt_copy1);
 }
@@ -101,7 +101,7 @@ void sjf_func_heap(sjs_bar* b, sjs_foo** _return) {
     sjt_dot4->f.x = 2;
     sjf_foo(&sjt_dot4->f);
     sjt_dot5 = b;
-    sjt_copy2 = &(sjt_dot5)->f;
+    sjt_copy2 = &sjt_dot5->f;
     (*_return) = (sjs_foo*)malloc(sizeof(sjs_foo));
     (*_return)->_refCount = 1;
     sjf_foo_copy((*_return), sjt_copy2);

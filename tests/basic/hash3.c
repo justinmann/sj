@@ -625,9 +625,9 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
     sjs_array_char* sjt_parent1 = 0;
 
     sjt_dot1 = _parent;
-    sjt_parent1 = &(sjt_dot1)->data;
+    sjt_parent1 = &sjt_dot1->data;
     sjt_dot2 = test;
-    sjt_functionParam1 = &(sjt_dot2)->data;
+    sjt_functionParam1 = &sjt_dot2->data;
     sjf_array_char_isequal(sjt_parent1, sjt_functionParam1, _return);
 }
 

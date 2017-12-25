@@ -338,7 +338,7 @@ void sjf_class_getbar(sjs_class* _parent, sjs_bob* _return) {
 
     _return->_refCount = 1;
     sjt_dot1 = _parent;
-    _return->x = (sjt_dot1)->bar;
+    _return->x = sjt_dot1->bar;
     sjf_bob(_return);
 }
 
@@ -348,7 +348,7 @@ void sjf_class_getbar_heap(sjs_class* _parent, sjs_bob** _return) {
     (*_return) = (sjs_bob*)malloc(sizeof(sjs_bob));
     (*_return)->_refCount = 1;
     sjt_dot2 = _parent;
-    (*_return)->x = (sjt_dot2)->bar;
+    (*_return)->x = sjt_dot2->bar;
     sjf_bob_heap((*_return));
 }
 

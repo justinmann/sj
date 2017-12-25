@@ -310,7 +310,7 @@ int main(int argc, char** argv) {
     }
 
     sjt_dot1 = &sjv_c;
-    sjt_isEmpty6 = (sjt_dot1)->d;
+    sjt_isEmpty6 = sjt_dot1->d;
     sjt_isEmpty5 = sjt_isEmpty6.isvalid;
     if (sjt_isEmpty5) {
         int32_t ifValue3;
@@ -318,7 +318,7 @@ int main(int argc, char** argv) {
         int32_option sjt_getValue3;
 
         sjt_dot2 = &sjv_c;
-        sjt_getValue3 = (sjt_dot2)->d;
+        sjt_getValue3 = sjt_dot2->d;
         ifValue3 = sjt_getValue3.value;
         sjv_y = ifValue3;
     } else {

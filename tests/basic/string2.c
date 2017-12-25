@@ -334,7 +334,7 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
     _return->data = sjv_newdata;
     _return->_isglobal = false;
     sjt_dot4 = _parent;
-    _return->count = (sjt_dot4)->count;
+    _return->count = sjt_dot4->count;
     sjf_array_char(_return);
 }
 
@@ -365,7 +365,7 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
     (*_return)->data = sjv_newdata;
     (*_return)->_isglobal = false;
     sjt_dot5 = _parent;
-    (*_return)->count = (sjt_dot5)->count;
+    (*_return)->count = sjt_dot5->count;
     sjf_array_char_heap((*_return));
 }
 
@@ -516,7 +516,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     sjs_array_char sjv_newdata = { -1 };
 
     sjt_dot1 = item;
-    sjt_compare1 = (sjt_dot1)->count;
+    sjt_compare1 = sjt_dot1->count;
     sjt_compare2 = 0;
     sjt_ifElse1 = sjt_compare1 == sjt_compare2;
     if (sjt_ifElse1) {
@@ -526,9 +526,9 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 
         _return->_refCount = 1;
         sjt_dot2 = _parent;
-        _return->count = (sjt_dot2)->count;
+        _return->count = sjt_dot2->count;
         sjt_dot3 = _parent;
-        sjt_copy1 = &(sjt_dot3)->data;
+        sjt_copy1 = &sjt_dot3->data;
         _return->data._refCount = 1;
         sjf_array_char_copy(&_return->data, sjt_copy1);
         sjf_string(_return);
@@ -562,17 +562,17 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
         int32_t sjv_newcount;
 
         sjt_dot6 = _parent;
-        sjt_parent1 = &(sjt_dot6)->data;
+        sjt_parent1 = &sjt_dot6->data;
         sjt_dot7 = _parent;
-        sjt_math5 = (sjt_dot7)->count;
+        sjt_math5 = sjt_dot7->count;
         sjt_dot8 = item;
-        sjt_math6 = (sjt_dot8)->count;
+        sjt_math6 = sjt_dot8->count;
         sjt_math3 = sjt_math5 + sjt_math6;
         sjt_math4 = 1;
         sjt_functionParam2 = sjt_math3 + sjt_math4;
         sjf_array_char_grow(sjt_parent1, sjt_functionParam2, &sjv_newdata);
         sjt_dot9 = _parent;
-        sjv_newcount = (sjt_dot9)->count;
+        sjv_newcount = sjt_dot9->count;
         sjt_parent2 = &sjv_newdata;
         sjt_functionParam3 = sjv_newcount;
         sjt_parent4 = item;
@@ -584,7 +584,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
         sjv_newcount = sjt_math7 + sjt_math8;
         sjt_forStart1 = 1;
         sjt_dot11 = item;
-        sjt_forEnd1 = (sjt_dot11)->count;
+        sjt_forEnd1 = sjt_dot11->count;
         i = sjt_forStart1;
         while (i < sjt_forEnd1) {
             int32_t sjt_functionParam7;
@@ -631,7 +631,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     sjs_array_char sjv_newdata = { -1 };
 
     sjt_dot12 = item;
-    sjt_compare3 = (sjt_dot12)->count;
+    sjt_compare3 = sjt_dot12->count;
     sjt_compare4 = 0;
     sjt_ifElse2 = sjt_compare3 == sjt_compare4;
     if (sjt_ifElse2) {
@@ -642,9 +642,9 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
         (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
         (*_return)->_refCount = 1;
         sjt_dot13 = _parent;
-        (*_return)->count = (sjt_dot13)->count;
+        (*_return)->count = sjt_dot13->count;
         sjt_dot14 = _parent;
-        sjt_copy3 = &(sjt_dot14)->data;
+        sjt_copy3 = &sjt_dot14->data;
         (*_return)->data._refCount = 1;
         sjf_array_char_copy(&(*_return)->data, sjt_copy3);
         sjf_string_heap((*_return));
@@ -678,17 +678,17 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
         int32_t sjv_newcount;
 
         sjt_dot15 = _parent;
-        sjt_parent8 = &(sjt_dot15)->data;
+        sjt_parent8 = &sjt_dot15->data;
         sjt_dot16 = _parent;
-        sjt_math13 = (sjt_dot16)->count;
+        sjt_math13 = sjt_dot16->count;
         sjt_dot17 = item;
-        sjt_math14 = (sjt_dot17)->count;
+        sjt_math14 = sjt_dot17->count;
         sjt_math11 = sjt_math13 + sjt_math14;
         sjt_math12 = 1;
         sjt_functionParam12 = sjt_math11 + sjt_math12;
         sjf_array_char_grow(sjt_parent8, sjt_functionParam12, &sjv_newdata);
         sjt_dot18 = _parent;
-        sjv_newcount = (sjt_dot18)->count;
+        sjv_newcount = sjt_dot18->count;
         sjt_parent9 = &sjv_newdata;
         sjt_functionParam13 = sjv_newcount;
         sjt_parent10 = item;
@@ -700,7 +700,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
         sjv_newcount = sjt_math15 + sjt_math16;
         sjt_forStart2 = 1;
         sjt_dot19 = item;
-        sjt_forEnd2 = (sjt_dot19)->count;
+        sjt_forEnd2 = sjt_dot19->count;
         i = sjt_forStart2;
         while (i < sjt_forEnd2) {
             int32_t sjt_functionParam16;
@@ -755,7 +755,7 @@ void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     sjs_array_char* sjt_parent3 = 0;
 
     sjt_dot10 = _parent;
-    sjt_parent3 = &(sjt_dot10)->data;
+    sjt_parent3 = &sjt_dot10->data;
     sjt_functionParam5 = index;
     sjf_array_char_getat(sjt_parent3, sjt_functionParam5, _return);
 }
