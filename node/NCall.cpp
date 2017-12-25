@@ -58,8 +58,6 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     auto calleeFunction = dynamic_pointer_cast<CFunction>(callee);
     auto calleeScope = calleeFunction ? calleeFunction->getScope(compiler, returnMode) : nullptr;
     auto argIndex = (size_t)0;
-    auto hasSetByName = false;
-
     if (isHelperFunction) {
         (*parameters)[argIndex].isDefaultValue = false;
         (*parameters)[argIndex].op = AssignOp::immutableCreate;
@@ -68,36 +66,9 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
     }
 
     for (auto it : arguments) {
-        if (it.name.size() > 0) {
-            auto index = callee->getArgIndex(it.name, returnMode);
-            if (index < 0) {
-                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", it.name.c_str());
-                return nullptr;
-            }
-
-            if ((*parameters)[index].var != nullptr) {
-                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", it.name.c_str());
-                return nullptr;
-            }
-
-            (*parameters)[index].isDefaultValue = false;
-            (*parameters)[index].op = it.op;
-            (*parameters)[index].var = it.var;
-            hasSetByName = true;
-        }
-        else {
-            if (hasSetByName) {
-                compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
-                return nullptr;
-            }
-
-            if ((*parameters)[argIndex].var != nullptr) {
-                compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
-                return nullptr;
-            }
-
+        if (it.var) {
             (*parameters)[argIndex].isDefaultValue = false;
-            (*parameters)[argIndex].op = AssignOp::immutableCreate;
+            (*parameters)[argIndex].op = it.op;
             (*parameters)[argIndex].var = it.var;
         }
         argIndex++;
@@ -274,7 +245,10 @@ void NCall::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<str
 }
 
 void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+    // TODO: get callee function
     for (auto it : *arguments) {
+        // TODO: get argument by index or name
+        // TODO: get explicit type for argument
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             if (!parameterAssignment->op.isFirstAssignment) {
@@ -382,18 +356,43 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 
     // Fill in parameters
-    vector<CallArgument> callArguments;
+    auto argIndex = (size_t)0;
+    auto hasSetByName = false;
+    vector<CallArgument> callArguments = vector<CallArgument>(callee->getArgCount(returnMode) - (isHelperFunction ? 1 : 0));
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
+            if (index < 0) {
+                compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+
+            if (callArguments[index].var != nullptr) {
+                compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
+                return nullptr;
+            }
+
             assert(parameterAssignment->inFunctionDeclaration);
-            CallArgument callArgument(parameterAssignment->name, parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, CTM_Undefined));
-            callArguments.push_back(callArgument);
+            CallArgument callArgument(parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, CTM_Undefined));
+            callArguments[index] = callArgument;
+            hasSetByName = true;
         }
         else {
+            if (hasSetByName) {
+                compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
+                return nullptr;
+            }
+
+            if (callArguments[argIndex].var != nullptr) {
+                compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
+                return nullptr;
+            }
+
             CallArgument callArgument(it->getVar(compiler, scope, CTM_Undefined));
-            callArguments.push_back(callArgument);
+            callArguments[argIndex] = callArgument;
         }
+        argIndex++;
     }
 
     auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, callArguments, isHelperFunction, dotVar, returnMode);

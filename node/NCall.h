@@ -15,8 +15,9 @@ class NCall;
 
 class CallArgument {
 public:
-    CallArgument(string name, AssignOp op, shared_ptr<CVar> var) : name(name), op(op), var(var) {}
-    CallArgument(shared_ptr<CVar> var) : name(name), op(AssignOp::immutableCreate), var(var) {}
+    CallArgument() : op(AssignOp::immutableCreate), var(nullptr) {}
+    CallArgument(AssignOp op, shared_ptr<CVar> var) : op(op), var(var) {}
+    CallArgument(shared_ptr<CVar> var) : op(AssignOp::immutableCreate), var(var) {}
 
     static vector<CallArgument> createList(shared_ptr<CVar> var1);
     static vector<CallArgument> createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2);
@@ -24,7 +25,6 @@ public:
     static vector<CallArgument> createList(shared_ptr<CVar> var1, shared_ptr<CVar> var2, shared_ptr<CVar> var3, shared_ptr<CVar> var4);
     static vector<CallArgument> emptyList;
 
-    string name;
     AssignOp op;
     shared_ptr<CVar> var;
 };
