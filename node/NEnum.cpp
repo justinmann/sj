@@ -67,6 +67,25 @@ void NEnum::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<str
     // create a new type
     auto ctypes = CType::create(packageNamespace, name, "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     compiler->types[name] = ctypes;
+
+    vector<shared_ptr<NSwitchClause>> clauses;
+    auto index = 0;
+    for (auto enumArg : *enumArgs) {
+        auto clause = make_shared<NSwitchClause>(loc, make_shared<NInteger>(loc, (enumArg->hasValue ? enumArg->value : to_string(index)).c_str()), make_shared<NString>(loc, enumArg->name));
+        clauses.push_back(clause);
+        index++;
+    }
+
+    auto defaultClause = make_shared<NSwitchClause>(loc, nullptr, make_shared<NString>(loc, ""));
+    clauses.push_back(defaultClause);
+
+    auto switchBlock = make_shared<NSwitch>(loc, make_shared<NVariable>(loc, "e", nullptr), clauses);
+
+    asStringFunction = make_shared<NFunction>(loc, nullptr, (name + "_asstring").c_str(), nullptr, nullptr, nullptr,
+        make_shared<NodeList>(make_shared<NAssignment>(loc, nullptr, make_shared<CTypeName>(CTC_Value, CTM_Value, packageNamespace, name, false), "e", nullptr, AssignOp::immutableCreate)),
+        switchBlock, nullptr, nullptr, nullptr);
+
+    asStringFunction->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
 }
 
 void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
@@ -106,6 +125,8 @@ void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
         enumVars.push_back(leftStoreVar);
     }
     scope->popNamespace(compiler, enumNamespace);
+
+    asStringFunction->initVars(compiler, scope, returnMode);
 }
 
 shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
@@ -119,10 +140,7 @@ shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     auto index = 0;
     for (auto enumArg : *enumArgs) {
         auto leftStoreVar = enumVars[index];
-
-        stringstream t;
-        t << index;
-        auto rightVar = make_shared<CConstantVar>(loc, scope, ctypes->stackValueType, enumArg->hasValue ? enumArg->value : t.str());
+        auto rightVar = make_shared<CConstantVar>(loc, scope, ctypes->stackValueType, enumArg->hasValue ? enumArg->value : to_string(index));
         auto assignVar = make_shared<CAssignVar>(loc, scope, AssignOp::immutableCreate, leftStoreVar, rightVar);
         statementVars.push_back(assignVar);
         index++;

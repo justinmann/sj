@@ -1,5 +1,39 @@
+bar_asstring(e'bar:)'stack string switch e {
+   == 0i string(this = string(
+      count'i32 = count,
+      data'stack array!char = data
+    ))
+   == 1i string(this = string(
+      count'i32 = count,
+      data'stack array!char = data
+    ))
+   == 2i string(this = string(
+      count'i32 = count,
+      data'stack array!char = data
+    ))
+  default string(this = string(
+      count'i32 = count,
+      data'stack array!char = data
+    ))
+}
+
 func()'bar? {
   value(a)
+}
+
+string(count'i32=, data'stack array!char=)'stack string {
+  this
+}
+
+writeline(data'stack string:)'void {
+  --c--
+  #ifdef _WINDOWS
+  OutputDebugStringA((char*)data->data.data);
+  OutputDebugStringA("\n");
+  #else
+  fprintf(stderr, "%s\n", (char*)data->data.data);
+  #endif
+  --c--
 }
 
 global()'void {
@@ -230,6 +264,12 @@ global()'void {
     c'bar2 : 2
   }
   b'bar? : func()
+  c'stack string? : if isValid(b) value(bar_asstring(
+    e'bar : e
+  )) else empty'stack string?
+  writeline(
+    data'stack string : data
+  )
   void
 }
 

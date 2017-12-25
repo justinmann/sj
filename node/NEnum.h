@@ -53,6 +53,7 @@ private:
     shared_ptr<EnumArgs> enumArgs;
     vector<string> packageNamespace;
     vector<shared_ptr<CNormalVar>> enumVars;
+    shared_ptr<NFunction> asStringFunction;
 };
 
 #endif /* NEnum_h */

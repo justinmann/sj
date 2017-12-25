@@ -17,3 +17,6 @@ func()'bar? {
 }
 
 b : func()
+c : b?.asString()
+
+debug.writeLine(c)
