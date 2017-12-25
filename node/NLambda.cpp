@@ -16,8 +16,64 @@ shared_ptr<CFunction> CLambdaInvokeFunctionDefinition::createFunction(vector<pai
 CLambdaInvokeFunction::CLambdaInvokeFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis) :
     CFunction(importNamespaces, definition, templateTypes, parent, interfaces, ccodes, hasHeapThis, false) {}
 
-shared_ptr<CVar> CLambdaInvokeFunction::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<LocalVarScope>> localVarScopes, vector<string> ns, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
-    return CFunction::getCVar(compiler, callerScope, localVarScopes, ns, dotVar, name, scanMode, returnMode);
+CTypeMode functionReturnModes2[] = { CTM_Stack, CTM_Heap }; 
+
+void CLambdaInvokeFunction::initArgs(Compiler* compiler) {
+    if (_hasInitArgs) {
+        return;
+    }
+
+    _hasInitArgs = true;
+    if (node) {
+        if (node->assignments.size() > 0) {
+            auto index = 0;
+            for (auto it : node->assignments) {
+                if (it->var) {
+                    compiler->addError(it->loc, CErrorCode::InvalidDot, "cannot use '.' in variable declaration for a function: '%s'", it->name.c_str());
+                    return;
+                }
+
+                for (auto returnMode : functionReturnModes2) {
+                    auto cvarType = it->name[0] == '_' ? CVarType::Var_Private : CVarType::Var_Public;
+
+                    auto calleeScope = getScope(compiler, returnMode);
+                    auto argType = it->getType(compiler, calleeScope, cvarType, CTM_Undefined);
+                    if (!argType) {
+                        return;
+                    }
+
+                    auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, it->name, it->op.isMutable, cvarType);
+                    _data[returnMode].thisArgVarsByName[it->name] = pair<int, shared_ptr<CNormalVar>>(index, thisArgVar);
+                    _data[returnMode].thisArgVars.push_back(thisArgVar);
+                }
+
+                FunctionDefaultValue defaultValue;
+                defaultValue.op = it->op;
+                defaultValue.value = it->rightSide;
+                argDefaultValues.push_back(defaultValue);
+                index++;
+            }
+        }
+        else {
+            auto lnode = static_pointer_cast<NLambdaInvokeFunction>(node);
+            auto index = 0;
+            for (auto argType : lnode->argTypes) {
+                string name = "_" + to_string(index + 1);
+                for (auto returnMode : functionReturnModes2) {
+                    auto calleeScope = getScope(compiler, returnMode);
+                    auto thisArgVar = make_shared<CNormalVar>(node->loc, calleeScope, argType, name, false, CVarType::Var_Private);
+                    _data[returnMode].thisArgVarsByName[name] = pair<int, shared_ptr<CNormalVar>>(index, thisArgVar);
+                    _data[returnMode].thisArgVars.push_back(thisArgVar);
+                }
+
+                FunctionDefaultValue defaultValue;
+                defaultValue.op = AssignOp::immutableCreate;
+                defaultValue.value = nullptr;
+                argDefaultValues.push_back(defaultValue);
+                index++;
+            }
+        }
+    }
 }
 
 NLambdaClassFunction::NLambdaClassFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) :
@@ -183,7 +239,7 @@ void NLambda::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<s
     auto lambdaName = TrBlock::nextVarName("lambda");
 
     // Create invoke
-    auto lambdaInvokeFunction = make_shared<NLambdaInvokeFunction>(loc, nullptr, "invoke", nullptr, nullptr, nullptr, arguments, block, nullptr, nullptr, nullptr);
+    lambdaInvokeFunction = make_shared<NLambdaInvokeFunction>(loc, nullptr, "invoke", nullptr, nullptr, nullptr, arguments, block, nullptr, nullptr, nullptr);
 
     // Create class
     auto lambdaArguments = make_shared<NodeList>();
@@ -203,6 +259,10 @@ void NLambda::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
 
 shared_ptr<CVar> NLambda::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     lambdaClassFunction->callerScope = scope;
+
+    if (returnType && returnType->category == CTC_Function) {
+        lambdaInvokeFunction->argTypes = returnType->argTypes;
+    }
 
     vector<shared_ptr<CVar>> statementVars;
     auto tempName = TrBlock::nextVarName("lambainit");

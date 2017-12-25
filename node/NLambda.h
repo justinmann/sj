@@ -13,6 +13,8 @@ class NLambdaInvokeFunction : public NFunction {
 public:
     NLambdaInvokeFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock);
     virtual shared_ptr<CFunctionDefinition> getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction);
+
+    vector<shared_ptr<CType>> argTypes;
 };
 
 class CLambdaInvokeFunctionDefinition : public CFunctionDefinition {
@@ -26,8 +28,8 @@ protected:
 class CLambdaInvokeFunction : public CFunction {
 public:
     CLambdaInvokeFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis);
-    virtual shared_ptr<CVar> getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<LocalVarScope>> localVarScopes, vector<string> ns, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode);
-}; 
+    virtual void initArgs(Compiler* compiler);
+};
 
 class NLambdaClassFunction : public NFunction {
 public:
@@ -101,6 +103,7 @@ private:
     shared_ptr<NBase> block;
     shared_ptr<NBase> initFunction;
     shared_ptr<NLambdaClassFunction> lambdaClassFunction;
+    shared_ptr<NLambdaInvokeFunction> lambdaInvokeFunction;
 };
 
 #endif /* NLambda_h */

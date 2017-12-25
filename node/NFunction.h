@@ -37,13 +37,13 @@ public:
     shared_ptr<NFunction> shared_from_this() { return static_pointer_cast<NFunction>(NBase::shared_from_this()); };
     
     string name;
+    vector<shared_ptr<NAssignment>> assignments;
 
 private:    
     shared_ptr<CTypeName> returnTypeName;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<CTypeNameList> interfaceTypeNames;
     NodeList invalid;
-    vector<shared_ptr<NAssignment>> assignments;
     vector<shared_ptr<NFunction>> functions;
     vector<shared_ptr<NInterface>> interfaces;
     vector<shared_ptr<NCCode>> ccodes;
@@ -106,7 +106,7 @@ public:
     void popNamespace(Compiler* compiler, vector<string> nsChild);
     void pushUnderscore(shared_ptr<CVar> underscoreVar);
     void popUnderscore(shared_ptr<CVar> underscoreVar);
-    shared_ptr<CVar> getUnderscore();
+    shared_ptr<CVar> getUnderscore(Compiler* compiler, shared_ptr<CScope> callerScope);
     vector<vector<string>> getImportNamespaces();
     vector<pair<string, vector<string>>> getImportNamespacesWithRenames();
 
@@ -131,7 +131,7 @@ public:
     CFunction(vector<pair<string, vector<string>>>& importNamespaces, weak_ptr<CBaseFunctionDefinition> definition, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CBaseFunction> parent, shared_ptr<vector<shared_ptr<CInterface>>> interfaces, vector<shared_ptr<NCCode>> ccodes, bool hasHeapThis, bool localThisVarsOkay);
     bool init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCaller);
     bool initBlocks(Compiler* compiler, shared_ptr<NFunction> node);
-    void initArgs(Compiler* compiler);
+    virtual void initArgs(Compiler* compiler);
 
     shared_ptr<CScope> getScope(Compiler* compiler, CTypeMode returnMode);
     int getArgIndex(const string& name, CTypeMode returnMode);
@@ -170,6 +170,7 @@ public:
     bool hasHeapThis;
 
 protected:
+    bool _hasInitArgs;
     shared_ptr<NFunction> node;
     map<CTypeMode, CFunctionData> _data;
 
@@ -185,7 +186,6 @@ private:
     bool _isReturnThis;
     shared_ptr<CTypes> _thisTypes;
     vector<pair<string, vector<string>>> importNamespaces;
-    bool _hasInitArgs;
 
     friend class CScope;
 };

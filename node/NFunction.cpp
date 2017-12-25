@@ -1992,8 +1992,13 @@ void CScope::popUnderscore(shared_ptr<CVar> underscoreVar) {
     underscoreVars.pop_back();
 }
 
-shared_ptr<CVar> CScope::getUnderscore() {
-    return underscoreVars.size() > 0 ? underscoreVars.back() : nullptr;
+shared_ptr<CVar> CScope::getUnderscore(Compiler* compiler, shared_ptr<CScope> callerScope) {
+    if (underscoreVars.size() > 0) {
+        return underscoreVars.back();
+    }
+    else {
+        return getCVar(compiler, callerScope, nullptr, "_1", VSM_LocalThisParent);
+    }
 }
 
 vector<vector<string>> CScope::getImportNamespaces() {
