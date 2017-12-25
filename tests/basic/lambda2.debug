@@ -248,7 +248,7 @@ global()'void {
   #error "UNKNOWN PLATFORM"
   #endif
   --cinclude--
-  do(this = do())
+  do()
   void
 }
 

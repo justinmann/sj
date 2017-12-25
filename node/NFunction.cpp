@@ -1710,6 +1710,17 @@ shared_ptr<CFunction> CFunctionDefinition::createFunction(vector<pair<string, ve
 }
 
 shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc loc, vector<shared_ptr<CType>>& templateTypes, weak_ptr<CFunction> funcParent) {
+    if (!funcParent.expired() && funcParent.lock()->definition.lock() != parent.lock()) {
+        if (parent.lock()->name == "global") {
+            // This function has been forced into the global section
+            auto t = funcParent.lock();
+            while (t->definition.lock() != parent.lock()) {
+                t = static_pointer_cast<CFunction>(t->parent.lock());
+            }
+            funcParent = t;
+        }
+    }
+
     shared_ptr<CFunction> func;
     auto funcParentPtr = funcParent.lock().get();
     auto it = _cfunctions[funcParentPtr].find(templateTypes);

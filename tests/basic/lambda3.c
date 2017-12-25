@@ -47,21 +47,19 @@ struct td_delete_cb_list {
 };
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
-#define sjs_do_typeId 3
-#define sjs_class_typeId 4
-#define cb_i32_typeId 5
-#define cb_i32_heap_typeId 6
-#define sjs_do_lambda1_typeId 7
-#define sjs_array_char_typeId 8
-#define sjs_string_typeId 9
+#define sjs_class_typeId 3
+#define cb_i32_typeId 4
+#define cb_i32_heap_typeId 5
+#define sjs_lambda1_typeId 6
+#define sjs_array_char_typeId 7
+#define sjs_string_typeId 8
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_interface sjs_interface;
-typedef struct td_sjs_do sjs_do;
 typedef struct td_sjs_class sjs_class;
 typedef struct td_cb_i32 cb_i32;
 typedef struct td_cb_i32_heap cb_i32_heap;
-typedef struct td_sjs_do_lambda1 sjs_do_lambda1;
+typedef struct td_sjs_lambda1 sjs_lambda1;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
 
@@ -72,10 +70,6 @@ struct td_sjs_object {
 struct td_sjs_interface {
     sjs_object* _parent;
     void* _vtbl;
-};
-
-struct td_sjs_do {
-    int _refCount;
 };
 
 struct td_sjs_class {
@@ -93,7 +87,7 @@ struct td_cb_i32_heap {
     void (*_destroy)(sjs_object*);
 };
 
-struct td_sjs_do_lambda1 {
+struct td_sjs_lambda1 {
     int _refCount;
     sjs_class lambdaparam1;
 };
@@ -127,7 +121,6 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
-sjs_do object1 = { -1 };
 int32_t result1;
 int32_t sjt_math1;
 int32_t sjt_math2;
@@ -147,17 +140,15 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_heap(sjs_class* _this);
 void sjf_debug_writeline(sjs_string* data);
-void sjf_do(sjs_do* _this);
-void sjf_do_copy(sjs_do* _this, sjs_do* _from);
-void sjf_do_destroy(sjs_do* _this);
-void sjf_do_lambda1(sjs_do_lambda1* _this, sjs_do* _parent);
-void sjf_do_lambda1_copy(sjs_do_lambda1* _this, sjs_do_lambda1* _from);
-void sjf_do_lambda1_destroy(sjs_do_lambda1* _this);
-void sjf_do_lambda1_heap(sjs_do_lambda1* _this, sjs_do* _parent);
-void sjf_do_lambda1_invoke(sjs_do_lambda1* _parent, int32_t* _return);
+void sjf_do(void);
 void sjf_func(cb_i32_heap cb, int32_t* _return);
 void sjf_i32_asstring(int32_t val, sjs_string* _return);
 void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
+void sjf_lambda1(sjs_lambda1* _this);
+void sjf_lambda1_copy(sjs_lambda1* _this, sjs_lambda1* _from);
+void sjf_lambda1_destroy(sjs_lambda1* _this);
+void sjf_lambda1_heap(sjs_lambda1* _this);
+void sjf_lambda1_invoke(sjs_lambda1* _parent, int32_t* _return);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -369,8 +360,8 @@ void sjf_debug_writeline(sjs_string* data) {
     #endif
 }
 
-void sjf_do(sjs_do* _this) {
-    sjs_do_lambda1* sjt_call1 = 0;
+void sjf_do(void) {
+    sjs_lambda1* sjt_call1 = 0;
     sjs_string sjt_call2 = { -1 };
     cb_i32_heap sjt_functionParam1;
     sjs_string* sjt_functionParam2 = 0;
@@ -381,17 +372,17 @@ void sjf_do(sjs_do* _this) {
     sjv_c._refCount = 1;
     sjv_c.x = 12;
     sjf_class(&sjv_c);
-    sjs_do_lambda1* lambainit1;
-    sjt_call1 = (sjs_do_lambda1*)malloc(sizeof(sjs_do_lambda1));
+    sjs_lambda1* lambainit1;
+    sjt_call1 = (sjs_lambda1*)malloc(sizeof(sjs_lambda1));
     sjt_call1->_refCount = 1;
     sjt_call1->lambdaparam1._refCount = 1;
     sjf_class_copy(&sjt_call1->lambdaparam1, &sjv_c);
-    sjf_do_lambda1_heap(sjt_call1, _this);
+    sjf_lambda1_heap(sjt_call1);
     lambainit1 = sjt_call1;
     sjt_functionParam1.inner._parent = (sjs_object*)lambainit1;
     sjt_functionParam1.inner._parent->_refCount++;
-    sjt_functionParam1._destroy = (void(*)(sjs_object*))sjf_do_lambda1_destroy;
-    sjt_functionParam1.inner._cb = (void(*)(sjs_object*, int32_t*))sjf_do_lambda1_invoke;
+    sjt_functionParam1._destroy = (void(*)(sjs_object*))sjf_lambda1_destroy;
+    sjt_functionParam1.inner._cb = (void(*)(sjs_object*, int32_t*))sjf_lambda1_invoke;
     sjf_func(sjt_functionParam1, &sjv_a);
     sjt_functionParam3 = sjv_a;
     sjf_i32_asstring(sjt_functionParam3, &sjt_call2);
@@ -401,7 +392,7 @@ void sjf_do(sjs_do* _this) {
     sjt_call1->_refCount--;
     if (sjt_call1->_refCount <= 0) {
         weakptr_release(sjt_call1);
-        sjf_do_lambda1_destroy(sjt_call1);
+        sjf_lambda1_destroy(sjt_call1);
         free(sjt_call1);
     }
     if ((uintptr_t)sjt_functionParam1.inner._parent > 1) {
@@ -413,35 +404,6 @@ void sjf_do(sjs_do* _this) {
     }
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
     if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
-}
-
-void sjf_do_copy(sjs_do* _this, sjs_do* _from) {
-}
-
-void sjf_do_destroy(sjs_do* _this) {
-}
-
-void sjf_do_lambda1(sjs_do_lambda1* _this, sjs_do* _parent) {
-}
-
-void sjf_do_lambda1_copy(sjs_do_lambda1* _this, sjs_do_lambda1* _from) {
-    _this->lambdaparam1._refCount = 1;
-    sjf_class_copy(&_this->lambdaparam1, &_from->lambdaparam1);
-}
-
-void sjf_do_lambda1_destroy(sjs_do_lambda1* _this) {
-}
-
-void sjf_do_lambda1_heap(sjs_do_lambda1* _this, sjs_do* _parent) {
-}
-
-void sjf_do_lambda1_invoke(sjs_do_lambda1* _parent, int32_t* _return) {
-    sjs_class* sjt_dot1 = 0;
-    sjs_do_lambda1* sjt_dot2 = 0;
-
-    sjt_dot2 = _parent;
-    sjt_dot1 = &sjt_dot2->lambdaparam1;
-    (*_return) = sjt_dot1->x;
 }
 
 void sjf_func(cb_i32_heap cb, int32_t* _return) {
@@ -508,6 +470,29 @@ void sjf_i32_asstring_heap(int32_t val, sjs_string** _return) {
     sjf_string_heap((*_return));
 }
 
+void sjf_lambda1(sjs_lambda1* _this) {
+}
+
+void sjf_lambda1_copy(sjs_lambda1* _this, sjs_lambda1* _from) {
+    _this->lambdaparam1._refCount = 1;
+    sjf_class_copy(&_this->lambdaparam1, &_from->lambdaparam1);
+}
+
+void sjf_lambda1_destroy(sjs_lambda1* _this) {
+}
+
+void sjf_lambda1_heap(sjs_lambda1* _this) {
+}
+
+void sjf_lambda1_invoke(sjs_lambda1* _parent, int32_t* _return) {
+    sjs_class* sjt_dot1 = 0;
+    sjs_lambda1* sjt_dot2 = 0;
+
+    sjt_dot2 = _parent;
+    sjt_dot1 = &sjt_dot2->lambdaparam1;
+    (*_return) = sjt_dot1->x;
+}
+
 void sjf_string(sjs_string* _this) {
 }
 
@@ -536,8 +521,7 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
-    object1._refCount = 1;
-    sjf_do(&object1);
+    sjf_do();
     main_destroy();
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -547,6 +531,4 @@ int main(int argc, char** argv) {
 }
 
 void main_destroy() {
-
-    if (object1._refCount == 1) { sjf_do_destroy(&object1); }
 }

@@ -81,6 +81,12 @@ NLambdaClassFunction::NLambdaClassFunction(CLoc loc, shared_ptr<CTypeName> retur
 
 shared_ptr<CFunctionDefinition> NLambdaClassFunction::getFunctionDefinition(Compiler *compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string> packageNamespace, shared_ptr<CFunctionDefinition> parentFunction) {
     auto functionDefinition = make_shared<CLambdaClassFunctionDefinition>();
+
+    // Force all lambda functions into the global function
+    while (parentFunction && parentFunction->name != "global") {
+        parentFunction = static_pointer_cast<CFunctionDefinition>(parentFunction->parent.lock());
+    }
+
     functionDefinition->init(compiler, importNamespaces, parentFunction, packageNamespace, name, nullptr, shared_from_this());
     return functionDefinition;
 }
@@ -119,8 +125,7 @@ shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CS
                 _data[CTM_Heap].thisArgVars.push_back(lambdaArgVar);
             }
 
-            auto parentFunction = static_pointer_cast<CFunction>(callerScope->function->parent.lock());
-            auto parentVar = make_shared<CParentVar>(loc, callerScope, nullptr, parentFunction);
+            auto parentVar = make_shared<CParentVar>(loc, callerScope, nullptr, shared_from_this());
             return lambdaArgVar->createForDot(parentVar);
         }
     }
