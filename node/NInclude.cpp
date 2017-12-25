@@ -15,6 +15,6 @@ void NInclude::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<
 void NInclude::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
 }
 
-shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NInclude::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     return nullptr;
 }

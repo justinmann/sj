@@ -141,7 +141,7 @@ void NSwitchClause::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, C
     }
 }
 
-shared_ptr<CVar> NSwitchClause::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NSwitchClause::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     assert(false);
     return nullptr;
 }
@@ -167,7 +167,7 @@ void NSwitch::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
     }
 }
 
-shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     shared_ptr<CVar> valueVar;
     string underscoreName;
     shared_ptr<CType> underscoreType;
@@ -176,7 +176,7 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
     shared_ptr<CSwitchClause> defaultClauseVar;
 
     if (value) {
-        valueVar = value->getVar(compiler, scope, CTM_Undefined);
+        valueVar = value->getVar(compiler, scope, nullptr, CTM_Undefined);
         if (!valueVar) {
             return nullptr;
         }
@@ -189,7 +189,7 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
     for (auto clause : clauses) {
         auto localVarScope = make_shared<LocalVarScope>();
         scope->pushLocalVarScope(localVarScope);
-        auto blockVar = clause->block->getVar(compiler, scope, CTM_Undefined);
+        auto blockVar = clause->block->getVar(compiler, scope, nullptr, CTM_Undefined);
         scope->popLocalVarScope(localVarScope);
         if (!blockVar) {
             return nullptr;
@@ -199,7 +199,7 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
             if (underscoreVar) {
                 scope->pushUnderscore(underscoreVar);
             }
-            auto condVar = clause->condition->getVar(compiler, scope, CTM_Undefined);
+            auto condVar = clause->condition->getVar(compiler, scope, nullptr, CTM_Undefined);
             if (underscoreVar) {
                 scope->popUnderscore(underscoreVar);
             }
@@ -224,7 +224,7 @@ shared_ptr<CVar> NSwitch::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
                 if (underscoreVar) {
                     scope->pushUnderscore(underscoreVar);
                 }
-                condVar = t.getVar(compiler, scope, nullptr, CTM_Undefined);
+                condVar = t.getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
                 if (underscoreVar) {
                     scope->popUnderscore(underscoreVar);
                 }

@@ -57,11 +57,11 @@ void NBlock::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMod
     }
 }
 
-shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NBlock::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     vector<shared_ptr<CVar>> statementVars;
     for (auto it : statements) {
         auto isLastStatement = it == statements.back();
-        auto resultVar = it->getVar(compiler, scope, isLastStatement ? returnMode : CTM_Undefined);
+        auto resultVar = it->getVar(compiler, scope, isLastStatement ? returnType : nullptr, isLastStatement ? returnMode : CTM_Undefined);
         if (resultVar) {
             statementVars.push_back(resultVar);
         }

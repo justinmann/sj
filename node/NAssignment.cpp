@@ -116,7 +116,7 @@ void NAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTy
     }
 }
 
-shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     // function vars are not created here, this is only for local vars
     if (inFunctionDeclaration) {
         return nullptr;
@@ -126,7 +126,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
     shared_ptr<CVar> parentVar = nullptr;
     if (var) {
-        parentVar = var->getVar(compiler, scope, nullptr, returnMode);
+        parentVar = var->getVar(compiler, scope, nullptr, nullptr, returnMode);
         if (!parentVar) {
             return nullptr;
         }
@@ -147,7 +147,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             returnMode = CTM_Stack;
         }
 
-        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, CallArgument::createList(rightSide->getVar(compiler, scope, CTM_Undefined)), false, nullptr, returnMode);
+        auto parameters = CCallVar::getParameters(compiler, loc, scope, setFunction, CallArgument::createList(rightSide->getVar(compiler, scope, nullptr, CTM_Undefined)), false, nullptr, returnMode);
         return make_shared<CCallVar>(loc, scope, parentVar, parameters, setFunction, returnMode);
     }
     else {
@@ -158,7 +158,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         
         shared_ptr<CStoreVar> leftStoreVar;
         if (var) {
-            auto dotVar = var->getVar(compiler, scope, nullptr, CTM_Undefined);
+            auto dotVar = var->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
             if (!dotVar) {
                 return nullptr;
             }
@@ -273,7 +273,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
             return nullptr;
         }
 
-        auto rightVar = rightSide->getVar(compiler, scope, leftType->typeMode);
+        auto rightVar = rightSide->getVar(compiler, scope, leftType, leftType->typeMode);
         if (!rightVar) {
             assert(compiler->errors.size() > 0);
             return nullptr;
@@ -300,7 +300,7 @@ shared_ptr<CType> NAssignment::getType(Compiler* compiler, shared_ptr<CScope> sc
         return nullptr;
     }
     
-    auto rightVar = rightSide->getVar(compiler, scope, returnMode);
+    auto rightVar = rightSide->getVar(compiler, scope, nullptr, returnMode);
     if (!rightVar) {
         compiler->addError(loc, CErrorCode::Internal, "no right side");
         return nullptr;

@@ -144,7 +144,7 @@ shared_ptr<CFunctionDefinition> NFunction::getFunctionDefinition(Compiler *compi
     return functionDefinition;
 }
 
-shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NFunction::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (invalid.size() > 0) {
         compiler->addError(loc, CErrorCode::InvalidFunction, "function init block can only contain assignments or function definitions");
         return nullptr;
@@ -313,27 +313,27 @@ bool CFunction::initBlocks(Compiler* compiler, shared_ptr<NFunction> node) {
         for (auto returnMode : functionReturnModes) {
             auto calleeScope = getScope(compiler, returnMode);
 
-            _data[returnMode].blockVar = node->block->getVar(compiler, calleeScope, returnMode);
+            _data[returnMode].blockVar = node->block->getVar(compiler, calleeScope, nullptr, returnMode);
             if (!_data[returnMode].blockVar) {
                 return false;
             }
 
             if (node->copyBlock) {
-                _data[returnMode].copyVar = node->copyBlock->getVar(compiler, calleeScope, CTM_Undefined);
+                _data[returnMode].copyVar = node->copyBlock->getVar(compiler, calleeScope, nullptr, CTM_Undefined);
                 if (!_data[returnMode].copyVar) {
                     return false;
                 }
             }
 
             if (node->catchBlock) {
-                _data[returnMode].catchVar = node->catchBlock->getVar(compiler, calleeScope, returnMode);
+                _data[returnMode].catchVar = node->catchBlock->getVar(compiler, calleeScope, nullptr, returnMode);
                 if (!_data[returnMode].catchVar) {
                     return false;
                 }
             }
 
             if (node->destroyBlock) {
-                _data[returnMode].destroyVar = node->destroyBlock->getVar(compiler, calleeScope, CTM_Undefined);
+                _data[returnMode].destroyVar = node->destroyBlock->getVar(compiler, calleeScope, nullptr, CTM_Undefined);
                 if (!_data[returnMode].destroyVar) {
                     return false;
                 }

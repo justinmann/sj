@@ -104,13 +104,13 @@ void NFor::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode 
     body->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    auto startVar = start->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto startVar = start->getVar(compiler, scope, compiler->typeI32, CTM_Undefined);
     if (!startVar) {
         return nullptr;
     }
 
-    auto endVar = end->getVar(compiler, scope, CTM_Undefined);
+    auto endVar = end->getVar(compiler, scope, compiler->typeI32, CTM_Undefined);
     if (!endVar) {
         return nullptr;
     }
@@ -123,7 +123,7 @@ shared_ptr<CVar> NFor::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
     auto forLocalVarScope = make_shared<LocalVarScope>();
     scope->pushLocalVarScope(forLocalVarScope);
     scope->setLocalVar(compiler, loc, indexVar, false);
-    auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
+    auto bodyVar = body->getVar(compiler, scope, nullptr, CTM_Undefined);
     scope->popLocalVarScope(forLocalVarScope);
 
     if (!bodyVar) {

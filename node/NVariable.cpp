@@ -1,10 +1,10 @@
 #include "Node.h"
 
-shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> leftType, CTypeMode returnMode) {
     auto key1 = scope.get();
     
     if (_var.find(key1) == _var.end()) {
-        _var[key1] = getVarImpl(compiler, scope, dotVar, returnMode);
+        _var[key1] = getVarImpl(compiler, scope, dotVar, leftType, returnMode);
     }
     return _var[key1];
 }
@@ -13,7 +13,7 @@ NVariable::NVariable(CLoc loc, const char* name, shared_ptr<CTypeNameList> templ
     boost::algorithm::to_lower(this->name);
 }
 
-shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     auto varScope = scope;
     if (dotVar) {
         auto dotType = dotVar->getType(compiler);

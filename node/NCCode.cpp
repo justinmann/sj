@@ -662,7 +662,7 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     }
 }
 
-shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType_, CTypeMode returnMode) {
     vector<shared_ptr<CBaseFunction>> functions;
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = nullptr;

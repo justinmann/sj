@@ -11,7 +11,7 @@ void NDot::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode 
     right->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     vector<string> ns;
     if (dotVar == nullptr) {
         auto leftNVar = dynamic_pointer_cast<NVariable>(left);
@@ -22,7 +22,7 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
 
     if (ns.size() > 0) {
         scope->pushNamespace(compiler, ns);
-        auto rightVar = right->getVar(compiler, scope, nullptr, returnMode);
+        auto rightVar = right->getVar(compiler, scope, nullptr, returnType, returnMode);
         scope->popNamespace(compiler, ns);
         if (!rightVar) {
             compiler->addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
@@ -31,7 +31,7 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
         return rightVar;
     }
     else {
-        auto leftVar = left->getVar(compiler, scope, dotVar, CTM_Undefined);
+        auto leftVar = left->getVar(compiler, scope, dotVar, nullptr, CTM_Undefined);
         if (!leftVar) {
             compiler->addError(loc, CErrorCode::InvalidDot, "left side of dot has no value");
             return nullptr;
@@ -50,7 +50,7 @@ shared_ptr<CVar> NDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, 
         if (ns.size() > 0) {
             scope->pushNamespace(compiler, ns);
         }
-        auto rightVar = right->getVar(compiler, scope, leftVar, returnMode);
+        auto rightVar = right->getVar(compiler, scope, leftVar, leftType, returnMode);
         if (ns.size() > 0) {
             scope->popNamespace(compiler, ns);
         }

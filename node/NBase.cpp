@@ -22,11 +22,11 @@ void NBase::initVars(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode ret
     }
 }
 
-shared_ptr<CVar> NBase::getVar(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NBase::getVar(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> leftType, CTypeMode returnMode) {
     assert(scope != nullptr);
     auto key1 = scope.get();
     if (_var.find(key1) == _var.end()) {
-        _var[key1] = getVarImpl(compiler, scope, returnMode);
+        _var[key1] = getVarImpl(compiler, scope, leftType, returnMode);
     }
     return _var[key1];
 }

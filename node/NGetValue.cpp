@@ -89,8 +89,8 @@ void NGetValue::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CType
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, scope, returnMode);
+shared_ptr<CVar> NGetValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, returnType, returnMode);
     if (!leftVar) {
         return nullptr;
     }

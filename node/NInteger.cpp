@@ -62,7 +62,7 @@ NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Intege
     }
 }
 
-shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (strValue.size() > 0) {
         if (type == NIT_I32) {
             char* e;

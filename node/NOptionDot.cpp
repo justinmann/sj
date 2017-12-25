@@ -10,8 +10,8 @@ void NOptionDot::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTyp
     right->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, scope, dotVar, CTM_Undefined);
+shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = left->getVar(compiler, scope, dotVar, nullptr, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
@@ -22,7 +22,7 @@ shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> s
     }
 
     if (!leftType->isOption) {
-        auto rightVar = right->getVar(compiler, scope, leftVar, returnMode);
+        auto rightVar = right->getVar(compiler, scope, leftVar, leftType, returnMode);
         if (!rightVar) {
             compiler->addError(loc, CErrorCode::InvalidDot, "right side of dot has no value");
             return nullptr;
@@ -32,14 +32,14 @@ shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> s
     else {
         auto getValueNode = make_shared<NGetValue>(loc, left, true);
         auto localDotNode = make_shared<NDot>(loc, getValueNode, right);
-        auto localDotVar = localDotNode->getVar(compiler, scope, dotVar, CTM_Undefined);
+        auto localDotVar = localDotNode->getVar(compiler, scope, dotVar, nullptr, CTM_Undefined);
         if (!localDotVar) {
             return nullptr;
         }
         auto ctype = localDotVar->getType(compiler);
         if (ctype == compiler->typeVoid) {
             auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmptyOrValid>(loc, left, false), localDotNode, nullptr);
-            return ifNode->getVar(compiler, scope, dotVar, returnMode);
+            return ifNode->getVar(compiler, scope, dotVar, nullptr, returnMode);
         }
         else {
             shared_ptr<NBase> valueNode;
@@ -58,7 +58,7 @@ shared_ptr<CVar> NOptionDot::getVarImpl(Compiler* compiler, shared_ptr<CScope> s
 
             auto emptyNode = make_shared<NEmpty>(loc, make_shared<CTypeName>(ctype));
             auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmptyOrValid>(loc, left, false), valueNode, emptyNode);
-            return ifNode->getVar(compiler, scope, dotVar, returnMode);
+            return ifNode->getVar(compiler, scope, dotVar, leftType, returnMode);
         }
     }
 }

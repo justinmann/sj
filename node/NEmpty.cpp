@@ -25,7 +25,7 @@ NEmpty::NEmpty(CLoc loc, shared_ptr<CTypeName> typeName_) : NVariableBase(NodeTy
     }
 }
 
-shared_ptr<CVar> NEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     auto type = scope->getVarType(loc, compiler, typeName, returnMode);
     if (!type) {
         compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", typeName->getFullName().c_str());

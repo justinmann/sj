@@ -95,9 +95,9 @@ void NCompare::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeM
     rightSide->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = leftSide->getVar(compiler, scope, CTM_Undefined);
-    auto rightVar = rightSide->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+    auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
     
     if (!leftVar || !rightVar) {
         return nullptr;
@@ -120,27 +120,27 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         switch (op) {
             case NCompareOp::EQ:
                 operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             case NCompareOp::NE:
                 operatorOverloadNode =  make_shared<NNot>(loc, make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isEqual", nullptr, make_shared<NodeList>(rightSide))), true);
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             case NCompareOp::LT:
                 operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isLess", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             case NCompareOp::LE:
                 operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isLessOrEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             case NCompareOp::GT:
                 operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isGreater", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             case NCompareOp::GE:
                 operatorOverloadNode = make_shared<NDot>(loc, leftNVar, make_shared<NCall>(loc, "isGreaterOrEqual", nullptr, make_shared<NodeList>(rightSide)));
-                return operatorOverloadNode->getVar(compiler, scope, returnMode);
+                return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
                 break;
             default:
                 assert(false);

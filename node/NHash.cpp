@@ -53,7 +53,7 @@ void NHash::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     }
 }
 
-shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (returnMode != CTM_Heap) {
         returnMode = CTM_Stack;
     }
@@ -65,7 +65,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
 
     auto firstPair = elements.front();
     // create and store array value
-    auto keyVar = firstPair.first->getVar(compiler, scope, CTM_Undefined);
+    auto keyVar = firstPair.first->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!keyVar) {
         compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first key element");
         return nullptr;
@@ -76,7 +76,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    auto valueVar = firstPair.second->getVar(compiler, scope, CTM_Undefined);
+    auto valueVar = firstPair.second->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!valueVar) {
         compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first value element");
         return nullptr;
@@ -126,7 +126,7 @@ shared_ptr<CVar> NHash::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     auto index = 0;
     vector<shared_ptr<CVar>> setAtVars;
     for (auto element : elements) {
-        auto setAtParameters = CCallVar::getParameters(compiler, loc, scope, setAtCallee, CallArgument::createList(element.first->getVar(compiler, scope, CTM_Undefined), element.second->getVar(compiler, scope, CTM_Undefined)), false, nullptr, CTM_Stack);
+        auto setAtParameters = CCallVar::getParameters(compiler, loc, scope, setAtCallee, CallArgument::createList(element.first->getVar(compiler, scope, nullptr, CTM_Undefined), element.second->getVar(compiler, scope, nullptr, CTM_Undefined)), false, nullptr, CTM_Stack);
         auto setAtVar = make_shared<CCallVar>(loc, scope, tempVar, setAtParameters, setAtCallee, CTM_Stack);
         if (!setAtVar) {
             return nullptr;

@@ -108,7 +108,7 @@ void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     scope->popNamespace(compiler, enumNamespace);
 }
 
-shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NEnum::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     auto ctypes = compiler->types[name];
 
     // create constants in a package namespace

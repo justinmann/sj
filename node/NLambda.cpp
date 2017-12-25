@@ -116,7 +116,7 @@ void CLambdaCallVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* 
 NLambdaCall::NLambdaCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NLambdaClassFunction> lambdaClassFunction) :
     NCall(loc, name, templateTypeNames, arguments), lambdaClassFunction(lambdaClassFunction) {}
 
-shared_ptr<CVar> NLambdaCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NLambdaCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     bool isHelperFunction = false;
     auto callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
     if (!callee) {
@@ -201,12 +201,12 @@ void NLambda::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
     initFunction->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NLambda::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NLambda::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     lambdaClassFunction->callerScope = scope;
 
     vector<shared_ptr<CVar>> statementVars;
     auto tempName = TrBlock::nextVarName("lambainit");
-    auto initVar = initFunction->getVar(compiler, scope, returnMode);
+    auto initVar = initFunction->getVar(compiler, scope, nullptr, returnMode);
     auto initType = initVar->getType(compiler);
     auto tempStoreVar = make_shared<CTempStoreVar>(loc, scope, initType, tempName);
     auto assignVar = make_shared<CAssignVar>(loc, scope, AssignOp::immutableCreate, tempStoreVar, initVar);
@@ -214,7 +214,7 @@ shared_ptr<CVar> NLambda::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
 
     auto tempVar = make_shared<CTempVar>(loc, scope, initType->typeMode == CTM_Heap ? initType : initType->getTempType(), tempName);
     auto getInvokeCallback = make_shared<NVariable>(loc, "invoke", nullptr);
-    auto rightVar = getInvokeCallback->getVar(compiler, scope, tempVar, returnMode);
+    auto rightVar = getInvokeCallback->getVar(compiler, scope, tempVar, nullptr, returnMode);
     statementVars.push_back(rightVar);
 
     return  make_shared<CBlockVar>(loc, scope, statementVars);

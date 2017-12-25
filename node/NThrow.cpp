@@ -24,8 +24,8 @@ void NThrow::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMod
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NThrow::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    auto var = node->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NThrow::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto var = node->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!var) {
         return nullptr;
     }

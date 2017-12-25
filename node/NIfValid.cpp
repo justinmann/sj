@@ -113,7 +113,7 @@ void NIfValid::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeM
     }
 }
 
-shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     vector<CIfParameter> optionalVars;
     
     for (auto var : *vars) {
@@ -121,7 +121,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             CIfParameter param;
             auto cname = TrBlock::nextVarName("ifValue");
             auto assignment = static_pointer_cast<NAssignment>(var);
-            auto optionalVar = assignment->rightSide->getVar(compiler, scope, CTM_Undefined);
+            auto optionalVar = assignment->rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
             if (!optionalVar) {
                 return nullptr;
             }
@@ -140,7 +140,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             CIfParameter param;
             auto cname = TrBlock::nextVarName("ifValue");
             auto variable = static_pointer_cast<NVariable>(var);
-            auto optionalVar = variable->getVar(compiler, scope, nullptr, CTM_Undefined);
+            auto optionalVar = variable->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
             if (!optionalVar) {
                 return nullptr;
             }
@@ -166,7 +166,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
     if (elseBlock) {
         elseLocalVarScope = make_shared<LocalVarScope>();
         scope->pushLocalVarScope(elseLocalVarScope);
-        elseVar = elseBlock->getVar(compiler, scope, returnMode);
+        elseVar = elseBlock->getVar(compiler, scope, returnType, returnMode);
         scope->popLocalVarScope(elseLocalVarScope);
     }
     
@@ -179,7 +179,7 @@ shared_ptr<CVar> NIfValid::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
         scope->setLocalVar(compiler, loc, optionalVar.storeVar, true);
     }
     
-    ifVar = ifBlock->getVar(compiler, scope, returnMode);
+    ifVar = ifBlock->getVar(compiler, scope, returnType, returnMode);
     scope->popLocalVarScope(ifLocalVarScope);
     if (ifVar == nullptr) {
         return nullptr;

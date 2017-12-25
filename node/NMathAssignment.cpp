@@ -23,8 +23,8 @@ void NMathAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope,
     }
 }
 
-shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    auto leftVar = leftSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
     if (!leftVar) {
         compiler->addError(loc, CErrorCode::InvalidVariable, "left side is empty");
         return nullptr;
@@ -41,7 +41,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
     if (!leftType->parent.expired()) {
         string rightTypeName;
         if (numberSide) {
-            auto numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+            auto numberVar = numberSide->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
             auto numberType = numberVar->getType(compiler);
             if (!CType::isSameExceptMode(leftType, numberType)) {
                 rightTypeName = numberType->valueName;
@@ -52,27 +52,27 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
         switch (op) {
         case NMathAssignmentOp::NMAO_Inc:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "increment", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Dec:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "decrement", nullptr, nullptr));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Add:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "add" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Sub:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "subtract" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Mul:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "multiply" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         case NMathAssignmentOp::NMAO_Div:
             operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, "divide" + rightTypeName, nullptr, make_shared<NodeList>(numberSide)));
-            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
+            rightVar = operatorOverloadNode->getVar(compiler, scope, nullptr, nullptr, returnMode);
             break;
         default:
             assert(false);
@@ -82,7 +82,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
     else {
         shared_ptr<CVar> numberVar;
         if (numberSide) {
-            numberVar = numberSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+            numberVar = numberSide->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
             if (!numberVar) {
                 return nullptr;
             }

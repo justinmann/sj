@@ -83,8 +83,8 @@ void NValue::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMod
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = node->getVar(compiler, scope, returnMode);
+shared_ptr<CVar> NValue::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = node->getVar(compiler, scope, returnType ? returnType->getValueType() : nullptr, returnMode);
     if (!leftVar) {
         return nullptr;
     }

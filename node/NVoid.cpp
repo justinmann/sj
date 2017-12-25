@@ -15,7 +15,7 @@ void CVoidVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
     ss << "void";
 }
 
-shared_ptr<CVar> NVoid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NVoid::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     return make_shared<CVoidVar>(loc, nullptr);
 }
 

@@ -10,8 +10,8 @@ void NGetOrElse::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTyp
     right->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NGetOrElse::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, scope, dotVar, returnMode);
+shared_ptr<CVar> NGetOrElse::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = left->getVar(compiler, scope, dotVar, nullptr, returnMode);
     if (!leftVar) {
         return nullptr;
     }
@@ -24,7 +24,7 @@ shared_ptr<CVar> NGetOrElse::getVarImpl(Compiler* compiler, shared_ptr<CScope> s
     if (leftType->isOption) {
         auto getValueNode = make_shared<NGetValue>(loc, left, true);
         auto ifNode = make_shared<NIf>(loc, make_shared<NIsEmptyOrValid>(loc, left, false), getValueNode, right, true);
-        return ifNode->getVar(compiler, scope, dotVar, returnMode);
+        return ifNode->getVar(compiler, scope, dotVar, leftType, returnMode);
     }
     else {
         return leftVar;

@@ -110,9 +110,9 @@ void NMath::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     rightSide->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = leftSide->getVar(compiler, scope, nullptr, CTM_Undefined);
-    auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
+shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = leftSide->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
+    auto rightVar = rightSide->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
 
     if (!leftVar || !rightVar) {
         return nullptr;
@@ -155,7 +155,7 @@ shared_ptr<CVar> NMath::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     auto cfunction = functionName.size() > 0 ? NCall::getCFunction(compiler, loc, scope, leftVar, functionName, nullptr, returnMode, &isHelperFunction) : nullptr;
     if (cfunction) {
         operatorOverloadNode = make_shared<NDot>(loc, leftSide, make_shared<NCall>(loc, functionName, nullptr, make_shared<NodeList>(rightSide)));
-        return operatorOverloadNode->getVar(compiler, scope, returnMode);
+        return operatorOverloadNode->getVar(compiler, scope, nullptr, returnMode);
     } else {
         if (!CType::isSameExceptMode(leftType, rightType)) {
             compiler->addError(loc, CErrorCode::TypeMismatch, "left type '%s' does not match right type '%s' and no helper function '%s'", leftType->fullName.c_str(), rightType->fullName.c_str(), functionName.c_str());

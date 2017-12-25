@@ -119,8 +119,8 @@ void NIf::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode r
     }
 }
 
-shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto condVar = condition->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto condVar = condition->getVar(compiler, scope, compiler->typeBool, CTM_Undefined);
     if (condVar == nullptr) {
         return nullptr;
     }
@@ -132,7 +132,7 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
             elseLocalVarScope = make_shared<LocalVarScope>();
             scope->pushLocalVarScope(elseLocalVarScope);
         }
-        elseVar = elseBlock->getVar(compiler, scope, returnMode);
+        elseVar = elseBlock->getVar(compiler, scope, returnType, returnMode);
         if (useLocalVarScope) {
             scope->popLocalVarScope(elseLocalVarScope);
         }
@@ -143,7 +143,7 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
         ifLocalVarScope = make_shared<LocalVarScope>();
         scope->pushLocalVarScope(ifLocalVarScope);
     }
-    auto ifVar = ifBlock->getVar(compiler, scope, returnMode);
+    auto ifVar = ifBlock->getVar(compiler, scope, returnType, returnMode);
     if (useLocalVarScope) {
         scope->popLocalVarScope(ifLocalVarScope);
     }

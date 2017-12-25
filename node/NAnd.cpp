@@ -38,12 +38,12 @@ void NAnd::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode 
     right->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, scope, nullptr, CTM_Undefined);
+shared_ptr<CVar> NAnd::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = left->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
-    auto rightVar = right->getVar(compiler, scope, nullptr, CTM_Undefined);
+    auto rightVar = right->getVar(compiler, scope, nullptr, nullptr, CTM_Undefined);
     if (!rightVar) {
         return nullptr;
     }

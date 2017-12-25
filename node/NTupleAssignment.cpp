@@ -18,8 +18,8 @@ void NTupleAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope
     }
 }
 
-shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto rightVar = rightSide->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto rightVar = rightSide->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!rightVar) {
         return nullptr;
     }
@@ -42,7 +42,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
 
     auto tempVarName = TrBlock::nextVarName("tupleResult");
     vector<shared_ptr<CVar>> statements;
-    auto getTupleVar = NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, AssignOp::immutableCreate).getVar(compiler, scope, CTM_Undefined);
+    auto getTupleVar = NAssignment(loc, nullptr, nullptr, tempVarName.c_str(), rightSide, AssignOp::immutableCreate).getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!getTupleVar) {
         return nullptr;
     }
@@ -52,7 +52,7 @@ shared_ptr<CVar> NTupleAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSc
     for (auto arg : *args) {
         auto rightArg = rightFunction->getArgVar(argIndex, rightType->typeMode);
         auto getValue = make_shared<NDot>(loc, make_shared<NVariable>(loc, tempVarName.c_str(), nullptr), make_shared<NVariable>(loc, rightArg->name.c_str(), nullptr));
-        auto setValueVar = NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->op).getVar(compiler, scope, CTM_Undefined);
+        auto setValueVar = NAssignment(loc, arg->var, arg->typeName, arg->name.c_str(), getValue, arg->op).getVar(compiler, scope, nullptr, CTM_Undefined);
         if (!setValueVar) {
             return nullptr;
         }

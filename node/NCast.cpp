@@ -88,8 +88,8 @@ void NCast::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto var = node->getVar(compiler, scope, nullptr, returnMode);
+shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto var = node->getVar(compiler, scope, nullptr, nullptr, returnMode);
     if (!var) {
         return nullptr;
     }

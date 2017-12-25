@@ -85,7 +85,7 @@ shared_ptr<vector<FunctionParameter>> CCallVar::getParameters(Compiler* compiler
                 assert(it.value->nodeType != NodeType_Assignment);
                 (*parameters)[argIndex].isDefaultValue = true;
                 (*parameters)[argIndex].op = it.op;
-                (*parameters)[argIndex].var = it.value->getVar(compiler, calleeScope, CTM_Undefined);
+                (*parameters)[argIndex].var = it.value->getVar(compiler, calleeScope, nullptr, CTM_Undefined);
             }
             argIndex++;
         }
@@ -328,7 +328,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
     return nullptr;
 }
 
-shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     bool isHelperFunction = false;
     auto callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
     if (!callee) {
@@ -373,8 +373,9 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
                 return nullptr;
             }
 
+            auto leftType = callee->getArgVar(index, returnMode)->getType(compiler);
             assert(parameterAssignment->inFunctionDeclaration);
-            CallArgument callArgument(parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, CTM_Undefined));
+            CallArgument callArgument(parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[index] = callArgument;
             hasSetByName = true;
         }
@@ -389,7 +390,8 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
                 return nullptr;
             }
 
-            CallArgument callArgument(it->getVar(compiler, scope, CTM_Undefined));
+            auto leftType = callee->getArgVar(argIndex, returnMode)->getType(compiler);
+            CallArgument callArgument(it->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[argIndex] = callArgument;
         }
         argIndex++;

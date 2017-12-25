@@ -167,7 +167,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                 globalFunction = static_pointer_cast<CFunction>(currentFunction->getCFunction(this, CLoc::undefined, "global", nullptr, nullptr, CTM_Stack));
 
                 state = CompilerState::Compile;
-                anonFunction->getVar(this, currentScope, CTM_Stack);
+                anonFunction->getVar(this, currentScope, nullptr, CTM_Stack);
                 auto globalScope = globalFunction->getScope(this, CTM_Stack);
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "mainLoop", globalScope, nullptr, CTM_Stack));
 #ifdef VAR_OUTPUT

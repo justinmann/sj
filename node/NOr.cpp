@@ -23,7 +23,7 @@ void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock,
 
 void COrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
     leftVar->dump(compiler, functions, ss, level);
-    ss << " && ";
+    ss << " || ";
     rightVar->dump(compiler, functions, ss, level);
 }
 
@@ -38,12 +38,12 @@ void NOr::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode r
     right->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto leftVar = left->getVar(compiler, scope, nullptr, CTM_Undefined);
+shared_ptr<CVar> NOr::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto leftVar = left->getVar(compiler, scope, nullptr, compiler->typeBool, CTM_Undefined);
     if (!leftVar) {
         return nullptr;
     }
-    auto rightVar = right->getVar(compiler, scope, nullptr, CTM_Undefined);
+    auto rightVar = right->getVar(compiler, scope, nullptr, compiler->typeBool, CTM_Undefined);
     if (!rightVar) {
         return nullptr;
     }

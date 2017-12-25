@@ -65,7 +65,7 @@ void NArray::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMod
     }
 }
 
-shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (returnMode != CTM_Heap) {
         returnMode = CTM_Stack;
     }
@@ -76,7 +76,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     }
 
     // create and store array value
-    auto elementVar = firstElement->getVar(compiler, scope, CTM_Undefined);
+    auto elementVar = firstElement->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!elementVar) {
         compiler->addError(loc, CErrorCode::InvalidType, "cannot determine type of first element");
         return nullptr;
@@ -110,7 +110,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     auto index = 0;
     vector<shared_ptr<CVar>> initAtVars;
     for (auto element : *elements) {
-        auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(index)), element->getVar(compiler, scope, CTM_Undefined)), false, nullptr, CTM_Stack);
+        auto initAtParameters = CCallVar::getParameters(compiler, loc, scope, initAtCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(index)), element->getVar(compiler, scope, nullptr, CTM_Undefined)), false, nullptr, CTM_Stack);
         auto initAtVar = make_shared<CCallVar>(loc, scope, tempVar, initAtParameters, initAtCallee, CTM_Stack);
         if (!initAtVar) {
             return nullptr;

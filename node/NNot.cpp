@@ -44,8 +44,8 @@ void NNot::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode 
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
-    auto var = node->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NNot::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto var = node->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!var) {
         return nullptr;
     }

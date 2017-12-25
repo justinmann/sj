@@ -47,7 +47,7 @@ void CParentVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>
     ss << "parent";
 }
 
-shared_ptr<CVar> NParent::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, CTypeMode returnMode) {
+shared_ptr<CVar> NParent::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (dotVar) {
         compiler->addError(loc, CErrorCode::InvalidVariable, "this must be the first var in a dot chain");
         return nullptr;

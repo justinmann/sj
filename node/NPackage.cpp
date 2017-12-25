@@ -18,12 +18,12 @@ void NPackage::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeM
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NPackage::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NPackage::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     auto importScope = make_shared<ImportScope>();
     importScope->importNamespaces.push_back(make_pair(string(""), packageNamespace));
     scope->pushImportScope(importScope);
 
-    auto var = node->getVar(compiler, scope, returnMode);
+    auto var = node->getVar(compiler, scope, returnType, returnMode);
 
     scope->popImportScope(importScope);
 

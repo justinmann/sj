@@ -38,11 +38,11 @@ void NImport::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMo
     node->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NImport::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
+shared_ptr<CVar> NImport::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
     auto importScope = make_shared<ImportScope>();
     importScope->importNamespaces = importNamespaces;
     scope->pushImportScope(importScope);
-    auto var = node->getVar(compiler, scope, returnMode);
+    auto var = node->getVar(compiler, scope, returnType, returnMode);
     scope->popImportScope(importScope);
     return make_shared<CImportVar>(loc, scope, var, importScope);
 }

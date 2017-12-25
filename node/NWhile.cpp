@@ -39,13 +39,13 @@ void NWhile::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMod
     body->initVars(compiler, scope, returnMode);
 }
 
-shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    auto condVar = cond->getVar(compiler, scope, CTM_Undefined);
+shared_ptr<CVar> NWhile::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
+    auto condVar = cond->getVar(compiler, scope, compiler->typeBool, CTM_Undefined);
     if (!condVar) {
         return nullptr;
     }
     
-    auto bodyVar = body->getVar(compiler, scope, CTM_Undefined);
+    auto bodyVar = body->getVar(compiler, scope, nullptr, CTM_Undefined);
     if (!bodyVar) {
         return nullptr;
     }
