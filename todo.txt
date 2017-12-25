@@ -1,48 +1,30 @@
--- demo --
-* nau
-* blur teapot
-* text editor on shape
-
--- nau --
-* register by id
-* find by id
-* people image keep aspect ratio
-* animate camera on person click
-* main scene
-* forest scene
-
 -- ui --
-* load obj file: http://kixor.net/dev/objloader/ https://code.google.com/archive/p/saitoobjloader/ http://people.sc.fsu.edu/%7Ejburkardt/data/obj/obj.html
-* sphere - default to front of sphere being middle of texture
-* center text
-* slider
-* dropdown
 * wrapping text
 * text input
+* depth of field effect
+* style switch based on #element.type & #element.class
 
 -- language --
-* sublime syntax highlighting
-* improve debug out for interfaces
-* lambda
+* this used in default var
+* find memory leak
+* property
+* logger
+* clone operator to do full copy
+* syntax highlighting
+* make sure debug out is compilable
 
--- lambda --
-count := 0
-a : [1, 2, 3]
-a.map((y : 'i32) {
-	count += y
-})
-===
-count := 0
-a : [1, 2, 3]
-lambda1(
-	count := 'i32
-	invoke(y : 'i32) {
-		count += y
-	}
-) 
-lambda1 : lambda1(count := count)
-a.map(lambda1.invoke)
-count = lambda1.count
+-- property --
+foo : 'i32 { get; }	// must be set during init
+foo : 1 {
+	get { } : 1 or := 1
+}
+foo := 1 {
+	get { } set { _ // new }
+}
+foo := 0 {
+	changed { _ // old, _foo // new } 
+}
 
+-- notes --
 * fix mac build:
 brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
