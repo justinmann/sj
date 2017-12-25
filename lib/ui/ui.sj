@@ -1,5 +1,4 @@
 include "init.sj"
-
 include "animation.sj"
 include "blurEffect.sj"
 include "borderLayout.sj"

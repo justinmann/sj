@@ -1,5 +1,5 @@
 func() {
-    include "lib/common/common.sj"
+	include "lib/common/bar.sj"
 }
 
 class(

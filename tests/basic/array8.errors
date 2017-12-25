@@ -1,5 +1,5 @@
+array8.sj(13,1): error SJC0000: no right side
+array8.sj(13,5): error SJC0004: template 't' with type 'local #foo' cannot be local
+array8.sj(14,5): error SJC0007: cannot find variable 'a'
+array8.sj(14,5): error SJC0008: left side of dot has no value
 array8.sj(14,1): error SJC0000: no right side
-array8.sj(14,5): error SJC0004: template 't' with type 'local #foo' cannot be local
-array8.sj(15,5): error SJC0007: cannot find variable 'a'
-array8.sj(15,5): error SJC0008: left side of dot has no value
-array8.sj(15,1): error SJC0000: no right side

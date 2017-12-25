@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 bob(x : 0) { this }
 

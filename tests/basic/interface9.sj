@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 #foo(
     test(a : 'i32)'bar

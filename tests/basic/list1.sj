@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 class(x : 'i32) { this }
 a: list!heap class()

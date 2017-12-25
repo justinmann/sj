@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 func(cb : '()i32) {
 	cb()

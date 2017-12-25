@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 double(x : 'i32) {
     x as f32 * 2.0f

@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 data(
     x : 0

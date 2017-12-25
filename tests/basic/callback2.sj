@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 class!t(
     item1 : 't

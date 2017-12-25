@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 a : {
     "hi" : "hello"

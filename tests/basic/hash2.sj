@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 a : hash![string, string]()
 a["foo"] = "hi"

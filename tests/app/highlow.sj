@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 console.write("Shall we play\n")
 

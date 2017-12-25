@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 doMath(cb : 'heap (:i32)void) {
     cb(1)

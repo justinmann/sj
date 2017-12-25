@@ -1,5 +1,3 @@
-include "lib/common/common.sj"
-
 class(x := 12) { this }
 
 func(cb : 'heap ()i32) {

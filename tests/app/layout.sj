@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 include "lib/ui/ui.sj"
 
 testElement(text : 'string) {

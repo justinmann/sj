@@ -141,6 +141,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
     auto globalFile = genNodeFile(fileName);
     if (errors.size() == 0) {
         auto globalBlock = globalFile->block;
+        globalBlock->statements.insert(globalBlock->statements.begin(), make_shared<NInclude>(CLoc::undefined, "lib/common/common.sj"));
         anonFunction = make_shared<NFunction>(CLoc::undefined, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
         currentFunctionDefintion = make_shared<CFunctionDefinition>();
         currentFunctionDefintion->init(this, importNamespaces, nullptr, packageNamespace, "", nullptr, nullptr);
@@ -149,6 +150,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
         if (errors.size() == 0) {
             globalFunctionDefinition = currentFunctionDefintion->funcsByName[vector<string>()]["global"];
+
             NodeList includeStatements;
             for (auto index = (size_t)0; index < includedBlocks.size(); index++) {
                 auto includedBlock = includedBlocks[index].second;

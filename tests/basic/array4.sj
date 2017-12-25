@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 class(x: 0) { this }
 a : array!class(1)

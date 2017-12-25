@@ -1,1 +1,2 @@
-include2.sj(2,5): error SJC0003: can only use include in the global scope
+(0,0): error SJC0009: file does not exist 'lib\common\bar.sj'
+include2.sj(2,2): error SJC0003: can only use include in the global scope

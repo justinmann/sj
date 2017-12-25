@@ -1,4 +1,3 @@
-include "lib/common/common.sj"
 
 package namespace1 {
     #foo(
