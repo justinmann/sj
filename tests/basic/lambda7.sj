@@ -1,0 +1,15 @@
+include "lib/common/common.sj"
+
+class(x := 12) { this }
+
+func(cb : 'heap ()i32) {
+	cb()
+}
+
+do() {
+	c : class()
+	a : func(heap ^() { c.x++ })
+	debug.writeLine(c.x.asString())
+}
+
+do()

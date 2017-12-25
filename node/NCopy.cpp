@@ -78,6 +78,16 @@ shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
+    if (leftType->category == CTC_Function) {
+        compiler->addError(loc, CErrorCode::InvalidType, "cannot copy callbacks");
+        return nullptr;
+    }
+
+    if (leftType->category == CTC_Interface) {
+        compiler->addError(loc, CErrorCode::InvalidType, "cannot copy interfaces");
+        return nullptr;
+    }
+
     if (leftType->isOption) {
         auto getValueVar = make_shared<CGetValueVar>(loc, leftVar->scope.lock(), leftVar, true);
         auto copyVar = make_shared<CCopyVar>(loc, scope, getValueVar, returnMode);
