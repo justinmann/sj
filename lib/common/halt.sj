@@ -12,7 +12,7 @@ void halt(const char * format, ...);
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
 ##ifdef _DEBUG
     printf("\npress return to end\n");
