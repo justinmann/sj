@@ -193,7 +193,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     // Create the default object struct, all other object structs must have these variables
                     string structName = "sjs_object";
                     if (output.structs.find(structName) == output.structs.end()) {
-                        output.structs[structName].push_back("intptr_t _refCount");
+                        output.structs[structName].push_back("int _refCount");
                     }
                     output.structOrder.push_back("sjs_object");
 

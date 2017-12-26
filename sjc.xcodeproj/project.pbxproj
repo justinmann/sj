@@ -18,11 +18,11 @@
 		9C0A1E9B1FBA204B00778313 /* NValue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C0A1E921FBA204B00778313 /* NValue.cpp */; };
 		9C0A1E9C1FBA204B00778313 /* NOptionDot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C0A1E931FBA204B00778313 /* NOptionDot.cpp */; };
 		9C29C0B21E273F7E001C1FC6 /* NNot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C29C0B01E273F7E001C1FC6 /* NNot.cpp */; };
+		9C2E3D7C1FF2EED2008CD4DF /* NLambda.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C2E3D7A1FF2EED2008CD4DF /* NLambda.cpp */; };
 		9C3786561E21EE0400202E28 /* NThrow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786541E21EE0400202E28 /* NThrow.cpp */; };
 		9C3786591E2225FC00202E28 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C3786571E2225FC00202E28 /* Exception.cpp */; };
 		9C5F0CBA1FA78A5A004CD51D /* TrBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB11FA78A59004CD51D /* TrBlock.cpp */; };
 		9C5F0CBC1FA78A5A004CD51D /* TrOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */; };
-		9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */; };
 		9C64ADB31E0F8DA700340A7D /* libz.1.2.8.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */; };
 		9C64ADB51E0F910300340A7D /* libcurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C64ADB41E0F910300340A7D /* libcurses.tbd */; };
 		9C74891A1E581783008A032C /* NInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9C7489181E581783008A032C /* NInterface.cpp */; };
@@ -114,6 +114,8 @@
 		9C0A1E931FBA204B00778313 /* NOptionDot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NOptionDot.cpp; path = node/NOptionDot.cpp; sourceTree = "<group>"; };
 		9C29C0B01E273F7E001C1FC6 /* NNot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NNot.cpp; path = node/NNot.cpp; sourceTree = "<group>"; };
 		9C29C0B11E273F7E001C1FC6 /* NNot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNot.h; path = node/NNot.h; sourceTree = "<group>"; };
+		9C2E3D7A1FF2EED2008CD4DF /* NLambda.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NLambda.cpp; path = node/NLambda.cpp; sourceTree = "<group>"; };
+		9C2E3D7B1FF2EED2008CD4DF /* NLambda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NLambda.h; path = node/NLambda.h; sourceTree = "<group>"; };
 		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
 		9C3786541E21EE0400202E28 /* NThrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NThrow.cpp; path = node/NThrow.cpp; sourceTree = "<group>"; };
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
@@ -123,8 +125,6 @@
 		9C5F0CB21FA78A59004CD51D /* TrBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrBlock.h; sourceTree = "<group>"; };
 		9C5F0CB41FA78A59004CD51D /* TrOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrOutput.cpp; sourceTree = "<group>"; };
 		9C5F0CB51FA78A59004CD51D /* TrOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrOutput.h; sourceTree = "<group>"; };
-		9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrVariable.cpp; sourceTree = "<group>"; };
-		9C5F0CB81FA78A59004CD51D /* TrVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrVariable.h; sourceTree = "<group>"; };
 		9C64AD551E0F823300340A7D /* sjc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sjc; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C64ADB21E0F8DA700340A7D /* libz.1.2.8.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.8.tbd; path = usr/lib/libz.1.2.8.tbd; sourceTree = SDKROOT; };
 		9C64ADB41E0F910300340A7D /* libcurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurses.tbd; path = usr/lib/libcurses.tbd; sourceTree = SDKROOT; };
@@ -255,8 +255,6 @@
 				9C5F0CB51FA78A59004CD51D /* TrOutput.h */,
 				9CE83C5C1FAA33A80045B0C6 /* TrStatement.cpp */,
 				9CE83C5D1FAA33A80045B0C6 /* TrStatement.h */,
-				9C5F0CB71FA78A59004CD51D /* TrVariable.cpp */,
-				9C5F0CB81FA78A59004CD51D /* TrVariable.h */,
 			);
 			path = transpile;
 			sourceTree = "<group>";
@@ -317,20 +315,6 @@
 		9CF16BF81E19A86B006E9CB8 /* node */ = {
 			isa = PBXGroup;
 			children = (
-				9C797FA41FEF686200B4F60F /* NHash.cpp */,
-				9C797FA91FEF686300B4F60F /* NHash.h */,
-				9C797F9F1FEF686100B4F60F /* NIfValid.cpp */,
-				9C797FA61FEF686200B4F60F /* NIfValid.h */,
-				9C797FA01FEF686100B4F60F /* NImport.cpp */,
-				9C797FA51FEF686200B4F60F /* NImport.h */,
-				9C797FA31FEF686200B4F60F /* NIsEmptyOrValid.cpp */,
-				9C797FA81FEF686300B4F60F /* NIsEmptyOrValid.h */,
-				9C797F9D1FEF686100B4F60F /* NNullPtr.cpp */,
-				9C797FA21FEF686200B4F60F /* NNullPtr.h */,
-				9C797FA11FEF686200B4F60F /* NSwitch.cpp */,
-				9C797F9E1FEF686100B4F60F /* NSwitch.h */,
-				9C797FA71FEF686300B4F60F /* NUnderscore.cpp */,
-				9C797F9C1FEF686000B4F60F /* NUnderscore.h */,
 				9CE061701FDF23E5002FBBEA /* CCallback.cpp */,
 				9CE0616E1FDF23E5002FBBEA /* CCallback.h */,
 				9C908F0F1E348D5A005E253C /* NAnd.cpp */,
@@ -377,8 +361,14 @@
 				9C0A1E831FBA204700778313 /* NGetOrElse.h */,
 				9C0A1E841FBA204800778313 /* NGetValue.cpp */,
 				9C0A1E821FBA204700778313 /* NGetValue.h */,
+				9C797FA41FEF686200B4F60F /* NHash.cpp */,
+				9C797FA91FEF686300B4F60F /* NHash.h */,
 				9CF16C081E19A888006E9CB8 /* NIf.cpp */,
 				9CF16C091E19A888006E9CB8 /* NIf.h */,
+				9C797F9F1FEF686100B4F60F /* NIfValid.cpp */,
+				9C797FA61FEF686200B4F60F /* NIfValid.h */,
+				9C797FA01FEF686100B4F60F /* NImport.cpp */,
+				9C797FA51FEF686200B4F60F /* NImport.h */,
 				9C908F061E347E69005E253C /* NInclude.cpp */,
 				9C908F071E347E69005E253C /* NInclude.h */,
 				9CF16C0A1E19A888006E9CB8 /* NInteger.cpp */,
@@ -387,6 +377,10 @@
 				9C7489191E581783008A032C /* NInterface.h */,
 				9C74891B1E58DD79008A032C /* NInterfaceMethod.cpp */,
 				9C74891C1E58DD79008A032C /* NInterfaceMethod.h */,
+				9C797FA31FEF686200B4F60F /* NIsEmptyOrValid.cpp */,
+				9C797FA81FEF686300B4F60F /* NIsEmptyOrValid.h */,
+				9C2E3D7A1FF2EED2008CD4DF /* NLambda.cpp */,
+				9C2E3D7B1FF2EED2008CD4DF /* NLambda.h */,
 				9CF16C0C1E19A888006E9CB8 /* NMath.cpp */,
 				9CF16C0D1E19A888006E9CB8 /* NMath.h */,
 				9CB7416B1E25EB310041A8A6 /* NMathAssignment.cpp */,
@@ -395,6 +389,8 @@
 				9CE0616D1FDF23E4002FBBEA /* NNegate.h */,
 				9C29C0B01E273F7E001C1FC6 /* NNot.cpp */,
 				9C29C0B11E273F7E001C1FC6 /* NNot.h */,
+				9C797F9D1FEF686100B4F60F /* NNullPtr.cpp */,
+				9C797FA21FEF686200B4F60F /* NNullPtr.h */,
 				9CF16C101E19A888006E9CB8 /* Node.h */,
 				9C0A1E931FBA204B00778313 /* NOptionDot.cpp */,
 				9C0A1E851FBA204800778313 /* NOptionDot.h */,
@@ -406,6 +402,8 @@
 				9C0A1E901FBA204A00778313 /* NParent.h */,
 				9C908F141E35B9E7005E253C /* NString.cpp */,
 				9C908F151E35B9E7005E253C /* NString.h */,
+				9C797FA11FEF686200B4F60F /* NSwitch.cpp */,
+				9C797F9E1FEF686100B4F60F /* NSwitch.h */,
 				9C908EFD1E33EFBF005E253C /* NThis.cpp */,
 				9C908EFE1E33EFBF005E253C /* NThis.h */,
 				9C3786541E21EE0400202E28 /* NThrow.cpp */,
@@ -414,6 +412,8 @@
 				9C0A1E8D1FBA204A00778313 /* NTuple.h */,
 				9C0A1E911FBA204B00778313 /* NTupleAssignment.cpp */,
 				9C0A1E8E1FBA204A00778313 /* NTupleAssignment.h */,
+				9C797FA71FEF686300B4F60F /* NUnderscore.cpp */,
+				9C797F9C1FEF686000B4F60F /* NUnderscore.h */,
 				9C0A1E921FBA204B00778313 /* NValue.cpp */,
 				9C0A1E871FBA204900778313 /* NValue.h */,
 				9CF16C111E19A888006E9CB8 /* NVariable.cpp */,
@@ -546,11 +546,11 @@
 				9CF16C211E19A888006E9CB8 /* NVoid.cpp in Sources */,
 				9CF16C181E19A888006E9CB8 /* NCast.cpp in Sources */,
 				9C5F0CBA1FA78A5A004CD51D /* TrBlock.cpp in Sources */,
-				9C5F0CBE1FA78A5A004CD51D /* TrVariable.cpp in Sources */,
 				9C0A1E9B1FBA204B00778313 /* NValue.cpp in Sources */,
 				9C797FAF1FEF686300B4F60F /* NHash.cpp in Sources */,
 				9C908EFF1E33EFBF005E253C /* NThis.cpp in Sources */,
 				9CF16C191E19A888006E9CB8 /* NCompare.cpp in Sources */,
+				9C2E3D7C1FF2EED2008CD4DF /* NLambda.cpp in Sources */,
 				9C0A1E9A1FBA204B00778313 /* NTupleAssignment.cpp in Sources */,
 				9CE061721FDF23E6002FBBEA /* NNegate.cpp in Sources */,
 				9CF16C1D1E19A888006E9CB8 /* NInteger.cpp in Sources */,
