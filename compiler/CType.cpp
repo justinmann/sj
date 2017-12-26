@@ -449,6 +449,15 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
 }
 
 void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {
+    if (!storeValue->op.isFirstAssignment) {
+        if (storeValue->type->typeMode == CTM_Stack) {
+            storeValue->getValue()->addDestroyToStatements(compiler, trBlock);
+        }
+        else {
+            storeValue->getValue()->addReleaseToStatements(compiler, trBlock);
+        }
+    }
+
     if (category == CTC_Value && parent.expired()) {
         auto temp = make_shared<TrValue>(nullptr, shared_from_this(), _defaultValue, false);
         storeValue->retainValue(compiler, loc, trBlock, temp);
