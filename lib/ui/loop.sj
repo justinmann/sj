@@ -1,5 +1,9 @@
 loopLastRect := rect()
 
+mainLoop_lastTick := 0
+mainLoop_frames := 0
+mainLoop_showFPS := false
+
 mainLoop() {
     shouldAppContinue := true
     ticks := 0
@@ -7,6 +11,16 @@ mainLoop() {
     sjv_ticks = SDL_GetTicks();
     --c--
     animator.nextFrame(ticks)
+
+    if mainLoop_showFPS {
+        mainLoop_frames++
+        if mainLoop_lastTick + 2000 < ticks {
+            fps : mainLoop_frames as f32 * 1000.0f / (ticks - mainLoop_lastTick) as f32
+            debug.writeLine("FPS: " + fps.asString())
+            mainLoop_lastTick = ticks
+            mainLoop_frames = 0
+        }
+    }
 
     size : rootWindowRenderer.getSize()
     rootScene.setSize(size)

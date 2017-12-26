@@ -14,4 +14,8 @@ include "nau/personElement.sj"
 include "nau/mainPanel.sj"
 
 root = menuElement
+
+// mainLoop_showFPS = true
+// windowRender_disableVSync()
+
 runLoop()

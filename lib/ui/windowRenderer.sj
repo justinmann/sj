@@ -50,7 +50,7 @@ windowRenderer(
     }
 ##endif
 
-    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED);
     if (_this->ren == 0) {
         halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
     }
@@ -75,5 +75,11 @@ windowRenderer(
     if (ptr_release(_this->win)) {
         SDL_DestroyWindow(_this->win);
     }
+    --c--
+}
+
+windowRender_disableVSync() {
+    --c--
+    SDL_GL_SetSwapInterval(0);
     --c--
 }
