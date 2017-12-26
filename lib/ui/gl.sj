@@ -293,7 +293,7 @@ void glid_gethash(GLuint id, uint32_t* result) {
 }
 
 void glid_isequal(GLuint id1, GLuint id2, bool* result) {
-    *result = (id2 == id2);
+    *result = (id1 == id2);
 }
 
 void glid_init() {
