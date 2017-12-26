@@ -35,6 +35,14 @@
 #include(<lib/common/value_option_types.h>)
 --cinclude--
 
+--cdefine--
+##include <lib/common/object.h>
+--cdefine--
+
+--cfunction--
+##include <lib/common/object.c>
+--cfunction--
+
 
 include "array.sj"
 include "bool.sj"
