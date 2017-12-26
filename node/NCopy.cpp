@@ -33,10 +33,11 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         }
 
         if (!storeValue->op.isFirstAssignment) {
-            storeValue->getValue()->addReleaseToStatements(trBlock);
+            storeValue->getValue()->addReleaseToStatements(compiler, trBlock);
+            storeValue->getValue()->addDestroyToStatements(compiler, trBlock);
         }
 
-        storeValue->getValue()->addInitToStatements(trBlock);
+        storeValue->getValue()->addInitToStatements(compiler, trBlock);
         if (!type->parent.expired()) {
             if (type->isOption) {
                 assert(false);
@@ -47,7 +48,7 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             trBlock->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else if (type->category == CTC_Function) {
-            type->callback.lock()->writeCopy(trBlock, rightValue->getName(trBlock), storeValue->getName(trBlock), type->typeMode == CTM_Heap);
+            type->callback.lock()->writeCopy(compiler, trBlock, rightValue->getName(trBlock), storeValue->getName(trBlock), type->typeMode == CTM_Heap);
         }
         
         storeValue->hasSetValue = true;

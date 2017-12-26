@@ -7,6 +7,10 @@
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;
            
+#ifdef YYDEBUG
+extern int yydebug;
+#endif
+
 int main(int argc, char **argv) {
     po::options_description generic_options("Generic options");
     generic_options.add_options()
@@ -20,6 +24,11 @@ int main(int argc, char **argv) {
         ("app", "output app for current system (not supported yet)")
         ("debug", "output debug files")
         ("vs-errors", "output vs compatible error format")
+        ("debug-leaks", "add extra debug logging to detect memory leaks")
+        ("debug-no-free", "do not free any objects, only use this when debugging a leak")
+#ifdef YYDEBUG
+        ("debug-parser", "add extra debug logging to detect memory leaks")
+#endif
         ("c-file", po::value<string>(), "filename for c output - defaults to sj file with extension changed to c")
         ;
 
@@ -55,6 +64,11 @@ int main(int argc, char **argv) {
     bool outputApp = vm.count("app");
     bool outputDebug = vm.count("debug");
     bool outputVSErrors = vm.count("vs-errors");
+    bool outputDebugLeaks = vm.count("debug-leaks");
+    bool outputFree = vm.count("debug-no-free") == 0;
+#ifdef YYDEBUG
+    yydebug = vm.count("debug-parser"); // use this to trigger the verbose debug output from bison
+#endif
     auto cFilename = vm.count("c-file") ? vm["c-file"].as<string>() : string();
     auto sjFilename = vm["sj-file"].as<string>();
 
@@ -73,7 +87,7 @@ int main(int argc, char **argv) {
         debugStream = &debug;
     }
 
-    Compiler compiler(outputLines, outputVSErrors);
+    Compiler compiler(outputLines, outputVSErrors, outputDebugLeaks, outputFree);
     compiler.transpile(path.string(), cStream, cerr, debugStream);
 
     return 0;

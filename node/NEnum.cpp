@@ -27,7 +27,7 @@ shared_ptr<CType> CInitBlockVar::getType(Compiler* compiler) {
 
 void CInitBlockVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (!trBlock->initBlock) {
-        trBlock->initBlock = make_shared<TrBlock>();
+        trBlock->initBlock = make_shared<TrBlock>(trBlock);
     }
 
     for (auto it : statements) {

@@ -31,7 +31,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     else {
         ifLine << "if (" << conditionTrValue->getName(trBlock) << ")";
     }
-    auto trIfBlock = make_shared<TrBlock>();
+    auto trIfBlock = make_shared<TrBlock>(trBlock);
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->localVarParent = trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
@@ -45,7 +45,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
 
     if (elseVar) {
-        auto trElseBlock = make_shared<TrBlock>();
+        auto trElseBlock = make_shared<TrBlock>(trBlock);
         trElseBlock->localVarParent = trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;

@@ -165,7 +165,6 @@
     <ClInclude Include="..\compiler\CType.h" />
     <ClInclude Include="..\compiler\CTypeName.h" />
     <ClInclude Include="..\compiler\CVar.h" />
-    <ClInclude Include="..\compiler\Exception.h" />
     <ClInclude Include="..\node\CCallback.h" />
     <ClInclude Include="..\node\NAnd.h" />
     <ClInclude Include="..\node\NArray.h" />
@@ -224,7 +223,6 @@
     <ClInclude Include="..\transpile\TrBlock.h" />
     <ClInclude Include="..\transpile\TrOutput.h" />
     <ClInclude Include="..\transpile\TrStatement.h" />
-    <ClInclude Include="..\transpile\TrVariable.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -232,7 +230,6 @@
     <ClCompile Include="..\compiler\CType.cpp" />
     <ClCompile Include="..\compiler\CTypeName.cpp" />
     <ClCompile Include="..\compiler\CVar.cpp" />
-    <ClCompile Include="..\compiler\Exception.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\node\CCallback.cpp" />
     <ClCompile Include="..\node\NAnd.cpp" />
@@ -292,7 +289,6 @@
     <ClCompile Include="..\transpile\TrBlock.cpp" />
     <ClCompile Include="..\transpile\TrOutput.cpp" />
     <ClCompile Include="..\transpile\TrStatement.cpp" />
-    <ClCompile Include="..\transpile\TrVariable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\sj.pch" />

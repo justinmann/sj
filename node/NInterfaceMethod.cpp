@@ -211,7 +211,7 @@ string CInterfaceMethod::getCFunctionName(Compiler* compiler, TrOutput* trOutput
 
     auto functionBody = trOutput->functions.find(functionName);
     if (functionBody == trOutput->functions.end()) {
-        auto trFunctionBlock = make_shared<TrBlock>();
+        auto trFunctionBlock = make_shared<TrBlock>(functionName);
         trFunctionBlock->hasThis = false;
         trOutput->functions[functionName] = trFunctionBlock;
 
@@ -342,7 +342,7 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
     }
     
     if (returnType != compiler->typeVoid) {
-        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue).addInitToStatements(trBlock);
+        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue).addInitToStatements(compiler, trBlock);
         line << ", ";
         if (storeValue->isReturnValue) {
             line << "_return";

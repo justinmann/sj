@@ -132,16 +132,10 @@
     <ClInclude Include="..\compiler\CVar.h">
       <Filter>Compiler</Filter>
     </ClInclude>
-    <ClInclude Include="..\compiler\Exception.h">
-      <Filter>Compiler</Filter>
-    </ClInclude>
     <ClInclude Include="..\parser\parser.hpp">
       <Filter>Parser</Filter>
     </ClInclude>
     <ClInclude Include="..\transpile\TrOutput.h">
-      <Filter>Transpile</Filter>
-    </ClInclude>
-    <ClInclude Include="..\transpile\TrVariable.h">
       <Filter>Transpile</Filter>
     </ClInclude>
     <ClInclude Include="..\transpile\TrBlock.h">
@@ -326,9 +320,6 @@
     <ClCompile Include="..\compiler\CVar.cpp">
       <Filter>Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="..\compiler\Exception.cpp">
-      <Filter>Compiler</Filter>
-    </ClCompile>
     <ClCompile Include="..\parser\parser.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
@@ -339,9 +330,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\transpile\TrOutput.cpp">
-      <Filter>Transpile</Filter>
-    </ClCompile>
-    <ClCompile Include="..\transpile\TrVariable.cpp">
       <Filter>Transpile</Filter>
     </ClCompile>
     <ClCompile Include="..\transpile\TrBlock.cpp">

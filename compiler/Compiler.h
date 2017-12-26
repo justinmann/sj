@@ -11,17 +11,9 @@
 
 #include "../sj.pch"
 
-// #define YYDEBUG 1
-// #define DWARF_ENABLED
-// #define VAR_OUTPUT
-// #define NODE_OUTPUT
-// #define MODULE_OUTPUT
-// #define ASSERT_ON_ERROR
-// #define ERROR_OUTPUT
-// #define SYMBOL_OUTPUT
-// #define EXCEPTION_OUTPUT
-// #define DEBUG_CALLSTACK
-// #define DEBUG_ALLOC
+#ifdef _DEBUG
+#define YYDEBUG 1
+#endif
 #define YY_NO_UNISTD_H
 
 using namespace std;
@@ -137,7 +129,7 @@ class SJException : public exception { };
 class Compiler
 {
 public:
-    Compiler(bool outputLines, bool outputVSErrors);
+    Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree);
     bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
@@ -145,18 +137,11 @@ public:
     template< typename... Args >
     void addError(CLoc loc, const CErrorCode code, const char* format, Args... args) {
         string str = strprintf(format, args...);
-#ifdef ERROR_OUTPUT
-        printf("ERROR: %d:%d %s\n", loc.line, loc.col, str.c_str());
-#endif
         errors[loc.fullFileName][loc.line][str].code = code;
         errors[loc.fullFileName][loc.line][str].fileName = outputVSErrors ? fs::path(loc.fullFileName).string() : loc.shortFileName;
         errors[loc.fullFileName][loc.line][str].line = loc.line;
         errors[loc.fullFileName][loc.line][str].col = loc.col;
         errors[loc.fullFileName][loc.line][str].msg = str;
-        
-#ifdef ASSERT_ON_ERROR
-        assert(false);
-#endif
     }
     
     template< typename... Args >
@@ -168,14 +153,12 @@ public:
         warnings[loc.fullFileName][loc.line][str].line = loc.line;
         warnings[loc.fullFileName][loc.line][str].col = loc.col;
         warnings[loc.fullFileName][loc.line][str].msg = str;
-
-#ifdef ERROR_OUTPUT
-        printf("WARN: %d:%d %s\n", loc.line, loc.col, str.c_str());
-#endif
     }
     
     bool outputLines;
     bool outputVSErrors;
+    bool outputDebugLeaks;
+    bool outputFree;
     boost::filesystem::path rootPath;
     CompilerState state;
     map<string, map<unsigned, map<string, CError>>> errors;

@@ -41,7 +41,7 @@ void CIfValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     }
     ifLine << ")";
 
-    auto trIfBlock = make_shared<TrBlock>();
+    auto trIfBlock = make_shared<TrBlock>(trBlock);
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->localVarParent = ifLocalVarScope ? nullptr : trBlock;
     auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
@@ -57,7 +57,7 @@ void CIfValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     scope.lock()->popLocalVarScope(ifLocalVarScope);
 
     if (elseVar) {
-        auto trElseBlock = make_shared<TrBlock>();
+        auto trElseBlock = make_shared<TrBlock>(trBlock);
         trElseBlock->localVarParent = elseLocalVarScope ? nullptr : trBlock;
         trElseBlock->hasThis = trBlock->hasThis;
         trStatement.elseBlock = trElseBlock;

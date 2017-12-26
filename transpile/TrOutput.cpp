@@ -10,7 +10,7 @@ TrOutput::TrOutput() {
 #endif
 }
 
-void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines) {
+void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLoop) {
     for (auto ccodeInclude : ccodeIncludes) {
         stream << ccodeInclude << "\n";
     }
@@ -123,7 +123,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
     
     shared_ptr<TrBlock> mainFunction = functions["sjf_global"];
     
-    mainFunction->writeVariablesToStream(stream, 0, outputLines);
+    mainFunction->writeVariablesToStream(compiler, stream, 0);
 
     if (functions.size() > 0) {
         for (auto function : functions) {
@@ -159,12 +159,15 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
             continue;
         }
         stream << function.second->definition << " {\n";
-        function.second->writeToStream(stream, 1, outputLines);
+        function.second->writeToStream(compiler, stream, 1);
         stream << "}\n";
         stream << "\n";
     }
 
     stream << "int main(int argc, char** argv) {\n";
+    if (compiler->outputDebugLeaks) {
+        stream << "    _object_start();\n";
+    }
 
     if (vtbls.size() > 0) {
         for (auto t : vtbls) {
@@ -175,7 +178,7 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
         }
     }
 
-    mainFunction->writeBodyToStream(stream, 1, outputLines);
+    mainFunction->writeBodyToStream(compiler, stream, 1);
     stream << "    main_destroy();\n";
     stream << "    #ifdef _DEBUG\n";
     stream << "    printf(\"\\npress return to end\\n\");\n";
@@ -185,7 +188,10 @@ void TrOutput::writeToStream(ostream& stream, bool hasMainLoop, bool outputLines
     stream << "}\n";
     stream << "\n";
     stream << "void main_destroy() {\n";
-    mainFunction->writeVariablesReleaseToStream(stream, 1, outputLines);
+    mainFunction->writeVariablesReleaseToStream(compiler, stream, 1);
+    if (compiler->outputDebugLeaks) {
+        stream << "    _object_report();\n";
+    }
     stream << "}\n";
 }
 

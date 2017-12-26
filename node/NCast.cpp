@@ -34,7 +34,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         interface->transpileDefinition(compiler, trOutput);
         
         if (rightValue->type->isOption) {
-            auto ifBlock = make_shared<TrBlock>();
+            auto ifBlock = make_shared<TrBlock>(trBlock);
             stringstream ifStream;
             if (rightValue->type->category == CTC_Interface) {
                 ifStream << "if (" << rightValue->name << "._parent != 0)";
@@ -44,7 +44,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             }
             interface->transpileCast(compiler, trOutput, ifBlock.get(), rightValue, storeValue);
 
-            auto elseBlock = make_shared<TrBlock>();
+            auto elseBlock = make_shared<TrBlock>(trBlock);
             stringstream line;
             if (storeValue->type->category == CTC_Interface) {
                 line << storeValue->getName(trBlock) << "._parent = 0";

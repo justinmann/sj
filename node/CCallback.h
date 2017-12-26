@@ -59,7 +59,7 @@ public:
     void transpileDefinition(Compiler* compiler, TrOutput* trOutput);
     string getCBName(Compiler* compiler, bool includeNames, CTypeMode returnMode);
     string getCName(CTypeMode typeMode, bool isOption);
-    void writeCopy(TrBlock* trBlock, string from, string to, bool refCount);
+    void writeCopy(Compiler* compiler, TrBlock* trBlock, string from, string to, bool refCount);
 
     shared_ptr<CTypes> types;
     vector<shared_ptr<CType>> argTypes;

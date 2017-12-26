@@ -24,7 +24,7 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     for (auto clauseVar : clauseVars) {
         TrBlock* currentBlock = nullptr;
         if (previousStatement) {
-            auto t = make_shared<TrBlock>();
+            auto t = make_shared<TrBlock>(trBlock);
             t->hasThis = trBlock->hasThis;
             previousStatement->elseBlock = t;
             currentBlock = t.get();
@@ -46,7 +46,7 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         else {
             ifLine << "if (" << conditionTrValue->getName(trBlock) << ")";
         }
-        auto trIfBlock = make_shared<TrBlock>();
+        auto trIfBlock = make_shared<TrBlock>(trBlock);
         trIfBlock->hasThis = trBlock->hasThis;
         auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
@@ -66,7 +66,7 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     else {
         TrBlock* currentBlock = nullptr;
         if (previousStatement) {
-            auto t = make_shared<TrBlock>();
+            auto t = make_shared<TrBlock>(trBlock);
             t->hasThis = trBlock->hasThis;
             previousStatement->elseBlock = t;
             currentBlock = t.get();

@@ -436,7 +436,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             auto functionName = getCFunctionName(compiler, trOutput, returnMode);
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
-                auto trFunctionBlock = make_shared<TrBlock>();
+                auto trFunctionBlock = make_shared<TrBlock>(functionName);
                 trFunctionBlock->hasThis = false;
                 trOutput->functions[functionName] = trFunctionBlock;
 
@@ -494,7 +494,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             auto functionBody = trOutput->functions.find(functionName);
             if (functionBody == trOutput->functions.end()) {
                 auto returnType = getReturnType(compiler, returnMode);
-                auto trFunctionBlock = make_shared<TrBlock>();
+                auto trFunctionBlock = make_shared<TrBlock>(functionName);
                 trFunctionBlock->hasThis = true;
                 trOutput->functions[functionName] = trFunctionBlock;
 
@@ -519,7 +519,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             string stackStructName = getCStructName(CTM_Stack);
             string functionCopyName = getCCopyFunctionName();
             if (trOutput->functions.find(functionCopyName) == trOutput->functions.end()) {
-                auto trCopyBlock = make_shared<TrBlock>();
+                auto trCopyBlock = make_shared<TrBlock>(functionCopyName);
                 trCopyBlock->hasThis = true;
                 trOutput->functions[functionCopyName] = trCopyBlock;
 
@@ -554,7 +554,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
             // Create destroy function body
             string functionDestroyName = getCDestroyFunctionName();
             if (trOutput->functions.find(functionDestroyName) == trOutput->functions.end()) {
-                auto trDestroyBlock = make_shared<TrBlock>();
+                auto trDestroyBlock = make_shared<TrBlock>(functionDestroyName);
                 trDestroyBlock->hasThis = true;
                 trOutput->functions[functionDestroyName] = trDestroyBlock;
 
@@ -568,7 +568,11 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 }
 
                 for (auto argVar : _data[returnMode].thisArgVars) {
-                    TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name, false).addReleaseToStatements(trDestroyBlock.get());
+                    TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name, false).addReleaseToStatements(compiler, trDestroyBlock.get());
+                }
+
+                for (auto argVar : _data[returnMode].thisArgVars) {
+                    TrValue(calleeScope, argVar->getType(compiler), "_this->" + argVar->name, false).addDestroyToStatements(compiler, trDestroyBlock.get());
                 }
             }
 
@@ -635,7 +639,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     auto castFunctionName = interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), CTM_Stack);
                     auto functionBody = trOutput->functions.find(castFunctionName);
                     if (functionBody == trOutput->functions.end()) {
-                        auto trFunctionBlock = make_shared<TrBlock>();
+                        auto trFunctionBlock = make_shared<TrBlock>(castFunctionName);
                         trFunctionBlock->hasThis = true;
                         trOutput->functions[castFunctionName] = trFunctionBlock;
 
@@ -652,7 +656,7 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                 string asInterfaceFunctionName = getCAsInterfaceFunctionName(compiler, trOutput, CTM_Stack);
                 auto asInterfaceFunctionBody = trOutput->functions.find(asInterfaceFunctionName);
                 if (asInterfaceFunctionBody == trOutput->functions.end()) {
-                    auto trFunctionBlock = make_shared<TrBlock>();
+                    auto trFunctionBlock = make_shared<TrBlock>(asInterfaceFunctionName);
                     trFunctionBlock->hasThis = true;
                     trOutput->functions[asInterfaceFunctionName] = trFunctionBlock;
 
@@ -661,16 +665,16 @@ void CFunction::transpileDefinition(Compiler* compiler, TrOutput* trOutput) {
                     functionDefinition << "void " << asInterfaceFunctionName << "(" << structName << "* _this, int typeId, sjs_interface* _return)";
                     trFunctionBlock->definition = functionDefinition.str();
 
-                    auto switchBlock = make_shared<TrBlock>();
+                    auto switchBlock = make_shared<TrBlock>(trFunctionBlock.get());
                     trFunctionBlock->statements.push_back(TrStatement(CLoc::undefined, "switch (typeId)", switchBlock));
                     for (auto interfaceVal : *interfaces) {
-                        auto caseBlock = make_shared<TrBlock>();
+                        auto caseBlock = make_shared<TrBlock>(switchBlock.get());
                         caseBlock->statements.push_back(TrStatement(CLoc::undefined, interfaceVal->getCCastFunctionName(compiler, trOutput, shared_from_this(), CTM_Stack) + "(_this, (" + interfaceVal->getCStructName(CTM_Undefined) + "*)_return)"));
                         caseBlock->statements.push_back(TrStatement(CLoc::undefined, "break"));
                         switchBlock->statements.push_back(TrStatement(CLoc::undefined, string("case ") + interfaceVal->getCTypeIdName() + ": ", caseBlock));
                     }
 
-                    auto caseBlock = make_shared<TrBlock>();
+                    auto caseBlock = make_shared<TrBlock>(switchBlock.get());
                     caseBlock->statements.push_back(TrStatement(CLoc::undefined, "_return->_parent = 0"));
                     caseBlock->statements.push_back(TrStatement(CLoc::undefined, "break"));
                     switchBlock->statements.push_back(TrStatement(CLoc::undefined, string("default:"), caseBlock));
@@ -704,6 +708,16 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         return;
     }
     
+    shared_ptr<TrStoreValue> previousReturnValue;
+    if (!storeValue->op.isFirstAssignment) {
+        if (storeValue->type->typeMode == CTM_Stack) {
+            compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "function '%s' cannot store return type '%s' in type '%s' without a copy", name.c_str(), returnType->valueName.c_str(), storeValue->type->valueName.c_str());
+            return;
+        }
+        previousReturnValue = trBlock->createTempStoreVariable(loc, callerScope, storeValue->type->getTempType(), "funcold");
+        previousReturnValue->retainValue(compiler, loc, trBlock, storeValue->getValue());
+    }
+
     assert(returnType == storeValue->type);
     auto calleeVar = getThisVar(compiler, returnMode);
     auto calleeScope = getScope(compiler, returnMode);
@@ -807,11 +821,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         shared_ptr<TrValue> calleeThisValue;
         if (_isReturnThis && storeValue->type != nullptr) {
             calleeThisValue = make_shared<TrValue>(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue);
-            calleeThisValue->addInitToStatements(trBlock);
+            calleeThisValue->addInitToStatements(compiler, trBlock);
         }
         else {
             calleeThisValue = trBlock->createTempVariable(callerScope, calleeVar->getType(compiler), "object");
-            calleeThisValue->addInitToStatements(trBlock);
+            calleeThisValue->addInitToStatements(compiler, trBlock);
         }
 
         if (hasHeapThis && calleeThisValue->type->typeMode != CTM_Heap) {
@@ -864,6 +878,11 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
         trBlock->statements.push_back(TrStatement(CLoc::undefined, line.str()));
         storeValue->hasSetValue = true;
     }
+
+    if (previousReturnValue) {
+        previousReturnValue->type = storeValue->type;
+        previousReturnValue->getValue()->addReleaseToStatements(compiler, trBlock);
+    }
 }
 
 string CFunction::getCBaseName(CTypeMode returnMode) {
@@ -911,7 +930,7 @@ string CFunction::getCCallbackFunctionName(Compiler* compiler, TrOutput* trOutpu
 
         auto functionBody = trOutput->functions.find(functionName);
         if (functionBody == trOutput->functions.end()) {
-            auto trFunctionBlock = make_shared<TrBlock>();
+            auto trFunctionBlock = make_shared<TrBlock>(functionName);
             trFunctionBlock->hasThis = false;
             trOutput->functions[functionName] = trFunctionBlock;
 

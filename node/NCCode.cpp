@@ -1,7 +1,7 @@
 #include "Node.h"
 #include <boost/algorithm/string.hpp>
 
-string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes , shared_ptr<CType>& returnType) {
+string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes , shared_ptr<CType>& returnType) {
     auto paramStart = macro.find('(');
     auto functionName = macro.substr(0, paramStart);
     auto t = macro.substr(paramStart + 1, macro.size() - paramStart - 2);
@@ -173,7 +173,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }
             returnType = ctype;
-            TrBlock block;
+            TrBlock block(trBlock);
             stringstream retainStream;
 
             if (trOutput) {
@@ -182,8 +182,8 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                     returnValue->op.isCopy = true;
                 }
                 returnValue->retainValue(compiler, loc, &block, rightValue);
-                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
-                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
+                block.writeVariablesToStream(compiler, retainStream, 0);
+                block.writeBodyToStream(compiler, retainStream, 0);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -215,13 +215,13 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }
             returnType = ctype->getOptionType();
-            TrBlock block;
+            TrBlock block(trBlock);
             stringstream retainStream;
 
             if (trOutput) {
                 returnType->transpileDefaultValue(compiler, loc, &block, returnValue);
-                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
-                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
+                block.writeVariablesToStream(compiler, retainStream, 0);
+                block.writeBodyToStream(compiler, retainStream, 0);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -254,7 +254,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 compiler->addError(loc, CErrorCode::InvalidType, "all return types must agree");
             }
             returnType = ctype->getOptionType();
-            TrBlock block;
+            TrBlock block(trBlock);
             stringstream retainStream;
 
             if (trOutput) {
@@ -278,8 +278,8 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                         returnValue->retainValue(compiler, loc, &block, rightValue);
                     }
                 }
-                block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
-                block.writeBodyToStream(retainStream, 0, compiler->outputLines);
+                block.writeVariablesToStream(compiler, retainStream, 0);
+                block.writeBodyToStream(compiler, retainStream, 0);
             }
             retainStream << "return;";
             return retainStream.str();
@@ -305,7 +305,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
 
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
-            TrBlock block;
+            TrBlock block(trBlock);
             stringstream retainStream;
             auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
             auto rightVar = scope->getCVar(compiler, scope, nullptr, rightName, VSM_LocalThisParent);
@@ -313,15 +313,15 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
                 if (trOutput) {
                     leftStoreValue->retainValue(compiler, loc, &block, rightValue);
-                    block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
-                    block.writeBodyToStream(retainStream, 0, compiler->outputLines);
+                    block.writeVariablesToStream(compiler, retainStream, 0);
+                    block.writeBodyToStream(compiler, retainStream, 0);
                 }
             }
             else {
                 if (trOutput) {
                     rightVar->transpile(compiler, trOutput, &block, nullptr, leftStoreValue);
-                    block.writeVariablesToStream(retainStream, 0, compiler->outputLines);
-                    block.writeBodyToStream(retainStream, 0, compiler->outputLines);
+                    block.writeVariablesToStream(compiler, retainStream, 0);
+                    block.writeBodyToStream(compiler, retainStream, 0);
                 }
             }
             return retainStream.str();
@@ -347,7 +347,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         auto ctype = scope->getVarType(loc, compiler, ctypeName, CTM_Undefined);
         if (ctype) {
             stringstream releaseStream;
-            TrValue(scope, ctype, varName, false).writeReleaseToStream(releaseStream, 0, compiler->outputLines);
+            TrValue(scope, ctype, varName, false).writeReleaseToStream(compiler, trBlock, releaseStream, 0);
             return releaseStream.str();
         }
         else {
@@ -472,7 +472,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
     return "";
 }
 
-string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
+string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, string& code, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes, shared_ptr<CType>& returnType) {
     char finalCode[1024];
     char macro[1024];
     int finalIndex = 0;
@@ -501,7 +501,7 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
                     isInMacro = false;
                     macro[macroIndex] = 0;
                     string t = macro;
-                    auto expandedMacro = expandMacro(compiler, loc, scope, trOutput, t, returnValue, functions, includes, returnType);
+                    auto expandedMacro = expandMacro(compiler, loc, scope, trOutput, trBlock, t, returnValue, functions, includes, returnType);
                     for (auto i : expandedMacro) {
                         finalCode[finalIndex] = i;
                         finalIndex++;
@@ -555,7 +555,7 @@ void CCCodeVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     for (auto line : lines) {
         lineIndex++;
 
-        auto finalLine = expandMacros(compiler, loc, scope.lock(), trOutput, line, storeValue, functions, includes, returnType);
+        auto finalLine = expandMacros(compiler, loc, scope.lock(), trOutput, trBlock, line, storeValue, functions, includes, returnType);
         if (finalLine.size() == 0) {
             continue;
         }
@@ -626,7 +626,7 @@ void CCCodeVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>&
     }
 
     for (auto line : lines) {
-        auto finalLine = expandMacros(compiler, loc, scope.lock(), nullptr, line, nullptr, functions2, includes, returnType);
+        auto finalLine = expandMacros(compiler, loc, scope.lock(), nullptr, nullptr, line, nullptr, functions2, includes, returnType);
         if (finalLine.size() == 0) {
             continue;
         }
@@ -667,7 +667,7 @@ shared_ptr<CVar> NCCode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
     map<string, map<string, bool>> includes;
     shared_ptr<CType> returnType = nullptr;
     for (auto line : lines) {
-        expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
+        expandMacros(compiler, loc, scope, nullptr, nullptr, line, nullptr, functions, includes, returnType);
     }
 
     if (!returnType) {
@@ -684,7 +684,7 @@ void NCCode::addToStruct(Compiler* compiler, shared_ptr<CScope> scope, vector<st
     shared_ptr<CType> returnType = nullptr;
 
     for (auto line : lines) {
-        auto finalLine = expandMacros(compiler, loc, scope, nullptr, line, nullptr, functions, includes, returnType);
+        auto finalLine = expandMacros(compiler, loc, scope, nullptr, nullptr, line, nullptr, functions, includes, returnType);
         if (finalLine.size() == 0) {
             continue;
         }

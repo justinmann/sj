@@ -26,7 +26,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-Compiler::Compiler(bool outputLines, bool outputVSErrors) : outputLines(outputLines), outputVSErrors(outputVSErrors) {
+Compiler::Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree) : outputLines(outputLines), outputVSErrors(outputVSErrors), outputDebugLeaks(outputDebugLeaks), outputFree(outputFree) {
     auto ctypes = CType::create(emptyNamespace, "i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     types["i32"] = ctypes;
@@ -87,15 +87,7 @@ shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
     return genNode(fileName, str);
 }
 
-#ifdef YYDEBUG
-extern int yydebug;
-#endif
-
 shared_ptr<CParseFile> Compiler::genNode(const string& fileName, const string& code) {
-#ifdef YYDEBUG
-    yydebug = 1; // use this to trigger the verbose debug output from bison
-#endif
-
     auto parseFile = make_shared<CParseFile>();
     auto shortName = rootPath.empty() ? fs::path(fileName).generic_string() : fs::path(fileName).lexically_relative(rootPath).generic_string();
     parseFile->fullFileName = fileName;
@@ -172,9 +164,6 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                 anonFunction->getVar(this, currentScope, nullptr, CTM_Stack);
                 auto globalScope = globalFunction->getScope(this, CTM_Stack);
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "mainLoop", globalScope, nullptr, CTM_Stack));
-#ifdef VAR_OUTPUT
-                currentFunction->dump(this, 0);
-#endif
 
                 if (errors.size() == 0) {
                     if (debugStream) {
@@ -224,7 +213,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
 
                     if (errors.size() == 0) {
-                        output.writeToStream(stream, hasMainLoop, outputLines);
+                        output.writeToStream(this, stream, hasMainLoop);
                     }
                 }
             }

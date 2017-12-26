@@ -1,17 +1,15 @@
 #include "../node/Node.h"
 
-// #define SKIP_FREE
-
-void TrBlock::writeToStream(ostream& stream, int level, bool outputLines) {
-    writeVariablesToStream(stream,level, outputLines);
-    writeBodyToStream(stream, level, outputLines);
-    writeVariablesReleaseToStream(stream, level, outputLines);
-    writeReturnToStream(stream, level, outputLines);
+void TrBlock::writeToStream(Compiler* compiler, ostream& stream, int level) {
+    writeVariablesToStream(compiler, stream,level);
+    writeBodyToStream(compiler, stream, level);
+    writeVariablesReleaseToStream(compiler, stream, level);
+    writeReturnToStream(compiler, stream, level);
 }
 
-void TrBlock::writeVariablesToStream(ostream& stream, int level, bool outputLines) {
+void TrBlock::writeVariablesToStream(Compiler* compiler, ostream& stream, int level) {
     if (initBlock) {
-        initBlock->writeVariablesToStream(stream, level, outputLines);
+        initBlock->writeVariablesToStream(compiler, stream, level);
     }
 
     for (auto variable : variables)
@@ -75,9 +73,9 @@ void getLineDirective(ostream& stream, CLoc& prevLoc, CLoc& loc) {
     }
 }
 
-void TrBlock::writeBodyToStream(ostream& stream, int level, bool outputLines) {
+void TrBlock::writeBodyToStream(Compiler* compiler, ostream& stream, int level) {
     if (initBlock) {
-        initBlock->writeBodyToStream(stream, level, outputLines);
+        initBlock->writeBodyToStream(compiler, stream, level);
     }
 
     CLoc previousLoc = CLoc::undefined;
@@ -93,12 +91,12 @@ void TrBlock::writeBodyToStream(ostream& stream, int level, bool outputLines) {
             addSpacing(stream, level);
             stream << statement.line << " {\n";
 
-            statement.block->writeToStream(stream, level + 1, outputLines);
+            statement.block->writeToStream(compiler, stream, level + 1);
 
             if (statement.elseBlock != nullptr) {
                 addSpacing(stream, level);
                 stream << "} else {\n";
-                statement.elseBlock->writeToStream(stream, level + 1, outputLines);
+                statement.elseBlock->writeToStream(compiler, stream, level + 1);
             }
 
             addSpacing(stream, level);
@@ -112,7 +110,7 @@ void TrBlock::writeBodyToStream(ostream& stream, int level, bool outputLines) {
                 level--;
             }
 
-            if (outputLines) {
+            if (compiler->outputLines) {
                 getLineDirective(stream, previousLoc, statement.loc);
             }
             addSpacing(stream, level);
@@ -128,21 +126,18 @@ void TrBlock::writeBodyToStream(ostream& stream, int level, bool outputLines) {
     }
 }
 
-void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level, bool outputLines) {
+void TrBlock::writeVariablesReleaseToStream(Compiler* compiler, ostream& stream, int level) {
     if (initBlock) {
-        initBlock->writeVariablesReleaseToStream(stream, level, outputLines);
+        initBlock->writeVariablesReleaseToStream(compiler, stream, level);
     }
 
     stringstream varStream;
     for (auto variable : variables) {
-        variable.second->writeReleaseToStream(varStream, level, outputLines);
+        variable.second->writeReleaseToStream(compiler, this, varStream, level);
     }
 
     for (auto variable : variables) {
-        if (variable.second->type->typeMode == CTM_Stack) {
-            addSpacing(varStream, level);
-            varStream << "if (" << variable.first << "._refCount == 1) { " << variable.second->type->parent.lock()->getCDestroyFunctionName() << "(&" << variable.first << "); }\n";
-        }
+        variable.second->writeDestroyToStream(compiler, this, varStream, level);
     }
 
     auto varString = varStream.str();
@@ -151,7 +146,7 @@ void TrBlock::writeVariablesReleaseToStream(ostream& stream, int level, bool out
     }
 }
 
-void TrBlock::writeReturnToStream(ostream& stream, int level, bool outputLines) {
+void TrBlock::writeReturnToStream(Compiler* compiler, ostream& stream, int level) {
     if (returnLine.size() > 0) {
         stream << "\n";
         addSpacing(stream, level);
@@ -199,6 +194,13 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared
     }
 }
 
+shared_ptr<TrStoreValue> TrBlock::createCaptureStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
+    assert(type->typeMode == CTM_Value || type->typeMode == CTM_Local);
+    auto var = make_shared<TrStoreValue>(loc, scope, type, "INVALID", AssignOp::immutableCreate);
+    var->isCaptureValue = true;
+    return var;
+}
+
 shared_ptr<TrStoreValue> TrBlock::createTempStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string prefix) {
     if (localVarParent && type->typeMode == CTM_Stack) {
         return localVarParent->createTempStoreVariable(loc, scope, type, prefix);
@@ -239,23 +241,30 @@ void TrBlock::addSpacing(ostream& stream, int level) {
 }
 
 string TrBlock::getFunctionName() {
-    if (definition.size() > 0)
-        return definition;
-    return "";
+    if (parent && name.size() == 0) {
+        return parent->getFunctionName();
+    }
+    return name;
 }
 
 map<string, int> TrBlock::varNames;
 
-void TrValue::writeReleaseToStream(ostream& stream, int level, bool outputLines) {
-    TrBlock block;
-    addReleaseToStatements(&block);
-    block.writeBodyToStream(stream, level, outputLines);
+void TrValue::writeReleaseToStream(Compiler* compiler, TrBlock* parentBlock, ostream& stream, int level) {
+    TrBlock block(parentBlock);
+    addReleaseToStatements(compiler, &block);
+    block.writeBodyToStream(compiler, stream, level);
 }
 
-void TrValue::addReleaseToStatements(TrBlock* block) {
+void TrValue::writeDestroyToStream(Compiler* compiler, TrBlock* parentBlock, ostream& stream, int level) {
+    TrBlock block(parentBlock);
+    addDestroyToStatements(compiler, &block);
+    block.writeBodyToStream(compiler, stream, level);
+}
+
+void TrValue::addReleaseToStatements(Compiler* compiler, TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
         if (type->category == CTC_Function) {
-            auto ifNullBlock = make_shared<TrBlock>();
+            auto ifNullBlock = make_shared<TrBlock>(block);
             stringstream ifStream;
             ifStream << "if ((uintptr_t)" << name << ".inner._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -266,13 +275,13 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             lineStream << name << ".inner._parent->_refCount--";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
-#ifdef DEBUG_ALLOC
-            stringstream logStream;
-            logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-            innerBlock->statements.push_back(logStream.str());
-#endif
+            if (compiler->outputDebugLeaks) {
+                stringstream logStream;
+                logStream << "_object_release((sjs_object*)" << name << ".inner._parent" << ", \"" << block->getFunctionName() << "\");";
+                innerBlock->statements.push_back(TrStatement(CLoc::undefined, logStream.str()));
+            }
 
-            auto ifBlock = make_shared<TrBlock>();
+            auto ifBlock = make_shared<TrBlock>(block);
             stringstream ifStream2;
             ifStream2 << "if (" << name << ".inner._parent->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream2.str(), ifBlock));
@@ -281,14 +290,14 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             destroyStream << name << "._destroy(" << name + ".inner._parent" << ")";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
-#ifndef SKIP_FREE
-            stringstream freeStream;
-            freeStream << "free(" << name << ".inner._parent)";
-            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
-#endif // !SKIP_FREE
+            if (compiler->outputFree) {
+                stringstream freeStream;
+                freeStream << "free(" << name << ".inner._parent)";
+                ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
+            }
         } 
         else if (type->category == CTC_Interface) {
-            auto ifNullBlock = make_shared<TrBlock>();
+            auto ifNullBlock = make_shared<TrBlock>(block);
             stringstream ifStream;
             ifStream << "if (" << name << "._parent != 0)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -299,13 +308,13 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             lineStream << name << "._parent->_refCount--";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
-#ifdef DEBUG_ALLOC
-            stringstream logStream;
-            logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-            innerBlock->statements.push_back(logStream.str());
-#endif
+            if (compiler->outputDebugLeaks) {
+                stringstream logStream;
+                logStream << "_object_release((sjs_object*)" << name << "._parent" << ", \"" << block->getFunctionName() << "\");";
+                innerBlock->statements.push_back(TrStatement(CLoc::undefined, logStream.str()));
+            }
 
-            auto ifBlock = make_shared<TrBlock>();
+            auto ifBlock = make_shared<TrBlock>(block);
             stringstream ifStream2;
             ifStream2 << "if (" << name << "._parent->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream2.str(), ifBlock));
@@ -314,18 +323,18 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             destroyStream << name << "._vtbl->destroy(" << name + "._parent" << ")";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
-#ifndef SKIP_FREE
-            stringstream freeStream;
-            freeStream << "free(" << name << "._parent)";
-            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
-#endif // !SKIP_FREE
+            if (compiler->outputFree) {
+                stringstream freeStream;
+                freeStream << "free(" << name << "._parent)";
+                ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
+            }
         }
         else {
             assert(!type->parent.expired());
             shared_ptr<TrBlock> ifNullBlock;
             auto innerBlock = block;
             if (type->isOption) {
-                ifNullBlock = make_shared<TrBlock>();
+                ifNullBlock = make_shared<TrBlock>(block);
                 stringstream ifStream;
                 ifStream << "if (" << name << " != 0)";
                 block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -337,13 +346,13 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             lineStream << name << "->_refCount--";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
-#ifdef DEBUG_ALLOC
-            stringstream logStream;
-            logStream << "printf(\"RELEASE\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-            innerBlock->statements.push_back(logStream.str());
-#endif
+            if (compiler->outputDebugLeaks) {
+                stringstream logStream;
+                logStream << "_object_release((sjs_object*)" << name << ", \"" << block->getFunctionName() << "\");";
+                innerBlock->statements.push_back(TrStatement(CLoc::undefined, logStream.str()));
+            }
 
-            auto ifBlock = make_shared<TrBlock>();
+            auto ifBlock = make_shared<TrBlock>(block);
             stringstream ifStream;
             ifStream << "if (" << name << "->_refCount <= 0)";
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifBlock));
@@ -356,11 +365,11 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
             destroyStream << type->parent.lock()->getCDestroyFunctionName() << "(" << convertToLocalName(type, name, false) << ")";
             ifBlock->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
 
-#ifndef SKIP_FREE
-            stringstream freeStream;
-            freeStream << "free(" << name << ")";
-            ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
-#endif // !SKIP_FREE
+            if (compiler->outputFree) {
+                stringstream freeStream;
+                freeStream << "free(" << name << ")";
+                ifBlock->statements.push_back(TrStatement(CLoc::undefined, freeStream.str()));
+            }
         }
     }
     else if (type->typeMode == CTM_Weak) {
@@ -396,10 +405,26 @@ void TrValue::addReleaseToStatements(TrBlock* block) {
     }
 }
 
-void TrValue::addRetainToStatements(TrBlock* block) {
+void TrValue::addDestroyToStatements(Compiler* compiler, TrBlock* block) {
+    if (type->typeMode == CTM_Stack) {
+        stringstream destroyStream;
+        destroyStream << "if (" << name << "._refCount == 1) { " << type->parent.lock()->getCDestroyFunctionName() << "(&" << name << "); }\n";
+        block->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
+    }
+}
+
+void TrValue::addDestroyLocalToStatements(Compiler* compiler, TrBlock* block) {
+    if (type->typeMode == CTM_Local) {
+        stringstream destroyStream;
+        destroyStream << "if (" << name << "->_refCount == 1) { " << type->parent.lock()->getCDestroyFunctionName() << "(" << name << "); }\n";
+        block->statements.push_back(TrStatement(CLoc::undefined, destroyStream.str()));
+    }
+}
+
+void TrValue::addRetainToStatements(Compiler* compiler, TrBlock* block) {
     if (type->typeMode == CTM_Heap) {
         if (type->category == CTC_Function) {
-            auto ifNullBlock = make_shared<TrBlock>();
+            auto ifNullBlock = make_shared<TrBlock>(block);
             stringstream ifStream;
             ifStream << "if ((uintptr_t)" << name << ".inner._parent > 1)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -407,10 +432,13 @@ void TrValue::addRetainToStatements(TrBlock* block) {
             auto innerBlock = ifNullBlock.get();
             stringstream lineStream;
             lineStream << name << ".inner._parent->_refCount++";
+            if (compiler->outputDebugLeaks) {
+                lineStream << "; _object_retain((sjs_object*)" << name << ".inner._parent" << ", \"" << block->getFunctionName() << "\");";
+            }
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
         else if (type->category == CTC_Interface) {
-            auto ifNullBlock = make_shared<TrBlock>();
+            auto ifNullBlock = make_shared<TrBlock>(block);
             stringstream ifStream;
             ifStream << "if (" << name << "._parent != 0)";
             block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -418,6 +446,9 @@ void TrValue::addRetainToStatements(TrBlock* block) {
             auto innerBlock = ifNullBlock.get();
             stringstream lineStream;
             lineStream << name << "._parent->_refCount++";
+            if (compiler->outputDebugLeaks) {
+                lineStream << "; _object_retain((sjs_object*)" << name << "._parent" << ", \"" << block->getFunctionName() << "\");";
+            }
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
         }
         else {
@@ -425,7 +456,7 @@ void TrValue::addRetainToStatements(TrBlock* block) {
             shared_ptr<TrBlock> ifNullBlock;
             auto innerBlock = block;
             if (type->isOption) {
-                ifNullBlock = make_shared<TrBlock>();
+                ifNullBlock = make_shared<TrBlock>(block);
                 stringstream ifStream;
                 ifStream << "if (" << name << " != 0)";
                 block->statements.push_back(TrStatement(CLoc::undefined, ifStream.str(), ifNullBlock));
@@ -435,13 +466,10 @@ void TrValue::addRetainToStatements(TrBlock* block) {
 
             stringstream lineStream;
             lineStream << name << "->_refCount++";
+            if (compiler->outputDebugLeaks) {
+                lineStream << "; _object_retain((sjs_object*)" << name << ", \"" << block->getFunctionName() << "\");";
+            }
             innerBlock->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
-
-#ifdef DEBUG_ALLOC
-            stringstream logStream;
-            logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-            innerBlock->statements.push_back(logStream.str());
-#endif
         }
     }
     else if (type->typeMode == CTM_Weak) {
@@ -477,7 +505,7 @@ void TrValue::addRetainToStatements(TrBlock* block) {
     }
 }
     
-void TrValue::addInitToStatements(TrBlock* block) {
+void TrValue::addInitToStatements(Compiler* compiler, TrBlock* block) {
     if (type->typeMode == CTM_Value) {
         return;
     }
@@ -505,11 +533,11 @@ void TrValue::addInitToStatements(TrBlock* block) {
                 lineStream << name << "->_refCount = 1";
                 block->statements.push_back(TrStatement(CLoc::undefined, lineStream.str()));
 
-#ifdef DEBUG_ALLOC
-                stringstream logStream;
-                logStream << "printf(\"RETAIN\\t" << type->nameRef << "\\t%0x\\t" << block->getFunctionName() << "\\t" << "%d\\n\", (uintptr_t)" << name << ", " << name << "->_refCount);";
-                block->statements.push_back(logStream.str());
-#endif
+                if (compiler->outputDebugLeaks) {
+                    stringstream logStream;
+                    logStream << "_object_init((sjs_object*)" << name << ", " << structName + "_typeId, \"" << block->getFunctionName() << "\");";
+                    block->statements.push_back(TrStatement(CLoc::undefined, logStream.str()));
+                }
             }
         }
     }
@@ -652,10 +680,13 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
     TrValue leftValue(scope, type, name, isReturnValue);
     if (!op.isCopy) {
         if (!op.isFirstAssignment) {
-            leftValue.addReleaseToStatements(block);
+            leftValue.addReleaseToStatements(compiler, block);
+            leftValue.addDestroyToStatements(compiler, block);
         }
 
         if (type->typeMode == CTM_Value && type->isOption && !rightValue->type->isOption) {
+            assert(!isCaptureValue);
+
             stringstream line1;
             line1 << name << ".isvalid = true";
             block->statements.push_back(TrStatement(loc, line1.str()));
@@ -666,7 +697,10 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         }
         else {
             stringstream lineStream;
-            lineStream << name << " = ";
+            if (!isCaptureValue) {
+                lineStream << name << " = ";
+            }
+
             if (isObjectCast) {
                 lineStream << "(sjs_object*)";
             }
@@ -679,12 +713,20 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             else {
                 lineStream << rightValue->name;
             }
-            block->statements.push_back(TrStatement(loc, lineStream.str()));
+
+            if (isCaptureValue) {
+                captureText = lineStream.str();
+            }
+            else {
+                block->statements.push_back(TrStatement(loc, lineStream.str()));
+            }
         }
 
-        leftValue.addRetainToStatements(block);
+        leftValue.addRetainToStatements(compiler, block);
     }
     else {
+        assert(!isCaptureValue);
+
         if (type->typeMode == CTM_Value) {
             assert(rightValue->type->typeMode == CTM_Value);
             stringstream lineStream;
@@ -693,14 +735,15 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         }
         else {
             if (op.isFirstAssignment) {
-                leftValue.addInitToStatements(block);
+                leftValue.addInitToStatements(compiler, block);
             }
             else {
-                leftValue.addReleaseToStatements(block);
+                leftValue.addReleaseToStatements(compiler, block);
+                leftValue.addDestroyToStatements(compiler, block);
             }
 
             if (type->category == CTC_Function) {
-                type->callback.lock()->writeCopy(block, rightValue->name, name, type->typeMode == CTM_Heap);
+                type->callback.lock()->writeCopy(compiler, block, rightValue->name, name, type->typeMode == CTM_Heap);
             } 
             else if (type->category == CTC_Interface) {
                 compiler->addError(loc, CErrorCode::Internal, "interface cannot be copied");
@@ -715,6 +758,8 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 }
 
 string TrStoreValue::getName(TrBlock* block) {
+    assert(!isCaptureValue);
+
     if (name.size() == 0) {
         name = block->createTempVariable(scope, type, "void")->name;
     }

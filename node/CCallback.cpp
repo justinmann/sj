@@ -34,6 +34,11 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         }
     }
 
+    if (!storeValue->op.isFirstAssignment) {
+        assert(storeValue->type->typeMode != CTM_Stack);
+        storeValue->getValue()->addReleaseToStatements(compiler, trBlock);
+    }
+
     string name = storeValue->getName(trBlock);
     if (storeValue->type->typeMode == CTM_Heap) {
         name += ".inner";
@@ -53,7 +58,13 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
 
         trBlock->statements.push_back(TrStatement(loc, name + "._parent = " + dotValue->getName(trBlock) + "._parent"));
         if (storeValue->type->typeMode == CTM_Heap) {
-            trBlock->statements.push_back(TrStatement(loc, "if (" + name + "._parent != 0) { " + name + "._parent->_refCount++; }"));
+            stringstream retainStream;
+            retainStream << "if (" << name << "._parent != 0) { " << name << "._parent->_refCount++;";
+            if (compiler->outputDebugLeaks) {
+                retainStream << "_object_retain((sjs_object*)" << name << "._parent" << ", \"" << trBlock->getFunctionName() << "\");";
+            }
+            retainStream << "}";
+            trBlock->statements.push_back(TrStatement(loc, retainStream.str()));
         }
         else if (storeValue->type->typeMode == CTM_Weak) {
             auto cbName = TrBlock::nextVarName("weakptrcb");
@@ -530,10 +541,17 @@ string CCallback::getCName(CTypeMode typeMode, bool isOption) {
     return safeStream.str();
 }
 
-void CCallback::writeCopy(TrBlock* trBlock, string from, string to, bool isHeap) {
+void CCallback::writeCopy(Compiler* compiler, TrBlock* trBlock, string from, string to, bool isHeap) {
     if (isHeap) {
         trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._parent = " + from + ".inner._parent"));
-        trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._parent->_refCount++"));
+
+        stringstream retainStream;
+        retainStream << to << ".inner._parent->_refCount++";
+        if (compiler->outputDebugLeaks) {
+            retainStream << "; _object_retain((sjs_object*)" << to << ".inner._parent" << ", \"" << trBlock->getFunctionName() << "\");";
+        }
+
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, retainStream.str()));
         if (stackReturnType) {
             trBlock->statements.push_back(TrStatement(CLoc::undefined, to + ".inner._cb = " + from + ".inner._cb"));
         }
