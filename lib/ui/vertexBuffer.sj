@@ -80,7 +80,7 @@ vertexBuffer!vertex(
                     dtu2 : vertex2.texture.x - vertex0.texture.x;
                     dtv1 : vertex1.texture.y - vertex0.texture.y;
                     dtv2 : vertex2.texture.y - vertex0.texture.y;
-                    texture = valid(vec2(
+                    texture = valid(copy vec2(
                         x: vertex0.texture.x + result.x * dtu1 + result.y * dtu2
                         y: vertex0.texture.y + result.x * dtv1 + result.y * dtv2))
                 }

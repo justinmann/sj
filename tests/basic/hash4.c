@@ -140,6 +140,8 @@ struct td_sjs_string {
 };
 
 sji_interface_vtbl sjs_class_interface_vtbl;
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -155,6 +157,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 #ifndef heap_iface_interface_i32_hash_typedef
 #define heap_iface_interface_i32_hash_typedef
 KHASH_INIT_TYPEDEF(heap_iface_interface_i32_hash_type, sji_interface, int32_t)
@@ -234,10 +237,25 @@ void sji_interface_hash(sji_interface _parent, uint32_t* _return);
 void sji_interface_isequal(sji_interface _parent, sji_interface b, bool* _return);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -370,6 +388,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 #ifndef heap_iface_interface_i32_hash_function
 #define heap_iface_interface_i32_hash_function
 #if false
@@ -584,12 +603,7 @@ void sjf_class_isequal(sjs_class* _parent, sji_interface b, bool* _return) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    #ifdef _WINDOWS
-    OutputDebugStringA((char*)data->data.data);
-    OutputDebugStringA("\n");
-    #else
-    fprintf(stderr, "%s\n", (char*)data->data.data);
-    #endif
+    debugout("%s\n", (char*)data->data.data);
 }
 
 void sjf_hash_heap_iface_interface_i32(sjs_hash_heap_iface_interface_i32* _this) {
@@ -830,10 +844,15 @@ void sjf_print(sji_interface k, int32_t v) {
     sjf_debug_writeline(sjt_functionParam5);
 
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
+;
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
+;
     if (sjt_call5._refCount == 1) { sjf_string_destroy(&sjt_call5); }
+;
     if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
+;
     if (sjt_call7._refCount == 1) { sjf_string_destroy(&sjt_call7); }
+;
 }
 
 void sjf_print_callback(void * _parent, sji_interface k, int32_t v) {
@@ -956,6 +975,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
@@ -1073,6 +1093,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
@@ -1082,6 +1103,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
@@ -1211,5 +1234,7 @@ void main_destroy() {
         }
     }
     if (sjt_call8._refCount == 1) { sjf_string_destroy(&sjt_call8); }
+;
     if (sjv_a._refCount == 1) { sjf_hash_heap_iface_interface_i32_destroy(&sjv_a); }
+;
 }

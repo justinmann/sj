@@ -108,7 +108,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\lambda9.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\heap17.sj --vs-errors --no-lines --debug-leaks --c-file c:\src\sj\tests\basic\vs\test.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>
@@ -179,9 +179,13 @@
     <ClInclude Include="..\lib\common\khash.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\lib\common\object.h" />
     <ClInclude Include="..\lib\common\value_option_types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\lib\common\object.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="test.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

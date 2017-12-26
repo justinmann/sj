@@ -22,13 +22,13 @@ crossHairsElement #element (
 
     render(scene : 'scene2d)'void {
         if isEmpty(_topDownRenderer) {
-            _topDownRenderer = valid(boxRenderer(
+            _topDownRenderer = valid(copy boxRenderer(
                 rect: rect(_point.x, _rect.y, 1, _rect.h)
                 color: copy color))
         }
 
         if isEmpty(_leftRightRenderer) {
-            _leftRightRenderer = valid(boxRenderer(
+            _leftRightRenderer = valid(copy boxRenderer(
                 rect: rect(_rect.x, _point.y, _rect.w, 1)
                 color: copy color))
         }

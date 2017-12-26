@@ -96,6 +96,8 @@ struct td_sjs_tuple2_f64_i32 {
     int32_t item2;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -111,6 +113,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 sjs_string* sjt_copy1 = 0;
 sjs_tuple2_i32_string* sjt_dot1 = 0;
@@ -160,10 +163,25 @@ void sjf_tuple2_i32_string_destroy(sjs_tuple2_i32_string* _this);
 void sjf_tuple2_i32_string_heap(sjs_tuple2_i32_string* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -296,6 +314,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_array_char(sjs_array_char* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -384,6 +403,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_heap(sjs_string* _this) {
@@ -413,6 +434,8 @@ void sjf_tuple2_i32_string_copy(sjs_tuple2_i32_string* _this, sjs_tuple2_i32_str
 }
 
 void sjf_tuple2_i32_string_destroy(sjs_tuple2_i32_string* _this) {
+    if (_this->item2._refCount == 1) { sjf_string_destroy(&_this->item2); }
+;
 }
 
 void sjf_tuple2_i32_string_heap(sjs_tuple2_i32_string* _this) {
@@ -442,6 +465,8 @@ int main(int argc, char** argv) {
     sjt_dot3 = &sjv_tupleresult1;
     sjv_a = sjt_dot3->item1;
     sjt_dot4 = &sjv_tupleresult1;
+    if (sjv_b._refCount == 1) { sjf_string_destroy(&sjv_b); }
+;
     sjf_string_copy(&sjv_b, &sjt_dot4->item2);
     sjf_func(&sjv_tupleresult2);
     sjt_dot5 = &sjv_tupleresult2;
@@ -468,9 +493,15 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     if (sjv_b._refCount == 1) { sjf_string_destroy(&sjv_b); }
+;
     if (sjv_d._refCount == 1) { sjf_string_destroy(&sjv_d); }
+;
     if (sjv_t._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_t); }
+;
     if (sjv_tupleresult1._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_tupleresult1); }
+;
     if (sjv_tupleresult2._refCount == 1) { sjf_tuple2_i32_string_destroy(&sjv_tupleresult2); }
+;
     if (sjv_tupleresult3._refCount == 1) { sjf_tuple2_f64_i32_destroy(&sjv_tupleresult3); }
+;
 }

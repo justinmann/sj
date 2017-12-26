@@ -71,7 +71,7 @@ textElement #element #textElement (
                 default                 { 0 }
             }
 
-            _textRenderer = valid(textRenderer(
+            _textRenderer = valid(copy textRenderer(
                 text: copy text
                 point: point(x, y)
                 color: copy color

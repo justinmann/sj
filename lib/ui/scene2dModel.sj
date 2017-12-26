@@ -25,7 +25,7 @@ scene2dModel #model (
         _view = copy view
         _world = copy world
         _light = copy light
-        _projectedCenter = _projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
+        _projectedCenter = copy (_projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f))
         void
     }
 
@@ -91,9 +91,9 @@ scene2dModel #model (
         modelsById[id] = weak (this as #model)
     }
 
-    _framebuffer = glGenFramebuffer(textureSize)
-    _texture = glGenTexture(textureSize)
-    _renderbuffer = glGenRenderbuffer(textureSize)
+    _framebuffer = copy glGenFramebuffer(textureSize)
+    _texture = copy glGenTexture(textureSize)
+    _renderbuffer = copy glGenRenderbuffer(textureSize)
 
     glPushFramebuffer(_framebuffer)
     glBindTexture(glTexture.GL_TEXTURE_2D, _texture)

@@ -106,6 +106,8 @@ struct td_cb_bob_heap_bob_heap {
 };
 
 sji_foo_vtbl sjs_class_foo_vtbl;
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -121,6 +123,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 sjs_class sjt_call1 = { -1 };
 cb_bob_heap_bob sjt_callback1;
@@ -155,10 +158,25 @@ void sjf_class_getbar_heap(sjs_class* _parent, sjs_bob** _return);
 void sjf_class_heap(sjs_class* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -291,6 +309,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_bob(sjs_bob* _this) {
 }
 
@@ -417,5 +436,7 @@ void main_destroy() {
     delete_cb weakptrcb2 = { &sjv_f._parent, weakptr_clear };
     if (sjv_f._parent != 0) { weakptr_cb_remove(sjv_f._parent, weakptrcb2); }
     if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
+;
     if (sjv_a._refCount == 1) { sjf_bob_destroy(&sjv_a); }
+;
 }

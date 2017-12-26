@@ -34,6 +34,6 @@ personElement #element #clickable (
         _clickGesture.fireMouseEvent(mouseEvent)
     }
 ) { 
-    _clickGesture = clickGesture(this as #element, this as #clickable)
+    _clickGesture = copy clickGesture(this as #element, this as #clickable)
     this 
 }

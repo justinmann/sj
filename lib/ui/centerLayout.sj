@@ -10,7 +10,7 @@ centerLayout #element (
         innerSize : maxSize - margin
         for i : 0 to children.count {
             child : children[i]         
-            size = size.max(child.getSize(innerSize))
+            size = copy size.max(child.getSize(innerSize))
         }
         size + margin
     }

@@ -20,7 +20,7 @@ boxElement #element (
 
     render(scene : 'scene2d)'void {
         if isEmpty(boxRenderer) {
-            boxRenderer = valid(boxRenderer(
+            boxRenderer = valid(copy boxRenderer(
                 rect: copy rect
                 color: copy color))
         }

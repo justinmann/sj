@@ -61,19 +61,19 @@ borderLayout #element (
                 childSize : child.getSize(size(remaining.w, remaining.h))
                 if position == borderPosition.left {
                     child.setRect(rect(remaining.x, remaining.y, childSize.w, remaining.h))
-                    remaining = rect(remaining.x + childSize.w, remaining.y, remaining.w - childSize.w, remaining.h)
+                    remaining = copy rect(remaining.x + childSize.w, remaining.y, remaining.w - childSize.w, remaining.h)
                     void
                 } else if position == borderPosition.right {
                     child.setRect(rect(remaining.x + remaining.w - childSize.w, remaining.y, childSize.w, remaining.h))
-                    remaining = rect(remaining.x, remaining.y, remaining.w - childSize.w, remaining.h)
+                    remaining = copy rect(remaining.x, remaining.y, remaining.w - childSize.w, remaining.h)
                     void
                 } else if position == borderPosition.top {
                     child.setRect(rect(remaining.x, remaining.y, remaining.w, childSize.h))
-                    remaining = rect(remaining.x, remaining.y + childSize.h, remaining.w, remaining.h - childSize.h)
+                    remaining = copy rect(remaining.x, remaining.y + childSize.h, remaining.w, remaining.h - childSize.h)
                     void
                 } else if position == borderPosition.bottom {
                     child.setRect(rect(remaining.x, remaining.y + remaining.h - childSize.h, remaining.w, childSize.h))
-                    remaining = rect(remaining.x, remaining.y, remaining.w, remaining.h - childSize.h)
+                    remaining = copy rect(remaining.x, remaining.y, remaining.w, remaining.h - childSize.h)
                     void
                 }
             }

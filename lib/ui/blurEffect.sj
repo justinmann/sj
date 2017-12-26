@@ -46,25 +46,25 @@ blurEffect #effect (
             cb(scene)
         } else {
             if isEmpty(_vertexBuffer1) {
-                _vertexBuffer1 = valid(boxVertexBuffer(
+                _vertexBuffer1 = valid(copy boxVertexBuffer(
                     rect : rect(0, 0, _rect.w, _rect.h)
                 ))
                 void
             }
 
             if isEmpty(_vertexBuffer2) {
-                _vertexBuffer2 = valid(boxVertexBuffer(
+                _vertexBuffer2 = valid(copy boxVertexBuffer(
                     rect : copy _rect
                 ))
                 void
             }
 
             if isEmpty(_scenebuffer1) {
-                _scenebuffer1 = valid(scenebuffer(size(_rect.w, _rect.h)))
+                _scenebuffer1 = valid(copy scenebuffer(size(_rect.w, _rect.h)))
             }
 
             if isEmpty(_scenebuffer2) {
-                _scenebuffer2 = valid(scenebuffer(size(_rect.w, _rect.h)))
+                _scenebuffer2 = valid(copy scenebuffer(size(_rect.w, _rect.h)))
             }
 
             ifValid f1 : _scenebuffer1, f2 : _scenebuffer2, v1 : _vertexBuffer1, v2 : _vertexBuffer2 {

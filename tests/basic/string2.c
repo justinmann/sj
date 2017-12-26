@@ -78,6 +78,8 @@ struct td_sjs_string {
     sjs_array_char data;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -93,6 +95,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
 sjs_string* sjt_functionParam1 = 0;
@@ -128,10 +131,25 @@ void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return);
 void sjf_string_heap(sjs_string* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -264,6 +282,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_array_char(sjs_array_char* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -425,7 +444,9 @@ void sjf_func(sjs_string* _return) {
     sjf_string_add(sjt_parent14, sjt_functionParam22, _return);
 
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+;
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
+;
 }
 
 void sjf_func_heap(sjs_string** _return) {
@@ -445,7 +466,9 @@ void sjf_func_heap(sjs_string** _return) {
     sjf_string_add_heap(sjt_parent15, sjt_functionParam25, _return);
 
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
+;
     if (sjt_call5._refCount == 1) { sjf_string_destroy(&sjt_call5); }
+;
 }
 
 void sjf_i32_asstring(int32_t val, sjs_string* _return) {
@@ -621,6 +644,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
@@ -738,6 +762,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
@@ -747,6 +772,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
@@ -790,4 +817,5 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+;
 }

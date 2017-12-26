@@ -29,14 +29,14 @@ saturateEffect #effect (
 
     render(scene : 'scene2d, cb : '(:scene2d)void) {
         if isEmpty(_vertexBuffer) {
-            _vertexBuffer = valid(boxVertexBuffer(
+            _vertexBuffer = valid(copy boxVertexBuffer(
                 rect : copy _rect
             ))
             void
         }
 
         if isEmpty(_scenebuffer) {
-            _scenebuffer = valid(scenebuffer(size(_rect.w, _rect.h)))
+            _scenebuffer = valid(copy scenebuffer(size(_rect.w, _rect.h)))
         }
 
         ifValid f1 : _scenebuffer, v : _vertexBuffer {

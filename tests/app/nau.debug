@@ -489,7 +489,7 @@ list!u32(array'stack array!u32=)'stack list!u32 {
 
 list_add(item'heap #animation:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!#animation = array_grow(
+    parent.array'stack array!#animation = copy array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -504,7 +504,7 @@ list_add(item'heap #animation:)'void {
 
 list_add(item'stack rect:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!rect = array_grow(
+    parent.array'stack array!rect = copy array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -519,7 +519,7 @@ list_add(item'stack rect:)'void {
 
 list_add(item'u32:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!u32 = array_grow(
+    parent.array'stack array!u32 = copy array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -560,6 +560,7 @@ list_removeat(index'i32:)'void {
   halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
   }
   sjs_rect* p = (sjs_rect*)_parent->array.data;
+  ;
   if (index != _parent->array.count - 1) {
   memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(sjs_rect));
   }
@@ -573,6 +574,7 @@ list_removeat(index'i32:)'void {
   halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
   }
   uint32_t* p = (uint32_t*)_parent->array.data;
+  ;
   if (index != _parent->array.count - 1) {
   memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(uint32_t));
   }
@@ -691,9 +693,9 @@ runloop()'void {
   emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
   exit(0);
   #else
-  bool quit = false;
-  while (!quit) {
-  sjf_mainloop();
+  bool shouldappcontinue = true;
+  while (shouldappcontinue) {
+  sjf_mainloop(&shouldappcontinue);
   }
   #endif 
   --c--
@@ -716,7 +718,7 @@ scene2d_setsize(size'stack size:)'void {
     size'stack size : size
   ) {
     parent._size'stack size = copy size
-    parent.projection'stack mat4 = mat4_orthographic(
+    parent.projection'stack mat4 = copy mat4_orthographic(
       left'f32 : left,
       right'f32 : right,
       bottom'f32 : bottom,
@@ -724,18 +726,18 @@ scene2d_setsize(size'stack size:)'void {
       znear'f32 : znear,
       zfar'f32 : zfar
     )
-    parent.model'stack mat4 = mat4_scale(
+    parent.model'stack mat4 = copy mat4_scale(
       x'f32 : x,
       y'f32 : y,
       z'f32 : z
     )
-    parent.view'stack mat4 = mat4_identity()
+    parent.view'stack mat4 = copy mat4_identity()
   }
   void
 }
 
 scene2d_start()'void {
-  parent.windowrect'stack rect = rect(this = rect(
+  parent.windowrect'stack rect = copy rect(this = rect(
     x'i32 : x,
     y'i32 : y,
     w'i32 : w,
@@ -754,13 +756,13 @@ scene2d_start()'void {
 }
 
 scenebuffer(size'stack size:, framebuffer'stack framebuffer=, texture'stack texture=, renderbuffer'stack renderbuffer=)'stack scenebuffer {
-  framebuffer'stack framebuffer = glgenframebuffer(
+  framebuffer'stack framebuffer = copy glgenframebuffer(
     size'stack size : size
   )
-  texture'stack texture = glgentexture(
+  texture'stack texture = copy glgentexture(
     size'stack size : size
   )
-  renderbuffer'stack renderbuffer = glgenrenderbuffer(
+  renderbuffer'stack renderbuffer = copy glgenrenderbuffer(
     size'stack size : size
   )
   glpushframebuffer(
@@ -943,6 +945,27 @@ global()'void {
   }
   import  {
   }
+  --cdefine--
+  void debugout(const char * format, ...);
+  void debugoutv(const char * format, va_list args);
+  --cdefine--
+  --cfunction--
+  void debugout(const char * format, ...) {
+  va_list args;
+  va_start(args, format);
+  debugoutv(format, args);
+  va_end(args);
+  }
+  void debugoutv(const char * format, va_list args) {
+  #ifdef _WINDOWS
+  char text[1024];
+  vsnprintf(text, sizeof(text), format, args);
+  OutputDebugStringA(text);
+  #else
+  vfprintf(stderr, format, args);
+  #endif
+  }
+  --cfunction--
   f32_pi'f32 : 3.14159265358979323846ff
   --cdefine--
   void halt(const char * format, ...);
@@ -951,7 +974,7 @@ global()'void {
   void halt(const char * format, ...) {
   va_list args;
   va_start(args, format);
-  vprintf(format, args);
+  debugoutv(format, args);
   va_end(args);
   #ifdef _DEBUG
   printf("\npress return to end\n");
@@ -1155,6 +1178,12 @@ global()'void {
   #error "UNKNOWN PLATFORM"
   #endif
   --cinclude--
+  --cdefine--
+  #include <lib/common/object.h>
+  --cdefine--
+  --cfunction--
+  #include <lib/common/object.c>
+  --cfunction--
   --cinclude--
   #ifdef WIN32
   #pragma warning(disable:4996)

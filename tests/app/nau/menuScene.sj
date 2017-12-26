@@ -353,53 +353,6 @@ menuScene = heap nauScene3dElement(
                 ) as #model
             ]
         ) as #model
-/*
-
-        <Model CacheContentAsTexture="True" Center="-2.2, 0.0, 1.8" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-            <NAUSection OnClick="{ControlRoot.NAUSection!ZoomIn(this)}" Template="{Template('PeopleSection1')}" />
-            <CenterPanel CenterX="1.0" CenterY="1.0">
-                <ListPanel>
-                    <Text Content="mens" FontColor="#ffffff" FontSize="15" HorizontalAlignment="Right" />
-                    <Text Content="autumn collection" FontColor="#ffffff" FontSize="25" />
-                </ListPanel>
-            </CenterPanel>
-        </Model>
-    </MainPanel>
-    <MainPanel Center="0.0, 1.0, 0.0" Radius="50.0">
-        <Model CacheContentAsTexture="True" Center="1.5, 0.0, 0.5" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-            <NAUSection OnClick="{ControlRoot.NAUSection!ZoomIn(this)}" Template="{Template('PeopleSection2')}" />
-            <CenterPanel CenterX="0.1" CenterY="0.65">
-            <ListPanel>
-                <Text Content="womens" FontColor="#ffffff" FontSize="15" />
-                <Text Content="pants/shorts" FontColor="#ffffff" FontSize="25" />
-            </ListPanel>
-            </CenterPanel>
-            <CrossHairs />
-        </Model>
-        <Model CacheContentAsTexture="True" Center="1.5, 0.0, 0.5" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-            <Image Bitmap="{Bitmap('menu10')}" />
-            <CenterPanel CenterX="0.1" CenterY="0.0">
-            <ListPanel>
-                <Text Content="womens" FontColor="#ffffff" FontSize="15" />
-                <Text Content="pants/shorts" FontColor="#ffffff" FontSize="25" />
-            </ListPanel>
-            </CenterPanel>
-        </Model>
-        <Model CacheContentAsTexture="True" Center="1.5, 0.0, 0.5" ContentSize="200, 88" HasAlpha="True" Mesh="{Mesh!CreateRectangle(-1.4, -0.6, 1.4, 0.6)}">
-            <Image Bitmap="{Bitmap('menu11')}" />
-            <CenterPanel CenterX="0.1" CenterY="1.0">
-            <ListPanel>
-                <Text Content="womens" FontColor="#ffffff" FontSize="15" />
-                <Text Content="pants/shorts" FontColor="#ffffff" FontSize="25" />
-            </ListPanel>
-            </CenterPanel>
-        </Model>
-        </MainPanel>
-        <BubblePanel Bitmap="{Bitmap('bubbles_atmosphere')}" Effect="{FadeEffect(0.5)}" Radius="52.1" />
-        <BubblePanel Bitmap="{Bitmap('bubbles_atmosphere')}" Effect="{FadeEffect(0.5)}" Height="15.0" Offset="0.2" Radius="62.0" Slices="30.0" />
-    </Panel3D>
-
-*/
     ]
 )
 

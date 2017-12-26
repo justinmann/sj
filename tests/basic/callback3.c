@@ -81,6 +81,8 @@ struct td_cb_i32_void_heap {
     void (*_destroy)(sjs_object*);
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -96,6 +98,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 int32_t sjt_math1;
 int32_t sjt_math2;
@@ -117,10 +120,25 @@ void sjf_class_run(sjs_class* _parent, int32_t* _return);
 void sjf_domath(cb_i32_void_heap cb);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -253,6 +271,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
     _this->total = _from->total;
 }

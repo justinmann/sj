@@ -89,6 +89,8 @@ struct td_sjs_hash_stringstring {
     void* _hash;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -104,6 +106,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 #ifndef string_string_hash_typedef
 #define string_string_hash_typedef
 KHASH_INIT_TYPEDEF(string_string_hash_type, sjs_string, sjs_string)
@@ -158,10 +161,25 @@ void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -294,6 +312,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 #ifndef string_string_hash_function
 #define string_string_hash_function
 #if true
@@ -367,12 +386,7 @@ return;;
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    #ifdef _WINDOWS
-    OutputDebugStringA((char*)data->data.data);
-    OutputDebugStringA("\n");
-    #else
-    fprintf(stderr, "%s\n", (char*)data->data.data);
-    #endif
+    debugout("%s\n", (char*)data->data.data);
 }
 
 void sjf_hash_stringstring(sjs_hash_stringstring* _this) {
@@ -498,6 +512,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_hash(sjs_string* _parent, uint32_t* _return) {
@@ -599,9 +615,15 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+;
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+;
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
+;
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
+;
     if (sjv_a._refCount == 1) { sjf_hash_stringstring_destroy(&sjv_a); }
+;
     if (sjv_b._refCount == 1) { sjf_string_destroy(&sjv_b); }
+;
 }

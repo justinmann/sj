@@ -33,7 +33,7 @@ imageElement #element (
                 imageStretch.center { 
                     s : size(r.w, r.h)
                     finalSize : s.min(image.texture.size)
-                    r = rect(
+                    r = copy rect(
                         (r.w - finalSize.w) / 2
                         (r.h - finalSize.h) / 2
                         finalSize.w
@@ -49,7 +49,7 @@ imageElement #element (
                     } else {
                         size((r.w as f32 * imageAspectRatio) as i32, r.h)
                     }
-                    r = rect(
+                    r = copy rect(
                         (r.w - finalSize.w) / 2
                         (r.h - finalSize.h) / 2
                         finalSize.w
@@ -59,7 +59,7 @@ imageElement #element (
                 }
             }
 
-            _imageRenderer = valid(imageRenderer(
+            _imageRenderer = valid(copy imageRenderer(
                 image : copy image
                 rect : copy r
             ))

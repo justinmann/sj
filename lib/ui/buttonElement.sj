@@ -38,7 +38,7 @@ buttonElement #element #clickable(
             }
 
             ifValid image {
-                _imageRenderer = valid(imageRenderer(
+                _imageRenderer = valid(copy imageRenderer(
                     image : copy image
                     rect : copy _rect           
                 ))
@@ -50,7 +50,7 @@ buttonElement #element #clickable(
 
             textSize : font.getTextSize(text)
 
-            _textRenderer = valid(textRenderer(
+            _textRenderer = valid(copy textRenderer(
                 text: copy text
                 point: point(innerRect.x + (innerRect.w - textSize.w) / 2, innerRect.y + (innerRect.h - textSize.h) / 2)
                 color: copy textColor
@@ -89,6 +89,6 @@ buttonElement #element #clickable(
         _clickGesture.fireMouseEvent(mouseEvent)
     }
 ) { 
-    _clickGesture = clickGesture(this as #element, this as #clickable)
+    _clickGesture = copy clickGesture(this as #element, this as #clickable)
     this 
 }

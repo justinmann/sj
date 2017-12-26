@@ -53,7 +53,6 @@
     <None Include="..\lib\common\weakptr.sj">
       <Filter>Source Files\common</Filter>
     </None>
-    <None Include="..\..\..\..\..\src\sj\tests\app\nau.sj" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\common\khash.h">
@@ -62,10 +61,16 @@
     <ClInclude Include="..\lib\common\value_option_types.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\lib\common\object.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\common\object.c">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

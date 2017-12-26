@@ -84,6 +84,8 @@ struct td_sjs_list_heap_class {
     sjs_array_heap_class array;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -99,6 +101,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 sjs_class* sjt_dot15 = 0;
 int32_t sjt_forEnd1;
@@ -138,10 +141,25 @@ void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index,
 void sjf_list_heap_class_heap(sjs_list_heap_class* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -274,6 +292,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_array_heap_class(sjs_array_heap_class* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -446,6 +465,7 @@ void sjf_list_heap_class(sjs_list_heap_class* _this) {
 }
 
 void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
+    sjs_array_heap_class sjt_call1 = { -1 };
     int32_t sjt_compare1;
     int32_t sjt_compare2;
     sjs_array_heap_class* sjt_dot1 = 0;
@@ -468,6 +488,7 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     sjt_compare2 = sjt_dot3->datasize;
     sjt_ifElse1 = sjt_compare1 >= sjt_compare2;
     if (sjt_ifElse1) {
+        sjs_array_heap_class* sjt_copy1 = 0;
         sjs_list_heap_class* sjt_dot10 = 0;
         sjs_list_heap_class* sjt_dot5 = 0;
         sjs_list_heap_class* sjt_dot8 = 0;
@@ -489,7 +510,12 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
         sjt_math4 = 2;
         sjt_functionParam3 = sjt_math3 * sjt_math4;
         sjf_i32_max(sjt_functionParam2, sjt_functionParam3, &sjt_functionParam1);
-        sjf_array_heap_class_grow(sjt_parent1, sjt_functionParam1, &sjt_dot5->array);
+        sjf_array_heap_class_grow(sjt_parent1, sjt_functionParam1, &sjt_call1);
+        sjt_copy1 = &sjt_call1;
+        if (sjt_dot5->array._refCount == 1) { sjf_array_heap_class_destroy(&sjt_dot5->array); }
+;
+        sjt_dot5->array._refCount = 1;
+        sjf_array_heap_class_copy(&sjt_dot5->array, sjt_copy1);
     }
 
     sjt_dot11 = _parent;
@@ -507,6 +533,8 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
         sjf_class_destroy(sjt_functionParam5);
         free(sjt_functionParam5);
     }
+    if (sjt_call1._refCount == 1) { sjf_array_heap_class_destroy(&sjt_call1); }
+;
 }
 
 void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _from) {
@@ -515,6 +543,8 @@ void sjf_list_heap_class_copy(sjs_list_heap_class* _this, sjs_list_heap_class* _
 }
 
 void sjf_list_heap_class_destroy(sjs_list_heap_class* _this) {
+    if (_this->array._refCount == 1) { sjf_array_heap_class_destroy(&_this->array); }
+;
 }
 
 void sjf_list_heap_class_getat_heap(sjs_list_heap_class* _parent, int32_t index, sjs_class** _return) {
@@ -596,4 +626,5 @@ void main_destroy() {
         free(sjv_c);
     }
     if (sjv_a._refCount == 1) { sjf_list_heap_class_destroy(&sjv_a); }
+;
 }

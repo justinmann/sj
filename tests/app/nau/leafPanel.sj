@@ -53,7 +53,7 @@ leafPanel #model (
     }
 ) {
     _angle = textures.count as f32 * 0.8f / 2.0f
-    children = textures.map!heap #model(this.textureToModel)
+    children = copy textures.map!heap #model(this.textureToModel)
     this
 }
 

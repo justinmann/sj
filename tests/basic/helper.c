@@ -85,6 +85,8 @@ struct td_sjs_class {
     int32_t x;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -100,6 +102,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 int32_t sjt_functionParam1;
 sjs_class* sjt_functionParam2 = 0;
@@ -132,10 +135,25 @@ void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -268,6 +286,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_array_char(sjs_array_char* _this) {
     if (_this->datasize < 0) {
         halt("size is less than zero");
@@ -399,6 +418,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_heap(sjs_string* _this) {
@@ -442,4 +463,5 @@ void main_destroy() {
         free(sjv_c);
     }
     if (void1._refCount == 1) { sjf_string_destroy(&void1); }
+;
 }

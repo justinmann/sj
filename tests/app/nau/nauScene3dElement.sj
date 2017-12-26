@@ -22,7 +22,7 @@ nauScene3dElement #element (
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
             _rect = copy rect_
-            projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
+            projection = copy mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
         }
         void
     }
@@ -65,7 +65,7 @@ nauScene3dElement #element (
 
     render(scene : 'scene2d)'void {
         camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
-        view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+        view = copy mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
 
         for i : 0 to children.count {
             child : children[i]
@@ -105,13 +105,13 @@ nauScene3dElement #element (
 
             mouseEventType.move {
                 if mouse_hasCapture(parent as #element) {
-                    _lookAt = vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
+                    _lookAt = copy vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
                         (_startDrag.x - mouseEvent.point.x) as f32 / _rect.w as f32 * 2.0f
                         (mouseEvent.point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
                         0.0f
                     )))
                     camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
-                    view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+                    view = copy mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
                     void
                 }
             }

@@ -92,6 +92,8 @@ struct td_sjs_string {
     sjs_array_char data;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -107,6 +109,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 #ifndef i32_weak_class_hash_typedef
 #define i32_weak_class_hash_typedef
 KHASH_INIT_TYPEDEF(i32_weak_class_hash_type, int32_t, sjs_class*)
@@ -120,6 +123,7 @@ sjs_string sjt_call1 = { -1 };
 sjs_class* sjt_call2 = 0;
 sjs_string sjt_call6 = { -1 };
 sjs_class* sjt_call7 = 0;
+sjs_class* sjt_funcold1 = 0;
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam10;
 int32_t sjt_functionParam11;
@@ -177,10 +181,25 @@ void sjf_string_destroy(sjs_string* _this);
 void sjf_string_heap(sjs_string* _this);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -313,6 +332,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 #ifndef i32_weak_class_hash_function
 #define i32_weak_class_hash_function
 #if false
@@ -390,12 +410,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    #ifdef _WINDOWS
-    OutputDebugStringA((char*)data->data.data);
-    OutputDebugStringA("\n");
-    #else
-    fprintf(stderr, "%s\n", (char*)data->data.data);
-    #endif
+    debugout("%s\n", (char*)data->data.data);
 }
 
 void sjf_hash_i32_weak_class(sjs_hash_i32_weak_class* _this) {
@@ -601,6 +616,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_heap(sjs_string* _this) {
@@ -712,17 +729,18 @@ int main(int argc, char** argv) {
     sjf_i32_asstring(sjt_functionParam4, &sjt_call1);
     sjt_functionParam3 = &sjt_call1;
     sjf_debug_writeline(sjt_functionParam3);
-    sjv_c->_refCount--;
-    if (sjv_c->_refCount <= 0) {
-        weakptr_release(sjv_c);
-        sjf_class_destroy(sjv_c);
-        free(sjv_c);
-    }
-
+    sjt_funcold1 = sjv_c;
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_c->_refCount = 1;
     sjv_c->x = 2;
     sjf_class_heap(sjv_c);
+    sjt_funcold1->_refCount--;
+    if (sjt_funcold1->_refCount <= 0) {
+        weakptr_release(sjt_funcold1);
+        sjf_class_destroy(sjt_funcold1);
+        free(sjt_funcold1);
+    }
+
     sjt_parent6 = &sjv_a;
     sjt_functionParam11 = 0;
     sjf_hash_i32_weak_class_getat(sjt_parent6, sjt_functionParam11, &sjt_call7);
@@ -827,6 +845,9 @@ void main_destroy() {
         free(sjv_c);
     }
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+;
     if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
+;
     if (sjv_a._refCount == 1) { sjf_hash_i32_weak_class_destroy(&sjv_a); }
+;
 }

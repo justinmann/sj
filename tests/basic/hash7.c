@@ -91,6 +91,8 @@ struct td_sjs_hash_stringstring {
     void* _hash;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -106,6 +108,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 #ifndef string_string_hash_typedef
 #define string_string_hash_typedef
 KHASH_INIT_TYPEDEF(string_string_hash_type, sjs_string, sjs_string)
@@ -226,10 +229,25 @@ void sjf_string_heap(sjs_string* _this);
 void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -362,6 +380,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 #ifndef string_string_hash_function
 #define string_string_hash_function
 #if true
@@ -528,12 +547,7 @@ void sjf_array_char_setat(sjs_array_char* _parent, int32_t index, char item) {
 }
 
 void sjf_debug_writeline(sjs_string* data) {
-    #ifdef _WINDOWS
-    OutputDebugStringA((char*)data->data.data);
-    OutputDebugStringA("\n");
-    #else
-    fprintf(stderr, "%s\n", (char*)data->data.data);
-    #endif
+    debugout("%s\n", (char*)data->data.data);
 }
 
 void sjf_hash_stringstring(sjs_hash_stringstring* _this) {
@@ -847,6 +861,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
@@ -964,6 +979,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
     }
 
     if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+;
 }
 
 void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
@@ -973,6 +989,8 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
 }
 
 void sjf_string_destroy(sjs_string* _this) {
+    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
+;
 }
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
@@ -1259,31 +1277,59 @@ int main(int argc, char** argv) {
 void main_destroy() {
 
     if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
+;
     if (sjt_call10._refCount == 1) { sjf_string_destroy(&sjt_call10); }
+;
     if (sjt_call11._refCount == 1) { sjf_string_destroy(&sjt_call11); }
+;
     if (sjt_call12._refCount == 1) { sjf_string_destroy(&sjt_call12); }
+;
     if (sjt_call13._refCount == 1) { sjf_string_destroy(&sjt_call13); }
+;
     if (sjt_call14._refCount == 1) { sjf_string_destroy(&sjt_call14); }
+;
     if (sjt_call15._refCount == 1) { sjf_string_destroy(&sjt_call15); }
+;
     if (sjt_call16._refCount == 1) { sjf_string_destroy(&sjt_call16); }
+;
     if (sjt_call17._refCount == 1) { sjf_string_destroy(&sjt_call17); }
+;
     if (sjt_call18._refCount == 1) { sjf_string_destroy(&sjt_call18); }
+;
     if (sjt_call19._refCount == 1) { sjf_string_destroy(&sjt_call19); }
+;
     if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+;
     if (sjt_call20._refCount == 1) { sjf_string_destroy(&sjt_call20); }
+;
     if (sjt_call21._refCount == 1) { sjf_string_destroy(&sjt_call21); }
+;
     if (sjt_call22._refCount == 1) { sjf_string_destroy(&sjt_call22); }
+;
     if (sjt_call23._refCount == 1) { sjf_string_destroy(&sjt_call23); }
+;
     if (sjt_call24._refCount == 1) { sjf_string_destroy(&sjt_call24); }
+;
     if (sjt_call25._refCount == 1) { sjf_string_destroy(&sjt_call25); }
+;
     if (sjt_call26._refCount == 1) { sjf_string_destroy(&sjt_call26); }
+;
     if (sjt_call27._refCount == 1) { sjf_string_destroy(&sjt_call27); }
+;
     if (sjt_call3._refCount == 1) { sjf_string_destroy(&sjt_call3); }
+;
     if (sjt_call4._refCount == 1) { sjf_string_destroy(&sjt_call4); }
+;
     if (sjt_call5._refCount == 1) { sjf_string_destroy(&sjt_call5); }
+;
     if (sjt_call6._refCount == 1) { sjf_string_destroy(&sjt_call6); }
+;
     if (sjt_call7._refCount == 1) { sjf_string_destroy(&sjt_call7); }
+;
     if (sjt_call8._refCount == 1) { sjf_string_destroy(&sjt_call8); }
+;
     if (sjt_call9._refCount == 1) { sjf_string_destroy(&sjt_call9); }
+;
     if (sjv_a._refCount == 1) { sjf_hash_stringstring_destroy(&sjv_a); }
+;
 }

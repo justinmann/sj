@@ -60,7 +60,7 @@ peoplePanel #model (
     }
 ) {
     _xoffset = -(_xincrement * f32_ceil(children.count as f32 / _depth as f32) / 2.0f)
-    _childrenModel = children.map!mat4(this.getModelMatrix)
+    _childrenModel = copy children.map!mat4(this.getModelMatrix)
     this
 }
 

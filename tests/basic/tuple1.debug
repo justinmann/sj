@@ -18,6 +18,27 @@ global()'void {
   }
   import  {
   }
+  --cdefine--
+  void debugout(const char * format, ...);
+  void debugoutv(const char * format, va_list args);
+  --cdefine--
+  --cfunction--
+  void debugout(const char * format, ...) {
+  va_list args;
+  va_start(args, format);
+  debugoutv(format, args);
+  va_end(args);
+  }
+  void debugoutv(const char * format, va_list args) {
+  #ifdef _WINDOWS
+  char text[1024];
+  vsnprintf(text, sizeof(text), format, args);
+  OutputDebugStringA(text);
+  #else
+  vfprintf(stderr, format, args);
+  #endif
+  }
+  --cfunction--
   f32_pi'f32 : 3.14159265358979323846ff
   --cdefine--
   void halt(const char * format, ...);
@@ -26,7 +47,7 @@ global()'void {
   void halt(const char * format, ...) {
   va_list args;
   va_start(args, format);
-  vprintf(format, args);
+  debugoutv(format, args);
   va_end(args);
   #ifdef _DEBUG
   printf("\npress return to end\n");
@@ -230,6 +251,12 @@ global()'void {
   #error "UNKNOWN PLATFORM"
   #endif
   --cinclude--
+  --cdefine--
+  #include <lib/common/object.h>
+  --cdefine--
+  --cfunction--
+  #include <lib/common/object.c>
+  --cfunction--
   t'stack tuple2![i32, string] : func()
   a'i32 = t.item1
   b'stack string = copy t.item2

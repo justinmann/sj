@@ -89,6 +89,8 @@ struct td_sjs_class {
     int32_t b;
 };
 
+void debugout(const char * format, ...);
+void debugoutv(const char * format, va_list args);
 void halt(const char * format, ...);
 void ptr_hash(void* p, uint32_t* result);
 void ptr_isequal(void *p1, void* p2, bool* result);
@@ -104,6 +106,7 @@ void weakptr_clear(void* parent, void* v);
 void ptr_init();
 void ptr_retain(void* ptr);
 bool ptr_release(void* ptr);
+#include <lib/common/object.h>
 int32_t result1;
 cb_i32_data_heap_data sjt_callback1;
 cb_i32_data_heap_data sjt_callback2;
@@ -177,10 +180,25 @@ void sjf_func_heap_callback(void * _parent, int32_t a, sjs_data** _return);
 void sjf_getcallback_heap(cb_i32_data_heap_data_heap* _return);
 void main_destroy(void);
 
+void debugout(const char * format, ...) {
+    va_list args;
+    va_start(args, format);
+    debugoutv(format, args);
+    va_end(args);
+}
+void debugoutv(const char * format, va_list args) {
+    #ifdef _WINDOWS
+    char text[1024];
+    vsnprintf(text, sizeof(text), format, args);
+    OutputDebugStringA(text);
+    #else
+    vfprintf(stderr, format, args);
+    #endif
+}
 void halt(const char * format, ...) {
     va_list args;
     va_start(args, format);
-    vprintf(format, args);
+    debugoutv(format, args);
     va_end(args);
     #ifdef _DEBUG
     printf("\npress return to end\n");
@@ -313,6 +331,7 @@ void weakptr_clear(void* parent, void* v) {
     }
     *p = 0;
 }
+#include <lib/common/object.c>
 void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
     cb_i32_data_heap_data sjt_callback4;
     sjs_data* sjt_dot3 = 0;
@@ -326,6 +345,7 @@ void sjf_callback(cb_i32_data_heap_data f, int32_t* _return) {
     (*_return) = sjt_dot3->x;
 
     if (sjv_d._refCount == 1) { sjf_data_destroy(&sjv_d); }
+;
 }
 
 void sjf_class(sjs_class* _this) {
@@ -585,10 +605,17 @@ void main_destroy() {
         free(sjv_n);
     }
     if (sjv_c._refCount == 1) { sjf_class_destroy(&sjv_c); }
+;
     if (sjv_d._refCount == 1) { sjf_data_destroy(&sjv_d); }
+;
     if (sjv_e._refCount == 1) { sjf_data_destroy(&sjv_e); }
+;
     if (sjv_g._refCount == 1) { sjf_data_destroy(&sjv_g); }
+;
     if (sjv_k._refCount == 1) { sjf_data_destroy(&sjv_k); }
+;
     if (sjv_m._refCount == 1) { sjf_data_destroy(&sjv_m); }
+;
     if (sjv_p._refCount == 1) { sjf_data_destroy(&sjv_p); }
+;
 }
