@@ -173,12 +173,20 @@ array!t (
 
         pivot : getAt((left + right) / 2)
         while i <= j {
-            while cb(getAt(i), pivot) < 0 {
-                i++
+            continue := true
+            while i < count && continue {
+                continue = cb(getAt(i), pivot) < 0
+                if continue {
+                    i++
+                }
             }
 
-            while cb(getAt(j), pivot) > 0 {
-                j--
+            continue = true
+            while j >= 0 && continue {
+                continue = cb(getAt(j), pivot) > 0
+                if continue {
+                    j--
+                }
             }
 
             if i <= j {
