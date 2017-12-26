@@ -49,12 +49,14 @@ struct td_delete_cb_list {
 };
 #define sjs_object_typeId 1
 #define sjs_interface_typeId 2
-#define sjs_hash_i32i32_typeId 3
-#define sjs_array_char_typeId 4
-#define sjs_string_typeId 5
+#define sjs_log_typeId 3
+#define sjs_hash_i32i32_typeId 4
+#define sjs_array_char_typeId 5
+#define sjs_string_typeId 6
 
 typedef struct td_sjs_object sjs_object;
 typedef struct td_sjs_interface sjs_interface;
+typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_hash_i32i32 sjs_hash_i32i32;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
@@ -66,6 +68,11 @@ struct td_sjs_object {
 struct td_sjs_interface {
     sjs_object* _parent;
     void* _vtbl;
+};
+
+struct td_sjs_log {
+    int _refCount;
+    int32_t minlevel;
 };
 
 struct td_sjs_hash_i32i32 {
@@ -113,6 +120,13 @@ KHASH_INIT_TYPEDEF(i32_i32_hash_type, int32_t, int32_t)
 #define i32_i32_hash_typedef
 KHASH_INIT_TYPEDEF(i32_i32_hash_type, int32_t, int32_t)
 #endif
+int32_t sjv_loglevel_debug;
+int32_t sjv_loglevel_error;
+int32_t sjv_loglevel_fatal;
+int32_t sjv_loglevel_info;
+int32_t sjv_loglevel_trace;
+int32_t sjv_loglevel_warn;
+
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
 int32_t sjt_functionParam1;
@@ -135,6 +149,7 @@ void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
 int32_t sjv_i32_minvalue;
+sjs_log sjv_log = { -1 };
 uint32_t sjv_u32_maxvalue;
 
 void sjf_array_char(sjs_array_char* _this);
@@ -154,6 +169,10 @@ void sjf_i32_asstring(int32_t val, sjs_string* _return);
 void sjf_i32_asstring_heap(int32_t val, sjs_string** _return);
 void sjf_i32_hash(int32_t val, uint32_t* _return);
 void sjf_i32_isequal(int32_t l, int32_t r, bool* _return);
+void sjf_log(sjs_log* _this);
+void sjf_log_copy(sjs_log* _this, sjs_log* _from);
+void sjf_log_destroy(sjs_log* _this);
+void sjf_log_heap(sjs_log* _this);
 void sjf_string(sjs_string* _this);
 void sjf_string_copy(sjs_string* _this, sjs_string* _from);
 void sjf_string_destroy(sjs_string* _this);
@@ -563,6 +582,19 @@ void sjf_i32_isequal(int32_t l, int32_t r, bool* _return) {
     (*_return) = sjt_compare1 == sjt_compare2;
 }
 
+void sjf_log(sjs_log* _this) {
+}
+
+void sjf_log_copy(sjs_log* _this, sjs_log* _from) {
+    _this->minlevel = _from->minlevel;
+}
+
+void sjf_log_destroy(sjs_log* _this) {
+}
+
+void sjf_log_heap(sjs_log* _this) {
+}
+
 void sjf_string(sjs_string* _this) {
 }
 
@@ -581,6 +613,12 @@ void sjf_string_heap(sjs_string* _this) {
 }
 
 int main(int argc, char** argv) {
+    sjv_loglevel_trace = 0;
+    sjv_loglevel_debug = 1;
+    sjv_loglevel_info = 2;
+    sjv_loglevel_warn = 3;
+    sjv_loglevel_error = 4;
+    sjv_loglevel_fatal = 5;
     sjv_f32_pi = 3.14159265358979323846f;
     sjv_u32_maxvalue = (uint32_t)4294967295u;
     sjt_negate1 = 1;
@@ -589,6 +627,9 @@ int main(int argc, char** argv) {
     sjt_math2 = 2147483647;
     sjv_i32_maxvalue = sjt_math1 - sjt_math2;
     sjv_i32_minvalue = 2147483647;
+    sjv_log._refCount = 1;
+    sjv_log.minlevel = sjv_loglevel_warn;
+    sjf_log(&sjv_log);
     sjv_emptystringdata = 0;
     sjv_emptystringdata = "";
     ptr_init();
@@ -648,5 +689,7 @@ void main_destroy() {
     if (sjv_a._refCount == 1) { sjf_hash_i32i32_destroy(&sjv_a); }
 ;
     if (sjv_c._refCount == 1) { sjf_string_destroy(&sjv_c); }
+;
+    if (sjv_log._refCount == 1) { sjf_log_destroy(&sjv_log); }
 ;
 }

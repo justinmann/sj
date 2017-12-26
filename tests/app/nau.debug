@@ -582,6 +582,10 @@ list_removeat(index'i32:)'void {
   --c--
 }
 
+log(minlevel'loglevel=)'stack log {
+  this
+}
+
 mat4(m00'f32:, m01'f32:, m02'f32:, m03'f32:, m10'f32:, m11'f32:, m12'f32:, m13'f32:, m20'f32:, m21'f32:, m22'f32:, m23'f32:, m30'f32:, m31'f32:, m32'f32:, m33'f32:)'stack mat4 {
   this
 }
@@ -922,7 +926,7 @@ windowrenderer()'stack windowrenderer {
   halt("ERROR: %s\n", glewGetErrorString(GlewInitResult));
   }
   #endif
-  _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  _this->ren = SDL_CreateRenderer((SDL_Window*)_this->win, -1, SDL_RENDERER_ACCELERATED);
   if (_this->ren == 0) {
   halt("SDL_CreateRenderer Error: %s\n", SDL_GetError());
   }
@@ -986,6 +990,17 @@ global()'void {
   u32_maxvalue'u32 : (uint32_t)4294967295uu
   i32_maxvalue'i32 : -1i - 2147483647i
   i32_minvalue'i32 : 2147483647i
+  {
+    trace'loglevel : 0
+    debug'loglevel : 1
+    info'loglevel : 2
+    warn'loglevel : 3
+    error'loglevel : 4
+    fatal'loglevel : 5
+  }
+  log'stack log : log(this = log(
+    minlevel'loglevel = minlevel
+  ))
   emptystringdata'ptr = 0
   --c--
   sjv_emptystringdata = "";
@@ -2048,6 +2063,9 @@ global()'void {
     w'i32 : w,
     h'i32 : h
   ))
+  mainloop_lasttick'i32 = 0i
+  mainloop_frames'i32 = 0i
+  mainloop_showfps'bool = false
   mouse_captureelement'heap #element? = empty'heap #element?
   {
     move'mouseeventtype : 0

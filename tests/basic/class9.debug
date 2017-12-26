@@ -6,6 +6,10 @@ class_func()'i32 {
   1i
 }
 
+log(minlevel'loglevel=)'stack log {
+  this
+}
+
 global()'void {
   import  {
   }
@@ -52,6 +56,17 @@ global()'void {
   u32_maxvalue'u32 : (uint32_t)4294967295uu
   i32_maxvalue'i32 : -1i - 2147483647i
   i32_minvalue'i32 : 2147483647i
+  {
+    trace'loglevel : 0
+    debug'loglevel : 1
+    info'loglevel : 2
+    warn'loglevel : 3
+    error'loglevel : 4
+    fatal'loglevel : 5
+  }
+  log'stack log : log(this = log(
+    minlevel'loglevel = minlevel
+  ))
   emptystringdata'ptr = 0
   --c--
   sjv_emptystringdata = "";

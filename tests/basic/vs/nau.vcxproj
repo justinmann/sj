@@ -108,7 +108,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\heap17.sj --vs-errors --no-lines --debug-leaks --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\log1.sj --vs-errors --no-lines --debug-leaks --c-file c:\src\sj\tests\basic\vs\test.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>
