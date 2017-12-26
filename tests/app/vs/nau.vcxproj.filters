@@ -23,16 +23,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\..\..\..\src\sj\tests\app\nau.sj">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\lib\ui\obj_parser.c">
       <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\lib\common\object.c">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -363,6 +361,7 @@
     <None Include="..\nau\forestScene.sj">
       <Filter>Source Files\nau</Filter>
     </None>
+    <None Include="..\..\..\..\..\src\sj\tests\app\nau.sj" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\common\khash.h">
@@ -373,6 +372,9 @@
     </ClInclude>
     <ClInclude Include="..\lib\ui\obj_parser.h">
       <Filter>Source Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\lib\common\object.h">
+      <Filter>Source Files\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
