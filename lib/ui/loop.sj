@@ -1,6 +1,7 @@
 loopLastRect := rect()
 
 mainLoop() {
+    shouldAppContinue := true
     ticks := 0
     --c--
     sjv_ticks = SDL_GetTicks();
@@ -30,7 +31,7 @@ mainLoop() {
         --c--
         switch (e.type) {
             case SDL_QUIT:
-                exit(0);
+                sjv_shouldappcontinue = false;
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 sjv_mouse_eventtype.isvalid = true;
@@ -80,7 +81,7 @@ mainLoop() {
     }
     --c--
 
-    void
+    shouldAppContinue
 }
 
 runLoop() {
@@ -89,9 +90,9 @@ runLoop() {
     emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
     exit(0);
 ##else
-    bool quit = false;
-    while (!quit) {
-        #functionStack(mainLoop)();
+    bool shouldappcontinue = true;
+    while (shouldappcontinue) {
+        #functionStack(mainLoop)(&shouldappcontinue);
     }
 ##endif 
     --c--
