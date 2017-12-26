@@ -43,7 +43,7 @@ list!t(
     
     add(item :'t) {
         if array.count >= array.dataSize {
-            array = array.grow(10.max(array.dataSize * 2))
+            array = copy array.grow(10.max(array.dataSize * 2))
             void
         }
 
@@ -56,6 +56,7 @@ list!t(
             halt("removeAt: out of bounds %d:%d\n", index, _parent->array.count);
         }
         #type(t)* p = (#type(t)*)_parent->array.data;
+        #release(t, p[index]);
         if (index != _parent->array.count - 1) {
             memcpy(p + index, p + index + 1, (_parent->array.count - index - 1) * sizeof(#type(t)));
         }
