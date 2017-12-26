@@ -1,14 +1,20 @@
 -- ui --
-* wrapping text
 * text input
+* wrapping text
 * depth of field effect
 * style switch based on #element.type & #element.class
+* fix weird highlighting issue in nau demo
 
 -- language --
-* this used in default var
-* find memory leak
+* type as string
+* get type id
+* log based on type
+* block this used in default var
+* heap local to stop most of intrafunction refcount'ing
+* capture values for and/or/math
+* use normal function return
+* remove sjv_ and add global_ only for global values
 * property
-* logger
 * clone operator to do full copy
 * syntax highlighting
 * make sure debug out is compilable
