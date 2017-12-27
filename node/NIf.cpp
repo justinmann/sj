@@ -19,19 +19,14 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler) {
 
 void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     auto type = getType(compiler);
-    auto conditionTrValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "ifElse");
+    auto conditionTrValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
     condVar->transpile(compiler, trOutput, trBlock, thisValue, conditionTrValue);
     if (!conditionTrValue->hasSetValue) {
         return;
     }
 
     stringstream ifLine;
-    if (conditionTrValue->getName(trBlock).front() == '(' && conditionTrValue->getName(trBlock).back() == ')') {
-        ifLine << "if " << conditionTrValue->getName(trBlock);
-    }
-    else {
-        ifLine << "if (" << conditionTrValue->getName(trBlock) << ")";
-    }
+    ifLine << "if (" << conditionTrValue->getCaptureText() << ")";
     auto trIfBlock = make_shared<TrBlock>(trBlock);
     trIfBlock->hasThis = trBlock->hasThis;
     trIfBlock->localVarParent = trBlock;

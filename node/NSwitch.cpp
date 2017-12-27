@@ -34,19 +34,14 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
             currentBlock = trBlock;
         }
 
-        auto conditionTrValue = currentBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "switch");
+        auto conditionTrValue = currentBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
         clauseVar.condVar->transpile(compiler, trOutput, currentBlock, thisValue, conditionTrValue);
         if (!conditionTrValue->hasSetValue) {
             return;
         }
 
         stringstream ifLine;
-        if (conditionTrValue->getName(trBlock).front() == '(' && conditionTrValue->getName(trBlock).back() == ')') {
-            ifLine << "if " << conditionTrValue->getName(trBlock);
-        }
-        else {
-            ifLine << "if (" << conditionTrValue->getName(trBlock) << ")";
-        }
+        ifLine << "if (" << conditionTrValue->getCaptureText() << ")";
         auto trIfBlock = make_shared<TrBlock>(trBlock);
         trIfBlock->hasThis = trBlock->hasThis;
         auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);

@@ -35,6 +35,7 @@ public:
     void retainValue(Compiler* compiler, CLoc loc, TrBlock* block, shared_ptr<TrValue> rightValue);
     string getName(TrBlock* block);
     shared_ptr<TrValue> getValue();
+    string getCaptureText();
 
     CLoc loc;
     shared_ptr<CScope> scope;
@@ -46,10 +47,10 @@ public:
     bool isVoid;
     bool isObjectCast;
     bool isCaptureValue;
-    string captureText;
 
 private:
     string name;
+    string captureText;
 };
 
 class TrBlock {

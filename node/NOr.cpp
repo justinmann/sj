@@ -10,13 +10,13 @@ shared_ptr<CType> COrVar::getType(Compiler* compiler) {
 }
 
 void COrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
-    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "or");
+    auto leftValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
+    auto rightValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
     leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->getName(trBlock) << " || " << rightValue->getName(trBlock);
+    line << leftValue->getCaptureText() << " || " << rightValue->getCaptureText();
 
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);

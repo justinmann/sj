@@ -18,27 +18,25 @@ shared_ptr<CType> CIfValidVar::getType(Compiler* compiler) {
 }
 
 void CIfValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    bool isFirst = true;
+    stringstream ifLine;
+    ifLine << "if (";
     auto type = getType(compiler);
     vector<shared_ptr<TrStoreValue>> isValidValues;
     for (auto optionalVar : optionalVars) {
-        auto trValue = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "isEmpty");
+        auto trValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
         optionalVar.isValidVar->transpile(compiler, trOutput, trBlock, thisValue, trValue);
         if (!trValue->hasSetValue) {
             return;
         }
-        isValidValues.push_back(trValue);
-    }
 
-    bool isFirst = true;
-    stringstream ifLine;
-    ifLine << "if (";
-    for (auto isValidValue : isValidValues) {
         if (isFirst) {
             isFirst = false;
-        } else {
+        }
+        else {
             ifLine << " && ";
         }
-        ifLine << isValidValue->getName(trBlock);
+        ifLine << trValue->getCaptureText();
     }
     ifLine << ")";
 

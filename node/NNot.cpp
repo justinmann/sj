@@ -15,7 +15,7 @@ shared_ptr<CType> CNotVar::getType(Compiler* compiler) {
 }
 
 void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto value = trBlock->createTempStoreVariable(loc, nullptr, compiler->typeBool, "not");
+    auto value = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
     var->transpile(compiler, trOutput, trBlock, thisValue, value);
     auto resultValue = trBlock->createTempVariable(nullptr, compiler->typeBool, "result");
     stringstream line;
@@ -26,7 +26,7 @@ void CNotVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock
     else {
         line << "~";
     }
-    line << value->getName(trBlock);
+    line << value->getCaptureText();
     trBlock->statements.push_back(TrStatement(loc, line.str()));
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }

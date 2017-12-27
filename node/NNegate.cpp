@@ -10,11 +10,11 @@ shared_ptr<CType> CNegateVar::getType(Compiler* compiler) {
 }
 
 void CNegateVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto value = trBlock->createTempStoreVariable(loc, nullptr, var->getType(compiler), "negate");
+    auto value = trBlock->createCaptureStoreVariable(loc, nullptr, var->getType(compiler));
     var->transpile(compiler, trOutput, trBlock, thisValue, value);
     auto resultValue = trBlock->createTempVariable(nullptr, var->getType(compiler), "result");
     stringstream line;
-    line << resultValue->name << " = -" << value->getName(trBlock);
+    line << resultValue->name << " = -" << value->getCaptureText();
     trBlock->statements.push_back(TrStatement(loc, line.str()));
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }

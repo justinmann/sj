@@ -14,13 +14,13 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
     if (!varType->parent.expired() && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
         varType = varType->getTempType();
     }
-    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
-    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, varType, "compare");
+    auto leftValue = trBlock->createCaptureStoreVariable(loc, nullptr, varType);
+    auto rightValue = trBlock->createCaptureStoreVariable(loc, nullptr, varType);
     leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->getName(trBlock);
+    line << leftValue->getCaptureText();
     if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
         line << "._parent";
     }
@@ -46,7 +46,7 @@ void CCompareVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trB
         line << " >= ";
         break;
     }
-    line << rightValue->getName(trBlock);
+    line << rightValue->getCaptureText();
     if (varType->category == CTC_Interface && (op == NCompareOp::PEQ || op == NCompareOp::PNE)) {
         line << "._parent";
     }
@@ -148,6 +148,6 @@ shared_ptr<CVar> NCompare::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
                 return nullptr; // These operator cannot be overriden, this is reserved for pointer comparison
         }
     }
-    
+
     return make_shared<CCompareVar>(loc, scope, op, leftVar, rightVar);
 }

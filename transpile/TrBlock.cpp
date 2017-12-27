@@ -197,7 +197,7 @@ shared_ptr<TrValue> TrBlock::createTempVariable(shared_ptr<CScope> scope, shared
 
 shared_ptr<TrStoreValue> TrBlock::createCaptureStoreVariable(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type) {
     assert(type->typeMode == CTM_Value || type->typeMode == CTM_Local);
-    auto var = make_shared<TrStoreValue>(loc, scope, type, "INVALID", AssignOp::immutableCreate);
+    auto var = make_shared<TrStoreValue>(loc, scope, type, "", AssignOp::immutableCreate);
     var->isCaptureValue = true;
     return var;
 }
@@ -759,10 +759,12 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 }
 
 string TrStoreValue::getName(TrBlock* block) {
-    assert(!isCaptureValue);
-
     if (name.size() == 0) {
-        name = block->createTempVariable(scope, type, "void")->name;
+        name = block->createTempVariable(scope, type, isVoid ? "sjt_void" : "sjt_capture")->name;
+        if (isCaptureValue) {
+            assert(captureText.size() == 0);
+            captureText = name;
+        }
     }
     if (type->typeMode == CTM_ValuePtr) {
         return "*" + name;
@@ -774,4 +776,29 @@ string TrStoreValue::getName(TrBlock* block) {
 
 shared_ptr<TrValue> TrStoreValue::getValue() {
     return make_shared<TrValue>(scope, type, name, isReturnValue);
+}
+
+string TrStoreValue::getCaptureText() {
+    assert(isCaptureValue);
+    if (captureText.find(' ') != string::npos || captureText.front() == '&') {
+        int parens = 0;
+        for (size_t i = 1; i < captureText.size() - 1; i++) {
+            if (captureText[i] == '(') {
+                parens++;
+            }
+            else if (captureText[i] == ')') {
+                parens--;
+            }
+        }
+
+        if (captureText.front() == '(' && captureText.back() == ')' && parens == 0) {
+            return captureText;        
+        }
+        else {
+            return "(" + captureText + ")";
+        }
+    }
+    else {
+        return captureText;
+    }
 }

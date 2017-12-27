@@ -54,10 +54,10 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
             return;
         }
 
-        auto dotValue = trBlock->createTempStoreVariable(loc, scope.lock(), dotVar->getType(compiler), "cbdot");
+        auto dotValue = trBlock->createCaptureStoreVariable(loc, scope.lock(), dotVar->getType(compiler));
         dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
 
-        trBlock->statements.push_back(TrStatement(loc, name + "._parent = " + dotValue->getName(trBlock) + "._parent"));
+        trBlock->statements.push_back(TrStatement(loc, name + "._parent = " + dotValue->getCaptureText() + "._parent"));
         if (storeValue->type->typeMode == CTM_Heap) {
             stringstream retainStream;
             retainStream << "if (" << name << "._parent != 0) { " << name << "._parent->_refCount++;";
@@ -83,10 +83,10 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
         auto interfaceMethodHeap = function->parent.lock()->getCFunction(compiler, CLoc::undefined, function->name, nullptr, nullptr, CTM_Heap);
         if (destStackReturnType) {
             if (destStackReturnType == interfaceMethodStack->getReturnType(compiler, CTM_Stack)) {
-                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodStack->name));
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getCaptureText() + "._vtbl->" + interfaceMethodStack->name));
             }
             else if (destStackReturnType == interfaceMethodHeap->getReturnType(compiler, CTM_Heap)) {
-                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb = " + dotValue->getCaptureText() + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
             }
             else {
                 compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destStackReturnType->fullName.c_str(), interfaceMethodStack->getReturnType(compiler, CTM_Stack)->fullName.c_str());
@@ -96,10 +96,10 @@ void CCallbackVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* tr
 
         if (destHeapReturnType) {
             if (destHeapReturnType == interfaceMethodStack->getReturnType(compiler, CTM_Stack)) {
-                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodStack->name));
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getCaptureText() + "._vtbl->" + interfaceMethodStack->name));
             }
             else if (destHeapReturnType == interfaceMethodHeap->getReturnType(compiler, CTM_Heap)) {
-                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getName(trBlock) + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
+                trBlock->statements.push_back(TrStatement(loc, name + "._cb_heap = " + dotValue->getCaptureText() + "._vtbl->" + interfaceMethodHeap->name + "_heap"));
             }
             else {
                 compiler->addError(loc, CErrorCode::TypeMismatch, "return type '%s' does not match '%s'", destHeapReturnType->fullName.c_str(), interfaceMethodStack->getReturnType(compiler, CTM_Stack)->fullName.c_str());
@@ -285,13 +285,13 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
         }
     }
 
-    auto callbackValue = trBlock->createTempStoreVariable(calleeLoc, callerScope, callback->types->localValueType, "callback");
+    auto callbackValue = trBlock->createCaptureStoreVariable(calleeLoc, callerScope, callback->types->localValueType);
     callbackVar->transpile(compiler, trOutput, trBlock, thisValue, callbackValue);
 
     bool isWeak = callbackVar->getType(compiler)->typeMode == CTM_Weak;
     shared_ptr<TrStoreValue> weakReturnValue;
     if (isWeak) {
-        trBlock->statements.push_back(TrStatement(CLoc::undefined, "if (" + callbackValue->getName(trBlock) + "._parent != 0) {"));
+        trBlock->statements.push_back(TrStatement(CLoc::undefined, "if (" + callbackValue->getCaptureText() + "._parent != 0) {"));
 
         auto normalReturnType = returnMode == CTM_Heap ? callback->heapReturnType : callback->stackReturnType;
         if (normalReturnType != getReturnType(compiler, returnMode)) {
@@ -301,7 +301,7 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
     }
 
     stringstream line;
-    line << callbackValue->getName(trBlock) << ".";
+    line << callbackValue->getCaptureText() << ".";
     if (returnMode == CTM_Heap) {
         line << "_cb_heap";
     }
@@ -311,7 +311,7 @@ void CCallbackFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerS
     line << "(";
 
     // Add "parent" to "this"
-    line << callbackValue->getName(trBlock) << "._parent";
+    line << callbackValue->getCaptureText() << "._parent";
 
     // Fill in "this" with normal arguments
     for (auto parameter : *parameters) {

@@ -30,15 +30,15 @@ bool CNormalVar::getReturnThis() {
 void CNormalVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     if (dotVar) {
         if (type->typeMode == CTM_ValuePtr) {
-            auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
+            auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
-            auto returnValue = make_shared<TrValue>(scope.lock(), type->getStackType(), "*" + TrValue::convertToLocalName(dotValue->type, dotValue->getName(trBlock), false) + "->" + cname, false);
+            auto returnValue = make_shared<TrValue>(scope.lock(), type->getStackType(), "*" + TrValue::convertToLocalName(dotValue->type, dotValue->getCaptureText(), false) + "->" + cname, false);
             storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
         }
         else {
-            auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
+            auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
-            auto returnValue = make_shared<TrValue>(scope.lock(), type, TrValue::convertToLocalName(dotValue->type, dotValue->getName(trBlock), false) + "->" + cname, false);
+            auto returnValue = make_shared<TrValue>(scope.lock(), type, TrValue::convertToLocalName(dotValue->type, dotValue->getCaptureText(), false) + "->" + cname, false);
             storeValue->retainValue(compiler, storeValue->loc, trBlock, returnValue);
         }
     } else if (trBlock->hasThis && (mode == Var_Public || mode == Var_Private)) {
@@ -60,24 +60,24 @@ shared_ptr<TrStoreValue> CNormalVar::getStoreValue(Compiler* compiler, shared_pt
     string varName;
     if (dotVar) {
         if (type->typeMode == CTM_ValuePtr) {
-            auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
+            auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
             if (dotValue->type->typeMode == CTM_Stack) {
-                varName = "*" + dotValue->getName(trBlock) + "." + cname;
+                varName = "*" + dotValue->getCaptureText() + "." + cname;
             }
             else {
-                varName = "*" + dotValue->getName(trBlock) + "->" + cname;
+                varName = "*" + dotValue->getCaptureText() + "->" + cname;
             }
             return make_shared<TrStoreValue>(loc, scope.lock(), type->getStackType(), varName, op);
         }
         else {
-            auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
+            auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
             dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
             if (dotValue->type->typeMode == CTM_Stack) {
-                varName = dotValue->getName(trBlock) + "." + cname;
+                varName = dotValue->getCaptureText() + "." + cname;
             }
             else {
-                varName = dotValue->getName(trBlock) + "->" + cname;
+                varName = dotValue->getCaptureText() + "->" + cname;
             }
         }
     }

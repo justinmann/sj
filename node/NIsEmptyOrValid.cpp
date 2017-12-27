@@ -10,7 +10,7 @@ shared_ptr<CType> CIsEmptyOrValidVar::getType(Compiler* compiler) {
 }
 
 void CIsEmptyOrValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, scope.lock(), var->getType(compiler)->getTempType(), "isEmpty");
+    auto leftValue = trBlock->createCaptureStoreVariable(loc, scope.lock(), var->getType(compiler)->getTempType());
     var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     if (!leftValue->hasSetValue) {
         return;
@@ -24,33 +24,33 @@ void CIsEmptyOrValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlo
     stringstream line;
     if (isEmpty) {
         if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
-            line << "!" << leftValue->getName(trBlock) << ".isvalid";
+            line << "!" << leftValue->getCaptureText() << ".isvalid";
         }
         else {
             if (leftValue->type->category == CTC_Function) {
-                line << "(" << leftValue->getName(trBlock) << "._parent" << " == 0)";
+                line << "(" << leftValue->getCaptureText() << "._parent" << " == 0)";
             }
             else if (leftValue->type->category == CTC_Interface) {
-                line << "(" << leftValue->getName(trBlock) << "._parent" << " == 0)";
+                line << "(" << leftValue->getCaptureText() << "._parent" << " == 0)";
             }
             else {
-                line << "(" << leftValue->getName(trBlock) << " == 0)";
+                line << "(" << leftValue->getCaptureText() << " == 0)";
             }
         }
     }
     else {
         if (leftValue->type->parent.expired() && leftValue->type->category != CTC_Function) {
-            line << leftValue->getName(trBlock) << ".isvalid";
+            line << leftValue->getCaptureText() << ".isvalid";
         }
         else {
             if (leftValue->type->category == CTC_Function) {
-                line << "(" << leftValue->getName(trBlock) << "._parent" << " != 0)";
+                line << "(" << leftValue->getCaptureText() << "._parent" << " != 0)";
             }
             else if (leftValue->type->category == CTC_Interface) {
-                line << "(" << leftValue->getName(trBlock) << "._parent" << " != 0)";
+                line << "(" << leftValue->getCaptureText() << "._parent" << " != 0)";
             }
             else {
-                line << "(" << leftValue->getName(trBlock) << " != 0)";
+                line << "(" << leftValue->getCaptureText() << " != 0)";
             }
         }
     }

@@ -20,9 +20,9 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     }
 
     if (dotVar) {
-        auto dotValue = trBlock->createTempStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType(), "dot");
+        auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
         dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
-        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, dotValue->getName(trBlock) + "->_parent", false));
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, dotValue->getCaptureText() + "->_parent", false));
     }
     else {
         if (storeValue->type->typeMode == CTM_Heap) {

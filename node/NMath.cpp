@@ -10,13 +10,13 @@ shared_ptr<CType> CMathVar::getType(Compiler* compiler) {
 }
 
 void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "math");
-    auto rightValue = trBlock->createTempStoreVariable(loc, nullptr, leftVar->getType(compiler), "math");
+    auto leftValue = trBlock->createCaptureStoreVariable(loc, nullptr, leftVar->getType(compiler));
+    auto rightValue = trBlock->createCaptureStoreVariable(loc, nullptr, leftVar->getType(compiler));
     leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
     rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
     stringstream line;
-    line << leftValue->getName(trBlock);
+    line << leftValue->getCaptureText();
     switch (op) {
     case NMathOp::Add:
         line << " + ";
@@ -52,7 +52,7 @@ void CMathVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         assert(false);
         break;
     }
-    line << rightValue->getName(trBlock);
+    line << rightValue->getCaptureText();
 
     auto resultValue = make_shared<TrValue>(nullptr, leftVar->getType(compiler), line.str(), false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);

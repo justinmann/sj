@@ -25,7 +25,7 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
     }
     else {
         auto destType = returnMode == CTM_Heap ? type->getHeapType() : type->getStackType();
-        auto rightValue = trBlock->createTempStoreVariable(loc, scope.lock(), type->getTempType(), "copy");
+        auto rightValue = trBlock->createCaptureStoreVariable(loc, scope.lock(), type->getTempType());
         var->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
 
         if (!CType::isSameExceptMode(rightValue->type, storeValue->type)) {
@@ -45,11 +45,13 @@ void CCopyVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             }
 
             stringstream lineStream;
-            lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->getName(trBlock), rightValue->isReturnValue) << ")";
+            lineStream << type->parent.lock()->getCCopyFunctionName() << "(";
+            lineStream << TrValue::convertToLocalName(storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue);
+            lineStream << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->getCaptureText(), rightValue->isReturnValue) << ")";
             trBlock->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else if (type->category == CTC_Function) {
-            type->callback.lock()->writeCopy(compiler, trBlock, rightValue->getName(trBlock), storeValue->getName(trBlock), type->typeMode == CTM_Heap);
+            type->callback.lock()->writeCopy(compiler, trBlock, rightValue->getCaptureText(), storeValue->getName(trBlock), type->typeMode == CTM_Heap);
         }
         
         storeValue->hasSetValue = true;
