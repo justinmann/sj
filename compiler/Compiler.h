@@ -9,8 +9,6 @@
 #ifndef Compiler_h
 #define Compiler_h
 
-#include "../sj.pch"
-
 #ifdef _DEBUG
 #define YYDEBUG 1
 #endif

@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 void NGetOrElse::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {

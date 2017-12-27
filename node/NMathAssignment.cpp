@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 NMathAssignment::NMathAssignment(CLoc loc, shared_ptr<NVariableBase> leftSide, NMathAssignmentOp op, shared_ptr<NVariableBase> numberSide) : NBase(NodeType_MathAssignment, loc), op(op), leftSide(leftSide), numberSide(numberSide) {

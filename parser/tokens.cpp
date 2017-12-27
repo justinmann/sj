@@ -809,7 +809,7 @@ static yyconst flex_int16_t yy_chk[1000] =
 #define yymore() (yyg->yy_more_flag = 1)
 #define YY_MORE_ADJ yyg->yy_more_len
 #define YY_RESTORE_YY_MORE_OFFSET
-#include <string>
+#include <sjc.h>
 #include "../node/Node.h"
 #include "parser.hpp"
 

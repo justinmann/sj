@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "../node/Node.h"
 
 void TrBlock::writeToStream(Compiler* compiler, ostream& stream, int level) {

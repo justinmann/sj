@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 shared_ptr<CVar> NVariableBase::getVar(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> leftType, CTypeMode returnMode) {

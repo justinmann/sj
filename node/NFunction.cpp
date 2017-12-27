@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 class CFunctionParameterVar : public CStoreVar {

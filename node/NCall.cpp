@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1) {

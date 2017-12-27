@@ -6,6 +6,7 @@
 //  Copyright © 2016 Mann, Justin. All rights reserved.
 //
 
+#include <sjc.h>
 #include "../node/Node.h"
 
 shared_ptr<CType> CNormalVar::getType(Compiler* compiler) {

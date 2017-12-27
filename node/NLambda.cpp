@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 NLambdaInvokeFunction::NLambdaInvokeFunction(CLoc loc, shared_ptr<CTypeName> returnTypeName, const char* name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<CTypeNameList> interfaceTypeNames, shared_ptr<NodeList> arguments, shared_ptr<NBase> block, shared_ptr<NBase> catchBlock, shared_ptr<NBase> copyBlock, shared_ptr<NBase> destroyBlock) :

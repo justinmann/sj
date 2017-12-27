@@ -19,8 +19,10 @@
 #include <string>
 #include <functional>
 #include <assert.h>
+#include <fstream>
 
 #include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp> 
 
 #endif /* sj_pch */

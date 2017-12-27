@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 EnumArg::EnumArg(string name) : name(name), hasValue(false) {

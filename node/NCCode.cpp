@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 #include <boost/algorithm/string.hpp>
 

@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 NDouble::NDouble(CLoc loc, const char* value_) : NVariableBase(NodeType_Double, loc), isF64(true), value(value_) {

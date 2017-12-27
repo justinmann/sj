@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "../compiler/Compiler.h"
 
 TrOutput::TrOutput() {

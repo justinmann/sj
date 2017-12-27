@@ -1,3 +1,4 @@
+#include <sjc.h>
 #include "Node.h"
 
 void NPackage::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces_, vector<string>& packageNamespace_, shared_ptr<CBaseFunctionDefinition> thisFunction) {
