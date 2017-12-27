@@ -326,7 +326,7 @@ texture_atlas_new( const size_t width,
 
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
-    ivec3 node = {{1,1,width-2}};
+    ivec3 node = {{1,1, (int)width-2}};
 
     assert( (depth == 1) || (depth == 3) || (depth == 4) );
     if( self == NULL)
@@ -419,7 +419,7 @@ texture_atlas_fit( texture_atlas_t * self,
     node = (ivec3 *) (vector_get( self->nodes, index ));
     x = node->x;
     y = node->y;
-    width_left = width;
+    width_left = (int)width;
     i = index;
 
     if ( (x + width) > (self->width-1) )
@@ -477,7 +477,7 @@ texture_atlas_get_region( texture_atlas_t * self,
     int y, best_index;
     size_t best_height, best_width;
     ivec3 *node, *prev;
-    ivec4 region = {{0,0,width,height}};
+    ivec4 region = {{0,0,(int)width,(int)height}};
     size_t i;
 
     assert( self );
@@ -495,7 +495,7 @@ texture_atlas_get_region( texture_atlas_t * self,
                 ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
             {
                 best_height = y + height;
-                best_index = i;
+                best_index = (int)i;
                 best_width = node->z;
                 region.x = node->x;
                 region.y = y;
@@ -518,8 +518,8 @@ texture_atlas_get_region( texture_atlas_t * self,
         halt("line %d: No more memory for allocating data\n", __LINE__ );
     }
     node->x = region.x;
-    node->y = region.y + height;
-    node->z = width;
+    node->y = (int)(region.y + height);
+    node->z = (int)width;
     vector_insert( self->nodes, best_index, node );
     free( node );
 
@@ -567,7 +567,7 @@ texture_atlas_clear( texture_atlas_t * self )
     self->used = 0;
     // We want a one pixel border around the whole atlas to avoid any artefact when
     // sampling texture
-    node.z = self->width-2;
+    node.z = (int)(self->width-2);
 
     vector_push_back( self->nodes, &node );
     memset( self->data, 0, self->width*self->height*self->depth );

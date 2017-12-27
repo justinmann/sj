@@ -548,7 +548,7 @@ vertex_buffer_new( const char *format )
 
     for( i=0; i<index; ++i )
     {
-        self->attributes[i]->stride = stride;
+        self->attributes[i]->stride = (GLsizei)stride;
     }
 
 ##ifdef FREETYPE_GL_USE_VAO
@@ -884,13 +884,13 @@ vertex_buffer_render_item ( vertex_buffer_t *self,
     {
         size_t start = item->istart;
         size_t count = item->icount;
-        glDrawElements( self->mode, count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
+        glDrawElements( self->mode, (GLint)count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
     }
     else if( self->vertices->size )
     {
         size_t start = item->vstart;
         size_t count = item->vcount;
-        glDrawArrays( self->mode, start*self->vertices->item_size, count);
+        glDrawArrays( self->mode, (GLint)(start*self->vertices->item_size), (GLint)count);
     }
 }
 
@@ -905,11 +905,11 @@ vertex_buffer_render ( vertex_buffer_t *self, GLenum mode )
     vertex_buffer_render_setup( self, mode );
     if( icount )
     {
-        glDrawElements( mode, icount, GL_UNSIGNED_INT, 0 );
+        glDrawElements( mode, (GLint)icount, GL_UNSIGNED_INT, 0 );
     }
     else
     {
-        glDrawArrays( mode, 0, vcount );
+        glDrawArrays( mode, 0, (GLint)vcount );
     }
     vertex_buffer_render_finish( self );
 }
@@ -1070,10 +1070,10 @@ vertex_buffer_insert( vertex_buffer_t * self, const size_t index,
     }
 
     // Insert item
-    item.x = vstart;
-    item.y = vcount;
-    item.z = istart;
-    item.w = icount;
+    item.x = (int)vstart;
+    item.y = (int)vcount;
+    item.z = (int)istart;
+    item.w = (int)icount;
     vector_insert( self->items, index, &item );
 
     self->state = DIRTY;

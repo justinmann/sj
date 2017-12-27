@@ -778,25 +778,38 @@ shared_ptr<TrValue> TrStoreValue::getValue() {
     return make_shared<TrValue>(scope, type, name, isReturnValue);
 }
 
-string TrStoreValue::getCaptureText() {
-    assert(isCaptureValue);
-    if (captureText.find(' ') != string::npos || captureText.front() == '&') {
+bool TrStoreValue::parensRequired(string s, bool isIf) {
+    if (s.find(' ') != string::npos || s.front() == '&') {
+        bool areParensValid = true;
         int parens = 0;
-        for (size_t i = 1; i < captureText.size() - 1; i++) {
-            if (captureText[i] == '(') {
+        for (size_t i = 1; i < s.size() - 1; i++) {
+            if (s[i] == '(') {
                 parens++;
             }
-            else if (captureText[i] == ')') {
+            else if (s[i] == ')') {
                 parens--;
+                if (parens < 0) {
+                    areParensValid = false;
+                }
             }
         }
 
-        if (captureText.front() == '(' && captureText.back() == ')' && parens == 0) {
-            return captureText;        
+        if (s.front() == '(' && s.back() == ')' && areParensValid) {
+            return false;
         }
         else {
-            return "(" + captureText + ")";
+            return true;
         }
+    }
+    else {
+        return isIf;
+    }
+}
+
+string TrStoreValue::getCaptureText() {
+    assert(isCaptureValue);
+    if (parensRequired(captureText, false)) {
+        return "(" + captureText + ")";
     }
     else {
         return captureText;

@@ -41,7 +41,17 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         }
 
         stringstream ifLine;
-        ifLine << "if (" << conditionTrValue->getCaptureText() << ")";
+        auto condText = conditionTrValue->getCaptureText();
+        auto condParensRequired = TrStoreValue::parensRequired(condText, true);
+        ifLine << "if ";
+        if (condParensRequired) {
+            ifLine << "(";
+        }
+        ifLine << condText;
+        if (condParensRequired) {
+            ifLine << ")";
+        }
+
         auto trIfBlock = make_shared<TrBlock>(trBlock);
         trIfBlock->hasThis = trBlock->hasThis;
         auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);

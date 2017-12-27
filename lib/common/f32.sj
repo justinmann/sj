@@ -78,7 +78,7 @@ f32_asString(val : 'f32) {
     --c--
     sjv_data = malloc(sizeof(char) * 50);
     snprintf((char*)sjv_data, 50, "%f", val);
-    sjv_count = strlen((char*)sjv_data);
+    sjv_count = (int)strlen((char*)sjv_data);
     --c--
     string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
 }

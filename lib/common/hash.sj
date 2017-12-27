@@ -194,7 +194,7 @@ hash![key, val] (
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #type(val) t = kh_value(p, k);
-                if (#isPtrEqual(val, t, val)) {
+                if #isPtrEqual(val, t, val) {
                     kh_del(#safeName(key)_#safeName(val)_hash_type, p, k);
                 }
             }

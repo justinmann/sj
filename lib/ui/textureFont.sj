@@ -383,7 +383,7 @@ typedef struct texture_font_t
  */
   int
   texture_font_load_glyph( texture_font_t * self,
-                           const char * codepoint );
+                           const char * codepoints );
 
 /**
  * Request the loading of several glyphs at once.
@@ -1123,9 +1123,9 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
     //add node reflecting the gained space on the right
     if(width_new>width_old){
         ivec3 node;
-        node.x = width_old - 1;
+        node.x = (int)(width_old - 1);
         node.y = 1;
-        node.z = width_new - width_old;
+        node.z = (int)(width_new - width_old);
         vector_push_back(ta->nodes, &node);
     }
     //copy over data from the old buffer, skipping first row and column because of the margin

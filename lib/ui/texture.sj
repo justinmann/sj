@@ -152,7 +152,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     png_read_update_info(png_ptr, info_ptr);
 
     // Row size in bytes.
-    int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+    int rowbytes = (int)png_get_rowbytes(png_ptr, info_ptr);
 
     // glTexImage2d requires rows to be 4-byte aligned
     rowbytes += 3 - ((rowbytes-1) % 4);

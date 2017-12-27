@@ -36,7 +36,8 @@ public:
     string getName(TrBlock* block);
     shared_ptr<TrValue> getValue();
     string getCaptureText();
-
+    static bool parensRequired(string s, bool isIf);
+    
     CLoc loc;
     shared_ptr<CScope> scope;
     shared_ptr<CType> type;
