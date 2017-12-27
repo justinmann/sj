@@ -60,7 +60,7 @@ typedef struct td_sji_bar_vtbl sji_bar_vtbl;
 typedef struct td_sji_bar sji_bar;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

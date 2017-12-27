@@ -60,7 +60,7 @@ typedef struct td_sjs_b sjs_b;
 typedef struct td_sjs_c sjs_c;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

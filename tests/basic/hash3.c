@@ -70,7 +70,7 @@ typedef struct td_sjs_hash_string_heap_iface_interface sjs_hash_string_heap_ifac
 typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

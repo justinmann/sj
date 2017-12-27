@@ -827,7 +827,7 @@ typedef struct td_sjs_flowlayout sjs_flowlayout;
 typedef struct td_sjs_centerlayout sjs_centerlayout;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {
@@ -3627,7 +3627,7 @@ void glid_gethash(GLuint id, uint32_t* result) {
     *result = kh_int_hash_func(id);
 }
 void glid_isequal(GLuint id1, GLuint id2, bool* result) {
-    *result = (id2 == id2);
+    *result = (id1 == id2);
 }
 void glid_init() {
     glid_hash = kh_init(glid_hash_type);

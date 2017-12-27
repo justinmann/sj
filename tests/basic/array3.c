@@ -58,7 +58,7 @@ typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_array_heap_class sjs_array_heap_class;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

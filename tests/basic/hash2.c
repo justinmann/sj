@@ -64,7 +64,7 @@ typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_hash_stringstring sjs_hash_stringstring;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

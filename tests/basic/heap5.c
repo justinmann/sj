@@ -58,7 +58,7 @@ typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_a sjs_a;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

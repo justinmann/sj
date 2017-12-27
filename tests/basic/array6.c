@@ -76,7 +76,7 @@ typedef struct td_cb_sum_f32_sum_heap_sum cb_sum_f32_sum_heap_sum;
 typedef struct td_cb_sum_f32_sum_heap_sum_heap cb_sum_f32_sum_heap_sum_heap;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

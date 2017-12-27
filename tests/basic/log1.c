@@ -75,7 +75,7 @@ typedef struct td_cb_string_heap_string_heap cb_string_heap_string_heap;
 typedef struct td_sjs_lambda1 sjs_lambda1;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

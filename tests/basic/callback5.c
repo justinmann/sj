@@ -66,7 +66,7 @@ typedef struct td_cb_bob_heap_bob cb_bob_heap_bob;
 typedef struct td_cb_bob_heap_bob_heap cb_bob_heap_bob_heap;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

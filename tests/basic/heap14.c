@@ -60,7 +60,7 @@ typedef struct td_sji_iface_vtbl sji_iface_vtbl;
 typedef struct td_sji_iface sji_iface;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

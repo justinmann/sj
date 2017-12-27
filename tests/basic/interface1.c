@@ -66,7 +66,7 @@ typedef struct td_sji_namespace2_foo_vtbl sji_namespace2_foo_vtbl;
 typedef struct td_sji_namespace2_foo sji_namespace2_foo;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

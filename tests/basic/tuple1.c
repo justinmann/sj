@@ -64,7 +64,7 @@ typedef struct td_sjs_tuple2_i32_string sjs_tuple2_i32_string;
 typedef struct td_sjs_tuple2_f64_i32 sjs_tuple2_f64_i32;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

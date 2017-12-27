@@ -60,7 +60,7 @@ typedef struct td_cb_i32_void cb_i32_void;
 typedef struct td_cb_i32_void_heap cb_i32_void_heap;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {

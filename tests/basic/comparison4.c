@@ -54,7 +54,7 @@ typedef struct td_sjs_interface sjs_interface;
 typedef struct td_sjs_log sjs_log;
 
 struct td_sjs_object {
-    intptr_t _refCount;
+    int _refCount;
 };
 
 struct td_sjs_interface {
