@@ -9,11 +9,9 @@
 * type as string
 * get type id
 * log based on type
-* block this used in default var
 * heap local to stop most of intrafunction refcount'ing
-* capture values for and/or/math
 * use normal function return
-* remove sjv_ and add global_ only for global values
+* remove sjv_ and add g_ only for global values
 * property
 * clone operator to do full copy
 * syntax highlighting
