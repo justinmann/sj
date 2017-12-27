@@ -13,6 +13,10 @@ shared_ptr<CType> CSwitchVar::getType(Compiler* compiler) {
 }
 
 void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    if (!storeValue->isVoid) {
+        storeValue->getName(trBlock); // Force capture values to become named
+    }
+
     auto type = getType(compiler);
     TrStatement* previousStatement = nullptr;
 

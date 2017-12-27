@@ -18,6 +18,10 @@ shared_ptr<CType> CIfValidVar::getType(Compiler* compiler) {
 }
 
 void CIfValidVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    if (!storeValue->isVoid) {
+        storeValue->getName(trBlock); // Force capture values to become named
+    }
+
     bool isFirst = true;
     stringstream ifLine;
     ifLine << "if (";

@@ -698,8 +698,10 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         }
         else {
             stringstream lineStream;
-            if (!isCaptureValue) {
+            if (name.size() > 0) {
                 lineStream << name << " = ";
+            } else {
+                assert(isCaptureValue);
             }
 
             if (isObjectCast) {
@@ -715,7 +717,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
                 lineStream << rightValue->name;
             }
 
-            if (isCaptureValue) {
+            if (isCaptureValue && name.size() == 0) {
                 captureText = lineStream.str();
             }
             else {

@@ -18,6 +18,10 @@ shared_ptr<CType> CIfElseVar::getType(Compiler* compiler) {
 }
 
 void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    if (!storeValue->isVoid) {
+        storeValue->getName(trBlock); // Force capture values to become named
+    }
+    
     auto type = getType(compiler);
     auto conditionTrValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
     condVar->transpile(compiler, trOutput, trBlock, thisValue, conditionTrValue);
