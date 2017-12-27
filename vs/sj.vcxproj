@@ -90,9 +90,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>sjc.h</PrecompiledHeaderFile>
       <AdditionalOptions> -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeaderOutputFile>vs\$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,8 +130,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <PrecompiledHeaderFile>sj.pch</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>sjc.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\boost\include\boost-1_65_1;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderOutputFile>vs\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -288,10 +293,9 @@
     <ClCompile Include="..\parser\tokens.cpp" />
     <ClCompile Include="..\transpile\TrBlock.cpp" />
     <ClCompile Include="..\transpile\TrOutput.cpp" />
-    <ClCompile Include="..\transpile\TrStatement.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\sj.pch" />
+    <ClInclude Include="..\sjc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -216,6 +216,9 @@
     <ClInclude Include="..\node\NLambda.h">
       <Filter>Node</Filter>
     </ClInclude>
+    <ClInclude Include="..\sjc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -335,9 +338,6 @@
     <ClCompile Include="..\transpile\TrBlock.cpp">
       <Filter>Transpile</Filter>
     </ClCompile>
-    <ClCompile Include="..\transpile\TrStatement.cpp">
-      <Filter>Transpile</Filter>
-    </ClCompile>
     <ClCompile Include="..\node\NCCode.cpp">
       <Filter>Node</Filter>
     </ClCompile>
@@ -407,10 +407,5 @@
     <ClCompile Include="..\node\NLambda.cpp">
       <Filter>Node</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\sj.pch">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
