@@ -191,20 +191,6 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
 
                     state = CompilerState::Compile;  
 
-                    // Create the default object struct, all other object structs must have these variables
-                    string structName = "sjs_object";
-                    if (output.structs.find(structName) == output.structs.end()) {
-                        output.structs[structName].push_back("int _refCount");
-                    }
-                    output.structOrder.push_back("sjs_object");
-
-                    structName = "sjs_interface";
-                    if (output.structs.find(structName) == output.structs.end()) {
-                        output.structs[structName].push_back("sjs_object* _parent");
-                        output.structs[structName].push_back("void* _vtbl");
-                    }
-                    output.structOrder.push_back("sjs_interface");
-
                     globalFunction->transpileDefinition(this, &output);
 
                     auto hasMainLoop = false;

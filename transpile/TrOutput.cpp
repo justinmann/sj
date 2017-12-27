@@ -2,13 +2,6 @@
 #include "../compiler/Compiler.h"
 
 TrOutput::TrOutput() {
-    includes["<stdbool.h>"][""] = true;
-    includes["<stdint.h>"][""] = true;
-    includes["<stdlib.h>"][""] = true;
-    includes["<stdio.h>"][""] = true;
-#ifdef DEBUG_ALLOC
-    includes["<assert.h>"][""] = true;
-#endif
 }
 
 void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLoop) {
@@ -181,10 +174,6 @@ void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLo
 
     mainFunction->writeBodyToStream(compiler, stream, 1);
     stream << "    main_destroy();\n";
-    stream << "    #ifdef _DEBUG\n";
-    stream << "    printf(\"\\npress return to end\\n\");\n";
-    stream << "    getchar();\n";
-    stream << "    #endif\n";
     stream << "    return 0;\n";
     stream << "}\n";
     stream << "\n";
