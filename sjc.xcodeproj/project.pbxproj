@@ -116,7 +116,7 @@
 		9C29C0B11E273F7E001C1FC6 /* NNot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NNot.h; path = node/NNot.h; sourceTree = "<group>"; };
 		9C2E3D7A1FF2EED2008CD4DF /* NLambda.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NLambda.cpp; path = node/NLambda.cpp; sourceTree = "<group>"; };
 		9C2E3D7B1FF2EED2008CD4DF /* NLambda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NLambda.h; path = node/NLambda.h; sourceTree = "<group>"; };
-		9C3786521E21D64000202E28 /* sj.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sj.pch; sourceTree = "<group>"; };
+		9C2E3D7D1FF41F8D008CD4DF /* sjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sjc.h; sourceTree = "<group>"; };
 		9C3786541E21EE0400202E28 /* NThrow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NThrow.cpp; path = node/NThrow.cpp; sourceTree = "<group>"; };
 		9C3786551E21EE0400202E28 /* NThrow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NThrow.h; path = node/NThrow.h; sourceTree = "<group>"; };
 		9C3786571E2225FC00202E28 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = compiler/Exception.cpp; sourceTree = "<group>"; };
@@ -262,7 +262,7 @@
 		9C64AD4C1E0F823300340A7D = {
 			isa = PBXGroup;
 			children = (
-				9C3786521E21D64000202E28 /* sj.pch */,
+				9C2E3D7D1FF41F8D008CD4DF /* sjc.h */,
 				9C7B48E11E19A2DD00D378A1 /* main.cpp */,
 				9CF16C221E19A89B006E9CB8 /* parser */,
 				9CF16BF81E19A86B006E9CB8 /* node */,
@@ -669,11 +669,12 @@
 				CONFIGURATION_BUILD_DIR = .;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = sj.pch;
+				GCC_PREFIX_HEADER = sjc.h;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				HEADER_SEARCH_PATHS = (
 					../install/include,
 					../boost/include,
+					.,
 				);
 				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (
@@ -690,11 +691,12 @@
 				CONFIGURATION_BUILD_DIR = "$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = sj.pch;
+				GCC_PREFIX_HEADER = sjc.h;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				HEADER_SEARCH_PATHS = (
 					../install/include,
 					../boost/include,
+					.,
 				);
 				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = (

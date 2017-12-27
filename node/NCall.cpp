@@ -387,7 +387,7 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
                 return nullptr;
             }
 
-            auto leftType = callee->getArgVar(argIndex, returnMode)->getType(compiler);
+            auto leftType = callee->getArgVar((int)argIndex, returnMode)->getType(compiler);
             CallArgument callArgument(it->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[argIndex] = callArgument;
         }

@@ -1089,7 +1089,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                     }
                     else {
                         for (auto i = (size_t)0; i < interfaceMethodArgVars.size(); i++) {
-                            auto aType = cfunc->getArgVar(i, interfaceMethod->returnMode)->getType(compiler);
+                            auto aType = cfunc->getArgVar((int)i, interfaceMethod->returnMode)->getType(compiler);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler);
                             if (aType != bType) {
                                 compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->fullName.c_str() : "Unknown", bType ? bType->fullName.c_str() : "Unknown");
@@ -1758,7 +1758,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
             interfaces = make_shared<vector<shared_ptr<CInterface>>>();
         }
 
-        int targetTemplateTypeCount = node->templateTypeNames ? node->templateTypeNames->size() : 0;
+        int targetTemplateTypeCount = node->templateTypeNames ? (int)node->templateTypeNames->size() : 0;
         if (templateTypes.size() != targetTemplateTypeCount) {
             compiler->addError(loc, CErrorCode::InvalidType, "template type count does not match");
             return nullptr;

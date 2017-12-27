@@ -97,7 +97,6 @@ void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     vector<shared_ptr<CVar>> statementVars;
     enumNamespace.push_back(name);
     scope->pushNamespace(compiler, enumNamespace);
-    auto index = 0;
     for (auto enumArg : *enumArgs) {
         auto leftVar = scope->getCVar(compiler, scope, nullptr, enumArg->name, VSM_LocalThisParent);
         if (leftVar) {

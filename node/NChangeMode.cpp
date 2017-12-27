@@ -31,6 +31,9 @@ shared_ptr<CType> CChangeModeVar::getType(Compiler* compiler) {
         case CTM_Value:
             compiler->addError(loc, CErrorCode::InvalidType, "cannot change type to value");
             return nullptr;
+        default:
+            assert(false);
+            return nullptr;
         }
     }
     return varType;

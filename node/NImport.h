@@ -11,7 +11,7 @@
 
 class CImportVar : public CVar {
 public:
-    CImportVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var, shared_ptr<ImportScope> functionBlock) : CVar(loc, scope), var(var), importScope(importScope) { assert(var); }
+    CImportVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> var, shared_ptr<ImportScope> importScope) : CVar(loc, scope), var(var), importScope(importScope) { assert(var); }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);

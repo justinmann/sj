@@ -17,8 +17,8 @@ int main(int argc, char **argv) {
     po::options_description config_options("Configuration");
     config_options.add_options()
         ("no-lines", "do not output #lineno directive")
-        ("wasm", "output wasm (not supported yet)")
-        ("app", "output app for current system (not supported yet)")
+        // TODO: ("wasm", "output wasm (not supported yet)")
+        // TODO: ("app", "output app for current system (not supported yet)")
         ("debug", "output debug files")
         ("vs-errors", "output vs compatible error format")
         ("debug-leaks", "add extra debug logging to detect memory leaks")
@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
     }
 
     bool outputLines = vm.count("no-lines") == 0;
-    bool outputWasm = vm.count("wasm");
-    bool outputApp = vm.count("app");
+    // TODO: bool outputWasm = vm.count("wasm");
+    // TODO: bool outputApp = vm.count("app");
     bool outputDebug = vm.count("debug");
     bool outputVSErrors = vm.count("vs-errors");
     bool outputDebugLeaks = vm.count("debug-leaks");
