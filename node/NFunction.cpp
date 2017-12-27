@@ -350,7 +350,8 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
         return;
     }
     else if (_hasTranspileStructDefinitions == STARTED) {
-        assert(false);
+        compiler->addError(loc, CErrorCode::TypeLoop, "an argument in this function depends on this function which creates an impossible loop");
+        return;
     }
 
     _hasTranspileStructDefinitions = STARTED;
@@ -851,7 +852,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
 
             auto parameterOp = parameter.op;
             auto argStoreValue = make_shared<TrStoreValue>(isDefaultAssignment ? loc : calleeLoc, calleeScope, argType, calleeThisValue->getDotName(argVar->name), parameterOp);
-            parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? calleeThisValue : thisValue, argStoreValue);
+            parameterVar->transpile(compiler, trOutput, trBlock, isDefaultAssignment ? nullptr : thisValue, argStoreValue);
 
             if (!argStoreValue->hasSetValue) {
                 compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "parameter '%s' has no value", argVar->name.c_str());

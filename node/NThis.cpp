@@ -22,6 +22,10 @@ shared_ptr<CType> CThisVar::getType(Compiler* compiler) {
 }
 
 void CThisVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
+    if (!thisValue) {
+        compiler->addError(loc, CErrorCode::InvalidType, "this is invalid in this context");
+        return;
+    }
     storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, getType(compiler), "_this", false));
 }
 
