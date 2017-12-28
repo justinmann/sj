@@ -15,7 +15,7 @@ mainLoop() {
 
     if mainLoop_showFPS {
         mainLoop_frames++
-        if mainLoop_lastTick + 2000 < ticks {
+        if mainLoop_lastTick + 1000 < ticks {
             fps : mainLoop_frames as f32 * 1000.0f / (ticks - mainLoop_lastTick) as f32
             debug.writeLine("FPS: " + fps.asString())
             mainLoop_lastTick = ticks

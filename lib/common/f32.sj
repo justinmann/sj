@@ -72,6 +72,24 @@ f32_floor(v : 'f32)'f32 {
     x
 }
 
+f32_abs(v : 'f32)'f32 {
+    --c--
+    #return(f32, fabs(v))
+    --c--
+}
+
+f32_exp(v : 'f32)'f32 {
+    --c--
+    #return(f32, expf(v))
+    --c--
+}
+
+f32_pow(v : 'f32, y : 'f32)'f32 {
+    --c--
+    #return(f32, powf(v, y))
+    --c--
+}
+
 f32_asString(val : 'f32) {
     count := 0
     data := nullptr
