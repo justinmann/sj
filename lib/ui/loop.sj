@@ -3,6 +3,7 @@ loopLastRect := rect()
 mainLoop_lastTick := 0
 mainLoop_frames := 0
 mainLoop_showFPS := false
+mainLoop_shouldContinue := true
 
 mainLoop() {
     shouldAppContinue := true
@@ -95,7 +96,8 @@ mainLoop() {
     }
     --c--
 
-    shouldAppContinue
+    mainLoop_shouldContinue = shouldAppContinue
+    void
 }
 
 runLoop() {
@@ -104,9 +106,8 @@ runLoop() {
     emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
     exit(0);
 ##else
-    bool shouldappcontinue = true;
-    while (shouldappcontinue) {
-        #functionStack(mainLoop)(&shouldappcontinue);
+    while (sjv_mainloop_shouldcontinue) {
+        #functionStack(mainLoop)();
     }
 ##endif 
     --c--
