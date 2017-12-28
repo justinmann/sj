@@ -1,7 +1,7 @@
 array!t (
     dataSize : 0
     data : nullptr
-    _isGlobal : false
+    isGlobal : false
     count : 0
 
     getAt(index : 'i32)'t {
@@ -65,7 +65,9 @@ array!t (
     map!new_t(cb : '(:t)new_t)'array!new_t {
         newData := nullptr
         --c--
-        sjv_newdata = malloc(_parent->count * sizeof(#type(new_t)));
+        sjv_newdata = (int*)malloc(_parent->count * sizeof(#type(new_t)) + sizeof(int)) + 1;
+        int* refcount = (int*)sjv_newdata - 1;
+        *refcount = 1;
         --c--
         for i : 0 to count {
             newItem : cb(getAt(i))
@@ -81,7 +83,9 @@ array!t (
         newData := nullptr
         newCount := 0
         --c--
-        sjv_newdata = malloc(_parent->count * sizeof(#type(t)));
+        sjv_newdata = (int*)malloc(_parent->count * sizeof(#type(t)) + sizeof(int)) + 1;
+        int* refcount = (int*)sjv_newdata - 1;
+        *refcount = 1;
         --c--
         for i : 0 to count {
             item : getAt(i)
@@ -120,17 +124,26 @@ array!t (
                 halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
             }
             
-            sjv_newdata = malloc(newsize * sizeof(#type(t)));
+            sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(#type(t)))) + 1;
+            int* refcount = (int*)sjv_newdata - 1;
+            *refcount = 1;
+
             if (!_parent->data) {
                 halt("grow: out of memory\n");
             }
 
             #type(t)* p = (#type(t)*)_parent->data;
             #type(t)* newp = (#type(t)*)sjv_newdata;
+
             int count = _parent->count;
+
+##if #isValue(t)
+            memcpy(newp, p, sizeof(#type(t)) * count);
+##else
             for (int i = 0; i < count; i++) {
                 #retain(t, newp[i], p[i]);
             }
+##endif
         }
         --c--
         array!t(data: newData, dataSize: newSize, count: count)
@@ -283,7 +296,9 @@ array!t (
     }
 
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(#type(t)));
+        _this->data = (int*)malloc(_this->datasize * sizeof(#type(t)) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -293,19 +308,24 @@ array!t (
 } copy {
     --c--
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
     --c--
 } destroy {
     --c--
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             #type(t)* p = (#type(t)*)_this->data;
+##if !#isValue(t)
             for (int i = 0; i < _this->count; i++) {
                 #release(t, p[i]);
             }
-            free(p);
+##endif
+            free(refcount);
         }
     }
     --c--

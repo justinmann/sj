@@ -19,15 +19,17 @@ i32_random()'i32 {
     x
 }
 
-i32_asString(val : 'i32) {
+i32_asString(val : 'i32, base : 10) {
     count := 0
     data := nullptr
     --c--
-    sjv_data = malloc(sizeof(char) * 50);
-    snprintf((char*)sjv_data, 50, "%d", val);
+    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    int* refcount = (int*)sjv_data - 1;
+    *refcount = 1;
+    ltoa(val, sjv_data, base);
     sjv_count = strlen((char*)sjv_data);
     --c--
-    string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
+    string(count := count, data := array!char(dataSize := 256, count := count, data := data))
 }
 
 i32_compare(l : 'i32, r : 'i32) {

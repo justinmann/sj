@@ -1,11 +1,13 @@
 package console {
     write(data : 'string)'void {
+        data.nullTerminate()
         --c--
         printf("%s", (char*)data->data.data);
         --c--
     }
 
     writeLine(data : 'string)'void {
+        data.nullTerminate()
         --c--
         printf("%s\n", (char*)data->data.data);
         --c--

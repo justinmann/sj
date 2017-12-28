@@ -6,6 +6,7 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
+* add refcount to hash struct
 * type as string
 * get type id
 * log based on type

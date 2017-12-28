@@ -28,7 +28,7 @@ textRenderer(
     vec4 color = {{ _this->color.r, _this->color.g, _this->color.b, _this->color.a }};
 
     _this->buffer = vertex_buffer_new("vertex:3f,tex_coord:2f,color:4f");
-    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, &color, &pen);
+    add_text(_this->buffer, _this->font.font, (char*)_this->text.data.data, _this->text.count, &color, &pen);
 
     glBindTexture(GL_TEXTURE_2D, _this->font.font->atlas->id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)_this->font.font->atlas->width, (int)_this->font.font->atlas->height, 0, GL_RGB, GL_UNSIGNED_BYTE, _this->font.font->atlas->data );
@@ -56,16 +56,16 @@ typedef struct {
 --cstruct--
 
 --cdefine--
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, int textlen, vec4 * color, vec2 * pen);   
 vec2 get_text_size(texture_font_t * font, char *text);
 --cdefine--
 
 --cfunction--
-void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, int textlen, vec4 * color, vec2 * pen) {
     pen->y += (float)(int)font->ascender;
     size_t i;
     float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-    for (i = 0; i < strlen(text); ++i) {
+    for (i = 0; i < textlen; ++i) {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
         if (glyph != NULL) {
             float kerning = 0.0f;

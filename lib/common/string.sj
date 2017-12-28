@@ -7,26 +7,28 @@ string(
     count := 0
     data := array!char(
         data : emptyStringData
-        dataSize : 1
-        count : 1
-        _isGlobal : true
+        dataSize : 0
+        count : 0
+        isGlobal : true
     )
+    _isNullTerminated := false
 
     add(item : 'string) {
         if item.count == 0 {
             string(count : count, data : copy data)         
         } else {
-            newData : data.grow(count + item.count + 1)
+            newData : if count + item.count > data.dataSize {
+                data.grow(((count + item.count - 1) / 256 + 1) * 256)
+            } else {
+                copy data
+            }
             newCount := count
-            newData.setAt(newCount, item.getAt(0))
-            newCount++
 
-            for i : 1 to item.count {
+            for i : 0 to item.count {
                 newData.initAt(newCount, item.getAt(i))
                 newCount++      
             }
 
-            newData.initAt(newCount, 0 as char)
             string(count : newCount, data : copy newData)
         }
     }
@@ -57,6 +59,25 @@ string(
 
     isLessOrEqual(test : 'stack string)'bool {
         data.isLessOrEqual(test.data)
+    }
+
+    toUpperCase()'string {
+        a : array!char(datasize : ((count - 1) / 256 + 1) * 256)
+        for i : 0 to count {
+            a.initAt(i, data[i].toUpperCase())
+        }
+        string(count : count, data : copy a)
+    }
+
+    nullTerminate() {
+        if !data.isGlobal || !_isNullTerminated {
+            if count + 1 > data.dataSize {
+                data = copy data.grow(count + 1)
+            }
+            data.initAt(count, '\0')
+            _isNullTerminated = true
+        }
+        void
     }
 
     hash()'u32 {

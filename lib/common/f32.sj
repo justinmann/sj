@@ -72,15 +72,22 @@ f32_floor(v : 'f32)'f32 {
     x
 }
 
+f32_pow(x : 'f32, y : 'f32) {
+    --c--
+    #return(f32, powf(x, y));
+    --c--
+}
+
 f32_asString(val : 'f32) {
     count := 0
     data := nullptr
     --c--
-    sjv_data = malloc(sizeof(char) * 50);
-    snprintf((char*)sjv_data, 50, "%f", val);
+    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    int* refcount = (int*)sjv_data - 1;
+    snprintf((char*)sjv_data, 256, "%f", val);
     sjv_count = (int)strlen((char*)sjv_data);
     --c--
-    string(count := count, data := array!char(dataSize := count + 1, count := count + 1, data := data))
+    string(count := count, data := array!char(dataSize := count, count := count, data := data))
 }
 
 f32_hash(val : 'f32)'u32 {
