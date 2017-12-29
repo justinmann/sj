@@ -23,14 +23,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\ui\obj_parser.c">
       <Filter>Source Files\ui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\lib\common\object.c">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\app.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

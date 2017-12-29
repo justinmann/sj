@@ -82,6 +82,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildBeforeTargets>BuildGenerateSources</CustomBuildBeforeTargets>
+    <IncludePath>c:\src\sj;C:\src\zlib-1.2.3\include;C:\src\libpng-1.6.34;$(VC_IncludePath);$(WindowsSDK_IncludePath);c:\src\sdl\include;c:\src\sdl2_ttf\include;C:\src\SDL2_image-2.0.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -108,7 +110,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\log1.sj --vs-errors --no-lines --debug-leaks --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\perf1.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>
@@ -133,8 +135,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>c:\src\sj;c:\src\glew-2.1.0\include;C:\src\freetype-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +145,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\perf3.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Message>SJC build step</Message>
+      <Outputs>c:\src\sj\tests\app\main.c</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -185,6 +193,7 @@
   <ItemGroup>
     <ClCompile Include="..\lib\common\object.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="test.c" />
   </ItemGroup>

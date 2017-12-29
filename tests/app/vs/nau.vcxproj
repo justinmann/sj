@@ -109,7 +109,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\nau.sj --vs-errors --no-lines</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\nau.sj --vs-errors --no-lines --c-file c:\src\sj\tests\app\app.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>
@@ -173,11 +173,11 @@
     <None Include="..\nau\menuController.sj" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\src\sj\tests\app\nau.c" />
     <ClCompile Include="..\..\..\lib\common\object.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\app.c" />
     <ClCompile Include="..\lib\ui\obj_parser.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
