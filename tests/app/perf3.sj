@@ -1,33 +1,18 @@
 include "lib/ui/ui.sj"
 
-glColor3f(r : 'f32, g : 'f32, b : 'f32) {
-    --c--
-    glColor3f(r, g, b);
-    --c--
+vertex_location_format : "vertex:3f"
+
+vertex_location(
+    location : vec3()
+) { this }
+
+vertex_location_getRawSize() {
+    vec3_getRawSize()
 }
 
-glRotated(r : 'f32, x : 'f32, y : 'f32, z : 'f32) {
-    --c--
-    glRotated(r, x, y, z);
-    --c--
-}
-
-glBeginPoints() {
-    --c--
-    glBegin(GL_POINTS);
-    --c--
-}
-
-glEnd() {
-    --c--
-    glEnd();
-    --c--
-}
-
-glVertex3f(x : 'f32, y : 'f32, z : 'f32) {
-    --c--
-    glVertex3f(x, y, z);
-    --c--
+vertex_location_rawCopy(v : 'vertex_location, p := 'ptr) {
+    p = v.location.rawCopy(p)
+    p
 }
 
 a_light : vec4(0.2f, 0.2f, 0.2f, 1.0f)
@@ -36,7 +21,7 @@ l_pos : vec4(-0.005f, 0.0005f, 0.0f, 0.0f)
 WIDTH : 1920
 HEIGHT : 1080
 oncept : 0
-dotsscale : 4000 // dots array scale, 100^(x), example 100 1000 10000 1000000 etc
+dotsscale : 1000 // dots array scale, 100^(x), example 100 1000 10000 1000000 etc
 dots : ((f32_pi * dotsscale as f32) as i32)
 rotateradius : 1.0f
 persp := 45.0f
@@ -78,7 +63,10 @@ test #element (
     datahotizont5x : array!f32(img_dots).init(0.0f)
     datahotizont5y : array!f32(img_dots).init(0.0f)
 
+    shader : shader("shaders/point.vert", "shaders/point.frag")
     _rect := rect()
+    projection := mat4()
+    view := mat4()
     
     getSize(maxSize : 'size) {
         size(maxSize.w, maxSize.h)
@@ -89,29 +77,8 @@ test #element (
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
             _rect = copy rect_
-            --c--
-            #include(<OpenGL/glu.h>)
-            glEnable(GL_LIGHTING);
-            glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &sjv_a_light.x);
-            glLightfv(GL_LIGHT0, GL_DIFFUSE, &sjv_s_light.x);
-            glLightfv(GL_LIGHT0, GL_POSITION, &sjv_l_pos.x);
-            glEnable(GL_LIGHT0);
-            
-            glEnable(GL_COLOR_MATERIAL);
-            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-            
-            
-            glEnable(GL_BLEND);
-            glEnable(GL_CULL_FACE);    
-            glBlendFunc(GL_ONE, GL_ONE);
-
-
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();        
-
-            gluPerspective(sjv_persp, (GLfloat) 1920 / (GLfloat) 1080, 0.1f, 100.0f);
-            glMatrixMode(GL_MODELVIEW);
-            --c--
+            projection = copy mat4_perspective(persp * 2.0f, _rect.h as f32 / _rect.w as f32, 0.1f, 100.0f)
+            view = copy mat4_lookAtLH(vec3(0.0f, 0.0f, -7.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))
         }
         void
     }
@@ -122,55 +89,67 @@ test #element (
         calculate()
         findaxis()
 
-        --c--
-        glLoadIdentity();
-        glTranslatef(0.0f, 0.0f, -7.0f);
-        --c--
+        axis : vec3(rotatex, rotatey, rotatez).normalize()
+        model := mat4_identity()
 
-        r := 0.0f
-        while r < 360.0f {
-            glColor3f(
-                if rotatex > 0.0f { rotatex } else { (-1.0f * rotatex) / 14.0f }
-                if rotatey > 0.0f { rotatey } else { (-1.0f * rotatey) / 14.0f }
-                if rotatez > 0.0f { rotatez } else { (-1.0f * rotatez) / 14.0f }
-            )
-            
-            glRotated(r / (100.0f / rotateradius), rotatex, rotatey, rotatez)
-            glBeginPoints()
-            for n : 0 to dots {
-                if funcid == 18 {
-                    if n < img_dots {
-                        glVertex3f(datahotizont1x[n] * scale, datahotizont1y[n] * scale, 0.0f)
-                        glVertex3f(datahotizont2x[n] * scale, datahotizont2y[n] * scale, 0.0f)
-                        glVertex3f(datahotizont3x[n] * scale, datahotizont3y[n] * scale, 0.0f)
-                        glVertex3f(datahotizont4x[n] * scale, datahotizont4y[n] * scale, 0.0f)
-                        glVertex3f(datahotizont5x[n] * scale, datahotizont5y[n] * scale, 0.0f)
-                        
-                        glVertex3f(datavert1x[n] * scale, datavert1y[n] * scale, 0.0f)
-                        glVertex3f(datavert2x[n] * scale, datavert2y[n] * scale, 0.0f)
-                        glVertex3f(datavert3x[n] * scale, datavert3y[n] * scale, 0.0f)
-                        glVertex3f(datavert4x[n] * scale, datavert4y[n] * scale, 0.0f)
-                        glVertex3f(datavert5x[n] * scale, datavert5y[n] * scale, 0.0f)
-                        
-                        glVertex3f(datahotizont1x[n] * scale + 4.35f + 1.0f / 3.0f, datahotizont1y[n] * scale + 3.8f, 0.0f)
-                        glVertex3f(datahotizont2x[n] * scale + 2.18f + 1.0f / 3.0f, datahotizont2y[n] * scale + 1.8f, 0.0f)
-                        glVertex3f(datahotizont3x[n] * scale + 2.34f + 1.0f / 3.0f, datahotizont3y[n] * scale + 0.8f, 0.0f)
-                        glVertex3f(datahotizont4x[n] * scale + 1.65f + 1.0f / 3.0f, datahotizont4y[n] * scale - 1.2f, 0.0f)
-                        glVertex3f(datahotizont5x[n] * scale + 1.35f + 1.0f / 3.0f, datahotizont5y[n] * scale - 2.2f, 0.0f)
-                        
-                        glVertex3f(datavert1x[n] * scale + 4.005f + 1.0f / 6.0f, datavert1y[n] * scale + 0.8f, 0.0f)
-                        glVertex3f(datavert2x[n] * scale + 4.05f - 1.0f / 6.0f, datavert2y[n] * scale + 2.8f, 0.0f)
-                        glVertex3f(datavert3x[n] * scale + 3.0f - 1.0f / 6.0f, datavert3y[n] * scale - 0.2f, 0.0f)
-                        glVertex3f(datavert4x[n] * scale + 2.0f - 1.0f / 6.0f, datavert4y[n] * scale - 0.2f, 0.0f)
-                        glVertex3f(datavert5x[n] * scale + 1.0f - 1.0f / 6.0f, datavert5y[n] * scale - 0.2f, 0.0f)
-                    }
-                } else {
-                    glVertex3f(datax[n] * scale, datay[n] * scale, 0.0f)
-                }
+        color : vec3(
+            if rotatex > 0.0f { rotatex } else { (-1.0f * rotatex) / 14.0f }
+            if rotatey > 0.0f { rotatey } else { (-1.0f * rotatey) / 14.0f }
+            if rotatez > 0.0f { rotatez } else { (-1.0f * rotatez) / 14.0f }
+        )
+
+        if funcid == 18 {
+            vertices : array!vertex_location(dots).init(vertex_location())
+            index := 0
+            for n : 0 to img_dots {
+                /* glVertex3f(datahotizont1x[n] * scale, datahotizont1y[n] * scale, 0.0f)
+                glVertex3f(datahotizont2x[n] * scale, datahotizont2y[n] * scale, 0.0f)
+                glVertex3f(datahotizont3x[n] * scale, datahotizont3y[n] * scale, 0.0f)
+                glVertex3f(datahotizont4x[n] * scale, datahotizont4y[n] * scale, 0.0f)
+                glVertex3f(datahotizont5x[n] * scale, datahotizont5y[n] * scale, 0.0f)
+                
+                glVertex3f(datavert1x[n] * scale, datavert1y[n] * scale, 0.0f)
+                glVertex3f(datavert2x[n] * scale, datavert2y[n] * scale, 0.0f)
+                glVertex3f(datavert3x[n] * scale, datavert3y[n] * scale, 0.0f)
+                glVertex3f(datavert4x[n] * scale, datavert4y[n] * scale, 0.0f)
+                glVertex3f(datavert5x[n] * scale, datavert5y[n] * scale, 0.0f)
+                
+                glVertex3f(datahotizont1x[n] * scale + 4.35f + 1.0f / 3.0f, datahotizont1y[n] * scale + 3.8f, 0.0f)
+                glVertex3f(datahotizont2x[n] * scale + 2.18f + 1.0f / 3.0f, datahotizont2y[n] * scale + 1.8f, 0.0f)
+                glVertex3f(datahotizont3x[n] * scale + 2.34f + 1.0f / 3.0f, datahotizont3y[n] * scale + 0.8f, 0.0f)
+                glVertex3f(datahotizont4x[n] * scale + 1.65f + 1.0f / 3.0f, datahotizont4y[n] * scale - 1.2f, 0.0f)
+                glVertex3f(datahotizont5x[n] * scale + 1.35f + 1.0f / 3.0f, datahotizont5y[n] * scale - 2.2f, 0.0f)
+                
+                glVertex3f(datavert1x[n] * scale + 4.005f + 1.0f / 6.0f, datavert1y[n] * scale + 0.8f, 0.0f)
+                glVertex3f(datavert2x[n] * scale + 4.05f - 1.0f / 6.0f, datavert2y[n] * scale + 2.8f, 0.0f)
+                glVertex3f(datavert3x[n] * scale + 3.0f - 1.0f / 6.0f, datavert3y[n] * scale - 0.2f, 0.0f)
+                glVertex3f(datavert4x[n] * scale + 2.0f - 1.0f / 6.0f, datavert4y[n] * scale - 0.2f, 0.0f)
+                glVertex3f(datavert5x[n] * scale + 1.0f - 1.0f / 6.0f, datavert5y[n] * scale - 0.2f, 0.0f) */
             }
-            glEnd()
-            
-            r += rotateradius
+        } else {
+            vertices : array!vertex_location(dots).init(vertex_location())
+            index := 0
+            for n : 0 to dots {
+                vertices[index] = vertex_location(
+                    vec3(datax[n] * scale, datay[n] * scale, 0.0f)
+                )
+                index++
+            }
+
+            v : vertexBuffer!vertex_location(
+                format : copy vertex_location_format
+                vertices : copy vertices
+            )
+
+            for r : 0 to 360 {
+                model = copy (model * mat4_rotate(r as f32 / (100.0f / rotateradius), axis))
+                glUseProgram(shader)
+                glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE)
+                glUniformMat4(glGetUniformLocation(shader, "viewModel"), view * model)
+                glUniformMat4(glGetUniformLocation(shader, "projection"), projection)
+                glUniformVec3(glGetUniformLocation(shader, "color"), color)
+                v.render(glDrawMode.GL_POINTS)
+            }
         }
     }
 
