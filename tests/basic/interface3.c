@@ -128,8 +128,8 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             char* p = (char*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }

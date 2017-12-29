@@ -3445,7 +3445,7 @@ shader_read( const char *filename )
         pen->y += (float)(int)font->ascender;
         size_t i;
         float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-        for (i = 0; i < textlen; ++i) {
+        for (i = 0; i < (size_t)textlen; ++i) {
             texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
             if (glyph != NULL) {
                 float kerning = 0.0f;
@@ -7864,12 +7864,14 @@ void sjf_hash_fontkey_weak_font__weakptrremovevalue(sjs_hash_fontkey_weak_font* 
 
 void sjf_hash_fontkey_weak_font_copy(sjs_hash_fontkey_weak_font* _this, sjs_hash_fontkey_weak_font* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_fontkey_weak_font_destroy(sjs_hash_fontkey_weak_font* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
@@ -7926,12 +7928,14 @@ void sjf_hash_string_weak_iface_element__weakptrremovevalue(sjs_hash_string_weak
 
 void sjf_hash_string_weak_iface_element_copy(sjs_hash_string_weak_iface_element* _this, sjs_hash_string_weak_iface_element* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_string_weak_iface_element_destroy(sjs_hash_string_weak_iface_element* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
@@ -7988,12 +7992,14 @@ void sjf_hash_string_weak_iface_model__weakptrremovevalue(sjs_hash_string_weak_i
 
 void sjf_hash_string_weak_iface_model_copy(sjs_hash_string_weak_iface_model* _this, sjs_hash_string_weak_iface_model* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_string_weak_iface_model_destroy(sjs_hash_string_weak_iface_model* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false

@@ -196,8 +196,8 @@ void sjf_array_f32_destroy(sjs_array_f32* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             float* p = (float*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -411,8 +411,8 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             int32_t* p = (int32_t*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }

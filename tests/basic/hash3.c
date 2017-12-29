@@ -188,8 +188,8 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             char* p = (char*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -400,12 +400,14 @@ void sjf_hash_string_heap_iface_interface__weakptrremovevalue(sjs_hash_string_he
 
 void sjf_hash_string_heap_iface_interface_copy(sjs_hash_string_heap_iface_interface* _this, sjs_hash_string_heap_iface_interface* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_string_heap_iface_interface_destroy(sjs_hash_string_heap_iface_interface* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_this->_hash;
+    khash_t(string_heap_iface_interface_hash_type)* p = (khash_t(string_heap_iface_interface_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false

@@ -171,8 +171,8 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             char* p = (char*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -329,12 +329,14 @@ void sjf_hash_i32_weak_class__weakptrremovevalue(sjs_hash_i32_weak_class* _paren
 
 void sjf_hash_i32_weak_class_copy(sjs_hash_i32_weak_class* _this, sjs_hash_i32_weak_class* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(i32_weak_class_hash_type)* p = (khash_t(i32_weak_class_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_i32_weak_class_destroy(sjs_hash_i32_weak_class* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(i32_weak_class_hash_type)* p = (khash_t(i32_weak_class_hash_type)*)_this->_hash;
+    khash_t(i32_weak_class_hash_type)* p = (khash_t(i32_weak_class_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
@@ -428,8 +430,34 @@ void sjf_i32_asstring(int32_t val, int32_t base, sjs_string* _return) {
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
     *refcount = 1;
-    ltoa(val, sjv_data, base);
-    sjv_count = strlen((char*)sjv_data);
+    char *tmp = (char*)sjv_data + 128;
+    char *tp = (char*)sjv_data + 128;
+    int i;
+    unsigned v;
+    int sign = (base == 10 && val < 0);    
+    if (sign)
+    v = -val;
+    else
+    v = (unsigned)val;
+    while (v || tp == tmp)
+    {
+        i = v % base;
+        v /= base; // v/=base uses less CPU clocks than v=v/base does
+        if (i < 10)
+        *tp++ = i + '0';
+        else
+        *tp++ = i + 'a' - 10;
+    }
+    int len = tp - tmp;
+    char* sp = (char*)sjv_data;
+    if (sign) 
+    {
+        *sp++ = '-';
+        len++;
+    }
+    while (tp > tmp)
+    *sp++ = *--tp;
+    sjv_count = len;
     _return->_refCount = 1;
     _return->count = sjv_count;
     _return->data._refCount = 1;
@@ -451,8 +479,34 @@ void sjf_i32_asstring_heap(int32_t val, int32_t base, sjs_string** _return) {
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
     *refcount = 1;
-    ltoa(val, sjv_data, base);
-    sjv_count = strlen((char*)sjv_data);
+    char *tmp = (char*)sjv_data + 128;
+    char *tp = (char*)sjv_data + 128;
+    int i;
+    unsigned v;
+    int sign = (base == 10 && val < 0);    
+    if (sign)
+    v = -val;
+    else
+    v = (unsigned)val;
+    while (v || tp == tmp)
+    {
+        i = v % base;
+        v /= base; // v/=base uses less CPU clocks than v=v/base does
+        if (i < 10)
+        *tp++ = i + '0';
+        else
+        *tp++ = i + 'a' - 10;
+    }
+    int len = tp - tmp;
+    char* sp = (char*)sjv_data;
+    if (sign) 
+    {
+        *sp++ = '-';
+        len++;
+    }
+    while (tp > tmp)
+    *sp++ = *--tp;
+    sjv_count = len;
     (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
     (*_return)->_refCount = 1;
     (*_return)->count = sjv_count;

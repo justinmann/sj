@@ -6324,7 +6324,7 @@ shader_read( const char *filename )
         pen->y += (float)(int)font->ascender;
         size_t i;
         float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-        for (i = 0; i < textlen; ++i) {
+        for (i = 0; i < (size_t)textlen; ++i) {
             texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
             if (glyph != NULL) {
                 float kerning = 0.0f;
@@ -8531,8 +8531,8 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             char* p = (char*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -8687,8 +8687,8 @@ void sjf_array_heap_iface_animation_destroy(sjs_array_heap_iface_animation* _thi
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !false
             sji_animation* p = (sji_animation*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 if (p[i]._parent != 0) {
     p[i]._parent->_refCount--;
@@ -8853,8 +8853,8 @@ void sjf_array_heap_iface_element_destroy(sjs_array_heap_iface_element* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !false
             sji_element* p = (sji_element*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 if (p[i]._parent != 0) {
     p[i]._parent->_refCount--;
@@ -9121,8 +9121,8 @@ void sjf_array_heap_iface_model_destroy(sjs_array_heap_iface_model* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !false
             sji_model* p = (sji_model*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 if (p[i]._parent != 0) {
     p[i]._parent->_refCount--;
@@ -9413,8 +9413,8 @@ void sjf_array_i32_destroy(sjs_array_i32* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             int32_t* p = (int32_t*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -9491,8 +9491,8 @@ void sjf_array_mat4_destroy(sjs_array_mat4* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !true
             sjs_mat4* p = (sjs_mat4*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -9642,8 +9642,8 @@ void sjf_array_rect_destroy(sjs_array_rect* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !true
             sjs_rect* p = (sjs_rect*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -9793,8 +9793,8 @@ void sjf_array_texture_destroy(sjs_array_texture* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !true
             sjs_texture* p = (sjs_texture*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -9974,8 +9974,8 @@ void sjf_array_u32_destroy(sjs_array_u32* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !true && !false
             uint32_t* p = (uint32_t*)_this->data;
-            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -10121,8 +10121,8 @@ void sjf_array_vertex_location_texture_normal_destroy(sjs_array_vertex_location_
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !true
             sjs_vertex_location_texture_normal* p = (sjs_vertex_location_texture_normal*)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
@@ -12233,6 +12233,7 @@ void sjf_f32_asstring(float val, sjs_string* _return) {
     sjv_data = 0;
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
+    *refcount = 1;
     snprintf((char*)sjv_data, 256, "%f", val);
     sjv_count = (int)strlen((char*)sjv_data);
     _return->_refCount = 1;
@@ -12255,6 +12256,7 @@ void sjf_f32_asstring_heap(float val, sjs_string** _return) {
     sjv_data = 0;
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
+    *refcount = 1;
     snprintf((char*)sjv_data, 256, "%f", val);
     sjv_count = (int)strlen((char*)sjv_data);
     (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
@@ -14804,12 +14806,14 @@ void sjf_hash_fontkey_weak_font__weakptrremovevalue(sjs_hash_fontkey_weak_font* 
 
 void sjf_hash_fontkey_weak_font_copy(sjs_hash_fontkey_weak_font* _this, sjs_hash_fontkey_weak_font* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_fontkey_weak_font_destroy(sjs_hash_fontkey_weak_font* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    khash_t(fontkey_weak_font_hash_type)* p = (khash_t(fontkey_weak_font_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
@@ -14925,12 +14929,14 @@ void sjf_hash_string_weak_iface_element__weakptrremovevalue(sjs_hash_string_weak
 
 void sjf_hash_string_weak_iface_element_copy(sjs_hash_string_weak_iface_element* _this, sjs_hash_string_weak_iface_element* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_string_weak_iface_element_destroy(sjs_hash_string_weak_iface_element* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    khash_t(string_weak_iface_element_hash_type)* p = (khash_t(string_weak_iface_element_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false
@@ -15027,12 +15033,14 @@ void sjf_hash_string_weak_iface_model__weakptrremovevalue(sjs_hash_string_weak_i
 
 void sjf_hash_string_weak_iface_model_copy(sjs_hash_string_weak_iface_model* _this, sjs_hash_string_weak_iface_model* _from) {
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    p->refcount++;
 }
 
 void sjf_hash_string_weak_iface_model_destroy(sjs_hash_string_weak_iface_model* _this) {
-    if (ptr_release(_this->_hash)) {
-        khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    khash_t(string_weak_iface_model_hash_type)* p = (khash_t(string_weak_iface_model_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
                 #if false

@@ -113,8 +113,8 @@ void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+            #if !false && !false
             sjs_class** p = (sjs_class**)_this->data;
-            #if !false
             for (int i = 0; i < _this->count; i++) {
                 p[i]->_refCount--;
 if (p[i]->_refCount <= 0) {
