@@ -6,12 +6,10 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* add refcount to hash struct
 * type as string
 * get type id
 * log based on type
 * heap local to stop most of intrafunction refcount'ing
-* use normal function return
 * remove sjv_ and add g_ only for global values
 * property
 * clone operator to do full copy
