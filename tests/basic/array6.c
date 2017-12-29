@@ -1,17 +1,17 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_array_i32_typeId 2
-#define sjs_array_f32_typeId 3
-#define cb_i32_f32_typeId 4
-#define cb_i32_f32_heap_typeId 5
-#define cb_f32_bool_typeId 6
-#define cb_f32_bool_heap_typeId 7
-#define sjs_sum_typeId 8
-#define cb_sum_f32_sum_typeId 9
-#define cb_sum_f32_sum_heap_typeId 10
-#define cb_sum_f32_sum_heap_sum_typeId 11
-#define cb_sum_f32_sum_heap_sum_heap_typeId 12
+#define sjs_log_typeId 15
+#define sjs_array_i32_typeId 16
+#define sjs_array_f32_typeId 18
+#define cb_i32_f32_typeId 20
+#define cb_i32_f32_heap_typeId 20
+#define cb_f32_bool_typeId 24
+#define cb_f32_bool_heap_typeId 24
+#define sjs_sum_typeId 27
+#define cb_sum_f32_sum_typeId 29
+#define cb_sum_f32_sum_heap_typeId 29
+#define cb_sum_f32_sum_heap_sum_typeId 31
+#define cb_sum_f32_sum_heap_sum_heap_typeId 31
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_i32 sjs_array_i32;

@@ -51,8 +51,8 @@ private:
 class CCallback : public enable_shared_from_this<CCallback> {
 public:
     CCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType);
-    static shared_ptr<CCallback> getCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType);
-    static shared_ptr<CType> getType(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption);
+    static shared_ptr<CCallback> getCallback(Compiler* compiler, vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType);
+    static shared_ptr<CType> getType(Compiler* compiler, vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption);
     static shared_ptr<CVar> getVar(Compiler* compiler, shared_ptr<CScope> scope, CLoc loc, shared_ptr<CVar> dotVar, shared_ptr<CBaseFunction> function, CTypeMode returnMode);
     shared_ptr<CBaseFunction> getFunction(Compiler* compiler, shared_ptr<CVar> callbackVar);
     void transpileStructDefinition(Compiler* compiler, TrOutput* trOutput);

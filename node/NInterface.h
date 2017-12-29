@@ -92,6 +92,7 @@ public:
     shared_ptr<NInterface> ninterface;
     vector<pair<string, vector<string>>> importNamespaces;
     vector<string> packageNamespace;
+    shared_ptr<NInterfaceMethod> getClassTypeMethod;
 
     CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name);
     string fullName();

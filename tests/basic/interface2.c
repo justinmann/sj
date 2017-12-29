@@ -2,12 +2,11 @@
 
 const char* sjg_string1 = "test";
 
-#define sjs_log_typeId 1
-#define sjs_class_typeId 2
-#define sji_foo_vtbl_typeId 3
-#define sji_foo_typeId 4
-#define sjs_array_char_typeId 5
-#define sjs_string_typeId 6
+#define sjs_log_typeId 15
+#define sjs_class_typeId 23
+#define sji_foo_typeId 24
+#define sjs_array_char_typeId 20
+#define sjs_string_typeId 18
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class sjs_class;
@@ -28,6 +27,7 @@ struct td_sjs_class {
 struct td_sji_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -85,6 +85,7 @@ void sjf_class_as_sji_foo(sjs_class* _this, sji_foo* _return);
 void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_heap(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, int32_t* _return);
 void sjf_debug_writeline(sjs_string* data);
@@ -266,6 +267,10 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
+void sjf_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 23;
+}
+
 void sjf_class_heap(sjs_class* _this) {
 }
 
@@ -369,6 +374,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 int main(int argc, char** argv) {
     sjs_class_foo_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
     sjs_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
+    sjs_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
     sjs_class_foo_vtbl.test = (void(*)(sjs_object*, int32_t*))sjf_class_test;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;

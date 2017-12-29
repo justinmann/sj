@@ -219,6 +219,9 @@
     <ClInclude Include="..\sjc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\node\NGetType.h">
+      <Filter>Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\node\NAnd.cpp">
@@ -405,6 +408,9 @@
       <Filter>Node</Filter>
     </ClCompile>
     <ClCompile Include="..\node\NLambda.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\node\NGetType.cpp">
       <Filter>Node</Filter>
     </ClCompile>
   </ItemGroup>

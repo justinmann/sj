@@ -161,6 +161,7 @@ public:
     string getCCopyFunctionName();
     string getCDestroyFunctionName();
     string getCAsInterfaceFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
+    string getCGetClassTypeFunctionName(Compiler* compiler, TrOutput* trOutput, CTypeMode returnMode);
 
     CLoc loc;
     vector<shared_ptr<CType>> templateTypes;

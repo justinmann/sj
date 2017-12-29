@@ -13,7 +13,7 @@ public:
     map<string, shared_ptr<TrBlock>> functions;
     map<string, vector<string>> structs;
     map<string, shared_ptr<TrVtbl>> vtbls;
-    vector<string> structOrder;
+    vector<pair<string, int>> structOrder;
     map<string, string> strings;
     map<string, map<string, bool>> includes;
     vector<string> ccodeIncludes;

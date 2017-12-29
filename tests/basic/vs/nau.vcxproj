@@ -110,7 +110,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\perf1.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\type1.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>
@@ -146,7 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\perf3.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\basic\perf1.sj --vs-errors --no-lines --c-file c:\src\sj\tests\basic\vs\test.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>

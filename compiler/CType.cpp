@@ -21,6 +21,7 @@ AssignOp AssignOp::create(bool isFirstAssignment, bool isMutable, bool isCopy, C
 AssignOp AssignOp::immutableCreate = AssignOp::create(true, false, false, CTM_Undefined);
 AssignOp AssignOp::mutableCreate = AssignOp::create(true, true, false, CTM_Undefined);
 AssignOp AssignOp::mutableUpdate = AssignOp::create(false, true, false, CTM_Undefined);
+int CType_typeId = 0;
 
 CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionType, shared_ptr<CType> heapValueType, shared_ptr<CType> heapOptionType, shared_ptr<CType> localValueType, shared_ptr<CType> localOptionType, shared_ptr<CType> weakType) : 
     stackValueType(stackValueType), 
@@ -30,7 +31,11 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     localValueType(localValueType), 
     localOptionType(localOptionType), 
     weakType(weakType) {
+
+    CType_typeId++;
+
     if (stackValueType) {
+        stackValueType->typeId = CType_typeId;
         stackValueType->heapValueType = heapValueType;
         stackValueType->heapOptionType = heapOptionType;
         stackValueType->stackValueType = stackValueType;
@@ -41,6 +46,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (stackOptionType) {
+        stackOptionType->typeId = CType_typeId;
         stackOptionType->heapValueType = heapValueType;
         stackOptionType->heapOptionType = heapOptionType;
         stackOptionType->stackValueType = stackValueType;
@@ -51,6 +57,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (heapValueType) {
+        heapValueType->typeId = CType_typeId;
         heapValueType->heapValueType = heapValueType;
         heapValueType->heapOptionType = heapOptionType;
         heapValueType->stackValueType = stackValueType;
@@ -61,6 +68,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (heapOptionType) {
+        heapOptionType->typeId = CType_typeId;
         heapOptionType->heapValueType = heapValueType;
         heapOptionType->heapOptionType = heapOptionType;
         heapOptionType->stackValueType = stackValueType;
@@ -71,6 +79,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (localValueType) {
+        localValueType->typeId = CType_typeId;
         localValueType->heapValueType = heapValueType;
         localValueType->heapOptionType = heapOptionType;
         localValueType->stackValueType = stackValueType;
@@ -81,6 +90,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (localOptionType) {
+        localOptionType->typeId = CType_typeId;
         localOptionType->heapValueType = heapValueType;
         localOptionType->heapOptionType = heapOptionType;
         localOptionType->stackValueType = stackValueType;
@@ -91,6 +101,7 @@ CTypes::CTypes(shared_ptr<CType> stackValueType, shared_ptr<CType> stackOptionTy
     }
 
     if (weakType) {
+        weakType->typeId = CType_typeId;
         weakType->heapValueType = heapValueType;
         weakType->heapOptionType = heapOptionType;
         weakType->stackValueType = stackValueType;
@@ -338,7 +349,7 @@ shared_ptr<CTypes> CType::create(Compiler* compiler, vector<string>& packageName
     return compiler->types[key];
 }
 
-shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback) {
+shared_ptr<CTypes> CType::create(Compiler* compiler, vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, weak_ptr<CCallback> callback) {
     auto heapValueType = make_shared<CType>();
     auto heapOptionType = make_shared<CType>();
     auto localValueType = make_shared<CType>();
@@ -380,6 +391,7 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
 
     auto valueName = valueStream.str();
     auto safeName = safeStream.str();
+    auto key = safeName;
 
     heapValueType->isOption = false;
     heapValueType->typeMode = CTM_Heap;
@@ -446,7 +458,8 @@ shared_ptr<CTypes> CType::create(vector<shared_ptr<CType>> argTypes, shared_ptr<
     weakType->cname = callback.lock()->getCName(CTM_Local, true);
     weakType->safeName = "weak_" + safeName;
 
-    return make_shared<CTypes>(nullptr, nullptr, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
+    compiler->types[key] = make_shared<CTypes>(nullptr, nullptr, heapValueType, heapOptionType, localValueType, localOptionType, weakType);
+    return compiler->types[key];
 }
 
 void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue) {

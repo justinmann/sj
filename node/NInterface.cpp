@@ -104,6 +104,19 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<pair<string, 
     }
     
     auto argIndex = 0;
+    auto method = make_shared<CInterfaceMethod>(string("getclasstype"), shared_from_this(), argIndex, CTM_Stack, true);
+    method = method->init(compiler, importNamespaces, static_pointer_cast<CInterfaceDefinition>(definition.lock())->getClassTypeMethod, shared_from_this());
+    if (!method) {
+        return nullptr;
+    }
+    auto returnType = compiler->typeType;
+    assert(returnType->typeMode != CTM_Undefined);
+    if (returnType->typeMode == CTM_Stack || returnType->typeMode == CTM_Value || returnType->typeMode == CTM_Local) {
+        methods.push_back(method);
+        methodByName[method->name][CTM_Stack] = method;
+        argIndex++;
+    }
+
     for (auto it : node->methodList) {
         // need to create a stack and heap version if return typename is not explicit
         if (it->name[0] == '_') {
@@ -111,7 +124,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<pair<string, 
             return nullptr;
         }
 
-        auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack);
+        auto method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Stack, false);
         method = method->init(compiler, importNamespaces, it, shared_from_this());
         if (!method) {
             return nullptr;
@@ -124,7 +137,7 @@ shared_ptr<CInterface> CInterface::init(Compiler* compiler, vector<pair<string, 
             argIndex++;
         }
 
-        method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Heap);
+        method = make_shared<CInterfaceMethod>(it->name, shared_from_this(), argIndex, CTM_Heap, false);
         method = method->init(compiler, importNamespaces, it, shared_from_this());
         if (!method) {
             return nullptr;
@@ -329,14 +342,14 @@ void CInterface::transpileStructDefinition(Compiler* compiler, TrOutput* trOutpu
 
             trOutput->structs[vtblStructName].push_back(method->getCTypeName(compiler, true));
         }
-        trOutput->structOrder.push_back(vtblStructName);
+        trOutput->structOrder.push_back(make_pair(vtblStructName, -1));
     }
 
     string structName = getCStructName(CTM_Heap);
     if (trOutput->structs.find(structName) == trOutput->structs.end()) {
         trOutput->structs[structName].push_back("sjs_object* _parent");
         trOutput->structs[structName].push_back(vtblStructName + "* _vtbl");
-        trOutput->structOrder.push_back(structName);
+        trOutput->structOrder.push_back(make_pair(structName, getThisTypes(compiler)->localValueType->typeId));
     }
 }
 
@@ -361,6 +374,8 @@ bool CInterface::getReturnMustRelease(Compiler* compiler) {
 CInterfaceDefinition::CInterfaceDefinition(CLoc loc, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, string& name_) : CBaseFunctionDefinition(CFT_Interface), loc(loc), importNamespaces(importNamespaces), packageNamespace(packageNamespace) {
     name = name_;
     safeName = "iface_" + name_;
+
+    getClassTypeMethod = make_shared<NInterfaceMethod>(loc, "getclasstype", nullptr, nullptr, nullptr, make_shared<CTypeName>(CTC_Value, CTM_Value, emptyNamespace, "type", false));
 }
 
 string CInterfaceDefinition::fullName() {

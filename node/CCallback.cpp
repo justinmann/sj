@@ -371,7 +371,7 @@ void CCallbackFunction::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunctio
 CCallback::CCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType) : argTypes(argTypes), stackReturnType(stackReturnType), heapReturnType(heapReturnType) {
 }
 
-shared_ptr<CCallback> CCallback::getCallback(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType) {
+shared_ptr<CCallback> CCallback::getCallback(Compiler* compiler, vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType) {
     assert(stackReturnType != heapReturnType);
     assert(stackReturnType == nullptr || stackReturnType->typeMode != CTM_Heap);
     assert(heapReturnType == nullptr || heapReturnType->typeMode == CTM_Heap);
@@ -386,14 +386,14 @@ shared_ptr<CCallback> CCallback::getCallback(vector<shared_ptr<CType>> argTypes,
 
     if (_callbacks[allTypes] == nullptr) {
         _callbacks[allTypes] = make_shared<CCallback>(argTypes, stackReturnType, heapReturnType);
-        _callbacks[allTypes]->types = CType::create(argTypes, stackReturnType, heapReturnType, _callbacks[allTypes]);
+        _callbacks[allTypes]->types = CType::create(compiler, argTypes, stackReturnType, heapReturnType, _callbacks[allTypes]);
     }
 
     return _callbacks[allTypes];
 }
 
-shared_ptr<CType> CCallback::getType(vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption) {
-    auto cb = getCallback(argTypes, stackReturnType, heapReturnType);
+shared_ptr<CType> CCallback::getType(Compiler* compiler, vector<shared_ptr<CType>> argTypes, shared_ptr<CType> stackReturnType, shared_ptr<CType> heapReturnType, CTypeMode returnMode, bool isOption) {
+    auto cb = getCallback(compiler, argTypes, stackReturnType, heapReturnType);
     switch (returnMode) {
     case CTM_Heap:
         return isOption ? cb->types->heapOptionType : cb->types->heapValueType;
@@ -444,7 +444,7 @@ shared_ptr<CVar> CCallback::getVar(Compiler* compiler, shared_ptr<CScope> scope,
         argTypes.push_back(argType);
     }
 
-    auto cb = getCallback(argTypes, stackReturnType, heapReturnType);
+    auto cb = getCallback(compiler, argTypes, stackReturnType, heapReturnType);
     auto isHeap = false;
     if (dotVar) {
         isHeap = dotVar->getType(compiler)->typeMode == CTM_Heap;
@@ -472,14 +472,14 @@ void CCallback::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
         if (heapReturnType) {
             trOutput->structs[stackStructName].push_back(getCBName(compiler, true, CTM_Heap));
         }
-        trOutput->structOrder.push_back(stackStructName);
+        trOutput->structOrder.push_back(make_pair(stackStructName, types->localValueType->typeId));
     }
 
     string heapStructName = getCName(CTM_Heap, false);
     if (trOutput->structs.find(heapStructName) == trOutput->structs.end()) {
         trOutput->structs[heapStructName].push_back(stackStructName + " inner");
         trOutput->structs[heapStructName].push_back("void (*_destroy)(sjs_object*)");
-        trOutput->structOrder.push_back(heapStructName);
+        trOutput->structOrder.push_back(make_pair(heapStructName, types->localValueType->typeId));
     }
 }
 

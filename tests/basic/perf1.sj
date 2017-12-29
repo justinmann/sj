@@ -1,7 +1,7 @@
 start : clock()
 
 str := ""
-for i : 0 to 5000000 {
+for i : 0 to 50000000 {
 	f64_sqrt(i as f64)
 	f64_pow(i as f64, 2.56)
 	j : i * 745

@@ -4,9 +4,9 @@ const char* sjg_string1 = "";
 const char* sjg_string2 = " kaka pipi";
 const char* sjg_string3 = "timetocalc(msec): ";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 17
+#define sjs_string_typeId 18
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;
@@ -740,7 +740,7 @@ int main(int argc, char** argv) {
     sjv_str._isnullterminated = false;
     sjf_string(&sjv_str);
     sjt_forStart1 = 0;
-    sjt_forEnd1 = 5000000;
+    sjt_forEnd1 = 50000000;
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
         sjs_string sjt_call1 = { -1 };

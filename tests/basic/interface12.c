@@ -1,9 +1,8 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_foo_typeId 2
-#define sji_bar_vtbl_typeId 3
-#define sji_bar_typeId 4
+#define sjs_log_typeId 15
+#define sjs_foo_typeId 17
+#define sji_bar_typeId 18
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_foo sjs_foo;
@@ -22,6 +21,7 @@ struct td_sjs_foo {
 struct td_sji_bar_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*getx)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -55,6 +55,7 @@ void sjf_foo_as_sji_bar(sjs_foo* _this, sji_bar* _return);
 void sjf_foo_asinterface(sjs_foo* _this, int typeId, sjs_interface* _return);
 void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from);
 void sjf_foo_destroy(sjs_foo* _this);
+void sjf_foo_getclasstype(sjs_object* _this, int* _return);
 void sjf_foo_getx(sjs_foo* _parent, int32_t* _return);
 void sjf_foo_heap(sjs_foo* _this);
 void sjf_log(sjs_log* _this);
@@ -92,6 +93,10 @@ void sjf_foo_copy(sjs_foo* _this, sjs_foo* _from) {
 void sjf_foo_destroy(sjs_foo* _this) {
 }
 
+void sjf_foo_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 17;
+}
+
 void sjf_foo_getx(sjs_foo* _parent, int32_t* _return) {
     (*_return) = 0;
 }
@@ -115,6 +120,7 @@ void sjf_log_heap(sjs_log* _this) {
 int main(int argc, char** argv) {
     sjs_foo_bar_vtbl.destroy = (void(*)(void*))sjf_foo_destroy;
     sjs_foo_bar_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_foo_asinterface;
+    sjs_foo_bar_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_foo_getclasstype;
     sjs_foo_bar_vtbl.getx = (void(*)(sjs_object*, int32_t*))sjf_foo_getx;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;

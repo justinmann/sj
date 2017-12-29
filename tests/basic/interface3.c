@@ -2,12 +2,11 @@
 
 const char* sjg_string1 = "5";
 
-#define sjs_log_typeId 1
-#define sjs_class_typeId 2
-#define sjs_array_char_typeId 3
-#define sjs_string_typeId 4
-#define sji_foo_vtbl_typeId 5
-#define sji_foo_typeId 6
+#define sjs_log_typeId 16
+#define sjs_class_typeId 19
+#define sjs_array_char_typeId 18
+#define sjs_string_typeId 15
+#define sji_foo_typeId 20
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class sjs_class;
@@ -43,6 +42,7 @@ struct td_sjs_string {
 struct td_sji_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test)(sjs_object* _parent, sjs_string* _return);
     void (*test_heap)(sjs_object* _parent, sjs_string** _return);
 };
@@ -83,6 +83,7 @@ void sjf_class_as_sji_foo(sjs_class* _this, sji_foo* _return);
 void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_heap(sjs_class* _this);
 void sjf_class_test(sjs_class* _parent, sjs_string* _return);
 void sjf_class_test_heap(sjs_class* _parent, sjs_string** _return);
@@ -181,6 +182,10 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
+void sjf_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 19;
+}
+
 void sjf_class_heap(sjs_class* _this) {
 }
 
@@ -245,6 +250,7 @@ void sjf_string_heap(sjs_string* _this) {
 int main(int argc, char** argv) {
     sjs_class_foo_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
     sjs_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
+    sjs_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
     sjs_class_foo_vtbl.test = (void(*)(sjs_object*, sjs_string*))sjf_class_test;
     sjs_class_foo_vtbl.test_heap = (void(*)(sjs_object*, sjs_string**))sjf_class_test_heap;
     sjv_loglevel_trace = 0;

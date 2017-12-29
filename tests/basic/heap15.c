@@ -1,9 +1,9 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_class_typeId 2
-#define cb_i32_typeId 3
-#define cb_i32_heap_typeId 4
+#define sjs_log_typeId 15
+#define sjs_class_typeId 16
+#define cb_i32_typeId 18
+#define cb_i32_heap_typeId 18
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class sjs_class;

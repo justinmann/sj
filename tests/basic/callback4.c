@@ -2,12 +2,12 @@
 
 const char* sjg_string1 = "hello";
 
-#define sjs_log_typeId 1
-#define sjs_class_typeId 2
-#define cb_i32_option_typeId 3
-#define cb_i32_option_heap_typeId 4
-#define sjs_array_char_typeId 5
-#define sjs_string_typeId 6
+#define sjs_log_typeId 15
+#define sjs_class_typeId 16
+#define cb_i32_option_typeId 24
+#define cb_i32_option_heap_typeId 24
+#define sjs_array_char_typeId 21
+#define sjs_string_typeId 19
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class sjs_class;

@@ -5,9 +5,9 @@ const char* sjg_string2 = "Too high\n";
 const char* sjg_string3 = "Too Low\n";
 const char* sjg_string4 = "Correct\n";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 19
+#define sjs_string_typeId 17
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;

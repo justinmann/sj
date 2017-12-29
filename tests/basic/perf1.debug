@@ -256,7 +256,7 @@ global()'void {
     data'stack array!char = data,
     _isnullterminated'bool = _isnullterminated
   ))
-  for i : 0i to 5000000i {
+  for i : 0i to 50000000i {
     f64_sqrt(
       v'f64 : v
     )

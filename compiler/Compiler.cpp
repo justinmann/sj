@@ -67,6 +67,10 @@ Compiler::Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks,
     ctypes = CType::create(emptyNamespace, "void", "void", "", "", "");
     typeVoid = ctypes->stackValueType;
     types["void"] = ctypes;
+
+    ctypes = CType::create(emptyNamespace, "type", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
+    typeType = ctypes->stackValueType;
+    types["type"] = ctypes;
 }
 
 shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
@@ -197,6 +201,39 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     if (mainLoop) {
                         mainLoop->transpileDefinition(this, &output);
                         hasMainLoop = true;
+                    }
+
+                    auto returnMode = CTM_Stack;
+                    string typeAsStringName = "sjf_type_asstring";
+                    if (output.functions.find(typeAsStringName) != output.functions.end()) {
+                        auto functionBlock = output.functions[typeAsStringName];
+                        functionBlock->statements.clear();
+
+                        auto calleeFunction = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "type_asstring", nullptr, nullptr, returnMode));
+                        auto calleeScope = calleeFunction->getScope(this, returnMode);
+
+                        auto returnType = getType("sjs_string", false);
+                        auto returnValue = functionBlock->createReturnStoreVariable(CLoc::undefined, nullptr, returnType);
+
+                        functionBlock->statements.push_back(TrStatement(CLoc::undefined, "switch (t) {"));
+                        for (auto type : types) {
+                            auto ctype = type.second->localValueType;
+                            functionBlock->statements.push_back(TrStatement(CLoc::undefined, "case " + to_string(ctype->typeId) + ":"));
+                            auto str = make_shared<NString>(CLoc::undefined, ctype->shortName);
+                            auto cvar = str->getVar(this, calleeScope, nullptr, nullptr, returnMode);
+                            cvar->transpile(this, &output, functionBlock.get(), nullptr, returnValue);
+                            functionBlock->statements.push_back(TrStatement(CLoc::undefined, "break;"));
+                        }
+
+                        functionBlock->statements.push_back(TrStatement(CLoc::undefined, "default:"));
+                        auto str = make_shared<NString>(CLoc::undefined, "");
+                        auto cvar = str->getVar(this, calleeScope, nullptr, nullptr, returnMode);
+                        cvar->transpile(this, &output, functionBlock.get(), nullptr, returnValue);
+                        functionBlock->statements.push_back(TrStatement(CLoc::undefined, "break;"));
+
+                        functionBlock->statements.push_back(TrStatement(CLoc::undefined, "}"));
+
+                        output.functions[typeAsStringName] = functionBlock;
                     }
 
                     if (errors.size() == 0) {

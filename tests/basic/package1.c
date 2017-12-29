@@ -1,12 +1,10 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_a_class_typeId 2
-#define sji_a_foo_vtbl_typeId 3
-#define sji_a_foo_typeId 4
-#define sjs_b_class_typeId 5
-#define sji_b_foo_vtbl_typeId 6
-#define sji_b_foo_typeId 7
+#define sjs_log_typeId 15
+#define sjs_a_class_typeId 19
+#define sji_a_foo_typeId 20
+#define sjs_b_class_typeId 22
+#define sji_b_foo_typeId 23
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_a_class sjs_a_class;
@@ -28,6 +26,7 @@ struct td_sjs_a_class {
 struct td_sji_a_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*bar)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -43,6 +42,7 @@ struct td_sjs_b_class {
 struct td_sji_b_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*bar)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -91,6 +91,7 @@ void sjf_a_class_as_sji_a_foo(sjs_a_class* _this, sji_a_foo* _return);
 void sjf_a_class_asinterface(sjs_a_class* _this, int typeId, sjs_interface* _return);
 void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from);
 void sjf_a_class_destroy(sjs_a_class* _this);
+void sjf_a_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_a_class_heap(sjs_a_class* _this);
 void sjf_a_func(int32_t* _return);
 void sjf_b_class(sjs_b_class* _this);
@@ -99,6 +100,7 @@ void sjf_b_class_asinterface(sjs_b_class* _this, int typeId, sjs_interface* _ret
 void sjf_b_class_b_bar(sjs_b_class* _parent, int32_t* _return);
 void sjf_b_class_copy(sjs_b_class* _this, sjs_b_class* _from);
 void sjf_b_class_destroy(sjs_b_class* _this);
+void sjf_b_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_b_class_heap(sjs_b_class* _this);
 void sjf_b_func(int32_t* _return);
 void sjf_log(sjs_log* _this);
@@ -140,6 +142,10 @@ void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from) {
 void sjf_a_class_destroy(sjs_a_class* _this) {
 }
 
+void sjf_a_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 19;
+}
+
 void sjf_a_class_heap(sjs_a_class* _this) {
 }
 
@@ -179,6 +185,10 @@ void sjf_b_class_copy(sjs_b_class* _this, sjs_b_class* _from) {
 void sjf_b_class_destroy(sjs_b_class* _this) {
 }
 
+void sjf_b_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 22;
+}
+
 void sjf_b_class_heap(sjs_b_class* _this) {
 }
 
@@ -202,9 +212,11 @@ void sjf_log_heap(sjs_log* _this) {
 int main(int argc, char** argv) {
     sjs_a_class_foo_vtbl.destroy = (void(*)(void*))sjf_a_class_destroy;
     sjs_a_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_a_class_asinterface;
+    sjs_a_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_a_class_getclasstype;
     sjs_a_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_a_class_a_bar;
     sjs_b_class_foo_vtbl.destroy = (void(*)(void*))sjf_b_class_destroy;
     sjs_b_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_b_class_asinterface;
+    sjs_b_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_b_class_getclasstype;
     sjs_b_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_b_class_b_bar;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;

@@ -1,12 +1,10 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_namespace1_class_typeId 2
-#define sji_namespace1_foo_vtbl_typeId 3
-#define sji_namespace1_foo_typeId 4
-#define sjs_namespace2_class_typeId 5
-#define sji_namespace2_foo_vtbl_typeId 6
-#define sji_namespace2_foo_typeId 7
+#define sjs_log_typeId 15
+#define sjs_namespace1_class_typeId 17
+#define sji_namespace1_foo_typeId 18
+#define sjs_namespace2_class_typeId 20
+#define sji_namespace2_foo_typeId 21
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_namespace1_class sjs_namespace1_class;
@@ -28,6 +26,7 @@ struct td_sjs_namespace1_class {
 struct td_sji_namespace1_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test1)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -43,6 +42,7 @@ struct td_sjs_namespace2_class {
 struct td_sji_namespace2_foo_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test2)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -84,6 +84,7 @@ void sjf_namespace1_class_as_sji_namespace1_foo(sjs_namespace1_class* _this, sji
 void sjf_namespace1_class_asinterface(sjs_namespace1_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class* _from);
 void sjf_namespace1_class_destroy(sjs_namespace1_class* _this);
+void sjf_namespace1_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this);
 void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return);
 void sjf_namespace2_class(sjs_namespace2_class* _this);
@@ -91,6 +92,7 @@ void sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji
 void sjf_namespace2_class_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return);
 void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class* _from);
 void sjf_namespace2_class_destroy(sjs_namespace2_class* _this);
+void sjf_namespace2_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this);
 void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return);
 void main_destroy(void);
@@ -137,6 +139,10 @@ void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class
 void sjf_namespace1_class_destroy(sjs_namespace1_class* _this) {
 }
 
+void sjf_namespace1_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 17;
+}
+
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this) {
 }
 
@@ -172,6 +178,10 @@ void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class
 void sjf_namespace2_class_destroy(sjs_namespace2_class* _this) {
 }
 
+void sjf_namespace2_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 20;
+}
+
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this) {
 }
 
@@ -182,9 +192,11 @@ void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_
 int main(int argc, char** argv) {
     sjs_namespace1_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace1_class_destroy;
     sjs_namespace1_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace1_class_asinterface;
+    sjs_namespace1_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_namespace1_class_getclasstype;
     sjs_namespace1_class_foo_vtbl.test1 = (void(*)(sjs_object*, int32_t*))sjf_namespace1_class_namespace1_test1;
     sjs_namespace2_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace2_class_destroy;
     sjs_namespace2_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace2_class_asinterface;
+    sjs_namespace2_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_namespace2_class_getclasstype;
     sjs_namespace2_class_foo_vtbl.test2 = (void(*)(sjs_object*, int32_t*))sjf_namespace2_class_namespace2_test2;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;

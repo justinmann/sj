@@ -1,9 +1,8 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_class_typeId 2
-#define sji_iface_vtbl_typeId 3
-#define sji_iface_typeId 4
+#define sjs_log_typeId 15
+#define sjs_class_typeId 17
+#define sji_iface_typeId 16
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class sjs_class;
@@ -22,6 +21,7 @@ struct td_sjs_class {
 struct td_sji_iface_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
 };
 
 struct td_sji_iface {
@@ -54,6 +54,7 @@ void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return)
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
 void sjf_class_func(sjs_class* _parent);
+void sjf_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_heap(sjs_class* _this);
 void sjf_log(sjs_log* _this);
 void sjf_log_copy(sjs_log* _this, sjs_log* _from);
@@ -117,6 +118,10 @@ void sjf_class_func(sjs_class* _parent) {
     }
 }
 
+void sjf_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 17;
+}
+
 void sjf_class_heap(sjs_class* _this) {
 }
 
@@ -156,6 +161,7 @@ void sjf_store_heap(sji_iface a, sji_iface* _return) {
 int main(int argc, char** argv) {
     sjs_class_iface_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
     sjs_class_iface_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
+    sjs_class_iface_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;
     sjv_loglevel_info = 2;

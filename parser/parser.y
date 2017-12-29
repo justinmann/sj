@@ -77,7 +77,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF TQUOTEDIDENTIFIER
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT TCARET
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT TCARET TTYPE
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
@@ -404,8 +404,10 @@ var_right			: TLPAREN expr TRPAREN							{ $$ = new NVariableStub(shared_ptr<NBa
 					| TISEMPTY TLPAREN expr TRPAREN					{ $$ = new NIsEmptyOrValid(LOC, shared_ptr<NBase>($3), true); }
 					| TISVALID TLPAREN expr TRPAREN					{ $$ = new NIsEmptyOrValid(LOC, shared_ptr<NBase>($3), false); }
 					| TGETVALUE TLPAREN expr TRPAREN				{ $$ = new NGetValue(LOC, shared_ptr<NBase>($3), false); }
+					| TTYPE TLPAREN arg_type TRPAREN				{ $$ = new NGetType(LOC, shared_ptr<CTypeName>($3)); }
 					| TVALID TLPAREN expr TRPAREN					{ $$ = new NValue(LOC, shared_ptr<NBase>($3)); }
 	 				| func_type_name								{ $$ = new NVariable(LOC, $1->name.c_str(), $1->templateTypeNames); delete $1; }
+	 				| TTYPE 										{ $$ = new NVariable(LOC, "type", nullptr); }
 	 				| TCARET func_block block        				{ $$ = new NVariableStub(make_shared<NLambda>(LOC, shared_ptr<NodeList>($2), shared_ptr<NBase>($3))); }
 	 				| TCARET block       							{ $$ = new NVariableStub(make_shared<NLambda>(LOC, nullptr, shared_ptr<NBase>($2))); }
 	 				| TPARENT										{ $$ = new NParent(LOC); }
@@ -521,6 +523,7 @@ value_type			: TTYPEI32											{ $$ = new CTypeName(CTC_Value, CTM_Value, emp
 					| TTYPECHAR											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "char", false); }
 					| TTYPEBOOL											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "bool", false); }
 					| TTYPEPTR											{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "ptr", false); }
+					| TTYPE												{ $$ = new CTypeName(CTC_Value, CTM_Value, emptyNamespace, "type", false); }
 					;
 
 func_type			: arg_mode TLPAREN func_arg_type_list TRPAREN return_type { $$ = new CTypeName($1, shared_ptr<CTypeNameList>($3), shared_ptr<CTypeName>($5)); }

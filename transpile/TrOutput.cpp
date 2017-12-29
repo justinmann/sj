@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "../compiler/Compiler.h"
+#include "../node/Node.h"
 
 TrOutput::TrOutput() {
 }
@@ -66,18 +66,20 @@ void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLo
     if (structs.size() > 0) {
         int typeId = 1;
         for (auto t : structOrder) {
-            stream << "#define " << t << "_typeId " << typeId++ << "\n";
+            if (t.second >= 0) {
+                stream << "#define " << t.first << "_typeId " << t.second << "\n";
+            }
         }
         stream << "\n";
 
         for (auto t : structOrder) {
-            stream << "typedef struct td_" << t << " " << t << ";\n";
+            stream << "typedef struct td_" << t.first << " " << t.first << ";\n";
         }
         stream << "\n";
 
         for (auto t : structOrder) {
-            stream << "struct td_" << t << " {\n";
-            for (auto line : structs[t]) {
+            stream << "struct td_" << t.first << " {\n";
+            for (auto line : structs[t.first]) {
                 if (line.size() == 0) {
                     continue;
                 }

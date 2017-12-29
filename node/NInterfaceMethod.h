@@ -48,11 +48,12 @@ public:
 
 class CInterfaceMethod : public CBaseFunction, public enable_shared_from_this<CInterfaceMethod> {
 public:
+    bool isSpecial;
     shared_ptr<CType> returnType;
     vector<shared_ptr<CType>> argTypes;
     vector<shared_ptr<CVar>> argVars;
 
-    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode);
+    CInterfaceMethod(string& name, weak_ptr<CInterface> parent, int methodIndex, CTypeMode returnMode, bool isSpecial);
     shared_ptr<CInterfaceMethod> init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction);
     string fullName(bool includeTemplateTypes);
     

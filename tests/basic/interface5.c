@@ -1,11 +1,9 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_class_i32_typeId 2
-#define sji_bar_vtbl_typeId 3
-#define sji_bar_typeId 4
-#define sji_foo_i32_vtbl_typeId 5
-#define sji_foo_i32_typeId 6
+#define sjs_log_typeId 15
+#define sjs_class_i32_typeId 18
+#define sji_bar_typeId 20
+#define sji_foo_i32_typeId 19
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_class_i32 sjs_class_i32;
@@ -26,6 +24,7 @@ struct td_sjs_class_i32 {
 struct td_sji_bar_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test2)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -37,6 +36,7 @@ struct td_sji_bar {
 struct td_sji_foo_i32_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*test1)(sjs_object* _parent, int32_t* _return);
 };
 
@@ -76,6 +76,7 @@ void sjf_class_i32_as_sji_foo_i32(sjs_class_i32* _this, sji_foo_i32* _return);
 void sjf_class_i32_asinterface(sjs_class_i32* _this, int typeId, sjs_interface* _return);
 void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from);
 void sjf_class_i32_destroy(sjs_class_i32* _this);
+void sjf_class_i32_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_i32_heap(sjs_class_i32* _this);
 void sjf_class_i32_test1(sjs_class_i32* _parent, int32_t* _return);
 void sjf_class_i32_test2(sjs_class_i32* _parent, int32_t* _return);
@@ -124,6 +125,10 @@ void sjf_class_i32_copy(sjs_class_i32* _this, sjs_class_i32* _from) {
 void sjf_class_i32_destroy(sjs_class_i32* _this) {
 }
 
+void sjf_class_i32_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 18;
+}
+
 void sjf_class_i32_heap(sjs_class_i32* _this) {
 }
 
@@ -151,9 +156,11 @@ void sjf_log_heap(sjs_log* _this) {
 int main(int argc, char** argv) {
     sjs_class_i32_bar_vtbl.destroy = (void(*)(void*))sjf_class_i32_destroy;
     sjs_class_i32_bar_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_i32_asinterface;
+    sjs_class_i32_bar_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_i32_getclasstype;
     sjs_class_i32_bar_vtbl.test2 = (void(*)(sjs_object*, int32_t*))sjf_class_i32_test2;
     sjs_class_i32_foo_vtbl.destroy = (void(*)(void*))sjf_class_i32_destroy;
     sjs_class_i32_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_i32_asinterface;
+    sjs_class_i32_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_i32_getclasstype;
     sjs_class_i32_foo_vtbl.test1 = (void(*)(sjs_object*, int32_t*))sjf_class_i32_test1;
     sjv_loglevel_trace = 0;
     sjv_loglevel_debug = 1;

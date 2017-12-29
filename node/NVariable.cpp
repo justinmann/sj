@@ -36,6 +36,12 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
         }
     }
 
+    if (dotVar) {
+        if (name == "type") {
+            return make_shared<CConstantVar>(loc, scope, compiler->typeType, to_string(dotVar->getType(compiler)->typeId));
+        }
+    }
+
     if (varScope) {
         shared_ptr<CVar> cvar;
         if (!templateTypeNames) {

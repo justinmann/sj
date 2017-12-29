@@ -2,11 +2,11 @@
 
 const char* sjg_string1 = "bob";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sjs_tuple2_i32_string_typeId 4
-#define sjs_tuple2_f64_i32_typeId 5
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 17
+#define sjs_string_typeId 18
+#define sjs_tuple2_i32_string_typeId 19
+#define sjs_tuple2_f64_i32_typeId 20
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;

@@ -4,13 +4,12 @@ const char* sjg_string1 = "foo";
 const char* sjg_string2 = "bob";
 const char* sjg_string3 = "not found";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sji_interface_vtbl_typeId 4
-#define sji_interface_typeId 5
-#define sjs_hash_string_heap_iface_interface_typeId 6
-#define sjs_class_typeId 7
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 21
+#define sjs_string_typeId 16
+#define sji_interface_typeId 17
+#define sjs_hash_string_heap_iface_interface_typeId 18
+#define sjs_class_typeId 27
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;
@@ -43,6 +42,7 @@ struct td_sjs_string {
 struct td_sji_interface_vtbl {
     void (*destroy)(void* _this);
     void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
+    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
     void (*bob)(sjs_object* _parent, sjs_string* _return);
     void (*bob_heap)(sjs_object* _parent, sjs_string** _return);
 };
@@ -117,6 +117,7 @@ void sjf_class_bob(sjs_class* _parent, sjs_string* _return);
 void sjf_class_bob_heap(sjs_class* _parent, sjs_string** _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
+void sjf_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_heap(sjs_class* _this);
 void sjf_debug_writeline(sjs_string* data);
 void sjf_hash_string_heap_iface_interface(sjs_hash_string_heap_iface_interface* _this);
@@ -359,6 +360,10 @@ void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
 void sjf_class_destroy(sjs_class* _this) {
 }
 
+void sjf_class_getclasstype(sjs_object* _this, int* _return) {
+    *_return = 27;
+}
+
 void sjf_class_heap(sjs_class* _this) {
 }
 
@@ -587,6 +592,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 int main(int argc, char** argv) {
     sjs_class_interface_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
     sjs_class_interface_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
+    sjs_class_interface_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
     sjs_class_interface_vtbl.bob = (void(*)(sjs_object*, sjs_string*))sjf_class_bob;
     sjs_class_interface_vtbl.bob_heap = (void(*)(sjs_object*, sjs_string**))sjf_class_bob_heap;
     sjv_loglevel_trace = 0;

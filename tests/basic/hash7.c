@@ -6,10 +6,10 @@ const char* sjg_string3 = "good bye";
 const char* sjg_string4 = "bye";
 const char* sjg_string5 = "empty";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sjs_hash_stringstring_typeId 4
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 16
+#define sjs_string_typeId 17
+#define sjs_hash_stringstring_typeId 18
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;

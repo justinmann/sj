@@ -1,9 +1,9 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sjs_class_typeId 4
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 18
+#define sjs_string_typeId 17
+#define sjs_class_typeId 19
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;

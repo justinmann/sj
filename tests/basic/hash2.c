@@ -4,10 +4,10 @@ const char* sjg_string1 = "foo";
 const char* sjg_string2 = "hi";
 const char* sjg_string3 = "not found";
 
-#define sjs_log_typeId 1
-#define sjs_array_char_typeId 2
-#define sjs_string_typeId 3
-#define sjs_hash_stringstring_typeId 4
+#define sjs_log_typeId 15
+#define sjs_array_char_typeId 20
+#define sjs_string_typeId 16
+#define sjs_hash_stringstring_typeId 17
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;

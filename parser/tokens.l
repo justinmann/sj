@@ -117,6 +117,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"to") 					TOKEN_VAL(TTO);
 (?:"toreverse")				TOKEN_VAL(TTOREVERSE);
 (?:"while")					TOKEN_VAL(TWHILE);
+(?:"type")					TOKEN_VAL(TTYPE);
 [ \t]+						SAVE_LOC; 
 "^"							TOKEN_VAL(TCARET);
 (?:"this")					TOKEN_VAL(TTHIS);

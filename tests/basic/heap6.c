@@ -1,7 +1,7 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_foo_typeId 2
+#define sjs_log_typeId 15
+#define sjs_foo_typeId 17
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_foo sjs_foo;

@@ -1,9 +1,9 @@
 #include <lib/common/common.h>
 
-#define sjs_log_typeId 1
-#define sjs_inner_typeId 2
-#define sjs_class_typeId 3
-#define sjs_class2_typeId 4
+#define sjs_log_typeId 17
+#define sjs_inner_typeId 18
+#define sjs_class_typeId 15
+#define sjs_class2_typeId 16
 
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_inner sjs_inner;

@@ -171,6 +171,7 @@ public:
     shared_ptr<CType> typeBool;
     shared_ptr<CType> typeChar;
     shared_ptr<CType> typeVoid;
+    shared_ptr<CType> typeType;
     map<string, shared_ptr<CTypes>> types;
     map<vector<string>, bool> namespaces;
 
