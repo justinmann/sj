@@ -75,6 +75,7 @@ f32_floor(v : 'f32)'f32 {
 f32_pow(x : 'f32, y : 'f32) {
     --c--
     #return(f32, powf(x, y));
+    --c--
 }
 
 f32_abs(v : 'f32)'f32 {
