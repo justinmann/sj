@@ -62,6 +62,7 @@ sji_foo_i32 sjt_parent1 = { 0 };
 int32_t sjt_void1;
 sji_foo_i32 sjv_a = { 0 };
 sji_bar sjv_b = { 0 };
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -172,6 +173,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjt_call1._refCount = 1;
     sjf_class_i32(&sjt_call1);
     sjt_cast1 = &sjt_call1;
@@ -180,7 +183,7 @@ int main(int argc, char** argv) {
     sjt_parent1._vtbl->test1(sjt_parent1._parent, &sjt_void1);
     sjt_cast2 = sjv_a;
     sjt_cast2._vtbl->asinterface(sjt_cast2._parent, sji_bar_typeId, (sjs_interface*)&sjv_b);
-    if ((sjv_b._parent != 0)) {
+    if (sjv_b._parent != 0) {
         sji_bar sjt_parent2 = { 0 };
         int32_t sjt_value1;
         int32_option value1;

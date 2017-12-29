@@ -1,10 +1,12 @@
-array!f32(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!f32 {
+array!f32(datasize'i32:, data'ptr:, isglobal'bool:, count'i32:)'stack array!f32 {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = malloc(_this->datasize * sizeof(float));
+  _this->data = (int*)malloc(_this->datasize * sizeof(float) + sizeof(int)) + 1;
+  int* refcount = (int*)_this->data - 1;
+  *refcount = 1;
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -17,7 +19,9 @@ array_filter(cb'local (:f32)bool:)'stack array!f32 {
   newdata'ptr = 0
   newcount'i32 = 0i
   --c--
-  sjv_newdata = malloc(_parent->count * sizeof(float));
+  sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+  int* refcount = (int*)sjv_newdata - 1;
+  *refcount = 1;
   --c--
   for i : 0i to parent.count {
     item'f32 : array_getat(
@@ -37,7 +41,7 @@ array_filter(cb'local (:f32)bool:)'stack array!f32 {
   array!f32(this = array!f32(
     datasize'i32 : datasize,
     data'ptr : data,
-    _isglobal'bool : _isglobal,
+    isglobal'bool : isglobal,
     count'i32 : count
   ))
 }
@@ -80,7 +84,9 @@ array_initat(index'i32:, item'i32:)'void {
 array_map!f32(cb'local (:i32)f32:)'stack array!f32 {
   newdata'ptr = 0
   --c--
-  sjv_newdata = malloc(_parent->count * sizeof(float));
+  sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+  int* refcount = (int*)sjv_newdata - 1;
+  *refcount = 1;
   --c--
   for i : 0i to parent.count {
     newitem'f32 : cb(
@@ -94,7 +100,7 @@ array_map!f32(cb'local (:i32)f32:)'stack array!f32 {
   array!f32(this = array!f32(
     datasize'i32 : datasize,
     data'ptr : data,
-    _isglobal'bool : _isglobal,
+    isglobal'bool : isglobal,
     count'i32 : count
   ))
 }
@@ -136,6 +142,10 @@ global()'void {
   --c--
   ptr_init();
   weakptr_init();
+  --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
   --c--
   --cinclude--
   #include <lib/common/common.h>

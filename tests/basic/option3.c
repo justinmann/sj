@@ -27,6 +27,7 @@ int32_t result1;
 sjs_class sjv_a = { -1 };
 int32_t sjv_b;
 sjs_class sjv_c = { -1 };
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -91,7 +92,7 @@ void sjf_test(sjs_class* _return) {
     sjs_class sjt_value2 = { -1 };
 
     if (true) {
-        if ((0 != 0)) {
+        if (0 != 0) {
             sjs_class* sjt_capture1 = 0;
 
             sjt_capture1 = 0;
@@ -104,7 +105,7 @@ void sjf_test(sjs_class* _return) {
         sjt_value1._refCount = 1;
         sjt_value1.x = 2;
         sjf_class(&sjt_value1);
-        if (((sjt_value1._refCount != -1 ? &sjt_value1 : 0) != 0)) {
+        if ((sjt_value1._refCount != -1 ? &sjt_value1 : 0) != 0) {
             sjs_class* sjt_capture2 = 0;
 
             sjt_value2._refCount = 1;
@@ -126,7 +127,7 @@ void sjf_test(sjs_class* _return) {
 
 void sjf_test_heap(sjs_class** _return) {
     if (true) {
-        if ((0 != 0)) {
+        if (0 != 0) {
             sjs_class* sjt_capture3 = 0;
             sjs_class* sjt_value3 = 0;
 
@@ -158,7 +159,7 @@ void sjf_test_heap(sjs_class** _return) {
         sjt_value4->_refCount = 1;
         sjt_value4->x = 2;
         sjf_class_heap(sjt_value4);
-        if ((sjt_value4 != 0)) {
+        if (sjt_value4 != 0) {
             sjs_class* sjt_capture4 = 0;
             sjs_class* sjt_value5 = 0;
             sjs_class* sjt_value6 = 0;
@@ -223,6 +224,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjf_func(&sjv_a);
     if (((sjv_a._refCount != -1 ? &sjv_a : 0) != 0)) {
         sjs_class* ifValue1 = 0;

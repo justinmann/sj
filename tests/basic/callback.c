@@ -64,6 +64,7 @@ sjs_data* sjv_b = 0;
 int32_t sjv_b2;
 sjs_class sjv_c = { -1 };
 sjs_class* sjv_c_heap = 0;
+int32_t sjv_clocks_per_sec;
 sjs_data sjv_d = { -1 };
 sjs_data sjv_e = { -1 };
 void* sjv_emptystringdata;
@@ -259,6 +260,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._parent = (sjs_object*)1;
     sjv_a._cb = (void(*)(sjs_object*,int32_t, sjs_data*))sjf_func_callback;
     sjv_a._cb_heap = (void(*)(sjs_object*,int32_t, sjs_data**))sjf_func_heap_callback;

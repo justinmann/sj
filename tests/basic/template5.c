@@ -18,6 +18,7 @@ int32_t sjv_loglevel_warn;
 
 int32_t result1;
 int32_t sjv_b;
+int32_t sjv_clocks_per_sec;
 int32_t sjv_d;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
@@ -79,6 +80,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjf_class_f32_func(&sjv_b);
     sjf_class_func_i32(&sjv_d);
     main_destroy();

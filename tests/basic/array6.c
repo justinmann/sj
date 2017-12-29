@@ -35,7 +35,7 @@ struct td_sjs_array_i32 {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -43,7 +43,7 @@ struct td_sjs_array_f32 {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -121,6 +121,7 @@ sjs_array_f32* sjt_parent6 = 0;
 sjs_array_i32 sjv_a = { -1 };
 sjs_array_f32 sjv_b = { -1 };
 sjs_array_f32 sjv_c = { -1 };
+int32_t sjv_clocks_per_sec;
 sjs_sum sjv_d = { -1 };
 void* sjv_emptystringdata;
 float sjv_f32_pi;
@@ -169,7 +170,9 @@ void sjf_array_f32(sjs_array_f32* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(float));
+        _this->data = (int*)malloc(_this->datasize * sizeof(float) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -179,22 +182,27 @@ void sjf_array_f32(sjs_array_f32* _this) {
 void sjf_array_f32_copy(sjs_array_f32* _this, sjs_array_f32* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_f32_destroy(sjs_array_f32* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             float* p = (float*)_this->data;
+            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -208,7 +216,9 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
 
     sjv_newdata = 0;
     sjv_newcount = 0;
-    sjv_newdata = malloc(_parent->count * sizeof(float));
+    sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+    int* refcount = (int*)sjv_newdata - 1;
+    *refcount = 1;
     sjt_forStart3 = 0;
     sjt_forEnd3 = _parent->count;
     i = sjt_forStart3;
@@ -235,7 +245,7 @@ void sjf_array_f32_filter(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array_f32*
     _return->_refCount = 1;
     _return->datasize = _parent->count;
     _return->data = sjv_newdata;
-    _return->_isglobal = false;
+    _return->isglobal = false;
     _return->count = sjv_newcount;
     sjf_array_f32(_return);
 }
@@ -249,7 +259,9 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
 
     sjv_newdata = 0;
     sjv_newcount = 0;
-    sjv_newdata = malloc(_parent->count * sizeof(float));
+    sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+    int* refcount = (int*)sjv_newdata - 1;
+    *refcount = 1;
     sjt_forStart4 = 0;
     sjt_forEnd4 = _parent->count;
     i = sjt_forStart4;
@@ -277,7 +289,7 @@ void sjf_array_f32_filter_heap(sjs_array_f32* _parent, cb_f32_bool cb, sjs_array
     (*_return)->_refCount = 1;
     (*_return)->datasize = _parent->count;
     (*_return)->data = sjv_newdata;
-    (*_return)->_isglobal = false;
+    (*_return)->isglobal = false;
     (*_return)->count = sjv_newcount;
     sjf_array_f32_heap((*_return));
 }
@@ -359,7 +371,9 @@ void sjf_array_f32_heap(sjs_array_f32* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(float));
+        _this->data = (int*)malloc(_this->datasize * sizeof(float) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -371,7 +385,9 @@ void sjf_array_i32(sjs_array_i32* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(int32_t));
+        _this->data = (int*)malloc(_this->datasize * sizeof(int32_t) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -381,22 +397,27 @@ void sjf_array_i32(sjs_array_i32* _this) {
 void sjf_array_i32_copy(sjs_array_i32* _this, sjs_array_i32* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_i32_destroy(sjs_array_i32* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             int32_t* p = (int32_t*)_this->data;
+            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -415,7 +436,9 @@ void sjf_array_i32_heap(sjs_array_i32* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(int32_t));
+        _this->data = (int*)malloc(_this->datasize * sizeof(int32_t) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -442,7 +465,9 @@ void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32*
     void* sjv_newdata;
 
     sjv_newdata = 0;
-    sjv_newdata = malloc(_parent->count * sizeof(float));
+    sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+    int* refcount = (int*)sjv_newdata - 1;
+    *refcount = 1;
     sjt_forStart1 = 0;
     sjt_forEnd1 = _parent->count;
     i = sjt_forStart1;
@@ -463,7 +488,7 @@ void sjf_array_i32_map_f32(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array_f32*
     _return->_refCount = 1;
     _return->datasize = _parent->count;
     _return->data = sjv_newdata;
-    _return->_isglobal = false;
+    _return->isglobal = false;
     _return->count = _parent->count;
     sjf_array_f32(_return);
 }
@@ -475,7 +500,9 @@ void sjf_array_i32_map_f32_heap(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array
     void* sjv_newdata;
 
     sjv_newdata = 0;
-    sjv_newdata = malloc(_parent->count * sizeof(float));
+    sjv_newdata = (int*)malloc(_parent->count * sizeof(float) + sizeof(int)) + 1;
+    int* refcount = (int*)sjv_newdata - 1;
+    *refcount = 1;
     sjt_forStart2 = 0;
     sjt_forEnd2 = _parent->count;
     i = sjt_forStart2;
@@ -497,7 +524,7 @@ void sjf_array_i32_map_f32_heap(sjs_array_i32* _parent, cb_i32_f32 cb, sjs_array
     (*_return)->_refCount = 1;
     (*_return)->datasize = _parent->count;
     (*_return)->data = sjv_newdata;
-    (*_return)->_isglobal = false;
+    (*_return)->isglobal = false;
     (*_return)->count = _parent->count;
     sjf_array_f32_heap((*_return));
 }
@@ -583,10 +610,12 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._refCount = 1;
     sjv_a.datasize = 3;
     sjv_a.data = 0;
-    sjv_a._isglobal = false;
+    sjv_a.isglobal = false;
     sjv_a.count = 0;
     sjf_array_i32(&sjv_a);
     sjs_array_i32* array1;

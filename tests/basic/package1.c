@@ -72,6 +72,7 @@ int32_t sjv_b;
 int32_t sjv_b_d;
 int32_t sjv_b_x;
 int32_t sjv_c;
+int32_t sjv_clocks_per_sec;
 sji_a_foo sjv_e = { 0 };
 void* sjv_emptystringdata;
 int32_t sjv_f;
@@ -223,6 +224,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a_x = 0;
     sjv_b_x = 1;
     sjv_b_d = 12;

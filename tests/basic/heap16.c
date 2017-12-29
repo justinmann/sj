@@ -25,6 +25,7 @@ int32_t sjv_loglevel_warn;
 int32_t result1;
 sjs_class* sjt_funcold1 = 0;
 sjs_class* sjv_c = 0;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -87,6 +88,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_c = (sjs_class*)malloc(sizeof(sjs_class));
     sjv_c->_refCount = 1;
     sjf_class_heap(sjv_c);

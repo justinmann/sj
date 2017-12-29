@@ -29,6 +29,7 @@ bool sjt_capture1;
 sjs_class* sjt_functionParam1 = 0;
 sjs_class* sjt_parent1 = 0;
 sjs_class sjv_a = { -1 };
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -99,6 +100,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._refCount = 1;
     sjv_a.bob = 3;
     sjf_class(&sjv_a);

@@ -21,7 +21,7 @@ struct td_sjs_array_char {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -29,6 +29,7 @@ struct td_sjs_string {
     int _refCount;
     int32_t count;
     sjs_array_char data;
+    bool _isnullterminated;
 };
 
 int32_t sjv_loglevel_debug;
@@ -48,6 +49,7 @@ sjs_string* sjt_parent6 = 0;
 sjs_string sjv_a = { -1 };
 sjs_string sjv_b = { -1 };
 char sjv_c;
+int32_t sjv_clocks_per_sec;
 char sjv_d;
 char sjv_e;
 void* sjv_emptystringdata;
@@ -89,7 +91,9 @@ void sjf_array_char(sjs_array_char* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(char));
+        _this->data = (int*)malloc(_this->datasize * sizeof(char) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -99,22 +103,27 @@ void sjf_array_char(sjs_array_char* _this) {
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             char* p = (char*)_this->data;
+            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -133,7 +142,9 @@ void sjf_array_char_heap(sjs_array_char* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(char));
+        _this->data = (int*)malloc(_this->datasize * sizeof(char) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -175,6 +186,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
     _this->count = _from->count;
     _this->data._refCount = 1;
     sjf_array_char_copy(&_this->data, &_from->data);
+    _this->_isnullterminated = _from->_isnullterminated;
 }
 
 void sjf_string_destroy(sjs_string* _this) {
@@ -231,23 +243,27 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._refCount = 1;
     sjv_a.count = 7;
     sjv_a.data._refCount = 1;
-    sjv_a.data.datasize = 8;
+    sjv_a.data.datasize = 7;
     sjv_a.data.data = (void*)sjg_string1;
-    sjv_a.data._isglobal = true;
-    sjv_a.data.count = 8;
+    sjv_a.data.isglobal = true;
+    sjv_a.data.count = 7;
     sjf_array_char(&sjv_a.data);
+    sjv_a._isnullterminated = false;
     sjf_string(&sjv_a);
     sjv_b._refCount = 1;
     sjv_b.count = 7;
     sjv_b.data._refCount = 1;
-    sjv_b.data.datasize = 8;
+    sjv_b.data.datasize = 7;
     sjv_b.data.data = (void*)sjg_string2;
-    sjv_b.data._isglobal = true;
-    sjv_b.data.count = 8;
+    sjv_b.data.isglobal = true;
+    sjv_b.data.count = 7;
     sjf_array_char(&sjv_b.data);
+    sjv_b._isnullterminated = false;
     sjf_string(&sjv_b);
     sjv_c = 'a';
     sjv_d = '\'';
@@ -255,11 +271,12 @@ int main(int argc, char** argv) {
     sjv_f._refCount = 1;
     sjv_f.count = 5;
     sjv_f.data._refCount = 1;
-    sjv_f.data.datasize = 6;
+    sjv_f.data.datasize = 5;
     sjv_f.data.data = (void*)sjg_string3;
-    sjv_f.data._isglobal = true;
-    sjv_f.data.count = 6;
+    sjv_f.data.isglobal = true;
+    sjv_f.data.count = 5;
     sjf_array_char(&sjv_f.data);
+    sjv_f._isnullterminated = false;
     sjf_string(&sjv_f);
     sjt_parent2 = &sjv_a;
     sjt_functionParam2 = 0;

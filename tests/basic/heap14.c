@@ -43,6 +43,7 @@ sjs_class* sjt_call2 = 0;
 sjs_class* sjt_cast1 = 0;
 sjs_class* sjt_cast2 = 0;
 sji_iface sjv_c = { 0 };
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -128,6 +129,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjt_call1 = (sjs_class*)malloc(sizeof(sjs_class));
     sjt_call1->_refCount = 1;
     sjf_class_heap(sjt_call1);

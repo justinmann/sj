@@ -1,10 +1,12 @@
-array!heap class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!class {
+array!heap class(datasize'i32:, data'ptr:, isglobal'bool:, count'i32:)'stack array!class {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = malloc(_this->datasize * sizeof(sjs_class*));
+  _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class*) + sizeof(int)) + 1;
+  int* refcount = (int*)_this->data - 1;
+  *refcount = 1;
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -20,22 +22,28 @@ array_grow(newsize'i32:)'stack array!class {
   if (newsize < _parent->datasize) {
   halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
   }
-  sjv_newdata = malloc(newsize * sizeof(sjs_class*));
+  sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_class*))) + 1;
+  int* refcount = (int*)sjv_newdata - 1;
+  *refcount = 1;
   if (!_parent->data) {
   halt("grow: out of memory\n");
   }
   sjs_class** p = (sjs_class**)_parent->data;
   sjs_class** newp = (sjs_class**)sjv_newdata;
   int count = _parent->count;
+  #if false
+  memcpy(newp, p, sizeof(sjs_class*) * count);
+  #else
   for (int i = 0; i < count; i++) {
   ;
   }
+  #endif
   }
   --c--
   array!heap class(this = array!heap class(
     datasize'i32 : datasize,
     data'ptr : data,
-    _isglobal'bool : _isglobal,
+    isglobal'bool : isglobal,
     count'i32 : count
   ))
 }
@@ -104,6 +112,10 @@ global()'void {
   --c--
   ptr_init();
   weakptr_init();
+  --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
   --c--
   --cinclude--
   #include <lib/common/common.h>

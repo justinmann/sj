@@ -59,6 +59,7 @@ sjs_class* sjt_value1 = 0;
 int32_option sjv_a;
 int64_option sjv_b;
 uint32_option sjv_c;
+int32_t sjv_clocks_per_sec;
 uint64_option sjv_d;
 float_option sjv_e;
 void* sjv_emptystringdata;
@@ -161,6 +162,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a = int32_empty;
     sjv_b = int64_empty;
     sjv_c = uint32_empty;
@@ -189,7 +192,7 @@ int main(int argc, char** argv) {
     }
 
     if (sjv_o->_refCount == -1) { exit(-1); }
-    if ((sjv_n != 0)) {
+    if (sjv_n != 0) {
         sjs_class* sjt_capture1 = 0;
         int32_t sjt_value2;
         int32_option value1;

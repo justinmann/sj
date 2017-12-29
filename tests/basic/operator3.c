@@ -50,6 +50,7 @@ int32_t sjt_functionParam3;
 sji_foo sjt_functionParam4 = { 0 };
 int32_t sjv_a;
 int32_t sjv_b;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -152,6 +153,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjt_functionParam1 = 1;
     sjt_call1._refCount = 1;
     sjt_call1.x = 2;

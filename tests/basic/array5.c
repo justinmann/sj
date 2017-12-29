@@ -22,7 +22,7 @@ struct td_sjs_array_class {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -51,6 +51,7 @@ sjs_array_class* sjt_parent3 = 0;
 sjs_array_class* sjt_parent4 = 0;
 sjs_array_class sjv_a = { -1 };
 sjs_class* sjv_c = 0;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -80,7 +81,9 @@ void sjf_array_class(sjs_array_class* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(sjs_class));
+        _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -90,22 +93,27 @@ void sjf_array_class(sjs_array_class* _this) {
 void sjf_array_class_copy(sjs_array_class* _this, sjs_array_class* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_class_destroy(sjs_array_class* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             sjs_class* p = (sjs_class*)_this->data;
+            #if !false
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -125,7 +133,9 @@ void sjf_array_class_heap(sjs_array_class* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(sjs_class));
+        _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -191,10 +201,12 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._refCount = 1;
     sjv_a.datasize = 3;
     sjv_a.data = 0;
-    sjv_a._isglobal = false;
+    sjv_a.isglobal = false;
     sjv_a.count = 0;
     sjf_array_class(&sjv_a);
     sjs_array_class* array1;

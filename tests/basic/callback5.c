@@ -68,6 +68,7 @@ sjs_class* sjt_cast1 = 0;
 sjs_bob sjv_a = { -1 };
 sjs_bob* sjv_b = 0;
 cb_bob_heap_bob sjv_cb;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 sji_foo sjv_f = { 0 };
 float sjv_f32_pi;
@@ -189,6 +190,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjt_call1._refCount = 1;
     sjt_call1.bar = 0;
     sjf_class(&sjt_call1);
@@ -196,7 +199,7 @@ int main(int argc, char** argv) {
     sjf_class_as_sji_foo(sjt_cast1, &sjv_f);
     delete_cb weakptrcb1 = { &sjv_f._parent, weakptr_clear };
     if (sjv_f._parent != 0) { weakptr_cb_add(sjv_f._parent, weakptrcb1); }
-    if ((sjv_f._parent != 0)) {
+    if (sjv_f._parent != 0) {
         sji_foo sjt_capture1 = { 0 };
         cb_bob_heap_bob sjt_value1;
 

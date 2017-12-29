@@ -6,17 +6,20 @@ class_asstring(x'stack class:)'i32 {
   2i
 }
 
-i32_asstring(val'i32:)'stack string {
+i32_asstring(val'i32:, base'i32:)'stack string {
   count'i32 = 0i
   data'ptr = 0
   --c--
-  sjv_data = malloc(sizeof(char) * 50);
-  snprintf((char*)sjv_data, 50, "%d", val);
+  sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+  int* refcount = (int*)sjv_data - 1;
+  *refcount = 1;
+  ltoa(val, sjv_data, base);
   sjv_count = strlen((char*)sjv_data);
   --c--
   string(this = string(
     count'i32 = count,
-    data'stack array!char = data
+    data'stack array!char = data,
+    _isnullterminated'bool = _isnullterminated
   ))
 }
 
@@ -24,7 +27,7 @@ log(minlevel'loglevel=)'stack log {
   this
 }
 
-string(count'i32=, data'stack array!char=)'stack string {
+string(count'i32=, data'stack array!char=, _isnullterminated'bool=)'stack string {
   this
 }
 
@@ -56,6 +59,10 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
+  --c--
   --cinclude--
   #include <lib/common/common.h>
   --cinclude--
@@ -63,7 +70,8 @@ global()'void {
   #include <lib/common/common.c>
   --cfunction--
   i32_asstring(
-    val'i32 : val
+    val'i32 : val,
+    base'i32 : base
   )
   c'heap class : heap class(this = class(
     x'i32 : x

@@ -23,6 +23,7 @@ int32_t sjv_loglevel_trace;
 int32_t sjv_loglevel_warn;
 
 int32_t result1;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -120,6 +121,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjf_foo1(&sjv_x1);
     sjf_foo2_heap(&sjv_x2);
     main_destroy();

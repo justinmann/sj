@@ -23,7 +23,7 @@ struct td_sjs_array_char {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -31,6 +31,7 @@ struct td_sjs_string {
     int _refCount;
     int32_t count;
     sjs_array_char data;
+    bool _isnullterminated;
 };
 
 struct td_sjs_tuple2_i32_string {
@@ -56,6 +57,7 @@ int32_t result1;
 int32_t sjv_a;
 sjs_string sjv_b = { -1 };
 int32_t sjv_c;
+int32_t sjv_clocks_per_sec;
 sjs_string sjv_d = { -1 };
 double sjv_e;
 void* sjv_emptystringdata;
@@ -100,7 +102,9 @@ void sjf_array_char(sjs_array_char* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(char));
+        _this->data = (int*)malloc(_this->datasize * sizeof(char) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -110,22 +114,27 @@ void sjf_array_char(sjs_array_char* _this) {
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             char* p = (char*)_this->data;
+            #if !true
             for (int i = 0; i < _this->count; i++) {
                 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -135,7 +144,9 @@ void sjf_array_char_heap(sjs_array_char* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(char));
+        _this->data = (int*)malloc(_this->datasize * sizeof(char) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -148,11 +159,12 @@ void sjf_func(sjs_tuple2_i32_string* _return) {
     _return->item2._refCount = 1;
     _return->item2.count = 3;
     _return->item2.data._refCount = 1;
-    _return->item2.data.datasize = 4;
+    _return->item2.data.datasize = 3;
     _return->item2.data.data = (void*)sjg_string1;
-    _return->item2.data._isglobal = true;
-    _return->item2.data.count = 4;
+    _return->item2.data.isglobal = true;
+    _return->item2.data.count = 3;
     sjf_array_char(&_return->item2.data);
+    _return->item2._isnullterminated = false;
     sjf_string(&_return->item2);
     sjf_tuple2_i32_string(_return);
 }
@@ -164,11 +176,12 @@ void sjf_func_heap(sjs_tuple2_i32_string** _return) {
     (*_return)->item2._refCount = 1;
     (*_return)->item2.count = 3;
     (*_return)->item2.data._refCount = 1;
-    (*_return)->item2.data.datasize = 4;
+    (*_return)->item2.data.datasize = 3;
     (*_return)->item2.data.data = (void*)sjg_string1;
-    (*_return)->item2.data._isglobal = true;
-    (*_return)->item2.data.count = 4;
+    (*_return)->item2.data.isglobal = true;
+    (*_return)->item2.data.count = 3;
     sjf_array_char(&(*_return)->item2.data);
+    (*_return)->item2._isnullterminated = false;
     sjf_string(&(*_return)->item2);
     sjf_tuple2_i32_string_heap((*_return));
 }
@@ -193,6 +206,7 @@ void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
     _this->count = _from->count;
     _this->data._refCount = 1;
     sjf_array_char_copy(&_this->data, &_from->data);
+    _this->_isnullterminated = _from->_isnullterminated;
 }
 
 void sjf_string_destroy(sjs_string* _this) {
@@ -253,6 +267,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjf_func(&sjv_t);
     sjv_a = (&sjv_t)->item1;
     sjv_b._refCount = 1;

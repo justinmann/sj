@@ -44,6 +44,7 @@ sjs_class* sjt_cast1 = 0;
 sji_foo_i32 sjt_parent1 = { 0 };
 int32_t sjt_void1;
 sji_foo_i32 sjv_a = { 0 };
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -135,6 +136,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjt_call1._refCount = 1;
     sjf_class(&sjt_call1);
     sjt_cast1 = &sjt_call1;

@@ -119,9 +119,8 @@ runloop()'void {
   emscripten_set_main_loop((em_callback_func)sjf_mainloop, 0, 0);
   exit(0);
   #else
-  bool shouldappcontinue = true;
-  while (shouldappcontinue) {
-  sjf_mainloop(&shouldappcontinue);
+  while (sjv_mainloop_shouldcontinue) {
+  sjf_mainloop();
   }
   #endif 
   --c--
@@ -138,7 +137,7 @@ shader(vertex'stack string:, pixel'stack string:)'stack shader {
   this
 }
 
-string(count'i32=, data'stack array!char=)'stack string {
+string(count'i32=, data'stack array!char=, _isnullterminated'bool=)'stack string {
   this
 }
 
@@ -218,6 +217,10 @@ global()'void {
   --c--
   ptr_init();
   weakptr_init();
+  --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
   --c--
   --cinclude--
   #include <lib/common/common.h>
@@ -1010,6 +1013,15 @@ global()'void {
     gl_one_minus_constant_alpha'glblendfunctype : 0x8004
     gl_src_alpha_saturate'glblendfunctype : 0x0308
   }
+  {
+    gl_points'gldrawmode : 0x0000
+    gl_line_strip'gldrawmode : 0x0003
+    gl_line_loop'gldrawmode : 0x0002
+    gl_lines'gldrawmode : 0x0001
+    gl_triangle_strip'gldrawmode : 0x0005
+    gl_triangle_fan'gldrawmode : 0x0006
+    gl_triangles'gldrawmode : 0x0004
+  }
   glviewports'stack list!rect : list!stack rect(this = list!stack rect(
     array'stack array!rect = array
   ))
@@ -1092,6 +1104,7 @@ global()'void {
   mainloop_lasttick'i32 = 0i
   mainloop_frames'i32 = 0i
   mainloop_showfps'bool = false
+  mainloop_shouldcontinue'bool = true
   mouse_captureelement'heap #element? = empty'heap #element?
   {
     move'mouseeventtype : 0
@@ -1334,15 +1347,15 @@ global()'void {
   } vertex3_texture2_color3_t;    
   --cstruct--
   --cdefine--
-  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen);   
+  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, int textlen, vec4 * color, vec2 * pen);   
   vec2 get_text_size(texture_font_t * font, char *text);
   --cdefine--
   --cfunction--
-  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, vec4 * color, vec2 * pen) {
+  void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, int textlen, vec4 * color, vec2 * pen) {
   pen->y += (float)(int)font->ascender;
   size_t i;
   float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-  for (i = 0; i < strlen(text); ++i) {
+  for (i = 0; i < textlen; ++i) {
   texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
   if (glyph != NULL) {
   float kerning = 0.0f;
@@ -1478,7 +1491,7 @@ global()'void {
   // Update the png info struct.
   png_read_update_info(png_ptr, info_ptr);
   // Row size in bytes.
-  int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+  int rowbytes = (int)png_get_rowbytes(png_ptr, info_ptr);
   // glTexImage2d requires rows to be 4-byte aligned
   rowbytes += 3 - ((rowbytes-1) % 4);
   // Allocate the image_data as a big block, to be given to opengl
@@ -1812,7 +1825,7 @@ global()'void {
   texture_atlas_t *self = (texture_atlas_t *) malloc( sizeof(texture_atlas_t) );
   // We want a one pixel border around the whole atlas to avoid any artefact when
   // sampling texture
-  ivec3 node = {{1,1,width-2}};
+  ivec3 node = {{1,1, (int)width-2}};
   assert( (depth == 1) || (depth == 3) || (depth == 4) );
   if( self == NULL)
   {
@@ -1890,7 +1903,7 @@ global()'void {
   node = (ivec3 *) (vector_get( self->nodes, index ));
   x = node->x;
   y = node->y;
-  width_left = width;
+  width_left = (int)width;
   i = index;
   if ( (x + width) > (self->width-1) )
   {
@@ -1941,7 +1954,7 @@ global()'void {
   int y, best_index;
   size_t best_height, best_width;
   ivec3 *node, *prev;
-  ivec4 region = {{0,0,width,height}};
+  ivec4 region = {{0,0,(int)width,(int)height}};
   size_t i;
   assert( self );
   best_height = UINT_MAX;
@@ -1957,7 +1970,7 @@ global()'void {
   ( ((y + height) == best_height) && (node->z > 0 && (size_t)node->z < best_width)) )
   {
   best_height = y + height;
-  best_index = i;
+  best_index = (int)i;
   best_width = node->z;
   region.x = node->x;
   region.y = y;
@@ -1978,8 +1991,8 @@ global()'void {
   halt("line %d: No more memory for allocating data\n", __LINE__ );
   }
   node->x = region.x;
-  node->y = region.y + height;
-  node->z = width;
+  node->y = (int)(region.y + height);
+  node->z = (int)width;
   vector_insert( self->nodes, best_index, node );
   free( node );
   for(i = best_index+1; i < self->nodes->size; ++i)
@@ -2021,7 +2034,7 @@ global()'void {
   self->used = 0;
   // We want a one pixel border around the whole atlas to avoid any artefact when
   // sampling texture
-  node.z = self->width-2;
+  node.z = (int)(self->width-2);
   vector_push_back( self->nodes, &node );
   memset( self->data, 0, self->width*self->height*self->depth );
   }
@@ -2355,7 +2368,7 @@ global()'void {
   */
   int
   texture_font_load_glyph( texture_font_t * self,
-  const char * codepoint );
+  const char * codepoints );
   /**
   * Request the loading of several glyphs at once.
   *
@@ -2968,9 +2981,9 @@ global()'void {
   //add node reflecting the gained space on the right
   if(width_new>width_old){
   ivec3 node;
-  node.x = width_old - 1;
+  node.x = (int)(width_old - 1);
   node.y = 1;
-  node.z = width_new - width_old;
+  node.z = (int)(width_new - width_old);
   vector_push_back(ta->nodes, &node);
   }
   //copy over data from the old buffer, skipping first row and column because of the margin
@@ -4126,7 +4139,7 @@ global()'void {
   } while ( end && (index < MAX_VERTEX_ATTRIBUTE) );
   for( i=0; i<index; ++i )
   {
-  self->attributes[i]->stride = stride;
+  self->attributes[i]->stride = (GLsizei)stride;
   }
   #ifdef FREETYPE_GL_USE_VAO
   self->VAO_id = 0;
@@ -4401,13 +4414,13 @@ global()'void {
   {
   size_t start = item->istart;
   size_t count = item->icount;
-  glDrawElements( self->mode, count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
+  glDrawElements( self->mode, (GLint)count, GL_UNSIGNED_INT, (void *)(start*sizeof(GLuint)) );
   }
   else if( self->vertices->size )
   {
   size_t start = item->vstart;
   size_t count = item->vcount;
-  glDrawArrays( self->mode, start*self->vertices->item_size, count);
+  glDrawArrays( self->mode, (GLint)(start*self->vertices->item_size), (GLint)count);
   }
   }
   // ----------------------------------------------------------------------------
@@ -4419,11 +4432,11 @@ global()'void {
   vertex_buffer_render_setup( self, mode );
   if( icount )
   {
-  glDrawElements( mode, icount, GL_UNSIGNED_INT, 0 );
+  glDrawElements( mode, (GLint)icount, GL_UNSIGNED_INT, 0 );
   }
   else
   {
-  glDrawArrays( mode, 0, vcount );
+  glDrawArrays( mode, 0, (GLint)vcount );
   }
   vertex_buffer_render_finish( self );
   }
@@ -4549,10 +4562,10 @@ global()'void {
   *(GLuint *)(vector_get( self->indices, istart+i )) += vstart;
   }
   // Insert item
-  item.x = vstart;
-  item.y = vcount;
-  item.z = istart;
-  item.w = icount;
+  item.x = (int)vstart;
+  item.y = (int)vcount;
+  item.z = (int)istart;
+  item.w = (int)icount;
   vector_insert( self->items, index, &item );
   self->state = DIRTY;
   return index;
@@ -4591,7 +4604,8 @@ global()'void {
   --cfunction--
   vertex_location_texture_normal_format'stack string : string(this = string(
     count'i32 = count,
-    data'stack array!char = data
+    data'stack array!char = data,
+    _isnullterminated'bool = _isnullterminated
   ))
   --cfunction--
   #include <lib/ui/obj_parser.c>

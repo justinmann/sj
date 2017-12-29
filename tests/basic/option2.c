@@ -24,10 +24,13 @@ int32_t sjv_loglevel_trace;
 int32_t sjv_loglevel_warn;
 
 int32_t result1;
+int32_option sjt_capture1;
+sjs_class* sjt_capture4 = 0;
 sjs_class* sjt_functionParam1 = 0;
 sjs_class sjt_value3 = { -1 };
 int32_t sjt_void1;
 sjs_class sjv_c = { -1 };
+int32_t sjv_clocks_per_sec;
 int32_t sjv_d;
 sjs_class sjv_e = { -1 };
 void* sjv_emptystringdata;
@@ -63,28 +66,32 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_func(sjs_class* c, int32_t* _return) {
-    if ((c != 0)) {
-        sjs_class* sjt_capture5 = 0;
+    int32_option sjt_capture7;
+
+    if (c != 0) {
+        sjs_class* sjt_capture8 = 0;
         int32_t sjt_value4;
         int32_option value3;
 
-        sjt_capture5 = c;
-        sjt_value4 = sjt_capture5->x;
+        sjt_capture8 = c;
+        sjt_value4 = sjt_capture8->x;
         value3.isvalid = true;
         value3.value = sjt_value4;
+        sjt_capture7 = value3;
     } else {
+        sjt_capture7 = int32_empty;
     }
 
-    if (int32_empty.isvalid) {
+    if (sjt_capture7.isvalid) {
         int32_option sjt_getValue2;
 
-        if ((c != 0)) {
-            sjs_class* sjt_capture6 = 0;
+        if (c != 0) {
+            sjs_class* sjt_capture9 = 0;
             int32_t sjt_value5;
             int32_option value4;
 
-            sjt_capture6 = c;
-            sjt_value5 = sjt_capture6->x;
+            sjt_capture9 = c;
+            sjt_value5 = sjt_capture9->x;
             value4.isvalid = true;
             value4.value = sjt_value5;
             sjt_getValue2 = value4;
@@ -130,31 +137,35 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_c._refCount = 1;
     sjv_c.x = 1;
     sjf_class(&sjv_c);
-    if (((sjv_c._refCount != -1 ? &sjv_c : 0) != 0)) {
-        sjs_class* sjt_capture1 = 0;
+    if ((sjv_c._refCount != -1 ? &sjv_c : 0) != 0) {
+        sjs_class* sjt_capture2 = 0;
         int32_t sjt_value1;
         int32_option value1;
 
-        sjt_capture1 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-        sjt_value1 = sjt_capture1->x;
+        sjt_capture2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+        sjt_value1 = sjt_capture2->x;
         value1.isvalid = true;
         value1.value = sjt_value1;
+        sjt_capture1 = value1;
     } else {
+        sjt_capture1 = int32_empty;
     }
 
-    if (int32_empty.isvalid) {
+    if (sjt_capture1.isvalid) {
         int32_option sjt_getValue1;
 
-        if (((sjv_c._refCount != -1 ? &sjv_c : 0) != 0)) {
-            sjs_class* sjt_capture2 = 0;
+        if ((sjv_c._refCount != -1 ? &sjv_c : 0) != 0) {
+            sjs_class* sjt_capture3 = 0;
             int32_t sjt_value2;
             int32_option value2;
 
-            sjt_capture2 = (sjv_c._refCount != -1 ? &sjv_c : 0);
-            sjt_value2 = sjt_capture2->x;
+            sjt_capture3 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+            sjt_value2 = sjt_capture3->x;
             value2.isvalid = true;
             value2.value = sjt_value2;
             sjt_getValue1 = value2;
@@ -167,22 +178,24 @@ int main(int argc, char** argv) {
         sjv_d = 0;
     }
 
-    if (((sjv_c._refCount != -1 ? &sjv_c : 0) != 0)) {
-        sjs_class* sjt_capture3 = 0;
+    if ((sjv_c._refCount != -1 ? &sjv_c : 0) != 0) {
+        sjs_class* sjt_capture5 = 0;
 
-        sjt_capture3 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+        sjt_capture5 = (sjv_c._refCount != -1 ? &sjv_c : 0);
         sjt_value3._refCount = 1;
-        sjf_class_copy(&sjt_value3, sjt_capture3);
+        sjf_class_copy(&sjt_value3, sjt_capture5);
+        sjt_capture4 = (sjt_value3._refCount != -1 ? &sjt_value3 : 0);
     } else {
+        sjt_capture4 = 0;
     }
 
-    if ((0 != 0)) {
-        if (((sjv_c._refCount != -1 ? &sjv_c : 0) != 0)) {
-            sjs_class* sjt_capture4 = 0;
+    if (sjt_capture4 != 0) {
+        if ((sjv_c._refCount != -1 ? &sjv_c : 0) != 0) {
+            sjs_class* sjt_capture6 = 0;
 
-            sjt_capture4 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+            sjt_capture6 = (sjv_c._refCount != -1 ? &sjv_c : 0);
             sjv_e._refCount = 1;
-            sjf_class_copy(&sjv_e, sjt_capture4);
+            sjf_class_copy(&sjv_e, sjt_capture6);
         } else {
             sjv_e._refCount = -1;
         }

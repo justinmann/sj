@@ -1,3 +1,67 @@
+array!char(datasize'i32:, data'ptr:, isglobal'bool:, count'i32:)'stack array!char {
+  --c--
+  if (_this->datasize < 0) {
+  halt("size is less than zero");
+  }
+  if (!_this->data) {
+  _this->data = (int*)malloc(_this->datasize * sizeof(char) + sizeof(int)) + 1;
+  int* refcount = (int*)_this->data - 1;
+  *refcount = 1;
+  if (!_this->data) {
+  halt("grow: out of memory\n");
+  }
+  }
+  --c--
+  this
+}
+
+array_grow(newsize'i32:)'stack array!char {
+  newdata'ptr = 0
+  --c--
+  if (_parent->datasize != newsize) {
+  if (newsize < _parent->datasize) {
+  halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
+  }
+  sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
+  int* refcount = (int*)sjv_newdata - 1;
+  *refcount = 1;
+  if (!_parent->data) {
+  halt("grow: out of memory\n");
+  }
+  char* p = (char*)_parent->data;
+  char* newp = (char*)sjv_newdata;
+  int count = _parent->count;
+  #if true
+  memcpy(newp, p, sizeof(char) * count);
+  #else
+  for (int i = 0; i < count; i++) {
+  ;
+  }
+  #endif
+  }
+  --c--
+  array!char(this = array!char(
+    datasize'i32 : datasize,
+    data'ptr : data,
+    isglobal'bool : isglobal,
+    count'i32 : count
+  ))
+}
+
+array_initat(index'i32:, item'char:)'void {
+  --c--
+  if (index != _parent->count) {
+  halt("initAt: can only initialize last element\n");     
+  }
+  if (index >= _parent->datasize || index < 0) {
+  halt("initAt: out of bounds %d:%d\n", index, _parent->datasize);
+  }
+  char* p = (char*)_parent->data;
+  ;
+  _parent->count = index + 1;
+  --c--
+}
+
 i32_random()'i32 {
   x'i32 = 0i
   --c--
@@ -35,11 +99,12 @@ readline()'stack string {
   --c--
   string(this = string(
     count'i32 = count,
-    data'stack array!char = data
+    data'stack array!char = data,
+    _isnullterminated'bool = _isnullterminated
   ))
 }
 
-string(count'i32=, data'stack array!char=)'stack string {
+string(count'i32=, data'stack array!char=, _isnullterminated'bool=)'stack string {
   this
 }
 
@@ -58,7 +123,28 @@ string_asi32(text'stack string:)'i32 {
   x
 }
 
+string_nullterminate()'void {
+  if !parent.data.isglobal || !parent._isnullterminated {
+    if parent.count + 1i > parent.data.datasize {
+      parent.data'stack array!char = copy array_grow(
+        parent: this,
+        newsize'i32 : newsize
+      )
+    }
+    array_initat(
+      parent: this,
+      index'i32 : index,
+      item'char : item
+    )
+    parent._isnullterminated'bool = true
+  }
+  void
+}
+
 write(data'stack string:)'void {
+  string_nullterminate(
+    parent: this
+  )
   --c--
   printf("%s", (char*)data->data.data);
   --c--
@@ -91,6 +177,10 @@ global()'void {
   --c--
   ptr_init();
   weakptr_init();
+  --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
   --c--
   --cinclude--
   #include <lib/common/common.h>

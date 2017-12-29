@@ -44,6 +44,10 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
+  --c--
   --cinclude--
   #include <lib/common/common.h>
   --cinclude--

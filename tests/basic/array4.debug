@@ -1,10 +1,12 @@
-array!stack class(datasize'i32:, data'ptr:, _isglobal'bool:, count'i32:)'stack array!class {
+array!stack class(datasize'i32:, data'ptr:, isglobal'bool:, count'i32:)'stack array!class {
   --c--
   if (_this->datasize < 0) {
   halt("size is less than zero");
   }
   if (!_this->data) {
-  _this->data = malloc(_this->datasize * sizeof(sjs_class));
+  _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class) + sizeof(int)) + 1;
+  int* refcount = (int*)_this->data - 1;
+  *refcount = 1;
   if (!_this->data) {
   halt("grow: out of memory\n");
   }
@@ -66,6 +68,10 @@ global()'void {
   ptr_init();
   weakptr_init();
   --c--
+  clocks_per_sec'i32 = 0i
+  --c--
+  sjv_clocks_per_sec = CLOCKS_PER_SEC;
+  --c--
   --cinclude--
   #include <lib/common/common.h>
   --cinclude--
@@ -75,7 +81,7 @@ global()'void {
   a'stack array!class : array!stack class(this = array!stack class(
     datasize'i32 : datasize,
     data'ptr : data,
-    _isglobal'bool : _isglobal,
+    isglobal'bool : isglobal,
     count'i32 : count
   ))
   array_setat(

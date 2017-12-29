@@ -24,7 +24,7 @@ struct td_sjs_array_heap_class {
     int _refCount;
     int32_t datasize;
     void* data;
-    bool _isglobal;
+    bool isglobal;
     int32_t count;
 };
 
@@ -47,6 +47,7 @@ int32_t sjt_functionParam8;
 sjs_list_heap_class* sjt_parent5 = 0;
 sjs_list_heap_class sjv_a = { -1 };
 sjs_class* sjv_c = 0;
+int32_t sjv_clocks_per_sec;
 void* sjv_emptystringdata;
 float sjv_f32_pi;
 int32_t sjv_i32_maxvalue;
@@ -86,7 +87,9 @@ void sjf_array_heap_class(sjs_array_heap_class* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(sjs_class*));
+        _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class*) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -96,18 +99,22 @@ void sjf_array_heap_class(sjs_array_heap_class* _this) {
 void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from) {
     _this->datasize = _from->datasize;
     _this->data = _from->data;
-    _this->_isglobal = _from->_isglobal;
+    _this->isglobal = _from->isglobal;
     _this->count = _from->count;
     _this->data = _from->data;
-    if (!_this->_isglobal && _this->data) {
-        ptr_retain(_this->data);
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount + 1;
     }
 }
 
 void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
-    if (!_this->_isglobal && _this->data) {
-        if (ptr_release(_this->data)) {
+    if (!_this->isglobal && _this->data) {
+        int* refcount = (int*)_this->data - 1;
+        *refcount = *refcount - 1;
+        if (*refcount == 0) {
             sjs_class** p = (sjs_class**)_this->data;
+            #if !false
             for (int i = 0; i < _this->count; i++) {
                 p[i]->_refCount--;
 if (p[i]->_refCount <= 0) {
@@ -117,7 +124,8 @@ if (p[i]->_refCount <= 0) {
 }
 ;
             }
-            free(p);
+            #endif
+            free(refcount);
         }
     }
 }
@@ -140,23 +148,29 @@ void sjf_array_heap_class_grow(sjs_array_heap_class* _parent, int32_t newsize, s
         if (newsize < _parent->datasize) {
             halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
         }
-        sjv_newdata = malloc(newsize * sizeof(sjs_class*));
+        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_class*))) + 1;
+        int* refcount = (int*)sjv_newdata - 1;
+        *refcount = 1;
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
         sjs_class** p = (sjs_class**)_parent->data;
         sjs_class** newp = (sjs_class**)sjv_newdata;
         int count = _parent->count;
+        #if false
+        memcpy(newp, p, sizeof(sjs_class*) * count);
+        #else
         for (int i = 0; i < count; i++) {
             newp[i] = p[i];
 newp[i]->_refCount++;
 ;
         }
+        #endif
     }
     _return->_refCount = 1;
     _return->datasize = newsize;
     _return->data = sjv_newdata;
-    _return->_isglobal = false;
+    _return->isglobal = false;
     _return->count = _parent->count;
     sjf_array_heap_class(_return);
 }
@@ -169,24 +183,30 @@ void sjf_array_heap_class_grow_heap(sjs_array_heap_class* _parent, int32_t newsi
         if (newsize < _parent->datasize) {
             halt("grow: new size smaller than old _parent->datasize %d:%d\n", newsize, _parent->datasize);
         }
-        sjv_newdata = malloc(newsize * sizeof(sjs_class*));
+        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_class*))) + 1;
+        int* refcount = (int*)sjv_newdata - 1;
+        *refcount = 1;
         if (!_parent->data) {
             halt("grow: out of memory\n");
         }
         sjs_class** p = (sjs_class**)_parent->data;
         sjs_class** newp = (sjs_class**)sjv_newdata;
         int count = _parent->count;
+        #if false
+        memcpy(newp, p, sizeof(sjs_class*) * count);
+        #else
         for (int i = 0; i < count; i++) {
             newp[i] = p[i];
 newp[i]->_refCount++;
 ;
         }
+        #endif
     }
     (*_return) = (sjs_array_heap_class*)malloc(sizeof(sjs_array_heap_class));
     (*_return)->_refCount = 1;
     (*_return)->datasize = newsize;
     (*_return)->data = sjv_newdata;
-    (*_return)->_isglobal = false;
+    (*_return)->isglobal = false;
     (*_return)->count = _parent->count;
     sjf_array_heap_class_heap((*_return));
 }
@@ -196,7 +216,9 @@ void sjf_array_heap_class_heap(sjs_array_heap_class* _this) {
         halt("size is less than zero");
     }
     if (!_this->data) {
-        _this->data = malloc(_this->datasize * sizeof(sjs_class*));
+        _this->data = (int*)malloc(_this->datasize * sizeof(sjs_class*) + sizeof(int)) + 1;
+        int* refcount = (int*)_this->data - 1;
+        *refcount = 1;
         if (!_this->data) {
             halt("grow: out of memory\n");
         }
@@ -231,7 +253,7 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
-    if ((a < b)) {
+    if (a < b) {
         (*_return) = b;
     } else {
         (*_return) = a;
@@ -247,7 +269,7 @@ void sjf_list_heap_class_add(sjs_list_heap_class* _parent, sjs_class* item) {
     sjs_class* sjt_functionParam5 = 0;
     sjs_array_heap_class* sjt_parent2 = 0;
 
-    if (((&_parent->array)->count >= (&_parent->array)->datasize)) {
+    if ((&_parent->array)->count >= (&_parent->array)->datasize) {
         int32_t sjt_functionParam1;
         int32_t sjt_functionParam2;
         int32_t sjt_functionParam3;
@@ -334,11 +356,13 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a._refCount = 1;
     sjv_a.array._refCount = 1;
     sjv_a.array.datasize = 0;
     sjv_a.array.data = 0;
-    sjv_a.array._isglobal = false;
+    sjv_a.array.isglobal = false;
     sjv_a.array.count = 0;
     sjf_array_heap_class(&sjv_a.array);
     sjf_list_heap_class(&sjv_a);

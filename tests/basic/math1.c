@@ -20,6 +20,7 @@ int32_t result1;
 int32_t sjv_a;
 uint32_t sjv_b;
 uint64_t sjv_c;
+int32_t sjv_clocks_per_sec;
 int64_t sjv_d;
 float sjv_e;
 void* sjv_emptystringdata;
@@ -69,6 +70,8 @@ int main(int argc, char** argv) {
     sjv_emptystringdata = "";
     ptr_init();
     weakptr_init();
+    sjv_clocks_per_sec = 0;
+    sjv_clocks_per_sec = CLOCKS_PER_SEC;
     sjv_a = 4 + 5;
     sjv_b = (uint32_t)4u + (uint32_t)5u;
     sjv_c = 4ull + 5ull;
