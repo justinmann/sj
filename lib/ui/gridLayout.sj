@@ -40,7 +40,7 @@ enum gridUnitType(
 
 gridUnit(
     amount : 1
-    type : gridUnitType.star
+    unitType : gridUnitType.star
 ) { this }
 
 gridLayout #element (
@@ -64,7 +64,7 @@ gridLayout #element (
         rowStars := 0
         for r : 0 to rows.count {
             row : rows[r]
-            if row.type == gridUnitType.star {
+            if row.unitType == gridUnitType.star {
                 rowStars += row.amount
             } else {
                 rowFixed += row.amount
@@ -79,7 +79,7 @@ gridLayout #element (
         yPos.initAt(0, y)
         for r : 0 to rows.count {
             row : rows[r]
-            if row.type == gridUnitType.star {
+            if row.unitType == gridUnitType.star {
                 y += rowStarUnit * row.amount
                 y += i32_max(0, rowStarRemainder)
                 rowStarRemainder -= row.amount
@@ -93,7 +93,7 @@ gridLayout #element (
         colStars := 0
         for c : 0 to cols.count {
             col : cols[c]
-            if col.type == gridUnitType.star {
+            if col.unitType == gridUnitType.star {
                 colStars += col.amount
             } else {
                 colFixed += col.amount
@@ -108,7 +108,7 @@ gridLayout #element (
         xPos.initAt(0, x)
         for c : 0 to cols.count {
             col : cols[c]
-            if col.type == gridUnitType.star {
+            if col.unitType == gridUnitType.star {
                 x += colStarUnit * col.amount
                 x += i32_max(0, colStarRemainder)
                 colStarRemainder -= col.amount

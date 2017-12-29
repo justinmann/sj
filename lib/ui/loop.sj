@@ -76,7 +76,7 @@ mainLoop() {
         ifValid mouse_eventType {
             ifValid m : mouse_captureElement {
                 shouldContinue = m.fireMouseEvent(mouseEvent(
-                    type : mouse_eventType
+                    eventType : mouse_eventType
                     point : point(mouse_x, mouse_y)
                     isCaptured : true
                     isLeftDown : mouse_isLeftDown
@@ -84,7 +84,7 @@ mainLoop() {
                 void
             } elseEmpty {
                 shouldContinue = root.fireMouseEvent(mouseEvent(
-                    type : mouse_eventType
+                    eventType : mouse_eventType
                     point : point(mouse_x, mouse_y)
                     isCaptured : false
                     isLeftDown : mouse_isLeftDown

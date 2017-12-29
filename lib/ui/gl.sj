@@ -168,9 +168,9 @@ glUseProgram(shader : 'shader) {
     --c--
 }
 
-glBindTexture(type : 'glTexture, texture : 'texture) {
+glBindTexture(t : 'glTexture, texture : 'texture) {
     --c--
-    glBindTexture(type, texture->id);
+    glBindTexture(t, texture->id);
     --c--
 }
 
@@ -221,15 +221,15 @@ glGenTexture(size: 'size)'texture {
     texture(copy size, id)
 }
 
-glTexParameteri(type : 'glTexture, attribute : 'glTextureAttribute, val : 'glTextureValue) {
+glTexParameteri(t : 'glTexture, attribute : 'glTextureAttribute, val : 'glTextureValue) {
     --c--
-    glTexParameteri(type, attribute, val);
+    glTexParameteri(t, attribute, val);
     --c--
 }
 
-glTexImage2D(type : 'glTexture, level : 'i32, format : 'glTextureFormat, size : 'size, dataType : 'glTextureType, data : nullptr) {
+glTexImage2D(t : 'glTexture, level : 'i32, format : 'glTextureFormat, size : 'size, dataType : 'glTextureType, data : nullptr) {
     --c--
-    glTexImage2D(type, level, format, size->w, size->h, 0, format, datatype, data);
+    glTexImage2D(t, level, format, size->w, size->h, 0, format, datatype, data);
     --c--
 }
 

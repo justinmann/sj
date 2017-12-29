@@ -39,7 +39,7 @@ crossHairsElement #element (
 
     fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
         if _rect.containsPoint(mouseEvent.point) {
-            if mouseEvent.type == mouseEventType.move {
+            if mouseEvent.eventType == mouseEventType.move {
                 _point = copy mouseEvent.point
                 _topDownRenderer = empty'boxRenderer
                 _leftRightRenderer = empty'boxRenderer

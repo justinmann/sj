@@ -22,7 +22,7 @@ clickGesture(
     fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
         ifValid e : heap element {
             if rect.containsPoint(mouseEvent.point) {
-                switch mouseEvent.type {
+                switch mouseEvent.eventType {
                     mouseEventType.up {
                         _state = clickState.none
                         mouse_release(e)
@@ -56,7 +56,7 @@ clickGesture(
                     _state = clickState.none
                 }
 
-                if mouseEvent.type == mouseEventType.up && mouse_hasCapture(e) {
+                if mouseEvent.eventType == mouseEventType.up && mouse_hasCapture(e) {
                     mouse_release(e)    
                     false               
                 } else {

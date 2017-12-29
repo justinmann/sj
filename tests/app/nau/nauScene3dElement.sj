@@ -96,7 +96,7 @@ nauScene3dElement #element (
     _lookAtDrag := vec3()
 
     fireMouseEvent(mouseEvent : 'mouseEvent) {
-        switch mouseEvent.type {
+        switch mouseEvent.eventType {
             mouseEventType.down {
                 _startDrag = copy mouseEvent.point
                 _lookAtDrag = copy _lookAt

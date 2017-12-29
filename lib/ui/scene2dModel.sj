@@ -76,7 +76,7 @@ scene2dModel #model (
                 textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
 
             newMouseEvent : mouseEvent(
-                type : mouseEvent.type
+                eventType : mouseEvent.eventType
                 point : copy scenePoint
                 isCaptured : mouseEvent.isCaptured
                 isLeftDown : mouseEvent.isLeftDown

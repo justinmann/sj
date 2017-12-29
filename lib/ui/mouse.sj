@@ -36,7 +36,7 @@ enum mouseEventType (
 )
 
 mouseEvent(
-    type : 'mouseEventType
+    eventType : 'mouseEventType
     point : 'point
     isCaptured : 'bool
     isLeftDown : 'bool
