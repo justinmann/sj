@@ -31,6 +31,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
+#include <ctype.h>
 #ifdef __WINDOWS__
 #include <windows.h>
 #endif

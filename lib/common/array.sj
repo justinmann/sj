@@ -334,8 +334,8 @@ array!t (
         int* refcount = (int*)_this->data - 1;
         *refcount = *refcount - 1;
         if (*refcount == 0) {
+##if !#isValue(t) && !#isStack(t)
             #type(t)* p = (#type(t)*)_this->data;
-##if !#isValue(t)
             for (int i = 0; i < _this->count; i++) {
                 #release(t, p[i]);
             }

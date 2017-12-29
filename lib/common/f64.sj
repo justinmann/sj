@@ -4,6 +4,7 @@ f64_asString(val : 'f64) {
     --c--
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
+    *refcount = 1;
     snprintf((char*)sjv_data, 256, "%lf", val);
     sjv_count = (int)strlen((char*)sjv_data);
     --c--

@@ -96,6 +96,7 @@ f32_asString(val : 'f32) {
     --c--
     sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
     int* refcount = (int*)sjv_data - 1;
+    *refcount = 1;
     snprintf((char*)sjv_data, 256, "%f", val);
     sjv_count = (int)strlen((char*)sjv_data);
     --c--
