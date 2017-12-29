@@ -72,7 +72,7 @@ void NEnum::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<str
     vector<shared_ptr<NSwitchClause>> clauses;
     auto index = 0;
     for (auto enumArg : *enumArgs) {
-        auto clause = make_shared<NSwitchClause>(loc, make_shared<NInteger>(loc, (enumArg->hasValue ? enumArg->value : to_string(index)).c_str()), make_shared<NString>(loc, enumArg->name));
+        auto clause = make_shared<NSwitchClause>(loc, make_shared<NInteger>(loc, (enumArg->hasValue ? enumArg->value : to_string(index)).c_str(), ctypes->stackValueType), make_shared<NString>(loc, enumArg->name));
         clauses.push_back(clause);
         index++;
     }

@@ -62,6 +62,10 @@ NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Intege
     }
 }
 
+NInteger::NInteger(CLoc loc, const char* value_, shared_ptr<CType> overrideType) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false), strBase(10), overrideType(overrideType) {
+    type = NIT_I32;
+}
+
 shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
     if (strValue.size() > 0) {
         if (type == NIT_I32) {
@@ -85,7 +89,13 @@ shared_ptr<CVar> NInteger::getVarImpl(Compiler* compiler, shared_ptr<CScope> sco
             else {
                 line << v;
             }
-            return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
+
+            if (overrideType) {
+                return make_shared<CConstantVar>(loc, scope, overrideType, line.str());
+            }
+            else {
+                return make_shared<CConstantVar>(loc, scope, compiler->typeI32, line.str());
+            }
         }
         else if (type == NIT_U32) {
             char* e;
