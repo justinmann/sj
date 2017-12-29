@@ -98,6 +98,16 @@ enum glBlendFuncType(
     GL_SRC_ALPHA_SATURATE : 0x0308
 )
 
+enum glDrawMode(
+    GL_POINTS : 0x0000
+    GL_LINE_STRIP : 0x0003
+    GL_LINE_LOOP : 0x0002
+    GL_LINES : 0x0001
+    GL_TRIANGLE_STRIP : 0x0005
+    GL_TRIANGLE_FAN : 0x0006
+    GL_TRIANGLES : 0x0004
+)
+
 glEnable(feature : 'glFeature) {
     --c--
     glEnable(feature);
