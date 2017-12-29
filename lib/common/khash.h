@@ -109,6 +109,7 @@ static const double __ac_HASH_UPPER = 0.77;
 
 #define KHASH_INIT_TYPEDEF(name, khkey_t, khval_t) \
     typedef struct {                                                    \
+        int refcount;                                                   \
         khint_t n_buckets, size, n_occupied, upper_bound;               \
         uint32_t *flags;                                                \
         khkey_t *keys;                                                  \
@@ -117,7 +118,9 @@ static const double __ac_HASH_UPPER = 0.77;
 
 #define KHASH_INIT_FUNCTION(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
     static inline kh_##name##_t *kh_init_##name() {                     \
-        return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
+        kh_##name##_t* t = (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));  \
+        t->refcount = 1;                                                \
+        return t;                                                       \
     }                                                                   \
     static inline void kh_destroy_##name(kh_##name##_t *h)              \
     {                                                                   \
@@ -280,7 +283,9 @@ static const double __ac_HASH_UPPER = 0.77;
 
 #define KHASH_INIT_FUNCTION_DEREF(name, khkey_t, khval_t, kh_is_map, __hash_func, __hash_equal) \
     static inline kh_##name##_t *kh_init_##name() {                     \
-        return (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));        \
+        kh_##name##_t* t = (kh_##name##_t*)calloc(1, sizeof(kh_##name##_t));  \
+        t->refcount = 1;                                                \
+        return t;                                                       \
     }                                                                   \
     static inline void kh_destroy_##name(kh_##name##_t *h)              \
     {                                                                   \

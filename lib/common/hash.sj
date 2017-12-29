@@ -228,12 +228,14 @@ hash![key, val] (
 } copy {
     --c--
     _this->_hash = _from->_hash;
-    ptr_retain(_this->_hash);
+    khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_this->_hash;
+    p->refcount++;
     --c--
 } destroy {
     --c--
-    if (ptr_release(_this->_hash)) {
-        khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_this->_hash;
+    khash_t(#safeName(key)_#safeName(val)_hash_type)* p = (khash_t(#safeName(key)_#safeName(val)_hash_type)*)_this->_hash;
+    p->refcount--;
+    if (p->refcount == 0) {
         for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
             if (kh_exist(p, k)) {
     
