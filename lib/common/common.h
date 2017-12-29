@@ -39,6 +39,7 @@
 
 typedef struct td_delete_cb delete_cb;
 typedef struct td_delete_cb_list delete_cb_list;
+typedef struct td_bool_option bool_option;
 typedef struct td_int32_option int32_option;
 typedef struct td_uint32_option uint32_option;
 typedef struct td_int64_option int64_option;
@@ -60,6 +61,12 @@ struct td_delete_cb_list {
     delete_cb cb[5];
     delete_cb_list* next;
 };
+
+struct td_bool_option {
+    bool isvalid;
+    bool value;
+};
+const bool_option bool_empty = { false };
 
 struct td_int32_option {
     bool isvalid;
