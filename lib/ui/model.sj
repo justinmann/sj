@@ -62,7 +62,7 @@ model #model (
         glUniformVec3(glGetUniformLocation(shader, "lightPos"), _light.pos)
         glUniformVec3(glGetUniformLocation(shader, "diffuseColor"), _light.diffuseColor.asVec3())
         glUniformVec3(glGetUniformLocation(shader, "specColor"), _light.specColor.asVec3())
-        vertexBuffer.render()
+        vertexBuffer.render(glDrawMode.GL_TRIANGLES)
     }
 
     fireMouseEvent(mouseEvent : 'mouseEvent)'void {
