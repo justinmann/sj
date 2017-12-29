@@ -29,8 +29,9 @@ vertexBuffer!vertex(
 
     addVertex(vertex : 'vertex) {
         --c--
-        #functionStack(vertex, getRawSize)(&vertexSize);
-        char* t = malloc(vertexSize);
+        int vertexsize;
+        #functionStack(vertex, getRawSize)(&vertexsize);
+        char* t = malloc(vertexsize);
         char* buffer = t;
         #functionStack(vertex, rawCopy)(vertex, buffer, &buffer);
         vertex_buffer_push_back_vertices(_parent->buffer, t, 1);
@@ -90,28 +91,32 @@ vertexBuffer!vertex(
         copy texture
     }
 
-    render()'void {
+    render(glDrawMode : 'glDrawMode)'void {
         --c--
-        vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
+        vertex_buffer_render(_parent->buffer, gldrawmode);
         --c--
         void
     }
 ) { 
     --c--
     _this->buffer = vertex_buffer_new((char*)_this->format.data.data);
-    vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.count);
-
-    int vertexSize;
-    #functionStack(vertex, getRawSize)(&vertexSize);
-    int verticesSize = _this->vertices.count * vertexSize;
-    char* t = malloc(verticesSize);
-    char* buffer = t;
-    #type(vertex)* p = (#type(vertex)*)_this->vertices.data;
-    for (int i = 0; i < _this->vertices.count; i++) {
-        #functionStack(vertex, rawCopy)(&p[i], buffer, &buffer);
+    if (_this->indices.count > 0) {
+        vertex_buffer_push_back_indices(_this->buffer, (GLuint*)_this->indices.data, _this->indices.count);
     }
-    vertex_buffer_push_back_vertices(_this->buffer, t, _this->vertices.count);
-    free(t);
+
+    if (_this->vertices.count > 0) {
+        int vertexSize;
+        #functionStack(vertex, getRawSize)(&vertexSize);
+        int verticesSize = _this->vertices.count * vertexSize;
+        char* t = malloc(verticesSize);
+        char* buffer = t;
+        #type(vertex)* p = (#type(vertex)*)_this->vertices.data;
+        for (int i = 0; i < _this->vertices.count; i++) {
+            #functionStack(vertex, rawCopy)(&p[i], buffer, &buffer);
+        }
+        vertex_buffer_push_back_vertices(_this->buffer, t, _this->vertices.count);
+        free(t);
+    }
     --c--
     this 
 } copy {

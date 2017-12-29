@@ -15,6 +15,21 @@ array!t (
         --c--
     }
     
+    init(item : 't)'array!t {
+        --c--
+        if (0 != _parent->count) {
+            halt("init: can only initialize a completely uninitialized list\n");     
+        }
+
+        #type(t)* p = (#type(t)*)_parent->data;
+        int count = _parent->datasize;
+        for (int i = 0; i < count; i++) {
+            #retain(t, p[i], item);
+        }
+        _parent->count = _parent->datasize;  
+        --c--  
+        copy parent
+    }
 
     initAt(index : 'i32, item : 't)'void {
         --c--

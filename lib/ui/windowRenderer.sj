@@ -13,6 +13,12 @@ windowRenderer(
         size(w, h)
     }
 
+    setSize(s : 'size) {
+        --c--
+        SDL_SetWindowSize(_parent->win, s->w, s->h);
+        --c--
+    }
+
     present()'void {
         --c--
         SDL_GL_SwapWindow((SDL_Window*)_parent->win);
