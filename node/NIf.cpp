@@ -6,15 +6,10 @@ bool CIfElseVar::getReturnThis() {
 }
 
 shared_ptr<CType> CIfElseVar::getType(Compiler* compiler) {
-    if (elseVar) {
-        return elseVar->getType(compiler);
-    }
-    
-    if (ifVar) {
+    if (ifVar && elseVar) {
         return ifVar->getType(compiler);
-    }
-    
-    return nullptr;
+    }    
+    return compiler->typeVoid;
 }
 
 void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
@@ -22,6 +17,23 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         storeValue->getName(trBlock); // Force capture values to become named
     }
     
+    auto ifStoreValue = storeValue;
+    auto elseStoreValue = storeValue;
+    if (ifVar && elseVar) {
+        auto ifType = ifVar->getType(compiler);
+        auto elseType = elseVar->getType(compiler);
+        if (ifType != elseType) {
+            if (!storeValue->isVoid) {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "if block return type '%s' does not match else block return type '%s'", ifType->fullName.c_str(), elseType->fullName.c_str());
+                return;
+            }
+            else {
+                ifStoreValue = trBlock->createVoidStoreVariable(loc, ifType);
+                elseStoreValue = trBlock->createVoidStoreVariable(loc, elseType);
+            }
+        }
+    }
+
     auto type = getType(compiler);
     auto conditionTrValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
     condVar->transpile(compiler, trOutput, trBlock, thisValue, conditionTrValue);
@@ -48,7 +60,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     if (ifLocalVarScope) {
         scope.lock()->pushLocalVarScope(ifLocalVarScope);
     }
-    ifVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, storeValue);
+    ifVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, ifStoreValue);
     if (ifLocalVarScope) {
         scope.lock()->popLocalVarScope(ifLocalVarScope);
     }
@@ -62,7 +74,7 @@ void CIfElseVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         if (elseLocalVarScope) {
             scope.lock()->pushLocalVarScope(elseLocalVarScope);
         }
-        elseVar->transpile(compiler, trOutput, trElseBlock.get(), thisValue, storeValue);
+        elseVar->transpile(compiler, trOutput, trElseBlock.get(), thisValue, elseStoreValue);
         if (elseLocalVarScope) {
             scope.lock()->popLocalVarScope(elseLocalVarScope);
         }
@@ -168,16 +180,6 @@ shared_ptr<CVar> NIf::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, s
     if (elseVar) {
         auto elseType = elseVar->getType(compiler);
         if (!elseType) {
-            return nullptr;
-        }
-
-        if (ifType != elseType) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "if block return type '%s' does not match else block return type '%s'", ifType->fullName.c_str(), elseType->fullName.c_str());
-            return nullptr;
-        }
-
-        if (ifType->typeMode == CTM_Stack && elseVar->scope.lock() != ifVar->scope.lock()) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "if block return value scope does not match else block return value scope", ifType->fullName.c_str(), elseType->fullName.c_str());
             return nullptr;
         }
     }

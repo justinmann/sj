@@ -159,10 +159,6 @@ test #element (funcid'i32=, lastfuncid'i32=, datax'stack array!f32:, datay'stack
   this
 }
 
-vec4(x'f32:, y'f32:, z'f32:, w'f32:)'stack vec4 {
-  this
-}
-
 windowrender_disablevsync()'void {
   --c--
   SDL_GL_SetSwapInterval(0);
@@ -4649,27 +4645,6 @@ global()'void {
     data'stack array!char = data,
     _isnullterminated'bool = _isnullterminated
   ))
-  a_light'stack vec4 : vec4(this = vec4(
-    x'f32 : x,
-    y'f32 : y,
-    z'f32 : z,
-    w'f32 : w
-  ))
-  s_light'stack vec4 : vec4(this = vec4(
-    x'f32 : x,
-    y'f32 : y,
-    z'f32 : z,
-    w'f32 : w
-  ))
-  l_pos'stack vec4 : vec4(this = vec4(
-    x'f32 : x,
-    y'f32 : y,
-    z'f32 : z,
-    w'f32 : w
-  ))
-  width'i32 : 1920i
-  height'i32 : 1080i
-  oncept'i32 : 0i
   dotsscale'i32 : 1000i
   dots'i32 : f32_pi * dotsscale as f32 as i32
   rotateradius'f32 : 1.0ff

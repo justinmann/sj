@@ -15,12 +15,6 @@ vertex_location_rawCopy(v : 'vertex_location, p := 'ptr) {
     p
 }
 
-a_light : vec4(0.2f, 0.2f, 0.2f, 1.0f)
-s_light : vec4(0.9f, 0.8f, 0.8f, 1.0f)
-l_pos : vec4(-0.005f, 0.0005f, 0.0f, 0.0f)
-WIDTH : 1920
-HEIGHT : 1080
-oncept : 0
 dotsscale : 1000 // dots array scale, 100^(x), example 100 1000 10000 1000000 etc
 dots : ((f32_pi * dotsscale as f32) as i32)
 rotateradius : 1.0f
@@ -173,8 +167,7 @@ test #element (
                 for n : 0 to dots {
                     t : gettm(2, n)
                     datax [n] = t
-                    datay [n] = (6.0f * f32_sin(t)) / 2.0f
-                    
+                    datay [n] = (6.0f * f32_sin(t)) / 2.0f                    
                 }
             }
             3 {
@@ -367,7 +360,6 @@ test #element (
         if mainrot[0] && mainrot[1] {
             if (rotatez > 0.0f) {
                 rotatez -= 0.1f
-                void
             } else {
                 rotatez = 0.0f
                 rotatex = 0.0f
@@ -381,7 +373,6 @@ test #element (
                 mainrot[0] = false
                 mainrot[1] = false
                 funcid += 1
-                void
             }
         }    
     }

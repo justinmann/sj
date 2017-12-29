@@ -6,8 +6,8 @@ bool CSwitchVar::getReturnThis() {
 }
 
 shared_ptr<CType> CSwitchVar::getType(Compiler* compiler) {
-    if (clauseVars.size() > 0) {
-        return clauseVars[0].blockVar->getType(compiler);
+    if (defaultClauseVar) {
+        return defaultClauseVar->blockVar->getType(compiler);
     }
     return compiler->typeVoid;
 }
@@ -60,8 +60,13 @@ void CSwitchVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         trIfBlock->hasThis = trBlock->hasThis;
         auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
 
+        shared_ptr<TrStoreValue> clauseStoreValue = storeValue;
+        if (!defaultClauseVar || storeValue->isVoid) {
+            clauseStoreValue = trBlock->createVoidStoreVariable(loc, compiler->typeVoid);
+        }
+
         scope.lock()->pushLocalVarScope(clauseVar.localVarScope);
-        clauseVar.blockVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, storeValue);
+        clauseVar.blockVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, clauseStoreValue);
         scope.lock()->popLocalVarScope(clauseVar.localVarScope);
 
         currentBlock->statements.push_back(trStatement);

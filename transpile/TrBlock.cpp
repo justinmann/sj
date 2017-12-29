@@ -628,8 +628,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
     value = rightValue;
 
-    if (!type) {
-        // This is a void store value, so ignore all input
+    if (isVoid) {
         return;
     }
 
@@ -640,10 +639,6 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
 
     if (rightValue->type->isOption && !type->isOption && type->typeMode != CTM_Local) {
         compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot be converted to left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
-        return;
-    }
-
-    if (isVoid) {
         return;
     }
 
