@@ -65,7 +65,7 @@ void add_text(vertex_buffer_t * buffer, texture_font_t * font, char *text, int t
     pen->y += (float)(int)font->ascender;
     size_t i;
     float r = color->red, g = color->green, b = color->blue, a = color->alpha;
-    for (i = 0; i < textlen; ++i) {
+    for (i = 0; i < (size_t)textlen; ++i) {
         texture_glyph_t *glyph = texture_font_get_glyph( font, text + i );
         if (glyph != NULL) {
             float kerning = 0.0f;
