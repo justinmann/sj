@@ -5,7 +5,7 @@ peoplePanel #model (
     _world := mat4_identity()
 
     update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
-        _world = copy world
+        _world = world
         for i : 0 to children.count {
             c : children[i]
             childModel : _childrenModel[i]
@@ -60,7 +60,7 @@ peoplePanel #model (
     }
 ) {
     _xoffset = -(_xincrement * f32_ceil(children.count as f32 / _depth as f32) / 2.0f)
-    _childrenModel = copy children.map!mat4(this.getModelMatrix)
+    _childrenModel = children.map!mat4(this.getModelMatrix)
     this
 }
 

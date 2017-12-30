@@ -107,6 +107,29 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+hash![type, bool]()'stack hash![type, bool] {
+  --cdefine--
+  #ifndef type_bool_hash_typedef
+  #define type_bool_hash_typedef
+  KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef type_bool_hash_function
+  #define type_bool_hash_function
+  #if false
+  KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(type_bool_hash_type);
+  --c--
+  this
+}
+
 list!stack rect(array'stack array!rect=)'stack list!rect {
   this
 }
@@ -115,7 +138,7 @@ list!u32(array'stack array!u32=)'stack list!u32 {
   this
 }
 
-log(minlevel'loglevel=)'stack log {
+log(minlevel'loglevel=, traceincludes'stack hash![type, bool]?=, debugincludes'stack hash![type, bool]?=, infoincludes'stack hash![type, bool]?=, warnincludes'stack hash![type, bool]?=, errorincludes'stack hash![type, bool]?=, fatalincludes'stack hash![type, bool]?=)'stack log {
   this
 }
 
@@ -237,8 +260,16 @@ global()'void {
     error'loglevel : 4
     fatal'loglevel : 5
   }
+  log_includeall'stack hash![type, bool]? : empty'stack hash![type, bool]?
+  log_excludeall'stack hash![type, bool]? : value(hash![type, bool](this = hash![type, bool]()))
   log'stack log : log(this = log(
-    minlevel'loglevel = minlevel
+    minlevel'loglevel = minlevel,
+    traceincludes'stack hash![type, bool]? = traceincludes,
+    debugincludes'stack hash![type, bool]? = debugincludes,
+    infoincludes'stack hash![type, bool]? = infoincludes,
+    warnincludes'stack hash![type, bool]? = warnincludes,
+    errorincludes'stack hash![type, bool]? = errorincludes,
+    fatalincludes'stack hash![type, bool]? = fatalincludes
   ))
   emptystringdata'ptr = 0
   --c--
@@ -3016,7 +3047,7 @@ global()'void {
   node.z = (int)(width_new - width_old);
   vector_push_back(ta->nodes, &node);
   }
-  //copy over data from the old buffer, skipping first row and column because of the margin
+  //over data from the old buffer, skipping first row and column because of the margin
   size_t pixel_size = sizeof(char) * ta->depth;
   size_t old_row_size = width_old * pixel_size;
   texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);

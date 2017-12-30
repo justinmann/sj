@@ -11,7 +11,7 @@ testScene() {
                 children : [
                     heap model(
                         vertexBuffer : vertexBuffer_loadObj("assets/teapot.obj")
-                        shader : copy phongTextureShader
+                        shader : phongTextureShader
                         texture : texture_fromPng("assets/cat.png")
                         model : mat4_scale(0.02f, 0.02f, 0.02f)
                     ) as #model
@@ -22,7 +22,7 @@ testScene() {
                 text : "Hello"
                 halign : textHorizontal.center
                 valign : textVertical.center
-                color : copy colors.white
+                color : colors.white
             ) as #element
         ]
     ) as #element

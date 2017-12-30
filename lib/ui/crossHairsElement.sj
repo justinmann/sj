@@ -1,5 +1,5 @@
 crossHairsElement #element (
-    color := copy colors.white
+    color := colors.white
     _rect := rect()
     _topDownRenderer := empty'boxRenderer
     _leftRightRenderer := empty'boxRenderer
@@ -9,11 +9,11 @@ crossHairsElement #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
+            _rect = rect_
             _topDownRenderer = empty'boxRenderer
             _leftRightRenderer = empty'boxRenderer
         }
@@ -22,15 +22,15 @@ crossHairsElement #element (
 
     render(scene : 'scene2d)'void {
         if isEmpty(_topDownRenderer) {
-            _topDownRenderer = valid(copy boxRenderer(
+            _topDownRenderer = valid(boxRenderer(
                 rect: rect(_point.x, _rect.y, 1, _rect.h)
-                color: copy color))
+                color: color))
         }
 
         if isEmpty(_leftRightRenderer) {
-            _leftRightRenderer = valid(copy boxRenderer(
+            _leftRightRenderer = valid(boxRenderer(
                 rect: rect(_rect.x, _point.y, _rect.w, 1)
-                color: copy color))
+                color: color))
         }
 
         _topDownRenderer?.render(scene)
@@ -40,7 +40,7 @@ crossHairsElement #element (
     fireMouseEvent(mouseEvent : 'mouseEvent)'bool {
         if _rect.containsPoint(mouseEvent.point) {
             if mouseEvent.eventType == mouseEventType.move {
-                _point = copy mouseEvent.point
+                _point = mouseEvent.point
                 _topDownRenderer = empty'boxRenderer
                 _leftRightRenderer = empty'boxRenderer
             }

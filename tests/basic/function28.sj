@@ -11,6 +11,6 @@ t : vec3()
 
 a : vertex_location_texture_normal(
     location : vec3()
-    texture : copy t
+    texture : t
     normal : vec3()
 )

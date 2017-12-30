@@ -13,6 +13,7 @@ public:
     void writeReleaseToStream(Compiler* compiler, TrBlock* parentBlock, ostream& stream, int level);
     void writeDestroyToStream(Compiler* compiler, TrBlock* parentBlock, ostream& stream, int level);
     void addInitToStatements(Compiler* compiler, TrBlock* block);
+    void addEmptyToStatements(Compiler* compiler, TrBlock* block);
     void addRetainToStatements(Compiler* compiler, TrBlock* block);
     void addDestroyToStatements(Compiler* compiler, TrBlock* block);
     void addDestroyLocalToStatements(Compiler* compiler, TrBlock* block);

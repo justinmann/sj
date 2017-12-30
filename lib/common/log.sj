@@ -12,12 +12,12 @@ log_excludeAll : valid(hash![type, bool]())
 
 log(
 	minLevel := logLevel.warn
-    traceIncludes := copy log_includeAll
-    debugIncludes := copy log_includeAll
-    infoIncludes := copy log_includeAll
-    warnIncludes := copy log_includeAll
-    errorIncludes := copy log_includeAll
-    fatalIncludes := copy log_includeAll
+    traceIncludes := log_includeAll
+    debugIncludes := log_includeAll
+    infoIncludes := log_includeAll
+    warnIncludes := log_includeAll
+    errorIncludes := log_includeAll
+    fatalIncludes := log_includeAll
 
     trace(t : 'type, cb : '()string) {
         _write(logLevel.trace, traceIncludes, t, cb)

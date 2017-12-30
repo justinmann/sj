@@ -1128,7 +1128,7 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
         node.z = (int)(width_new - width_old);
         vector_push_back(ta->nodes, &node);
     }
-    //copy over data from the old buffer, skipping first row and column because of the margin
+    //over data from the old buffer, skipping first row and column because of the margin
     size_t pixel_size = sizeof(char) * ta->depth;
     size_t old_row_size = width_old * pixel_size;
     texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);

@@ -10,7 +10,7 @@ menuScene = heap nauScene3dElement(
                     children : [
                         heap model(
                             texture : texture_fromPng("assets/menu1.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -18,7 +18,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu2.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -26,7 +26,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu3.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -34,7 +34,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu4.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -42,7 +42,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu5.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -56,7 +56,7 @@ menuScene = heap nauScene3dElement(
                     children : [
                         heap model(
                             texture : texture_fromPng("assets/menu6.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -64,7 +64,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu7.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -72,7 +72,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu8.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -80,7 +80,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu9.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -88,7 +88,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu10.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -102,7 +102,7 @@ menuScene = heap nauScene3dElement(
                     children : [
                         heap model(
                             texture : texture_fromPng("assets/menu3.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -110,7 +110,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu4.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -118,7 +118,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu5.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -126,7 +126,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu6.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -134,7 +134,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu7.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -148,7 +148,7 @@ menuScene = heap nauScene3dElement(
                     children : [
                         heap model(
                             texture : texture_fromPng("assets/menu11.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(-2.2f, 0.0f, 1.8f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -156,7 +156,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu12.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -164,7 +164,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu1.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -172,7 +172,7 @@ menuScene = heap nauScene3dElement(
 
                         heap model(
                             texture : texture_fromPng("assets/menu2.png")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             hasAlpha : true
@@ -185,7 +185,7 @@ menuScene = heap nauScene3dElement(
                     radius : 50.0f
                     children : [
                         heap scene2dModel(
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             textureSize : size(800, 352)
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
@@ -207,13 +207,13 @@ menuScene = heap nauScene3dElement(
                                                     font : font_load("assets/arial.ttf", 30.0f)
                                                     text : "womens"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                                 heap textElement(
                                                     font : font_load("assets/arial.ttf", 50.0f)
                                                     text : "pants/shorts"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                             ]
                                         ) as #element
@@ -224,13 +224,13 @@ menuScene = heap nauScene3dElement(
 
                         heap scene2dModel(
                             id : valid("forestMenu")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             textureSize : size(800, 352)
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             children : [
                                 heap imageElement(
-                                    image : image(texture : copy forestTexture)
+                                    image : image(texture : forestTexture)
                                 ) as #element
 
                                 heap buttonElement(
@@ -252,13 +252,13 @@ menuScene = heap nauScene3dElement(
                                                     font : font_load("assets/arial.ttf", 30.0f)
                                                     text : "mens"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                                 heap textElement(
                                                     font : font_load("assets/arial.ttf", 50.0f)
                                                     text : "forest collection"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                             ]
                                         ) as #element
@@ -268,7 +268,7 @@ menuScene = heap nauScene3dElement(
                         ) as #model
                         
                         heap scene2dModel(
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             textureSize : size(800, 352)
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
@@ -290,13 +290,13 @@ menuScene = heap nauScene3dElement(
                                                     font : font_load("assets/arial.ttf", 30.0f)
                                                     text : "womens"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                                 heap textElement(
                                                     font : font_load("assets/arial.ttf", 50.0f)
                                                     text : "pants/shorts"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                             ]
                                         ) as #element
@@ -307,13 +307,13 @@ menuScene = heap nauScene3dElement(
 
                         heap scene2dModel(
                             id : valid("fieldMenu")
-                            shader : copy phongTextureShader
+                            shader : phongTextureShader
                             textureSize : size(800, 352)
                             model : mat4_translate(vec3(1.5f, 0.0f, 0.5f))
                             vertexBuffer : planeVertexBuffer(x0 : -1.4f, y0 : -0.6f, x1 : 1.4f, y1 : 0.6f) 
                             children : [
                                 heap imageElement(
-                                    image : image(texture : copy fieldTexture)
+                                    image : image(texture : fieldTexture)
                                 ) as #element
 
                                 heap buttonElement(
@@ -335,13 +335,13 @@ menuScene = heap nauScene3dElement(
                                                     font : font_load("assets/arial.ttf", 30.0f)
                                                     text : "mens"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                                 heap textElement(
                                                     font : font_load("assets/arial.ttf", 50.0f)
                                                     text : "field collection"
                                                     halign : textHorizontal.right
-                                                    color : copy colors.white
+                                                    color : colors.white
                                                 ) as #element
                                             ]
                                         ) as #element
@@ -359,7 +359,7 @@ menuScene = heap nauScene3dElement(
 menuElement = heap fillLayout(
     children : [
         heap boxElement(
-            color : copy colors.black
+            color : colors.black
         ) as #element
         heap menuScene as #element
     ]

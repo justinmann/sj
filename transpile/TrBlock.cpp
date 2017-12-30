@@ -508,7 +508,16 @@ void TrValue::addRetainToStatements(Compiler* compiler, TrBlock* block) {
     
 void TrValue::addInitToStatements(Compiler* compiler, TrBlock* block) {
     if (type->typeMode == CTM_Value) {
-        return;
+        if (type->isOption) {
+            stringstream initLine;
+            if (isReturnValue) {
+                initLine << name << "->isvalid = true";
+            }
+            else {
+                initLine << name << ".isvalid = true";
+            }
+            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+        }
     }
     else if (type->typeMode == CTM_Heap) {
         if (!type->parent.expired()) {
@@ -544,7 +553,6 @@ void TrValue::addInitToStatements(Compiler* compiler, TrBlock* block) {
     }
     else if (type->typeMode == CTM_Stack) {
         assert(!type->parent.expired());
-
         stringstream initLine;
         if (isReturnValue) {
             initLine << name << "->_refCount = 1";
@@ -555,6 +563,52 @@ void TrValue::addInitToStatements(Compiler* compiler, TrBlock* block) {
         block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
     }
     else if (type->typeMode == CTM_Local) {
+    }
+    else {
+        assert(false);
+    }
+}
+
+void TrValue::addEmptyToStatements(Compiler* compiler, TrBlock* block) {
+    assert(type->isOption);
+
+    if (type->typeMode == CTM_Value) {
+        stringstream initLine;
+        if (isReturnValue) {
+            initLine << name << "->isvalid = false";
+        }
+        else {
+            initLine << name << ".isvalid = false";
+        }
+        block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+    }
+    else if (type->typeMode == CTM_Heap) {
+        if (type->category == CTC_Interface) {
+            stringstream initLine;
+            initLine << name << "._parent = 0";
+            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+        }
+        else {
+            stringstream initLine;
+            initLine << name << " = 0";
+            block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+        }
+    }
+    else if (type->typeMode == CTM_Stack) {
+        assert(!type->parent.expired());
+        stringstream initLine;
+        if (isReturnValue) {
+            initLine << name << "->_refCount = -1";
+        }
+        else {
+            initLine << name << "._refCount = -1";
+        }
+        block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
+    }
+    else if (type->typeMode == CTM_Local) {
+        stringstream initLine;
+        initLine << name << " = 0";
+        block->statements.push_back(TrStatement(CLoc::undefined, initLine.str()));
     }
     else {
         assert(false);
@@ -627,6 +681,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
     hasSetValue = true;
 
     value = rightValue;
+    auto isCopy = op.isCopy;
 
     if (isVoid) {
         return;
@@ -655,18 +710,15 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         break;
     case CTM_Stack:
         if (type->typeMode != rightValue->type->typeMode && !op.isCopy) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
-            return;
+            isCopy = true;
         }
         if (rightValue->type->typeMode == CTM_Stack && !op.isCopy) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "must use a copy operator like 'a = copy b' when assigning a stack variable to a stack variable");
-            return;
+            isCopy = true;
         }
         break;
     case CTM_Heap:
         if (rightValue->type->typeMode != CTM_Heap && rightValue->type->typeMode != CTM_Weak && !op.isCopy) {
-            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
-            return;
+            isCopy = true;
         }
         break;
     default:
@@ -674,7 +726,7 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
     }
 
     TrValue leftValue(scope, type, name, isReturnValue);
-    if (!op.isCopy) {
+    if (!isCopy) {
         if (!op.isFirstAssignment) {
             leftValue.addReleaseToStatements(compiler, block);
             leftValue.addDestroyToStatements(compiler, block);
@@ -732,24 +784,69 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
             block->statements.push_back(TrStatement(loc, lineStream.str()));
         }
         else {
-            if (op.isFirstAssignment) {
-                leftValue.addInitToStatements(compiler, block);
-            }
-            else {
-                leftValue.addReleaseToStatements(compiler, block);
-                leftValue.addDestroyToStatements(compiler, block);
-            }
+            if (type->isOption) {
+                if (!op.isFirstAssignment) {
+                    leftValue.addReleaseToStatements(compiler, block);
+                    leftValue.addDestroyToStatements(compiler, block);
+                }
 
-            if (type->category == CTC_Function) {
-                type->callback.lock()->writeCopy(compiler, block, rightValue->name, name, type->typeMode == CTM_Heap);
-            } 
-            else if (type->category == CTC_Interface) {
-                compiler->addError(loc, CErrorCode::Internal, "interface cannot be copied");
-            } 
-            else {
+                string rightTempName = TrBlock::nextVarName("copyoption");
+
                 stringstream lineStream;
-                lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
+                lineStream << rightValue->type->getLocalType()->cname << " " << rightTempName << " = " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue);
                 block->statements.push_back(TrStatement(loc, lineStream.str()));
+
+                stringstream lineStream2;
+                lineStream2 << "if (" << rightTempName << " != 0)";
+                auto statement = TrStatement(loc, lineStream2.str());
+
+                auto trIfBlock = make_shared<TrBlock>(block);
+                trIfBlock->hasThis = block->hasThis;
+                trIfBlock->localVarParent = block;
+                statement.block = trIfBlock;
+
+                auto trElseBlock = make_shared<TrBlock>(block);
+                trElseBlock->hasThis = block->hasThis;
+                trElseBlock->localVarParent = block;
+                statement.elseBlock = trElseBlock;
+
+                leftValue.addInitToStatements(compiler, trIfBlock.get());
+                if (type->category == CTC_Function) {
+                    type->callback.lock()->writeCopy(compiler, trIfBlock.get(), rightValue->name, name, type->typeMode == CTM_Heap);
+                }
+                else if (type->category == CTC_Interface) {
+                    compiler->addError(loc, CErrorCode::Internal, "interface cannot be copied");
+                }
+                else {
+                    stringstream lineStream2;
+                    lineStream2 << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type->getValueType(), name, isReturnValue) << ", " << rightTempName << ")";
+                    trIfBlock->statements.push_back(TrStatement(loc, lineStream2.str()));
+                }
+
+                leftValue.addEmptyToStatements(compiler, trElseBlock.get());
+
+                block->statements.push_back(statement);
+            }
+            else {
+                if (op.isFirstAssignment) {
+                    leftValue.addInitToStatements(compiler, block);
+                }
+                else {
+                    leftValue.addReleaseToStatements(compiler, block);
+                    leftValue.addDestroyToStatements(compiler, block);
+                }
+
+                if (type->category == CTC_Function) {
+                    type->callback.lock()->writeCopy(compiler, block, rightValue->name, name, type->typeMode == CTM_Heap);
+                }
+                else if (type->category == CTC_Interface) {
+                    compiler->addError(loc, CErrorCode::Internal, "interface cannot be copied");
+                }
+                else {
+                    stringstream lineStream;
+                    lineStream << type->parent.lock()->getCCopyFunctionName() << "(" << TrValue::convertToLocalName(type, name, isReturnValue) << ", " << TrValue::convertToLocalName(rightValue->type, rightValue->name, rightValue->isReturnValue) << ")";
+                    block->statements.push_back(TrStatement(loc, lineStream.str()));
+                }
             }
         }
     }

@@ -25,17 +25,7 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
         storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, dotValue->getCaptureText() + "->_parent", false));
     }
     else {
-        if (storeValue->type->typeMode == CTM_Heap) {
-            if (function->hasHeapThis) {
-                storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->heapValueType, "_parent", false));
-            }
-            else {
-                compiler->addError(loc, CErrorCode::InvalidType, "parent must be heap, add the @heap annotation to the parent function");                
-            }
-        }
-        else {
-            storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, "_parent", false));
-        }
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, "_parent", false));
     }
 }
 

@@ -23,6 +23,7 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
     if (!storeValue->type->parent.expired() && storeValue->type->typeMode == CTM_Stack) {
         auto leftValue = make_shared<TrStoreValue>(storeValue->loc, storeValue->scope, storeValue->type->getValueType(), storeValue->getName(trBlock), storeValue->op);
         leftValue->isReturnValue = storeValue->isReturnValue;
+        leftValue->getValue()->addInitToStatements(compiler, trBlock);
         var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
         if (!leftValue->hasSetValue) {
             return;

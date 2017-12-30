@@ -5,13 +5,13 @@ crossFadeElement #element (
     _fromEffect : fadeEffect()
 
     getSize(maxSize : 'size) {
-        copy maxSize
+        maxSize
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect) {
-        _rect = copy rect_
+        _rect = rect_
 
         _fromEffect.setRect(_rect, parent.setRectInner)
         toElement.setRect(_rect)

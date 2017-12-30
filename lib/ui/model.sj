@@ -28,17 +28,17 @@ model #model (
     _projectedCenter := vec3()
 
     update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
-        _projection = copy projection
-        _view = copy view
-        _world = copy world
+        _projection = projection
+        _view = view
+        _world = world
         t2 : _view * _world * model * vec4(center.x, center.y, center.z, 1.0f)
-        _projectedCenter = copy vec3(t2.x / t2.w, t2.y / t2.w, t2.z / t2.w)
-        _light = copy light
+        _projectedCenter = vec3(t2.x / t2.w, t2.y / t2.w, t2.z / t2.w)
+        _light = light
         void
     }
 
     getZ() { _projectedCenter.z }
-    getCenter() { copy center }
+    getCenter() { center }
     getWorld() { _world * model }
 
     renderOrQueue(zqueue : 'list!heap #model) {

@@ -26,13 +26,13 @@ scene3dElement #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
-            projection = copy mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
-            view = copy mat4_lookAtLH(camera, lookAt, up)
+            _rect = rect_
+            projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
+            view = mat4_lookAtLH(camera, lookAt, up)
         }
         void
     }

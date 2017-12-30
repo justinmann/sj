@@ -17,12 +17,12 @@ nauScene3dElement #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
-            projection = copy mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
+            _rect = rect_
+            projection = mat4_perspective(fieldOfView, _rect.h as f32 / _rect.w as f32, zNear, zFar)
         }
         void
     }
@@ -30,8 +30,8 @@ nauScene3dElement #element (
     animateLookAt(v : 'vec3, duration : 'i32) {
         animator.animations.add(
             heap animation!vec3(
-                startValue : copy _lookAt
-                endValue : copy v
+                startValue : _lookAt
+                endValue : v
                 start : animator.current
                 end : animator.current + duration
                 setValue : parent.setLookAt
@@ -59,13 +59,13 @@ nauScene3dElement #element (
     }
 
     setLookAt(v : 'vec3) {
-        _lookAt = copy v
+        _lookAt = v
         void
     }
 
     render(scene : 'scene2d)'void {
         camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
-        view = copy mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+        view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
 
         for i : 0 to children.count {
             child : children[i]
@@ -98,20 +98,20 @@ nauScene3dElement #element (
     fireMouseEvent(mouseEvent : 'mouseEvent) {
         switch mouseEvent.eventType {
             mouseEventType.down {
-                _startDrag = copy mouseEvent.point
-                _lookAtDrag = copy _lookAt
+                _startDrag = mouseEvent.point
+                _lookAtDrag = _lookAt
                 mouse_capture(parent as #element)
             }
 
             mouseEventType.move {
                 if mouse_hasCapture(parent as #element) {
-                    _lookAt = copy vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
+                    _lookAt = vec3_min(lookAtMax, vec3_max(lookAtMin, _lookAtDrag + vec3(
                         (_startDrag.x - mouseEvent.point.x) as f32 / _rect.w as f32 * 2.0f
                         (mouseEvent.point.y - _startDrag.y) as f32 / _rect.h as f32 * 2.0f
                         0.0f
                     )))
                     camera : _lookAt - vec3(0.0f, 0.0f, cameraDistance)
-                    view = copy mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
+                    view = mat4_lookAtLH(camera, _lookAt, vec3(0.0f, 1.0f, 0.0f))
                     void
                 }
             }

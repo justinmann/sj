@@ -66,13 +66,13 @@ test #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
-            projection = copy mat4_perspective(persp * 2.0f, _rect.h as f32 / _rect.w as f32, 0.1f, 100.0f)
-            view = copy mat4_lookAtLH(vec3(0.0f, 0.0f, -7.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))
+            _rect = rect_
+            projection = mat4_perspective(persp * 2.0f, _rect.h as f32 / _rect.w as f32, 0.1f, 100.0f)
+            view = mat4_lookAtLH(vec3(0.0f, 0.0f, -7.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f))
         }
         void
     }
@@ -131,12 +131,12 @@ test #element (
             }
 
             v : vertexBuffer!vertex_location(
-                format : copy vertex_location_format
-                vertices : copy vertices
+                format : vertex_location_format
+                vertices : vertices
             )
 
             for r : 0 to 360 {
-                model = copy (model * mat4_rotate(r as f32 / (100.0f / rotateradius), axis))
+                model = (model * mat4_rotate(r as f32 / (100.0f / rotateradius), axis))
                 glUseProgram(shader)
                 glBlendFunc(glBlendFuncType.GL_ONE, glBlendFuncType.GL_ONE)
                 glUniformMat4(glGetUniformLocation(shader, "viewModel"), view * model)

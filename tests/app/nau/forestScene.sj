@@ -17,7 +17,7 @@ forestBuyElement = heap fillLayout(
                             heap textElement(
                                 idealSize : valid(size(250, 100))
                                 text : "Product description"
-                                color : copy colors.black
+                                color : colors.black
                             ) as #element
                         ]
                     ) as #element
@@ -33,7 +33,7 @@ forestScene = heap nauScene3dElement(
     children: [
         heap model(
             texture : texture_fromPng("assets/forest_backdrop.png")
-            shader : copy phongTextureShader
+            shader : phongTextureShader
             model : mat4_translate(vec3(0.0f, 8.0f, 20.0f)) * mat4_scale(12.0f, 12.0f, 12.0f)
             vertexBuffer : planeVertexBuffer(x0 : -6.3f, y0 : -1.0f, x1 : 6.3f, y1 : 1.0f) 
         ) as #model
@@ -56,7 +56,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person1")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -72,7 +72,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person2")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -88,7 +88,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person3")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -104,7 +104,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person4")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -120,7 +120,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person5")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -136,7 +136,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person6")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -152,7 +152,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person7")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -168,7 +168,7 @@ forestScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("forest_person8")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -185,7 +185,7 @@ forestScene = heap nauScene3dElement(
 
         heap model(
             texture : texture_fromPng("assets/floor.png")
-            shader : copy phongTextureShader
+            shader : phongTextureShader
             model : mat4_translate(vec3(0.0f, -2.3f, 0.0f)) *  mat4_scale(40.0f, 40.0f, 40.0f) * mat4_rotate(90.0f, vec3(1.0f, 0.0f, 0.0f))
             vertexBuffer : planeVertexBuffer() 
         ) as #model
@@ -195,7 +195,7 @@ forestScene = heap nauScene3dElement(
             children : [
                 heap model(
                     texture : texture_fromPng("assets/tree1.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(0.0f, 0.0f, 0.6f))
                     vertexBuffer : planeVertexBuffer(y1 : 6.0f) 
                     hasAlpha : true
@@ -203,7 +203,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree3.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-2.0f, 0.0f, 2.3f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
@@ -211,7 +211,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree4.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-8.0f, 0.0f, 3.4f))
                     vertexBuffer : planeVertexBuffer(y1 : 9.18f) 
                     hasAlpha : true
@@ -219,7 +219,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree3.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(9.0f, 0.0f, 2.3f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
@@ -227,7 +227,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree2.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-6.0f, 0.0f, 5.1f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true
@@ -235,7 +235,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree3.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-7.5f, 0.0f, 6.3f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.34f) 
                     hasAlpha : true
@@ -243,7 +243,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree4.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(0.0f, 0.0f, 7.4f))
                     vertexBuffer : planeVertexBuffer(y1 : 9.18f) 
                     hasAlpha : true
@@ -251,7 +251,7 @@ forestScene = heap nauScene3dElement(
 
                 heap model(
                     texture : texture_fromPng("assets/tree2.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-7.5f, 0.0f, 5.1f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true
@@ -259,7 +259,7 @@ forestScene = heap nauScene3dElement(
                 
                 heap model(
                     texture : texture_fromPng("assets/tree2.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-10.5f, 0.0f, 5.6f))
                     vertexBuffer : planeVertexBuffer(y1 : 7.0f) 
                     hasAlpha : true

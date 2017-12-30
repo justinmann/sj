@@ -164,7 +164,7 @@ hash![key, val] (
             }
         }
         --c--
-        copy newHash
+        newHash
     }
 
     foldl!result(initial : 'result, cb : '(:result,:key,:val)result)'result {

@@ -15,10 +15,10 @@ flowLayout #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect) {
-        _rect = copy rect_
+        _rect = rect_
         innerRect : rect_ - margin
 
         val1 := 0

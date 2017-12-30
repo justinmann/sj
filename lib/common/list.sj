@@ -43,7 +43,7 @@ list!t(
     
     add(item :'t) {
         if array.count >= array.dataSize {
-            array = copy array.grow(10.max(array.dataSize * 2))
+            array = array.grow(10.max(array.dataSize * 2))
             void
         }
 

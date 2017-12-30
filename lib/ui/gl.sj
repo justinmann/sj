@@ -210,7 +210,7 @@ glGenFramebuffer(size : 'size)'framebuffer {
     --c--
     glGenFramebuffers(1, &sjv_id);
     --c--
-    framebuffer(copy size, id)
+    framebuffer(size, id)
 }
 
 glGenTexture(size: 'size)'texture {
@@ -218,7 +218,7 @@ glGenTexture(size: 'size)'texture {
     --c--
     glGenTextures(1, &sjv_id);
     --c--
-    texture(copy size, id)
+    texture(size, id)
 }
 
 glTexParameteri(t : 'glTexture, attribute : 'glTextureAttribute, val : 'glTextureValue) {
@@ -244,7 +244,7 @@ glGenRenderbuffer(size: 'size) {
     --c--
     glGenRenderbuffers(1, &sjv_id); 
     --c--
-    renderbuffer(copy size, id)
+    renderbuffer(size, id)
 }
 
 glRenderbufferStorage(format : 'glRenderbufferFormat, size : 'size) {

@@ -84,11 +84,11 @@ test #element (
         size(maxSize.w, maxSize.h)
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
+            _rect = rect_
             --c--
             #include(<gl/glu.h>)
             glEnable(GL_LIGHTING);

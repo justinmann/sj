@@ -143,7 +143,7 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
         ss << "this" << " = ";
         ss << callee->fullName(true) << "(";
 
-        if (parameters->size() > 0 || callee->hasParent) {
+        if (parameters && (parameters->size() > 0 || callee->hasParent)) {
             ss << "\n";
             dumpf(ss, level + 1);
 

@@ -17,7 +17,7 @@ fieldBuyElement = heap fillLayout(
                             heap textElement(
                                 idealSize : valid(size(250, 100))
                                 text : "Product description"
-                                color : copy colors.black
+                                color : colors.black
                             ) as #element
                         ]
                     ) as #element
@@ -33,7 +33,7 @@ fieldScene = heap nauScene3dElement(
     children: [
         heap model(
             texture : texture_fromPng("assets/clouds.png")
-            shader : copy phongTextureShader
+            shader : phongTextureShader
             model : mat4_translate(vec3(0.0f, 8.0f, 20.0f)) * mat4_scale(12.0f, 12.0f, 12.0f)
             vertexBuffer : planeVertexBuffer(x0 : -6.3f, y0 : -1.0f, x1 : 6.3f, y1 : 1.0f) 
         ) as #model
@@ -57,7 +57,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person1")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -73,7 +73,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person2")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -89,7 +89,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person3")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -105,7 +105,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person4")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -121,7 +121,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person5")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -137,7 +137,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person6")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -153,7 +153,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person7")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -169,7 +169,7 @@ fieldScene = heap nauScene3dElement(
                 heap scene2dModel(
                     id : valid("person8")
                     vertexBuffer : planeVertexBuffer()  
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     hasAlpha : true
                     children : [
                         heap personElement(
@@ -190,7 +190,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass6.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -200,7 +200,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass6.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(8.6f, 0.0f, 6.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -209,7 +209,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass4.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -218,7 +218,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass4.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(8.6f, 0.0f, 4.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -227,7 +227,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass2.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-9.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -236,7 +236,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass2.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(7.6f, 0.0f, 2.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -245,7 +245,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass0.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-10.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -254,7 +254,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass0.2")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(6.6f, 0.0f, 0.2f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -263,7 +263,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass-1.8")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(-8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true
@@ -272,7 +272,7 @@ fieldScene = heap nauScene3dElement(
                 heap model(
                     id : valid("grass-1.8")
                     texture : texture_fromPng("assets/grass.png")
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     model : mat4_translate(vec3(8.6f, 0.0f, -1.8f)) * mat4_scale(2.0f, 2.0f, 2.0f)
                     vertexBuffer : planeVertexBuffer(x0 : -4.3f, y0 : -1.0f, x1 : 4.3f, y1 : 1.0f) 
                     hasAlpha : true

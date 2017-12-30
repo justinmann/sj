@@ -15,12 +15,12 @@ string(
 
     add(item : 'string) {
         if item.count == 0 {
-            string(count : count, data : copy data)         
+            string(count : count, data : data)         
         } else {
             newData : if count + item.count > data.dataSize {
                 data.grow(((count + item.count - 1) / 256 + 1) * 256)
             } else {
-                copy data
+                data
             }
             newCount := count
 
@@ -29,7 +29,7 @@ string(
                 newCount++      
             }
 
-            string(count : newCount, data : copy newData)
+            string(count : newCount, data : newData)
         }
     }
 
@@ -66,13 +66,13 @@ string(
         for i : 0 to count {
             a.initAt(i, data[i].toUpperCase())
         }
-        string(count : count, data : copy a)
+        string(count : count, data : a)
     }
 
     nullTerminate() {
         if !data.isGlobal || !_isNullTerminated {
             if count + 1 > data.dataSize {
-                data = copy data.grow(count + 1)
+                data = data.grow(count + 1)
             }
             data.initAt(count, '\0')
             _isNullTerminated = true

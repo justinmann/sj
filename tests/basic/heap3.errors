@@ -1,2 +1,0 @@
-heap3.sj(5,9): error SJC0002: function 'foo' cannot store return type 'foo' in type 'foo' without a copy
-heap3.sj(5,3): error SJC0002: no return value

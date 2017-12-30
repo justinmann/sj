@@ -4,9 +4,9 @@ scenebuffer(
     texture := texture()
     renderbuffer := renderbuffer()
 ) {
-    framebuffer = copy glGenFramebuffer(size)
-    texture = copy glGenTexture(size)
-    renderbuffer = copy glGenRenderbuffer(size)
+    framebuffer = glGenFramebuffer(size)
+    texture = glGenTexture(size)
+    renderbuffer = glGenRenderbuffer(size)
 
     glPushFramebuffer(framebuffer)
     glBindTexture(glTexture.GL_TEXTURE_2D, texture)

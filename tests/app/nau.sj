@@ -15,6 +15,8 @@ include "nau/mainPanel.sj"
 
 root = menuElement
 
+log.minLevel = logLevel.trace
+
 // mainLoop_showFPS = true
 // windowRender_disableVSync()
 

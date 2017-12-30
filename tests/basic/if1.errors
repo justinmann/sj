@@ -1,2 +1,0 @@
-if1.sj(6,15): error SJC0002: function 'class' cannot store return type 'class' in type 'class' without a copy
-if1.sj(6,11): error SJC0002: no return value

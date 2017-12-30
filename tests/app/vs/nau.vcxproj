@@ -109,7 +109,7 @@
       <Message>SJC</Message>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\nau.sj --vs-errors --no-lines --c-file c:\src\sj\tests\app\app.c</Command>
+      <Command>C:\src\sj\sjc.exe c:\src\sj\tests\app\perf3.sj --vs-errors --no-lines --c-file c:\src\sj\tests\app\app.c</Command>
       <Message>SJC build step</Message>
       <Outputs>c:\src\sj\tests\app\main.c</Outputs>
     </CustomBuildStep>

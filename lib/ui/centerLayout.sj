@@ -10,15 +10,15 @@ centerLayout #element (
         innerSize : maxSize - margin
         for i : 0 to children.count {
             child : children[i]         
-            size = copy size.max(child.getSize(innerSize))
+            size = size.max(child.getSize(innerSize))
         }
         size + margin
     }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect) {
-        _rect = copy rect_
+        _rect = rect_
         innerRect : _rect - margin
         for i : 0 to children.count {
             child : children[i]

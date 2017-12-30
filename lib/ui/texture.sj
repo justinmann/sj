@@ -18,7 +18,7 @@ texture(
 }
 
 texture_fromElement(element : '#element, size : 'size) {
-    scenebuffer : scenebuffer(copy size)
+    scenebuffer : scenebuffer(size)
 
     element.setRect(rect(0, 0, size.w, size.h))
 
@@ -30,7 +30,7 @@ texture_fromElement(element : '#element, size : 'size) {
     scene.end()
     glPopFramebuffer(scenebuffer.framebuffer)
 
-    copy scenebuffer.texture
+    scenebuffer.texture
 }
 
 texture_fromPng(fileName : 'string) {

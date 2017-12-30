@@ -343,7 +343,6 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
     }
     
     if (returnType != compiler->typeVoid) {
-        TrValue(storeValue->scope, storeValue->type, storeValue->getName(trBlock), storeValue->isReturnValue).addInitToStatements(compiler, trBlock);
         line << ", ";
         if (storeValue->isReturnValue) {
             line << "_return";

@@ -59,7 +59,7 @@ vertexBuffer!vertex(
         vFlattenedOrigin2 : vec3(vProjectedOrigin2.x / vProjectedOrigin2.w, vProjectedOrigin2.y / vProjectedOrigin2.w, vProjectedOrigin2.z / vProjectedOrigin2.w)
         vFlattenedDir : vFlattenedOrigin2 - vFlattenedOrigin1
 
-        vPickRayOrig : copy vFlattenedOrigin1
+        vPickRayOrig : vFlattenedOrigin1
         vPickRayDir : vFlattenedDir.normalize()
 
         cTriangles : if indices.count > 0 { indices.count / 3 } else { vertices.count / 3 }
@@ -72,7 +72,7 @@ vertexBuffer!vertex(
             result : intersectTriangle(vPickRayOrig, vPickRayDir, vertex0.location, vertex1.location, vertex2.location)
             ifValid result {
                 if isEmpty(intersection) || result.z < intersection?.z?:0.0f {
-                    intersection = valid(copy result)                    
+                    intersection = valid(result)                    
                     
                     // If all you want is the vertices hit, then you are done.  In this sample, we
                     // want to show how to infer texture coordinates as well, using the BaryCentric
@@ -81,14 +81,14 @@ vertexBuffer!vertex(
                     dtu2 : vertex2.texture.x - vertex0.texture.x;
                     dtv1 : vertex1.texture.y - vertex0.texture.y;
                     dtv2 : vertex2.texture.y - vertex0.texture.y;
-                    texture = valid(copy vec2(
+                    texture = valid(vec2(
                         x: vertex0.texture.x + result.x * dtu1 + result.y * dtu2
                         y: vertex0.texture.y + result.x * dtv1 + result.y * dtv2))
                 }
             }
         }
 
-        copy texture
+        texture
     }
 
     render(glDrawMode : 'glDrawMode)'void {

@@ -20,17 +20,17 @@ scene2dModel #model (
     _renderbuffer := renderbuffer()
 
     update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
-        _sceneRect = copy sceneRect
-        _projection = copy projection
-        _view = copy view
-        _world = copy world
-        _light = copy light
-        _projectedCenter = copy (_projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f))
+        _sceneRect = sceneRect
+        _projection = projection
+        _view = view
+        _world = world
+        _light = light
+        _projectedCenter = (_projection * _view * _world * model * vec4(center.x, center.y, center.z, 1.0f))
         void
     }
 
     getZ() { _projectedCenter.z }
-    getCenter() { copy center }
+    getCenter() { center }
     getWorld() { _world * model }
 
     renderOrQueue(alphaModels : 'list!heap #model) {
@@ -71,19 +71,21 @@ scene2dModel #model (
     fireMouseEvent(mouseEvent : 'mouseEvent)'void {
         texture : vertexBuffer.translateScreenToTexture(mouseEvent.point, _sceneRect, _projection, _view, _world * model)
         ifValid texture {
+            log.trace(parent.type, ^{ mouseEvent.asString() + " -> " + texture.asString() })
             scenePoint : point(
                 (texture.x * textureSize.w as f32) as i32
                 textureSize.h - 1 - (texture.y * textureSize.h as f32) as i32)
 
             newMouseEvent : mouseEvent(
                 eventType : mouseEvent.eventType
-                point : copy scenePoint
+                point : scenePoint
                 isCaptured : mouseEvent.isCaptured
                 isLeftDown : mouseEvent.isLeftDown
             )
 
             newMouseEvent.fireChildren(children)
-            void // TODO: should not be required
+        } elseEmpty {
+            log.trace(parent.type, ^{ mouseEvent.asString() + " -> does not map" })
         }
     }
 ) { 
@@ -91,9 +93,9 @@ scene2dModel #model (
         modelsById[id] = weak (this as #model)
     }
 
-    _framebuffer = copy glGenFramebuffer(textureSize)
-    _texture = copy glGenTexture(textureSize)
-    _renderbuffer = copy glGenRenderbuffer(textureSize)
+    _framebuffer = glGenFramebuffer(textureSize)
+    _texture = glGenTexture(textureSize)
+    _renderbuffer = glGenRenderbuffer(textureSize)
 
     glPushFramebuffer(_framebuffer)
     glBindTexture(glTexture.GL_TEXTURE_2D, _texture)

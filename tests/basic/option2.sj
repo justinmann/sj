@@ -6,5 +6,5 @@ func(c : 'class?) {
 
 c : valid(class())
 d : c?.x?:0
-e : copy c?:class(2)
+e : c?:class(2)
 func(c)

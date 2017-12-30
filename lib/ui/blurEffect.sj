@@ -10,11 +10,11 @@ blurEffect #effect (
     _scenebuffer2 := empty'scenebuffer
     _innerScene : scene2d()
 
-    getRect() { copy _rect }
+    getRect() { _rect }
 
     setRect(rect_ : 'rect, cb : '(:rect)void) {
         if _rect != rect_ {
-            _rect = copy rect_
+            _rect = rect_
 
             ifValid t1 : _scenebuffer1 {
                 if t1.size != size(_rect.w, _rect.h) {
@@ -46,25 +46,25 @@ blurEffect #effect (
             cb(scene)
         } else {
             if isEmpty(_vertexBuffer1) {
-                _vertexBuffer1 = valid(copy boxVertexBuffer(
+                _vertexBuffer1 = valid(boxVertexBuffer(
                     rect : rect(0, 0, _rect.w, _rect.h)
                 ))
                 void
             }
 
             if isEmpty(_vertexBuffer2) {
-                _vertexBuffer2 = valid(copy boxVertexBuffer(
-                    rect : copy _rect
+                _vertexBuffer2 = valid(boxVertexBuffer(
+                    rect : _rect
                 ))
                 void
             }
 
             if isEmpty(_scenebuffer1) {
-                _scenebuffer1 = valid(copy scenebuffer(size(_rect.w, _rect.h)))
+                _scenebuffer1 = valid(scenebuffer(size(_rect.w, _rect.h)))
             }
 
             if isEmpty(_scenebuffer2) {
-                _scenebuffer2 = valid(copy scenebuffer(size(_rect.w, _rect.h)))
+                _scenebuffer2 = valid(scenebuffer(size(_rect.w, _rect.h)))
             }
 
             ifValid f1 : _scenebuffer1, f2 : _scenebuffer2, v1 : _vertexBuffer1, v2 : _vertexBuffer2 {

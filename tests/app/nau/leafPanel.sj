@@ -13,7 +13,7 @@ leafPanel #model (
 
     getZ() { 0.0f }
     getCenter() { vec3() }
-    getWorld() { copy _world }
+    getWorld() { _world }
 
     renderOrQueue(zqueue : 'list!heap #model)'void {
         for i : 0 to children.count {
@@ -44,8 +44,8 @@ leafPanel #model (
 
         heap model(
             id : valid("leaf" + z.asString())
-            texture : copy texture
-            shader : copy phongTextureShader
+            texture : texture
+            shader : phongTextureShader
             model : mat4_translate(vec3(x, y, z))
             vertexBuffer : planeVertexBuffer() 
             hasAlpha : true
@@ -53,7 +53,7 @@ leafPanel #model (
     }
 ) {
     _angle = textures.count as f32 * 0.8f / 2.0f
-    children = copy textures.map!heap #model(this.textureToModel)
+    children = textures.map!heap #model(this.textureToModel)
     this
 }
 

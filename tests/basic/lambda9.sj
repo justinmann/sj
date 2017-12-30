@@ -8,7 +8,7 @@ do() {
 	c : class()
 	a : ^() { c.x++ }
 	f : a()
-	b : copy a
+	b : a
 	debug.writeLine(f.asString())
 }
 

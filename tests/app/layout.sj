@@ -9,10 +9,10 @@ testElement(text : 'string) {
             ) as #element
             heap textElement(
                 margin : margin(4, 4, 4, 4)
-                text : copy text
+                text : text
                 halign : textHorizontal.center
                 valign : textVertical.center
-                color : copy colors.white
+                color : colors.white
             ) as #element
         ]
     ) as #element   

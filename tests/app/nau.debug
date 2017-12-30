@@ -570,6 +570,29 @@ hash![stack string, weak #model]()'stack hash![string, #model?] {
   this
 }
 
+hash![type, bool]()'stack hash![type, bool] {
+  --cdefine--
+  #ifndef type_bool_hash_typedef
+  #define type_bool_hash_typedef
+  KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef type_bool_hash_function
+  #define type_bool_hash_function
+  #if false
+  KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(type_bool_hash_type);
+  --c--
+  this
+}
+
 list!stack rect(array'stack array!rect=)'stack list!rect {
   this
 }
@@ -580,7 +603,7 @@ list!u32(array'stack array!u32=)'stack list!u32 {
 
 list_add(item'heap #animation:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!#animation = copy array_grow(
+    parent.array'stack array!#animation = array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -595,7 +618,7 @@ list_add(item'heap #animation:)'void {
 
 list_add(item'stack rect:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!rect = copy array_grow(
+    parent.array'stack array!rect = array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -610,7 +633,7 @@ list_add(item'stack rect:)'void {
 
 list_add(item'u32:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!u32 = copy array_grow(
+    parent.array'stack array!u32 = array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -673,7 +696,7 @@ list_removeat(index'i32:)'void {
   --c--
 }
 
-log(minlevel'loglevel=)'stack log {
+log(minlevel'loglevel=, traceincludes'stack hash![type, bool]?=, debugincludes'stack hash![type, bool]?=, infoincludes'stack hash![type, bool]?=, warnincludes'stack hash![type, bool]?=, errorincludes'stack hash![type, bool]?=, fatalincludes'stack hash![type, bool]?=)'stack log {
   this
 }
 
@@ -811,8 +834,8 @@ scene2d_setsize(size'stack size:)'void {
     parent: this,
     size'stack size : size
   ) {
-    parent._size'stack size = copy size
-    parent.projection'stack mat4 = copy mat4_orthographic(
+    parent._size'stack size = size
+    parent.projection'stack mat4 = mat4_orthographic(
       left'f32 : left,
       right'f32 : right,
       bottom'f32 : bottom,
@@ -820,18 +843,18 @@ scene2d_setsize(size'stack size:)'void {
       znear'f32 : znear,
       zfar'f32 : zfar
     )
-    parent.model'stack mat4 = copy mat4_scale(
+    parent.model'stack mat4 = mat4_scale(
       x'f32 : x,
       y'f32 : y,
       z'f32 : z
     )
-    parent.view'stack mat4 = copy mat4_identity()
+    parent.view'stack mat4 = mat4_identity()
   }
   void
 }
 
 scene2d_start()'void {
-  parent.windowrect'stack rect = copy rect(this = rect(
+  parent.windowrect'stack rect = rect(this = rect(
     x'i32 : x,
     y'i32 : y,
     w'i32 : w,
@@ -850,13 +873,13 @@ scene2d_start()'void {
 }
 
 scenebuffer(size'stack size:, framebuffer'stack framebuffer=, texture'stack texture=, renderbuffer'stack renderbuffer=)'stack scenebuffer {
-  framebuffer'stack framebuffer = copy glgenframebuffer(
+  framebuffer'stack framebuffer = glgenframebuffer(
     size'stack size : size
   )
-  texture'stack texture = copy glgentexture(
+  texture'stack texture = glgentexture(
     size'stack size : size
   )
-  renderbuffer'stack renderbuffer = copy glgenrenderbuffer(
+  renderbuffer'stack renderbuffer = glgenrenderbuffer(
     size'stack size : size
   )
   glpushframebuffer(
@@ -943,7 +966,7 @@ string(count'i32=, data'stack array!char=, _isnullterminated'bool=)'stack string
 string_nullterminate()'void {
   if !parent.data.isglobal || !parent._isnullterminated {
     if parent.count + 1i > parent.data.datasize {
-      parent.data'stack array!char = copy array_grow(
+      parent.data'stack array!char = array_grow(
         parent: this,
         newsize'i32 : newsize
       )
@@ -1004,7 +1027,7 @@ texture_fromelement(element'local #element:, size'stack size:)'stack texture {
   glpopframebuffer(
     framebuffer'stack framebuffer : framebuffer
   )
-  copy scenebuffer.texture
+  scenebuffer.texture
 }
 
 windowrenderer()'stack windowrenderer {
@@ -1069,8 +1092,16 @@ global()'void {
     error'loglevel : 4
     fatal'loglevel : 5
   }
+  log_includeall'stack hash![type, bool]? : empty'stack hash![type, bool]?
+  log_excludeall'stack hash![type, bool]? : value(hash![type, bool](this = hash![type, bool]()))
   log'stack log : log(this = log(
-    minlevel'loglevel = minlevel
+    minlevel'loglevel = minlevel,
+    traceincludes'stack hash![type, bool]? = traceincludes,
+    debugincludes'stack hash![type, bool]? = debugincludes,
+    infoincludes'stack hash![type, bool]? = infoincludes,
+    warnincludes'stack hash![type, bool]? = warnincludes,
+    errorincludes'stack hash![type, bool]? = errorincludes,
+    fatalincludes'stack hash![type, bool]? = fatalincludes
   ))
   emptystringdata'ptr = 0
   --c--
@@ -3848,7 +3879,7 @@ global()'void {
   node.z = (int)(width_new - width_old);
   vector_push_back(ta->nodes, &node);
   }
-  //copy over data from the old buffer, skipping first row and column because of the margin
+  //over data from the old buffer, skipping first row and column because of the margin
   size_t pixel_size = sizeof(char) * ta->depth;
   size_t old_row_size = width_old * pixel_size;
   texture_atlas_set_region(ta, 1, 1, width_old - 2, height_old - 2, data_old + old_row_size + pixel_size, old_row_size);
@@ -5665,6 +5696,7 @@ global()'void {
     parent: this
   )
   root'heap #element = menuelement
+  log.minlevel'loglevel = trace
   runloop()
   void
 }

@@ -1,7 +1,7 @@
 @heap
 buttonElement #element #clickable(
     text := ""
-    textColor := copy colors.black
+    textColor := colors.black
     font := style.getFont()
     normalImage := valid(image(texture_fromPng("assets/buttonNormal.png"), margin := margin(2, 2, 2, 2)))
     hotImage := valid(image(texture_fromPng("assets/buttonHot.png"), margin := margin(2, 2, 2, 2)))
@@ -11,18 +11,18 @@ buttonElement #element #clickable(
     _rect := rect()
     _textRenderer := empty'textRenderer
     _imageRenderer := empty'imageRenderer
-    _clickGesture := clickGesture() // TODO:
+    _clickGesture := clickGesture()
 
     getSize(maxSize : 'size) {
         textSize : font.getTextSize(text) + margin
         textSize.min(maxSize)   
     }
 
-    getRect() { copy _rect }
+    getRect() { _rect }
     setRect(rect_ : 'rect) {
         if _rect != rect_ {
-            _rect = copy rect_
-            _clickGesture.rect = copy rect_
+            _rect = rect_
+            _clickGesture.rect = rect_
             _textRenderer = empty'textRenderer
             _imageRenderer = empty'imageRenderer
         }
@@ -32,15 +32,15 @@ buttonElement #element #clickable(
     render(scene : 'scene2d) {
         if isEmpty(_imageRenderer) {
             image : switch _clickGesture.state {
-                clickState.entered { copy hotImage }
-                clickState.pressed { copy pressedImage }
-                default            { copy normalImage }
+                clickState.entered { hotImage }
+                clickState.pressed { pressedImage }
+                default            { normalImage }
             }
 
             ifValid image {
-                _imageRenderer = valid(copy imageRenderer(
-                    image : copy image
-                    rect : copy _rect           
+                _imageRenderer = valid(imageRenderer(
+                    image : image
+                    rect : _rect           
                 ))
             }
         }
@@ -50,11 +50,11 @@ buttonElement #element #clickable(
 
             textSize : font.getTextSize(text)
 
-            _textRenderer = valid(copy textRenderer(
-                text: copy text
+            _textRenderer = valid(textRenderer(
+                text: text
                 point: point(innerRect.x + (innerRect.w - textSize.w) / 2, innerRect.y + (innerRect.h - textSize.h) / 2)
-                color: copy textColor
-                font: copy font))
+                color: textColor
+                font: font))
         }
 
         _imageRenderer?.render(scene)
@@ -89,6 +89,6 @@ buttonElement #element #clickable(
         _clickGesture.fireMouseEvent(mouseEvent)
     }
 ) { 
-    _clickGesture = copy clickGesture(this as #element, this as #clickable)
+    _clickGesture = clickGesture(this as #element, this as #clickable)
     this 
 }

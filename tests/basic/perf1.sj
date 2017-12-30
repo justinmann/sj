@@ -9,9 +9,9 @@ for i : 0 to 50000000 {
 	s2 : s1 + " kaka pipi"
 	s3 : s2.toUpperCase()
 	if i % 300 == 0 {
-		str = copy ""
+		str = ""
 	} else {
-		str = copy (str + i.asString(16))
+		str = (str + i.asString(16))
 	}
 }
 

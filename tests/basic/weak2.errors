@@ -1,4 +1,0 @@
-lib/common/array.sj(262,26): error SJC0002: function 'add' cannot store return type 'string' in type 'string' without a copy
-lib/common/array.sj(262,17): error SJC0002: no return value
-lib/common/array.sj(264,22): error SJC0002: function 'add' cannot store return type 'string' in type 'string' without a copy
-lib/common/array.sj(264,13): error SJC0002: no return value

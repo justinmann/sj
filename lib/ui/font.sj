@@ -2,7 +2,7 @@ fontHash : hash![fontKey, weak font]()
 
 font_load(src : 'string, size : 'f32)'heap font {
     k : fontKey(
-        src : copy src 
+        src : src 
         size : size)
     w : fontHash[k]
     h : heap w
@@ -10,7 +10,7 @@ font_load(src : 'string, size : 'f32)'heap font {
         h
     } elseEmpty {
         result : heap font(
-            src : copy src
+            src : src
             size : size)
         fontHash[k] = weak result
         result

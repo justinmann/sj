@@ -6,5 +6,5 @@ a(
 ) { this }
 a: a()
 a.b.c()
-d: copy a.b
+d: a.b
 d.c()

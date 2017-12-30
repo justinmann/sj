@@ -731,12 +731,9 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     
     shared_ptr<TrStoreValue> previousReturnValue;
     if (!storeValue->op.isFirstAssignment) {
-        if (storeValue->type->typeMode == CTM_Stack) {
-            compiler->addError(calleeLoc, CErrorCode::TypeMismatch, "function '%s' cannot store return type '%s' in type '%s' without a copy", name.c_str(), returnType->valueName.c_str(), storeValue->type->valueName.c_str());
-            return;
-        }
-        previousReturnValue = trBlock->createTempStoreVariable(loc, callerScope, storeValue->type->getTempType(), "funcold");
-        previousReturnValue->retainValue(compiler, loc, trBlock, storeValue->getValue());
+        previousReturnValue = storeValue;
+        storeValue = trBlock->createTempStoreVariable(loc, callerScope, storeValue->type, "funcold");
+        storeValue->retainValue(compiler, loc, trBlock, previousReturnValue->getValue());
     }
 
     assert(returnType == storeValue->type);
@@ -901,8 +898,7 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     }
 
     if (previousReturnValue) {
-        previousReturnValue->type = storeValue->type;
-        previousReturnValue->getValue()->addReleaseToStatements(compiler, trBlock);
+        previousReturnValue->retainValue(compiler, loc, trBlock, storeValue->getValue());
     }
 }
 
@@ -1106,20 +1102,20 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
                     auto functionReturnType = cfunc->getReturnType(compiler, interfaceMethod->returnMode);
                     auto interfaceMethodReturnType = interfaceMethod->getReturnType(compiler, CTM_Undefined);
                     if (functionReturnType != interfaceMethodReturnType) {
-                        compiler->addError(loc, CErrorCode::TypeMismatch, "function return type '%s' does not match interface method return type '%s'", functionReturnType->fullName.c_str(), interfaceMethodReturnType->fullName.c_str());
+                        compiler->addError(cfunc->loc, CErrorCode::TypeMismatch, "function '%s' return type '%s' does not match interface method return type '%s'", cfunc->name.c_str(), functionReturnType->fullName.c_str(), interfaceMethodReturnType->fullName.c_str());
                     }
 
                     auto interfaceMethodArgVars = interfaceMethod->argVars;
                     cfunc->initArgs(compiler);
                     if (cfunc->getArgCount(interfaceMethod->returnMode) != interfaceMethodArgVars.size()) {
-                        compiler->addError(loc, CErrorCode::InterfaceMethodTypeMismatch, "function has %d arguments does not match interface method arguments %d", cfunc->getArgCount(interfaceMethod->returnMode), interfaceMethodArgVars.size());
+                        compiler->addError(cfunc->loc, CErrorCode::InterfaceMethodTypeMismatch, "function '%s' has %d arguments does not match interface method arguments %d", cfunc->name.c_str(), cfunc->getArgCount(interfaceMethod->returnMode), interfaceMethodArgVars.size());
                     }
                     else {
                         for (auto i = (size_t)0; i < interfaceMethodArgVars.size(); i++) {
                             auto aType = cfunc->getArgVar((int)i, interfaceMethod->returnMode)->getType(compiler);
                             auto bType = interfaceMethodArgVars[i]->getType(compiler);
                             if (aType != bType) {
-                                compiler->addError(loc, CErrorCode::TypeMismatch, "function parameter %d type '%s' does not match interface method parameter type '%s'", i + 1, aType ? aType->fullName.c_str() : "Unknown", bType ? bType->fullName.c_str() : "Unknown");
+                                compiler->addError(cfunc->loc, CErrorCode::TypeMismatch, "function '%s' parameter %d type '%s' does not match interface method parameter type '%s'", cfunc->name.c_str(), i + 1, aType ? aType->fullName.c_str() : "Unknown", bType ? bType->fullName.c_str() : "Unknown");
                             }
                         }
                     }
@@ -1185,8 +1181,20 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
             auto calleeScope = getScope(compiler, returnMode);
             auto type = _data[returnMode].blockVar->getType(compiler);
 
-            if (type && type->typeMode == CTM_ValuePtr) {
-                type = type->getStackType();
+            if (type) {
+                if (type->typeMode == CTM_ValuePtr) {
+                    type = type->getStackType();
+                }
+
+                if (!type->parent.expired() && type->typeMode != CTM_Weak) {
+                    if (returnMode == CTM_Heap || type->category != CTC_Value || hasHeapThis) {
+                        type = type->getHeapType();
+                    }
+                    else {
+                        type = type->getStackType();
+                        assert(type != nullptr);
+                    }
+                }
             }
 
             _data[returnMode].returnType = type;
@@ -1774,7 +1782,9 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
     auto it = _cfunctions[funcParentPtr].find(templateTypes);
     if (it != _cfunctions[funcParentPtr].end()) {
         func = it->second;
-        assert(func->parent.lock() == funcParent.lock());
+        if (func) {
+            assert(func && func->parent.lock() == funcParent.lock());
+        }
     } else {
         assert(funcParent.expired() || funcParent.lock()->definition.lock() == parent.lock());
         

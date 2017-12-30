@@ -4,13 +4,13 @@ personElement #element #clickable (
     _rect := rect()
     _clickGesture := clickGesture() // TODO:
 
-    getSize(maxSize : 'size) { copy maxSize }
+    getSize(maxSize : 'size) { maxSize }
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
     setRect(r : 'rect) {
         if _rect != r {
-            _rect = copy r
-            _clickGesture.rect = copy r
+            _rect = r
+            _clickGesture.rect = r
         }
         void
     }
@@ -23,6 +23,7 @@ personElement #element #clickable (
     onClickGestureLeave(element : '#element) { void }
     onClickGesturePress(element : '#element) { void }
     onClickGestureClick(element : '#element) { 
+        log.trace(parent.type, ^{ "clicked" })
         ifValid id {
             fieldController.selectPerson(id)
             forestController.selectPerson(id)
@@ -31,9 +32,10 @@ personElement #element #clickable (
     }
 
     fireMouseEvent(mouseEvent : 'mouseEvent) {
+        log.trace(parent.type, ^{ mouseEvent.asString() })
         _clickGesture.fireMouseEvent(mouseEvent)
     }
 ) { 
-    _clickGesture = copy clickGesture(this as #element, this as #clickable)
+    _clickGesture = clickGesture(this as #element, this as #clickable)
     this 
 }

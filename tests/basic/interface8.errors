@@ -1,1 +1,1 @@
-interface8.sj(5,1): error SJC0002: function parameter 1 type 'f64' does not match interface method parameter type 'i32'
+interface8.sj(6,5): error SJC0002: function 'test' parameter 1 type 'f64' does not match interface method parameter type 'i32'

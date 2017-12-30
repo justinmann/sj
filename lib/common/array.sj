@@ -28,7 +28,7 @@ array!t (
         }
         _parent->count = _parent->datasize;  
         --c--  
-        copy parent
+        parent
     }
 
     initAt(index : 'i32, item : 't)'void {
@@ -120,7 +120,7 @@ array!t (
         for i : 0 to count {
             r = cb(r, getAt(i))
         }           
-        copy r
+        r
     }
 
     foldr!result(initial : 'result, cb : '(:result, :t)result)'result {
@@ -128,7 +128,7 @@ array!t (
         for i : 0 toReverse count {
             r = cb(r, getAt(i))
         }           
-        copy r
+        r
     }
 
     grow(newSize :' i32)'array!t {
@@ -263,7 +263,7 @@ array!t (
             }
             result = result + getAt(i)?.asString()?:""
         }
-        copy result
+        result
     }
 
     isEqual(test :' array!t)'bool {

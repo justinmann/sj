@@ -4,7 +4,7 @@ panel3d #model(
     _world := mat4_identity()
 
     update(sceneRect : 'rect, projection : 'mat4, view : 'mat4, world : 'mat4, light : 'light)'void {
-        _world = copy world
+        _world = world
         childWorld : world * model 
         for i : 0 to children.count {
             c : children[i]

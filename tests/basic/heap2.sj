@@ -4,7 +4,7 @@ data(
 
 class(
     data : data()
-    get() { copy data }
+    get() { data }
 ) { this }
 
 c : class()

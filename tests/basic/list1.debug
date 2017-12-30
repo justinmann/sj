@@ -15,7 +15,7 @@ array!heap class(datasize'i32:, data'ptr:, isglobal'bool:, count'i32:)'stack arr
   this
 }
 
-array_getat(index'i32:)'heap class {
+array_getat(index'i32:)'stack class {
   --c--
   if (index >= _parent->count || index < 0) {
   halt("getAt: out of bounds\n");
@@ -72,13 +72,36 @@ array_initat(index'i32:, item'heap class:)'void {
   --c--
 }
 
+hash![type, bool]()'stack hash![type, bool] {
+  --cdefine--
+  #ifndef type_bool_hash_typedef
+  #define type_bool_hash_typedef
+  KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef type_bool_hash_function
+  #define type_bool_hash_function
+  #if false
+  KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(type_bool_hash_type);
+  --c--
+  this
+}
+
 list!heap class(array'stack array!class=)'stack list!class {
   this
 }
 
 list_add(item'heap class:)'void {
   if parent.array.count >= parent.array.datasize {
-    parent.array'stack array!class = copy array_grow(
+    parent.array'stack array!class = array_grow(
       parent: this,
       newsize'i32 : newsize
     )
@@ -91,14 +114,14 @@ list_add(item'heap class:)'void {
   )
 }
 
-list_getat(index'i32:)'heap class {
+list_getat(index'i32:)'stack class {
   array_getat(
     parent: this,
     index'i32 : index
   )
 }
 
-log(minlevel'loglevel=)'stack log {
+log(minlevel'loglevel=, traceincludes'stack hash![type, bool]?=, debugincludes'stack hash![type, bool]?=, infoincludes'stack hash![type, bool]?=, warnincludes'stack hash![type, bool]?=, errorincludes'stack hash![type, bool]?=, fatalincludes'stack hash![type, bool]?=)'stack log {
   this
 }
 
@@ -119,8 +142,16 @@ global()'void {
     error'loglevel : 4
     fatal'loglevel : 5
   }
+  log_includeall'stack hash![type, bool]? : empty'stack hash![type, bool]?
+  log_excludeall'stack hash![type, bool]? : value(hash![type, bool](this = hash![type, bool]()))
   log'stack log : log(this = log(
-    minlevel'loglevel = minlevel
+    minlevel'loglevel = minlevel,
+    traceincludes'stack hash![type, bool]? = traceincludes,
+    debugincludes'stack hash![type, bool]? = debugincludes,
+    infoincludes'stack hash![type, bool]? = infoincludes,
+    warnincludes'stack hash![type, bool]? = warnincludes,
+    errorincludes'stack hash![type, bool]? = errorincludes,
+    fatalincludes'stack hash![type, bool]? = fatalincludes
   ))
   emptystringdata'ptr = 0
   --c--
@@ -149,7 +180,7 @@ global()'void {
       item'heap class : item
     )
   }
-  c'heap class : list_getat(
+  c'stack class : list_getat(
     parent: this,
     index'i32 : index
   )

@@ -2,7 +2,30 @@ foo()'heap foo {
   this
 }
 
-log(minlevel'loglevel=)'stack log {
+hash![type, bool]()'stack hash![type, bool] {
+  --cdefine--
+  #ifndef type_bool_hash_typedef
+  #define type_bool_hash_typedef
+  KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
+  #endif
+  --cdefine--
+  --cfunction--
+  #ifndef type_bool_hash_function
+  #define type_bool_hash_function
+  #if false
+  KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #else
+  KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, INVALID, INVALID)
+  #endif
+  #endif
+  --cfunction--
+  --c--
+  _this->_hash = kh_init(type_bool_hash_type);
+  --c--
+  this
+}
+
+log(minlevel'loglevel=, traceincludes'stack hash![type, bool]?=, debugincludes'stack hash![type, bool]?=, infoincludes'stack hash![type, bool]?=, warnincludes'stack hash![type, bool]?=, errorincludes'stack hash![type, bool]?=, fatalincludes'stack hash![type, bool]?=)'stack log {
   this
 }
 
@@ -23,8 +46,16 @@ global()'void {
     error'loglevel : 4
     fatal'loglevel : 5
   }
+  log_includeall'stack hash![type, bool]? : empty'stack hash![type, bool]?
+  log_excludeall'stack hash![type, bool]? : value(hash![type, bool](this = hash![type, bool]()))
   log'stack log : log(this = log(
-    minlevel'loglevel = minlevel
+    minlevel'loglevel = minlevel,
+    traceincludes'stack hash![type, bool]? = traceincludes,
+    debugincludes'stack hash![type, bool]? = debugincludes,
+    infoincludes'stack hash![type, bool]? = infoincludes,
+    warnincludes'stack hash![type, bool]? = warnincludes,
+    errorincludes'stack hash![type, bool]? = errorincludes,
+    fatalincludes'stack hash![type, bool]? = fatalincludes
   ))
   emptystringdata'ptr = 0
   --c--
@@ -48,11 +79,11 @@ global()'void {
   stack_y'stack foo : foo(this = foo())
   local_y'local foo : foo(this = foo())
   heap_x1'heap foo : heap_y
-  heap_x2'heap foo : copy stack_y
-  heap_x3'heap foo : copy local_y
-  stack_x1'stack foo : copy stack_y
-  stack_x2'stack foo : copy heap_y
-  stack_x3'stack foo : copy local_y
+  heap_x2'heap foo : stack_y
+  heap_x3'heap foo : local_y
+  stack_x1'stack foo : stack_y
+  stack_x2'stack foo : heap_y
+  stack_x3'stack foo : local_y
   local_x1'local foo : heap_y
   local_x2'local foo : stack_y
   local_x3'local foo : local_y

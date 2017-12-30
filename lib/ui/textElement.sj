@@ -20,7 +20,7 @@ textElement #element #textElement (
     id : empty'string
     font := style.getFont()
     text := string()
-    color := copy colors.white
+    color := colors.white
     margin := margin()
     halign := textHorizontal.left
     valign := textVertical.top
@@ -37,18 +37,18 @@ textElement #element #textElement (
         }
     }
 
-    getRect() { copy _rect }
+    getRect() { _rect }
     setRect(rect_ : 'rect)'void {
         if _rect != rect_ {
-            _rect = copy rect_
+            _rect = rect_
             _textRenderer = empty'textRenderer
         }
         void
     }
 
-    getText() { copy text }
+    getText() { text }
     setText(text_ : 'string) {
-        text = copy text_
+        text = text_
         _textRenderer = empty'textRenderer  
         void
     }
@@ -71,11 +71,11 @@ textElement #element #textElement (
                 default                 { 0 }
             }
 
-            _textRenderer = valid(copy textRenderer(
-                text: copy text
+            _textRenderer = valid(textRenderer(
+                text: text
                 point: point(x, y)
-                color: copy color
-                font: copy font))
+                color: color
+                font: font))
         }
 
         _textRenderer?.render(scene)

@@ -1,5 +1,5 @@
 boxElement #element (
-    color := copy colors.white
+    color := colors.white
     idealSize := size()
     rect := rect()
     boxRenderer := empty'boxRenderer
@@ -8,11 +8,11 @@ boxElement #element (
         idealSize.min(maxSize)
     }
 
-    getRect()'rect { copy rect }
+    getRect()'rect { rect }
 
     setRect(rect_ : 'rect)'void {
         if rect != rect_ {
-            rect = copy rect_
+            rect = rect_
             boxRenderer = empty'boxRenderer
         }
         void
@@ -20,9 +20,9 @@ boxElement #element (
 
     render(scene : 'scene2d)'void {
         if isEmpty(boxRenderer) {
-            boxRenderer = valid(copy boxRenderer(
-                rect: copy rect
-                color: copy color))
+            boxRenderer = valid(boxRenderer(
+                rect: rect
+                color: color))
         }
 
         boxRenderer?.render(scene)

@@ -7,11 +7,11 @@ saturateEffect #effect (
     _scenebuffer := empty'scenebuffer
     _innerScene : scene2d()
 
-    getRect()'rect { copy _rect }
+    getRect()'rect { _rect }
 
     setRect(rect_ : 'rect, cb : '(:rect)void) {
         if _rect != rect_ {
-            _rect = copy rect_
+            _rect = rect_
 
             ifValid t1 : _scenebuffer {
                 if t1.size != size(_rect.w, _rect.h) {
@@ -29,14 +29,14 @@ saturateEffect #effect (
 
     render(scene : 'scene2d, cb : '(:scene2d)void) {
         if isEmpty(_vertexBuffer) {
-            _vertexBuffer = valid(copy boxVertexBuffer(
-                rect : copy _rect
+            _vertexBuffer = valid(boxVertexBuffer(
+                rect : _rect
             ))
             void
         }
 
         if isEmpty(_scenebuffer) {
-            _scenebuffer = valid(copy scenebuffer(size(_rect.w, _rect.h)))
+            _scenebuffer = valid(scenebuffer(size(_rect.w, _rect.h)))
         }
 
         ifValid f1 : _scenebuffer, v : _vertexBuffer {

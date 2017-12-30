@@ -1,3 +1,1 @@
-function28.sj(12,1): error SJC0002: no return value
-function28.sj(12,5): error SJC0002: parameter 'texture' has no value
-function28.sj(14,15): error SJC0004: right type 'stack vec2' does not match left type 'local vec3'
+function28.sj(12,5): error SJC0002: right type 'stack vec3' does not match left type 'stack vec2'

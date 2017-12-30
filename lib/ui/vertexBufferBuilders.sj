@@ -29,7 +29,7 @@ cubeVertexBuffer(
     t1 : 1.0f
 ) { 
     vertexBuffer!vertex_location_texture_normal(
-        format : copy vertex_location_texture_normal_format
+        format : vertex_location_texture_normal_format
         indices : [
              0,  1,  2 // front
              0,  2,  3
@@ -85,7 +85,7 @@ planeVertexBuffer(
     t1 : 1.0f
 ) { 
     vertexBuffer!vertex_location_texture_normal(
-        format : copy vertex_location_texture_normal_format
+        format : vertex_location_texture_normal_format
         indices : [
             0, 1, 2
             0, 2, 3
@@ -148,9 +148,9 @@ sphereVertexBuffer(
     }
 
     vertexBuffer!vertex_location_texture_normal(
-        format : copy vertex_location_texture_normal_format
-        indices : copy indices
-        vertices : copy vertices
+        format : vertex_location_texture_normal_format
+        indices : indices
+        vertices : vertices
     )
 }
 
@@ -217,9 +217,9 @@ vertexBuffer_loadObj(filename : 'string) {
     --c--
             debug.writeLine(location.asString() + " " + normal.asString() + " " + texture.asString())
             vertices.add(vertex_location_texture_normal(
-                location : copy location
-                texture : copy texture
-                normal : copy normal
+                location : location
+                texture : texture
+                normal : normal
             ))
     --c--
         }
@@ -240,9 +240,9 @@ vertexBuffer_loadObj(filename : 'string) {
             i2 : indices[i * 3 + 1]
             i3 : indices[i * 3 + 2]
 
-            v1 : copy vertices[i1].location
-            v2 : copy vertices[i2].location
-            v3 : copy vertices[i3].location
+            v1 : vertices[i1].location
+            v2 : vertices[i2].location
+            v3 : vertices[i3].location
 
             side1 : v2 - v1
             side2 : v3 - v1
@@ -257,9 +257,9 @@ vertexBuffer_loadObj(filename : 'string) {
         for i : 0 to vertices.count {
             newNormal : normals[i].normalize()
             vertices[i] = vertex_location_texture_normal(
-                location : copy vertices[i].location
-                texture : copy vertices[i].texture
-                normal : copy newNormal
+                location : vertices[i].location
+                texture : vertices[i].texture
+                normal : newNormal
             )
         }
     }
@@ -277,16 +277,16 @@ vertexBuffer_loadObj(filename : 'string) {
             s : (f32_atan2(vertices[i].location.x, vertices[i].location.z) + f32_pi) / (2.0f * f32_pi)
             t : (vertices[i].location.y - yMin) / (yMax - yMin)
             vertices[i] = vertex_location_texture_normal(
-                location : copy vertices[i].location
+                location : vertices[i].location
                 texture : vec2(s, t)
-                normal : copy vertices[i].normal
+                normal : vertices[i].normal
             )
         }
     }
 
     vertexBuffer!vertex_location_texture_normal(
-        format : copy vertex_location_texture_normal_format
-        indices : copy indices.array
-        vertices : copy vertices.array
+        format : vertex_location_texture_normal_format
+        indices : indices.array
+        vertices : vertices.array
     )
 }

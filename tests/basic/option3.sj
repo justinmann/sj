@@ -9,9 +9,9 @@ func() {
 
 test()'class? {
     if true {
-        copy empty'class
+        empty'class
     } else {
-        copy valid(class(2))
+        valid(class(2))
     }
 }
 

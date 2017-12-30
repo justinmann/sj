@@ -6,20 +6,20 @@ root : heap fillLayout(
             children: [
                 heap scene2dModel(
                     vertexBuffer : sphereVertexBuffer()
-                    shader : copy phongTextureShader
+                    shader : phongTextureShader
                     children : [
                         heap imageElement(
                             image : image(texture_fromPng("assets/test.png"), margin: margin(150, 50, 150, 150))
                         ) as #element
                         heap crossHairsElement(
-                            color : copy colors.blue
+                            color : colors.blue
                         ) as #element
                     ]
                 ) as #model
             ]
         ) as #element
         heap crossHairsElement(
-            color : copy colors.red
+            color : colors.red
         ) as #element
     ]
 ) as #element

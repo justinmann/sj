@@ -1,9 +1,9 @@
 class() { this }
 
 func()'class {
-    a := copy class()
-    a = copy class()
-    copy a
+    a := class()
+    a = class()
+    a
 }
 
 b : func()

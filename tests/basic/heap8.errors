@@ -1,4 +1,0 @@
-heap8.sj(7,1): error SJC0002: right type 'stack foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
-heap8.sj(8,1): error SJC0002: right type 'local foo' cannot change mode to left type 'heap foo' without using a copy operator like 'a = copy b'
-heap8.sj(9,1): error SJC0002: right type 'heap foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'
-heap8.sj(10,1): error SJC0002: right type 'local foo' cannot change mode to left type 'stack foo' without using a copy operator like 'a = copy b'
