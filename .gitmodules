@@ -1,0 +1,6 @@
+[submodule "lib/ui"]
+	path = lib/ui
+	url = https://github.com/justinmann/sj-lib-ui.git
+[submodule "lib/common"]
+	path = lib/common
+	url = https://github.com/justinmann/sj-lib-common.git
