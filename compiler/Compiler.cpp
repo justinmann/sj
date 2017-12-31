@@ -119,12 +119,21 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
     return str;
 }
 
-void CError::writeToStream(ostream& stream) {
-    stream 
-        << fileName
-        << "(" << line << "," << col << "): "
-        << "error SJC" << setfill('0') << setw(4) << code
-        << ": " << msg;
+void CError::writeToStream(Compiler* compiler, ostream& stream) {
+    if (compiler->outputVSErrors) {
+        stream
+            << fileName
+            << "(" << line << "," << col << "): "
+            << "error SJC" << setfill('0') << setw(4) << code
+            << ": " << msg;
+    }
+    else {
+        stream
+            << fileName
+            << ":" << line << ":" << col << ": "
+            << "error: SJC" << setfill('0') << setw(4) << code
+            << " " << msg;
+    }
 }
 
 bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
@@ -249,7 +258,7 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
         {
             for (auto it2 : it.second) {
                 for (auto it3 : it2.second) {
-                    it3.second.writeToStream(errorStream);
+                    it3.second.writeToStream(this, errorStream);
                     errorStream << "\n";
                 }
             }

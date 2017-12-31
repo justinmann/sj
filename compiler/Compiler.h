@@ -33,7 +33,6 @@ public:
 #include "CTypeName.h"
 #include "../transpile/TrOutput.h"
 #include "CVar.h"
-#include "Exception.h"
 
 #define STACK_REF_COUNT         1000000000000
 
@@ -61,6 +60,7 @@ class NBase;
 class NAssignment;
 class CInterfaceDefinition;
 class CFunctionDefinition;
+class Compiler;
 
 enum CErrorCode {
     Internal,
@@ -106,7 +106,7 @@ public:
     unsigned col;
     string msg;
     
-    void writeToStream(ostream& stream);
+    void writeToStream(Compiler* compiler, ostream& stream);
 };
 
 enum CompilerState {

@@ -64,7 +64,6 @@ void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLo
     }
 
     if (structs.size() > 0) {
-        int typeId = 1;
         for (auto t : structOrder) {
             if (t.second >= 0) {
                 stream << "#define " << t.first << "_typeId " << t.second << "\n";

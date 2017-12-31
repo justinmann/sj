@@ -220,7 +220,7 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
             for (auto templateTypeName : *node->templateTypeNames) {
                 if (templateTypeName->templateTypeNames != nullptr) {
                     compiler->addError(loc, CErrorCode::InvalidType, "cannot use ! in template type name");
-                    return nullptr;
+                    return false;
                 }
 
                 if (templateTypes[index]->typeMode == CTM_Local) {
@@ -365,7 +365,6 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
         if (trOutput->structs.find(stackStructName) == trOutput->structs.end()) {
             trOutput->structs[stackStructName].push_back("int _refCount");
 
-            bool hasValues = false;
             auto argTypes = getCTypeList(compiler, returnMode);
             if (!argTypes) {
                 compiler->addError(loc, CErrorCode::InvalidType, "something bad");
@@ -373,7 +372,6 @@ void CFunction::transpileStructDefinition(Compiler* compiler, TrOutput* trOutput
             }
 
             for (auto argType : *argTypes) {
-                hasValues = true;
                 stringstream ss;
                 ss << argType.second->cname;
 
@@ -1107,7 +1105,7 @@ shared_ptr<CThisVar> CFunction::getThisVar(Compiler* compiler, CTypeMode returnM
 
                     auto interfaceMethodArgVars = interfaceMethod->argVars;
                     cfunc->initArgs(compiler);
-                    if (cfunc->getArgCount(interfaceMethod->returnMode) != interfaceMethodArgVars.size()) {
+                    if (cfunc->getArgCount(interfaceMethod->returnMode) != (int)interfaceMethodArgVars.size()) {
                         compiler->addError(cfunc->loc, CErrorCode::InterfaceMethodTypeMismatch, "function '%s' has %d arguments does not match interface method arguments %d", cfunc->name.c_str(), cfunc->getArgCount(interfaceMethod->returnMode), interfaceMethodArgVars.size());
                     }
                     else {
@@ -1796,7 +1794,7 @@ shared_ptr<CFunction> CFunctionDefinition::getFunction(Compiler* compiler, CLoc 
         }
 
         int targetTemplateTypeCount = node->templateTypeNames ? (int)node->templateTypeNames->size() : 0;
-        if (templateTypes.size() != targetTemplateTypeCount) {
+        if (templateTypes.size() != (size_t)targetTemplateTypeCount) {
             compiler->addError(loc, CErrorCode::InvalidType, "template type count does not match");
             return nullptr;
         }

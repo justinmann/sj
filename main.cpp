@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
     ofstream* debugStream = nullptr;
     ofstream debug;
     if (outputDebug) {
-        auto debugFileName = fs::change_extension(path, ".debug");
+        auto debugFileName = fs::change_extension(path, ".debug").string();
         debug.open(debugFileName.c_str());
         debugStream = &debug;
     }
