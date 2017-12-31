@@ -11,11 +11,13 @@ pacman -S mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-gle
 
 cd ~
 mkdir src
+cd src
 git clone https://github.com/justinmann/sj.git
+cd sj
 git submodule init
 git submodule update
 ```
-4) Open VS Code and select folder c:\msys64\home\[username]\src\sj
+4) Open VS Code and select folder c:\msys64\home\%USERNAME%\src\sj
 5) Run build task (Ctrl+Shift+B)
 
 ## OS/X
