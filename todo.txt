@@ -6,14 +6,14 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* type as string
-* get type id
-* log based on type
-* heap local to stop most of intrafunction refcount'ing
+* if clause for logical and
+* make sure interface call uses copy
+* do not auto copy to heap it is a return value
 * remove sjv_ and add g_ only for global values
+* heap local to stop most of intrafunction refcount'ing
 * property
 * clone operator to do full copy
-* syntax highlighting
+* syntax highlighting using textmate
 * make sure debug out is compilable
 
 -- property --
