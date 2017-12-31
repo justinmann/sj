@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "../node/Node.h"
+
 
 void TrBlock::writeToStream(Compiler* compiler, ostream& stream, int level) {
     writeVariablesToStream(compiler, stream,level);
@@ -733,14 +733,12 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         }
 
         if (type->typeMode == CTM_Value && type->isOption && !rightValue->type->isOption) {
-            assert(!isCaptureValue);
-
             stringstream line1;
-            line1 << name << ".isvalid = true";
+            line1 << getName(block) << ".isvalid = true";
             block->statements.push_back(TrStatement(loc, line1.str()));
 
             stringstream line2;
-            line2 << name << ".value = " << rightValue->name;
+            line2 << getName(block) << ".value = " << rightValue->name;
             block->statements.push_back(TrStatement(loc, line2.str()));
         }
         else {
