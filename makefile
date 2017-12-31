@@ -1,7 +1,7 @@
 TARGET = sjc
 LIBS = -lm
 CC = g++
-CFLAGS = -g -Wall -std=c++11 -I. -IC:/MinGW/msys/1.0/local/include/boost-1_66 -Wno-reorder
+CFLAGS = -g -Wall -std=c++11 -I. -Wno-reorder
 OBJECTS = $(patsubst %.cpp, %.o, $(wildcard node/*.cpp)) $(patsubst %.cpp, %.o, $(wildcard compiler/*.cpp)) $(patsubst %.cpp, %.o, $(wildcard transpile/*.cpp)) parser/parser.o parser/tokens.o main.o
 HEADERS = $(wildcard *.h)
 
@@ -28,6 +28,9 @@ clean-win:
 	-del $(TARGET)
 	-del parser\parser.cpp parser\parser.hpp parser\tokens.cpp
 
+install:
+	cp sjc.exe /usr/bin
+
 parser/parser.cpp: parser/parser.y
 	bison -v -d -l -o $@ $^
 	
@@ -40,4 +43,4 @@ parser/tokens.cpp: parser/tokens.l
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@ -L../boost/lib -lboost_system -lboost_filesystem
+	$(CC) $(OBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt

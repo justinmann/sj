@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "mingw32-make",
+            "command": "make",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -18,7 +18,7 @@
         {
             "label": "clean",
             "type": "shell",
-            "command": "mingw32-make clean-win",
+            "command": "make clean",
             "problemMatcher": [
                 "$gcc"
             ]
