@@ -8,7 +8,7 @@
 3) Open msys2 and run:
 ```
 pacman -S git make mingw-w64-x86_64-boost mingw-w64-x86_64-SDL2 
-pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gdb 
+pacman -S bison mingw-w64-x86_64-gcc mingw-w64-x86_64-gdb 
 pacman -S mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-glew
 
 cd ~
