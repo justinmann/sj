@@ -8,7 +8,15 @@
 pacman -S git make mingw-w64-x86_64-boost mingw-w64-x86_64-SDL2 
 pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gdb 
 pacman -S mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-glew
+
+cd ~
+mkdir src
+git clone https://github.com/justinmann/sj.git
+git submodule init
+git submodule update
 ```
+4) Open VS Code and select folder c:\msys64\home\[username]\src\sj
+5) Run build task (Ctrl+Shift+B)
 
 ## OS/X
 1) Open sjc.xcodeproj
