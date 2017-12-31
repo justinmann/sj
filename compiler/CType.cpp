@@ -7,7 +7,7 @@
 //
 
 #include <sjc.h>
-#include "../node/Node.h"
+
 
 AssignOp AssignOp::create(bool isFirstAssignment, bool isMutable, bool isCopy, CTypeMode typeMode) {
     AssignOp op;

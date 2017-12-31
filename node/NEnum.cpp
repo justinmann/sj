@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 EnumArg::EnumArg(string name) : name(name), hasValue(false) {
     boost::algorithm::to_lower(this->name);

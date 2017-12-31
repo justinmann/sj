@@ -39,7 +39,10 @@ parser/parser.hpp: parser/parser.cpp
 parser/tokens.cpp: parser/tokens.l 
 	flex -L -o $@ $^
 
-%.o: %.cpp $(HEADERS)
+sjc.h.gch : sjc.h
+	$(CC) $(CFLAGS) -c sjc.h -o sjc.h.gch
+
+%.o: %.cpp $(HEADERS) sjc.h.gch
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJECTS)

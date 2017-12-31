@@ -7,7 +7,7 @@
 //
 
 #include <sjc.h>
-#include "../node/Node.h"
+
 
 shared_ptr<CType> CNormalVar::getType(Compiler* compiler) {
     if (dotVar && type->typeMode == CTM_ValuePtr) {

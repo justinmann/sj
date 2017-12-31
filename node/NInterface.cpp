@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 NInterface::NInterface(CLoc loc, const string& name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<vector<string>> attributes, shared_ptr<NodeList> methodList_) : NBaseFunction(NodeType_Interface, loc), name(name), templateTypeNames(templateTypeNames) {
     boost::algorithm::to_lower(this->name);

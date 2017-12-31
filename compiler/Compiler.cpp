@@ -7,10 +7,6 @@
 //
 
 #include <sjc.h>
-#include "../node/Node.h"
-#include <fstream>
-#include <streambuf>
-#include <iomanip>
 
 namespace fs = boost::filesystem;
 

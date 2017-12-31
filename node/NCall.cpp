@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 vector<CallArgument> CallArgument::createList(shared_ptr<CVar> var1) {
     vector<CallArgument> list;
@@ -165,7 +165,7 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
                 ss << "'" << (ctype != nullptr ? ctype->fullName : "ERROR");
                 ss << (paramVar->isMutable ? " = " : " : ");
                 paramVar->dump(compiler, functions, ss, level + 1);
-                if (paramIndex != parameters->size() - 1) {
+                if (paramIndex != (int)parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }
@@ -197,7 +197,7 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
                 ss << "'" << paramVar->getType(compiler)->fullName.c_str();
                 ss << (paramVar->isMutable ? " = " : " : ");
                 paramVar->dump(compiler, functions, ss, level + 1);
-                if (paramIndex != parameters->size() - 1) {
+                if (paramIndex != (int)parameters->size() - 1) {
                     ss << ",\n";
                     dumpf(ss, level + 1);
                 }

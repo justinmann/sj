@@ -66,7 +66,7 @@
 
 
 #include <sjc.h>
-#include "../node/Node.h"
+
 #include "parser.hpp"
 
 #define LOC CLoc(parseFile->fullFileName, parseFile->shortFileName, yyloc.first_line, yyloc.first_column)

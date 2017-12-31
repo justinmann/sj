@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 void NTupleAssignment::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     rightSide->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);

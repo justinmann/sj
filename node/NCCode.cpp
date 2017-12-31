@@ -1,6 +1,4 @@
 #include <sjc.h>
-#include "Node.h"
-#include <boost/algorithm/string.hpp>
 
 string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOutput* trOutput, TrBlock* trBlock, string macro, shared_ptr<TrStoreValue> returnValue, vector<shared_ptr<CBaseFunction>>& functions, map<string, map<string, bool>>& includes , shared_ptr<CType>& returnType) {
     auto paramStart = macro.find('(');

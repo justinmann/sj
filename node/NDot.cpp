@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 void NDot::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     left->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);

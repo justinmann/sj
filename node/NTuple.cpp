@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 void NTuple::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     for (auto element : *elements) {

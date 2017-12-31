@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Node.h"
+
 
 class CCallbackVar : public CVar {
 public:

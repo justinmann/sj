@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 bool CCompareVar::getReturnThis() {
     return false;

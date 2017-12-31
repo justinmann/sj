@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "config",
+            "includePath": [
+                "."
+            ],
+            "intelliSenseMode": "msvc-x64",
+            "browse": {
+                "path": [
+                    "."
+                ]
+            }
+        }
+    ],
+    "version": 3
+}

@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 bool CValueVar::getReturnThis() {
     return false;
@@ -20,11 +20,13 @@ shared_ptr<CType> CValueVar::getType(Compiler* compiler) {
 }
 
 void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    if (!storeValue->type->parent.expired() && storeValue->type->typeMode == CTM_Stack) {
+    auto tempValue = trBlock->createTempStoreVariable(loc, scope.lock(), storeValue->type->getValueType(), "value");
+    var->transpile(compiler, trOutput, trBlock, thisValue, tempValue);
+    storeValue->retainValue(compiler, loc, trBlock, tempValue->getValue());
+/*    if (!storeValue->type->parent.expired() && storeValue->type->typeMode == CTM_Stack) {
         auto leftValue = make_shared<TrStoreValue>(storeValue->loc, storeValue->scope, storeValue->type->getValueType(), storeValue->getName(trBlock), storeValue->op);
         leftValue->isReturnValue = storeValue->isReturnValue;
         leftValue->getValue()->addInitToStatements(compiler, trBlock);
-        var->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
         if (!leftValue->hasSetValue) {
             return;
         }
@@ -57,7 +59,7 @@ void CValueVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlo
         else {
             storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(leftValue->scope, leftValue->type->getOptionType(), leftValue->getName(trBlock), leftValue->isReturnValue));
         }
-    }
+    } */
 }
 
 void CValueVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

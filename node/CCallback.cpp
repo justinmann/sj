@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 CCallbackVar::CCallbackVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, shared_ptr<CVar> dotVar, shared_ptr<CCallback> callback, shared_ptr<CBaseFunction> function, CTypeMode returnMode) : 
     CVar(loc, scope), type(type), dotVar(dotVar), callback(callback), function(function), returnMode(returnMode) { 

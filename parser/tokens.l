@@ -11,7 +11,6 @@
 
 %{
 #include <sjc.h>
-#include "../node/Node.h"
 #include "parser.hpp"
 
 #ifdef __GNUC__

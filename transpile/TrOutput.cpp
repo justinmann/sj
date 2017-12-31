@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "../node/Node.h"
+
 
 TrOutput::TrOutput() {
 }

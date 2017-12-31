@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 bool CVoidVar::getReturnThis() {
     return false;

@@ -30,10 +30,6 @@ vs/.vs/
 sjc
 vs/sj.vcxproj.user
 
-tests/app/timer
-tests/app/highlow
-tests/app/lib
-tests/basic/lib
 *.vspx
 *.psess
 lc.sh
@@ -58,3 +54,4 @@ tests/app/layout.html
 tests/basic/vs/.vs/
 tests/basic/vs/test.c
 tests/app/app.c
+sjc.h.gch

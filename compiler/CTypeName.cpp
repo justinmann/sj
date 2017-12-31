@@ -7,7 +7,7 @@
 //
 
 #include <sjc.h>
-#include "../node/Node.h"
+
 
 vector<string> emptyNamespace; 
 

@@ -1,5 +1,5 @@
 #include <sjc.h>
-#include "Node.h"
+
 
 FunctionParameter FunctionParameter::create(bool isDefaultValue, AssignOp op, shared_ptr<CVar> var) {
     FunctionParameter param;

@@ -4,3 +4,12 @@
 [submodule "lib/common"]
 	path = lib/common
 	url = https://github.com/justinmann/sj-lib-common.git
+[submodule "tests/basic/lib/common"]
+	path = tests/basic/lib/common
+	url = https://github.com/justinmann/sj-lib-common.git
+[submodule "tests/app/lib/common"]
+	path = tests/app/lib/common
+	url = https://github.com/justinmann/sj-lib-common.git
+[submodule "tests/app/lib/ui"]
+	path = tests/app/lib/ui
+	url = https://github.com/justinmann/sj-lib-ui.git

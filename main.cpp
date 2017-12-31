@@ -8,6 +8,11 @@ namespace po = boost::program_options;
 extern int yydebug;
 #endif
 
+void __fail(const char* s) {
+    printf("%s\n", s);
+    exit(-1);
+}
+
 int main(int argc, char **argv) {
     po::options_description generic_options("Generic options");
     generic_options.add_options()
