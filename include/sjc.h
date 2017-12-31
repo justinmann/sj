@@ -33,6 +33,6 @@ void __fail(const char* s);
 #undef assert
 #define assert(x) if (!(x)) { __fail(#x); } 
 
-#include "Node/Node.h"
+#include "Node.h"
 
 #endif /* sj_pch */

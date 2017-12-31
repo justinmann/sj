@@ -9,7 +9,7 @@
 #ifndef NBase_h
 #define NBase_h
 
-#include "../transpile/TrOutput.h"
+#include "TrOutput.h"
 
 void dumpf(stringstream& ss, int level);
 

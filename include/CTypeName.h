@@ -9,7 +9,7 @@
 #ifndef CTypeName_h
 #define CTypeName_h
 
-#include "CType.h"
+#include "CTypes.h"
 
 class NFunction;
 

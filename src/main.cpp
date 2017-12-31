@@ -1,5 +1,4 @@
 #include <sjc.h>
-#include "node/Node.h"
 
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;

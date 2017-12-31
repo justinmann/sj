@@ -29,9 +29,9 @@ public:
     static CLoc undefined;
 };
 
-#include "CType.h"
+#include "CTypes.h"
 #include "CTypeName.h"
-#include "../transpile/TrOutput.h"
+#include "TrOutput.h"
 #include "CVar.h"
 
 #define STACK_REF_COUNT         1000000000000

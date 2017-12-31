@@ -1,7 +1,7 @@
 #ifndef Node_h
 #define Node_h
 
-#include "../compiler/Compiler.h"
+#include "Compiler.h"
 
 class NBase;
 
