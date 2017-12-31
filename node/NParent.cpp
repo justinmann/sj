@@ -22,10 +22,10 @@ void CParentVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBl
     if (dotVar) {
         auto dotValue = trBlock->createCaptureStoreVariable(loc, nullptr, dotVar->getType(compiler)->getTempType());
         dotVar->transpile(compiler, trOutput, trBlock, thisValue, dotValue);
-        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, dotValue->getCaptureText() + "->_parent", false));
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, getType(compiler), dotValue->getCaptureText() + "->_parent", false));
     }
     else {
-        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, parentTypes->localValueType, "_parent", false));
+        storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, getType(compiler), "_parent", false));
     }
 }
 

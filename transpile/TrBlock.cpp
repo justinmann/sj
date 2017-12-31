@@ -710,7 +710,12 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         break;
     case CTM_Stack:
         if (type->typeMode != rightValue->type->typeMode && !op.isCopy) {
-            isCopy = true;
+            if (rightValue->type->typeMode == CTM_Local) {
+                isCopy = true;
+            } else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+                return;
+            }
         }
         if (rightValue->type->typeMode == CTM_Stack && !op.isCopy) {
             isCopy = true;
@@ -718,7 +723,12 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         break;
     case CTM_Heap:
         if (rightValue->type->typeMode != CTM_Heap && rightValue->type->typeMode != CTM_Weak && !op.isCopy) {
-            isCopy = true;
+            if (isReturnValue) {
+                isCopy = true;
+            } else {
+                compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot change mode to left type '%s' without using a copy operator like 'a = copy b'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+                return;
+            }
         }
         break;
     default:
