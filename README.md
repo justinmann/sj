@@ -3,6 +3,8 @@
 ## Windows
 1) Install vs code: https://code.visualstudio.com/
 2) Install msys2: http://www.msys2.org/
+2) Add msys2 to path: C:\msys64\mingw64\bin
+  * https://superuser.com/questions/284342/what-are-path-and-other-environment-variables-and-how-can-i-set-or-use-them
 3) Open msys2 and run:
 ```
 pacman -S git make mingw-w64-x86_64-boost mingw-w64-x86_64-SDL2 
