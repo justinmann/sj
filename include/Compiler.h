@@ -128,7 +128,7 @@ class Compiler
 {
 public:
     Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree);
-    bool transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream);
+    bool transpile(const string& sjFilename, string& cFilename, string& errorFilename, string& debugFilename);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
 

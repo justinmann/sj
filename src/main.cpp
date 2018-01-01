@@ -15,23 +15,26 @@ void __fail(const char* s) {
 int main(int argc, char **argv) {
     po::options_description generic_options("Generic options");
     generic_options.add_options()
-        ("help", "show help")
+        ("help", "show helper")
         ;
 
     po::options_description config_options("Configuration");
     config_options.add_options()
         ("no-lines", "do not output #lineno directive")
-        // TODO: ("wasm", "output wasm (not supported yet)")
-        // TODO: ("app", "output app for current system (not supported yet)")
-        ("debug", "output debug files")
         ("vs-errors", "output vs compatible error format")
+        ("debug", "output debug files")
+        ("debug-file", po::value<string>(), "filename for debug output")
         ("debug-leaks", "add extra debug logging to detect memory leaks")
         ("debug-no-free", "do not free any objects, only use this when debugging a leak")
+        ("c-file", po::value<string>(), "filename for c output")
+        ("error-file", po::value<string>(), "filename for error output")
+        ;
+
 #ifdef YYDEBUG
         ("debug-parser", "add extra debug logging to detect memory leaks")
+        // TODO: ("wasm", "output wasm (not supported yet)")
+        // TODO: ("app", "output app for current system (not supported yet)")
 #endif
-        ("c-file", po::value<string>(), "filename for c output - defaults to sj file with extension changed to c")
-        ;
 
     po::options_description hidden_options("Hidden options");
     hidden_options.add_options()
@@ -71,25 +74,23 @@ int main(int argc, char **argv) {
     yydebug = vm.count("debug-parser"); // use this to trigger the verbose debug output from bison
 #endif
     auto cFilename = vm.count("c-file") ? vm["c-file"].as<string>() : string();
+    auto debugFilename = vm.count("debug-file") ? vm["debug-file"].as<string>() : string();
+    auto errorFilename = vm.count("error-file") ? vm["error-file"].as<string>() : string();
     auto sjFilename = vm["sj-file"].as<string>();
 
     auto path = fs::path(sjFilename);
     if (cFilename.size() == 0) {
         cFilename = fs::change_extension(path, ".c").string();
     }
-    ofstream cStream;
-    cStream.open(cFilename.c_str());
 
-    ofstream* debugStream = nullptr;
-    ofstream debug;
     if (outputDebug) {
-        auto debugFileName = fs::change_extension(path, ".debug").string();
-        debug.open(debugFileName.c_str());
-        debugStream = &debug;
+        if (debugFilename.size() == 0) {
+            debugFilename = fs::change_extension(path, ".debug").string();
+        }
     }
 
     Compiler compiler(outputLines, outputVSErrors, outputDebugLeaks, outputFree);
-    compiler.transpile(path.string(), cStream, cerr, debugStream);
+    compiler.transpile(path.string(), cFilename, errorFilename, debugFilename);
 
     return 0;
 }

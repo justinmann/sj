@@ -132,15 +132,15 @@ void CError::writeToStream(Compiler* compiler, ostream& stream) {
     }
 }
 
-bool Compiler::transpile(const string& fileName, ostream& stream, ostream& errorStream, ostream* debugStream) {
-    rootPath = fs::path(fileName).remove_filename();
+bool Compiler::transpile(const string& sjFilename, string& cFilename, string& errorFilename, string& debugFilename) {
+    rootPath = fs::path(sjFilename).remove_filename();
     
     TrOutput output;
     auto templateTypes = vector<shared_ptr<CType>>();
     shared_ptr<CFunction> currentFunction;
     shared_ptr<CFunction> globalFunction;
 
-    auto globalFile = genNodeFile(fileName);
+    auto globalFile = genNodeFile(sjFilename);
     if (errors.size() == 0) {
         auto globalBlock = globalFile->block;
         globalBlock->statements.insert(globalBlock->statements.begin(), make_shared<NInclude>(CLoc(globalFile->fullFileName, globalFile->shortFileName, 1, 1), "lib/common/common.sj"));
@@ -176,7 +176,10 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                 auto mainLoop = static_pointer_cast<CFunction>(globalFunction->getCFunction(this, CLoc::undefined, "mainLoop", globalScope, nullptr, CTM_Stack));
 
                 if (errors.size() == 0) {
-                    if (debugStream) {
+                    if (debugFilename.size() > 0) {
+                        ofstream debugStream;
+                        debugStream.open(debugFilename.c_str());
+
                         map<shared_ptr<CBaseFunction>, string> functionDumps;
                         stringstream ss;
                         stringstream dotSS;
@@ -193,9 +196,9 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                         std::sort(functionNames.begin(), functionNames.end());
 
                         for (auto it : functionNames) {
-                            *debugStream << it.second << "\n\n";
+                            debugStream << it.second << "\n\n";
                         }
-                        *debugStream << ss.str() << "\n\n";
+                        debugStream << ss.str() << "\n\n";
                     }
 
                     state = CompilerState::Compile;  
@@ -242,6 +245,8 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
                     }
 
                     if (errors.size() == 0) {
+                        ofstream stream;
+                        stream.open(cFilename.c_str());
                         output.writeToStream(this, stream, hasMainLoop);
                     }
                 }
@@ -250,12 +255,18 @@ bool Compiler::transpile(const string& fileName, ostream& stream, ostream& error
     }
 
     if (errors.size() > 0) {
-        for (auto it : errors)
-        {
+        ostream* errorStream = &cerr;
+        ofstream error;
+        if (errorFilename.size() > 0) {
+            error.open(errorFilename.c_str());
+            errorStream = &error;
+        }
+    
+        for (auto it : errors) {
             for (auto it2 : it.second) {
                 for (auto it3 : it2.second) {
-                    it3.second.writeToStream(this, errorStream);
-                    errorStream << "\n";
+                    it3.second.writeToStream(this, *errorStream);
+                    *errorStream << "\n";
                 }
             }
         }
