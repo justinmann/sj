@@ -1,7 +1,14 @@
 TARGET = sjc
 LIBS = -lm
 CC = g++
-CFLAGS = -g -Wall -std=c++11 -Iinclude -Wno-reorder
+
+ifeq ($(mode),release)
+	CFLAGS = -g -O3 -Wall -std=c++11 -Iinclude -Wno-reorder
+else
+	mode = debug
+	CFLAGS = -g -Wall -std=c++11 -Iinclude -Wno-reorder
+endif
+
 CFILES = $(wildcard src/*.cpp)
 COBJECTS = $(subst src/,build/,$(patsubst %.cpp, %.o, $(CFILES)))
 ALLOBJECTS = $(COBJECTS) parser/parser.o parser/tokens.o
@@ -18,6 +25,7 @@ clean:
 	-rm -f build/*.o
 	-rm -f include/*.gch
 	-rm -f $(TARGET)
+	-rm -f $(TARGET).exe
 	-rm -f parser/parser.cpp parser/tokens.cpp
 
 install:
@@ -40,8 +48,8 @@ parser/parser.o: parser/parser.cpp
 parser/tokens.o: parser/tokens.cpp
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-$(OBJECTS): $(CFILES) include/sjc.h.gch
-	$(CC) $(CFLAGS) -c $(subst .o,.cpp,$(subst build/,src/,$@)) -o $@
+build/%.o: src/%.cpp include/sjc.h.gch
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(ALLOBJECTS)
 	$(CC) $(ALLOBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt

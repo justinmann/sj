@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build-debug",
             "type": "shell",
-            "command": "make -j 4",
+            "command": "make -j 8",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -16,9 +16,28 @@
             ]
         },
         {
+            "label": "build-release",
+            "type": "shell",
+            "command": "make -j 8 mode=release",
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
             "label": "clean",
             "type": "shell",
             "command": "make clean",
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "install",
+            "type": "shell",
+            "command": "make install",
+            "group": "build",
             "problemMatcher": [
                 "$gcc"
             ]

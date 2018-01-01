@@ -10,11 +10,12 @@
             "request": "launch",
             "program": "${workspaceFolder}/sjc.exe",
             "args": [
-                "nau.sj",
-                "--no-lines"
+                "main.sj",
+                "--debug-file=foo.debug"
+                // "--error-file=foo.error",
             ],
             "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/tests/app",
+            "cwd": "${workspaceFolder}/../nau",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",
@@ -26,7 +27,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"
+            "preLaunchTask": "build-debug"
         }
     ]
 }
