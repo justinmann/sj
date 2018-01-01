@@ -1,6 +1,5 @@
 #include <lib/common/common.h>
 #ifdef WIN32
-#pragma warning(disable:4996)
 #define GLEW_STATIC
 #include <windows.h>
 #include <GL/glew.h>
@@ -2928,117 +2927,171 @@ const GLuint * indices, const size_t icount );
 void
 vertex_buffer_erase( vertex_buffer_t * self,
 const size_t index );    
-int32_t sjv_borderposition_bottom;
-int32_t sjv_borderposition_fill;
-int32_t sjv_borderposition_left;
-int32_t sjv_borderposition_right;
-int32_t sjv_borderposition_top;
-int32_t sjv_clickstate_entered;
-int32_t sjv_clickstate_none;
-int32_t sjv_clickstate_pressed;
-int32_t sjv_flowlayoutorientation_bottomtop;
-int32_t sjv_flowlayoutorientation_leftright;
-int32_t sjv_flowlayoutorientation_rightleft;
-int32_t sjv_flowlayoutorientation_topbottom;
-int32_t sjv_glblendfunctype_gl_constant_alpha;
-int32_t sjv_glblendfunctype_gl_constant_color;
-int32_t sjv_glblendfunctype_gl_dst_alpha;
-int32_t sjv_glblendfunctype_gl_dst_color;
-int32_t sjv_glblendfunctype_gl_one;
-int32_t sjv_glblendfunctype_gl_one_minus_constant_alpha;
-int32_t sjv_glblendfunctype_gl_one_minus_constant_color;
-int32_t sjv_glblendfunctype_gl_one_minus_dst_alpha;
-int32_t sjv_glblendfunctype_gl_one_minus_dst_color;
-int32_t sjv_glblendfunctype_gl_one_minus_src_alpha;
-int32_t sjv_glblendfunctype_gl_one_minus_src_color;
-int32_t sjv_glblendfunctype_gl_src_alpha;
-int32_t sjv_glblendfunctype_gl_src_alpha_saturate;
-int32_t sjv_glblendfunctype_gl_src_color;
-int32_t sjv_glblendfunctype_gl_zero;
-int32_t sjv_gldrawmode_gl_line_loop;
-int32_t sjv_gldrawmode_gl_line_strip;
-int32_t sjv_gldrawmode_gl_lines;
-int32_t sjv_gldrawmode_gl_points;
-int32_t sjv_gldrawmode_gl_triangle_fan;
-int32_t sjv_gldrawmode_gl_triangle_strip;
-int32_t sjv_gldrawmode_gl_triangles;
-int32_t sjv_glfeature_gl_blend;
-int32_t sjv_glfeature_gl_cull_face;
-int32_t sjv_glfeature_gl_depth_test;
-int32_t sjv_glfeature_gl_dither;
-int32_t sjv_glfeature_gl_polygon_offset_fill;
-int32_t sjv_glfeature_gl_sample_alpha_to_coverage;
-int32_t sjv_glfeature_gl_sample_coverage;
-int32_t sjv_glfeature_gl_scissor_test;
-int32_t sjv_glfeature_gl_stencil_test;
-int32_t sjv_glframebufferattachment_gl_color_attachment0;
-int32_t sjv_glframebufferattachment_gl_depth_attachment;
-int32_t sjv_glframebufferattachment_gl_stencil_attachment;
-int32_t sjv_glframebufferstatus_gl_framebuffer_complete;
-int32_t sjv_glframebufferstatus_gl_framebuffer_incomplete_attachment;
-int32_t sjv_glframebufferstatus_gl_framebuffer_incomplete_missing_attachment;
-int32_t sjv_glframebufferstatus_gl_framebuffer_unsupported;
-int32_t sjv_glframebuffertexture_gl_texture_2d;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_negative_x;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_negative_y;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_negative_z;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_positive_x;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_positive_y;
-int32_t sjv_glframebuffertexture_gl_texture_cube_map_positive_z;
-int32_t sjv_glrenderbufferformat_gl_depth_component16;
-int32_t sjv_glrenderbufferformat_gl_rgb565;
-int32_t sjv_glrenderbufferformat_gl_rgb5_a1;
-int32_t sjv_glrenderbufferformat_gl_rgba4;
-int32_t sjv_glrenderbufferformat_gl_stencil_index8;
-int32_t sjv_gltexture_gl_texture_2d;
-int32_t sjv_gltexture_gl_texture_cube_map;
-int32_t sjv_gltextureattribute_gl_texture_mag_filter;
-int32_t sjv_gltextureattribute_gl_texture_min_filter;
-int32_t sjv_gltextureattribute_gl_texture_wrap_s;
-int32_t sjv_gltextureattribute_gl_texture_wrap_t;
-int32_t sjv_gltextureformat_gl_alpha;
-int32_t sjv_gltextureformat_gl_luminance;
-int32_t sjv_gltextureformat_gl_luminance_alpha;
-int32_t sjv_gltextureformat_gl_rgb;
-int32_t sjv_gltextureformat_gl_rgba;
-int32_t sjv_gltexturetype_gl_unsigned_byte;
-int32_t sjv_gltexturetype_gl_unsigned_short_4_4_4_4;
-int32_t sjv_gltexturetype_gl_unsigned_short_5_5_5_1;
-int32_t sjv_gltexturetype_gl_unsigned_short_5_6_5;
-int32_t sjv_gltexturevalue_gl_clamp_to_edge;
-int32_t sjv_gltexturevalue_gl_linear;
-int32_t sjv_gltexturevalue_gl_linear_mipmap_linear;
-int32_t sjv_gltexturevalue_gl_linear_mipmap_nearest;
-int32_t sjv_gltexturevalue_gl_mirrored_repeat;
-int32_t sjv_gltexturevalue_gl_nearest;
-int32_t sjv_gltexturevalue_gl_nearest_mipmap_linear;
-int32_t sjv_gltexturevalue_gl_nearest_mipmap_nearest;
-int32_t sjv_gltexturevalue_gl_repeat;
-int32_t sjv_gridunittype_fixed;
-int32_t sjv_gridunittype_star;
-int32_t sjv_imagestretch_aspectratio;
-int32_t sjv_imagestretch_center;
-int32_t sjv_imagestretch_fill;
-int32_t sjv_listlayoutorientation_bottomtop;
-int32_t sjv_listlayoutorientation_leftright;
-int32_t sjv_listlayoutorientation_rightleft;
-int32_t sjv_listlayoutorientation_topbottom;
-int32_t sjv_loglevel_debug;
-int32_t sjv_loglevel_error;
-int32_t sjv_loglevel_fatal;
-int32_t sjv_loglevel_info;
-int32_t sjv_loglevel_trace;
-int32_t sjv_loglevel_warn;
-int32_t sjv_mouseeventtype_down;
-int32_t sjv_mouseeventtype_move;
-int32_t sjv_mouseeventtype_up;
-int32_t sjv_texthorizontal_center;
-int32_t sjv_texthorizontal_left;
-int32_t sjv_texthorizontal_right;
-int32_t sjv_textvertical_bottom;
-int32_t sjv_textvertical_center;
-int32_t sjv_textvertical_top;
+int32_t g_borderposition_bottom;
+int32_t g_borderposition_fill;
+int32_t g_borderposition_left;
+int32_t g_borderposition_right;
+int32_t g_borderposition_top;
+int32_t g_clickstate_entered;
+int32_t g_clickstate_none;
+int32_t g_clickstate_pressed;
+int32_t g_flowlayoutorientation_bottomtop;
+int32_t g_flowlayoutorientation_leftright;
+int32_t g_flowlayoutorientation_rightleft;
+int32_t g_flowlayoutorientation_topbottom;
+int32_t g_glblendfunctype_gl_constant_alpha;
+int32_t g_glblendfunctype_gl_constant_color;
+int32_t g_glblendfunctype_gl_dst_alpha;
+int32_t g_glblendfunctype_gl_dst_color;
+int32_t g_glblendfunctype_gl_one;
+int32_t g_glblendfunctype_gl_one_minus_constant_alpha;
+int32_t g_glblendfunctype_gl_one_minus_constant_color;
+int32_t g_glblendfunctype_gl_one_minus_dst_alpha;
+int32_t g_glblendfunctype_gl_one_minus_dst_color;
+int32_t g_glblendfunctype_gl_one_minus_src_alpha;
+int32_t g_glblendfunctype_gl_one_minus_src_color;
+int32_t g_glblendfunctype_gl_src_alpha;
+int32_t g_glblendfunctype_gl_src_alpha_saturate;
+int32_t g_glblendfunctype_gl_src_color;
+int32_t g_glblendfunctype_gl_zero;
+int32_t g_gldrawmode_gl_line_loop;
+int32_t g_gldrawmode_gl_line_strip;
+int32_t g_gldrawmode_gl_lines;
+int32_t g_gldrawmode_gl_points;
+int32_t g_gldrawmode_gl_triangle_fan;
+int32_t g_gldrawmode_gl_triangle_strip;
+int32_t g_gldrawmode_gl_triangles;
+int32_t g_glfeature_gl_blend;
+int32_t g_glfeature_gl_cull_face;
+int32_t g_glfeature_gl_depth_test;
+int32_t g_glfeature_gl_dither;
+int32_t g_glfeature_gl_polygon_offset_fill;
+int32_t g_glfeature_gl_sample_alpha_to_coverage;
+int32_t g_glfeature_gl_sample_coverage;
+int32_t g_glfeature_gl_scissor_test;
+int32_t g_glfeature_gl_stencil_test;
+int32_t g_glframebufferattachment_gl_color_attachment0;
+int32_t g_glframebufferattachment_gl_depth_attachment;
+int32_t g_glframebufferattachment_gl_stencil_attachment;
+int32_t g_glframebufferstatus_gl_framebuffer_complete;
+int32_t g_glframebufferstatus_gl_framebuffer_incomplete_attachment;
+int32_t g_glframebufferstatus_gl_framebuffer_incomplete_missing_attachment;
+int32_t g_glframebufferstatus_gl_framebuffer_unsupported;
+int32_t g_glframebuffertexture_gl_texture_2d;
+int32_t g_glframebuffertexture_gl_texture_cube_map_negative_x;
+int32_t g_glframebuffertexture_gl_texture_cube_map_negative_y;
+int32_t g_glframebuffertexture_gl_texture_cube_map_negative_z;
+int32_t g_glframebuffertexture_gl_texture_cube_map_positive_x;
+int32_t g_glframebuffertexture_gl_texture_cube_map_positive_y;
+int32_t g_glframebuffertexture_gl_texture_cube_map_positive_z;
+int32_t g_glrenderbufferformat_gl_depth_component16;
+int32_t g_glrenderbufferformat_gl_rgb565;
+int32_t g_glrenderbufferformat_gl_rgb5_a1;
+int32_t g_glrenderbufferformat_gl_rgba4;
+int32_t g_glrenderbufferformat_gl_stencil_index8;
+int32_t g_gltexture_gl_texture_2d;
+int32_t g_gltexture_gl_texture_cube_map;
+int32_t g_gltextureattribute_gl_texture_mag_filter;
+int32_t g_gltextureattribute_gl_texture_min_filter;
+int32_t g_gltextureattribute_gl_texture_wrap_s;
+int32_t g_gltextureattribute_gl_texture_wrap_t;
+int32_t g_gltextureformat_gl_alpha;
+int32_t g_gltextureformat_gl_luminance;
+int32_t g_gltextureformat_gl_luminance_alpha;
+int32_t g_gltextureformat_gl_rgb;
+int32_t g_gltextureformat_gl_rgba;
+int32_t g_gltexturetype_gl_unsigned_byte;
+int32_t g_gltexturetype_gl_unsigned_short_4_4_4_4;
+int32_t g_gltexturetype_gl_unsigned_short_5_5_5_1;
+int32_t g_gltexturetype_gl_unsigned_short_5_6_5;
+int32_t g_gltexturevalue_gl_clamp_to_edge;
+int32_t g_gltexturevalue_gl_linear;
+int32_t g_gltexturevalue_gl_linear_mipmap_linear;
+int32_t g_gltexturevalue_gl_linear_mipmap_nearest;
+int32_t g_gltexturevalue_gl_mirrored_repeat;
+int32_t g_gltexturevalue_gl_nearest;
+int32_t g_gltexturevalue_gl_nearest_mipmap_linear;
+int32_t g_gltexturevalue_gl_nearest_mipmap_nearest;
+int32_t g_gltexturevalue_gl_repeat;
+int32_t g_gridunittype_fixed;
+int32_t g_gridunittype_star;
+int32_t g_imagestretch_aspectratio;
+int32_t g_imagestretch_center;
+int32_t g_imagestretch_fill;
+int32_t g_listlayoutorientation_bottomtop;
+int32_t g_listlayoutorientation_leftright;
+int32_t g_listlayoutorientation_rightleft;
+int32_t g_listlayoutorientation_topbottom;
+int32_t g_loglevel_debug;
+int32_t g_loglevel_error;
+int32_t g_loglevel_fatal;
+int32_t g_loglevel_info;
+int32_t g_loglevel_trace;
+int32_t g_loglevel_warn;
+int32_t g_mouseeventtype_down;
+int32_t g_mouseeventtype_move;
+int32_t g_mouseeventtype_up;
+int32_t g_texthorizontal_center;
+int32_t g_texthorizontal_left;
+int32_t g_texthorizontal_right;
+int32_t g_textvertical_bottom;
+int32_t g_textvertical_center;
+int32_t g_textvertical_top;
 
+sjs_animator g_animator = { -1 };
+sjs_shader g_blurhorizontalshader = { -1 };
+sjs_shader g_blurverticalshader = { -1 };
+sjs_shader g_boxshader = { -1 };
+int32_t g_clocks_per_sec;
+sjs_color g_colors_black = { -1 };
+sjs_color g_colors_blue = { -1 };
+sjs_color g_colors_gray = { -1 };
+sjs_color g_colors_green = { -1 };
+sjs_color g_colors_red = { -1 };
+sjs_color g_colors_white = { -1 };
+sjs_hash_string_weak_iface_element g_elementsbyid = { -1 };
+void* g_emptystringdata;
+float g_f32_pi;
+sjs_shader g_fadeshader = { -1 };
+sjs_filllayout* g_fieldbuyelement = 0;
+sjs_fieldcontroller* g_fieldcontroller = 0;
+sji_element g_fieldelement = { 0 };
+sjs_nauscene3delement* g_fieldscene = 0;
+sjs_texture g_fieldtexture = { -1 };
+sjs_hash_fontkey_weak_font g_fonthash = { -1 };
+sjs_filllayout* g_forestbuyelement = 0;
+sjs_forestcontroller* g_forestcontroller = 0;
+sji_element g_forestelement = { 0 };
+sjs_nauscene3delement* g_forestscene = 0;
+sjs_texture g_foresttexture = { -1 };
+sjs_list_u32 g_glframebuffers = { -1 };
+sjs_list_rect g_glviewports = { -1 };
+int32_t g_i32_maxvalue;
+int32_t g_i32_minvalue;
+sjs_shader g_imageshader = { -1 };
+sjs_log g_log = { -1 };
+sjs_hash_type_bool g_log_excludeall = { -1 };
+sjs_hash_type_bool g_log_includeall = { -1 };
+sjs_rect g_looplastrect = { -1 };
+int32_t g_mainloop_frames;
+int32_t g_mainloop_lasttick;
+bool g_mainloop_shouldcontinue;
+bool g_mainloop_showfps;
+sjs_menucontroller* g_menucontroller = 0;
+sji_element g_menuelement = { 0 };
+sjs_nauscene3delement* g_menuscene = 0;
+sjs_hash_string_weak_iface_model g_modelsbyid = { -1 };
+sji_element g_mouse_captureelement = { 0 };
+sjs_shader g_phongcolorshader = { -1 };
+sjs_shader g_phongtextureshader = { -1 };
+sji_element g_root = { 0 };
+sjs_scene2d g_rootscene = { -1 };
+sjs_windowrenderer g_rootwindowrenderer = { -1 };
+sjs_shader g_saturateshader = { -1 };
+sjs_style g_style = { -1 };
+sjs_shader g_textshader = { -1 };
+uint32_t g_u32_maxvalue;
+sjs_string g_vertex_location_texture_normal_format = { -1 };
 sjs_model* object1 = 0;
 sjs_model* object10 = 0;
 sjs_model* object11 = 0;
@@ -5127,60 +5180,6 @@ sjs_string sjt_value90 = { -1 };
 cb_void_heap sjt_value91;
 float sjt_value92;
 float sjt_value93;
-sjs_animator sjv_animator = { -1 };
-sjs_shader sjv_blurhorizontalshader = { -1 };
-sjs_shader sjv_blurverticalshader = { -1 };
-sjs_shader sjv_boxshader = { -1 };
-int32_t sjv_clocks_per_sec;
-sjs_color sjv_colors_black = { -1 };
-sjs_color sjv_colors_blue = { -1 };
-sjs_color sjv_colors_gray = { -1 };
-sjs_color sjv_colors_green = { -1 };
-sjs_color sjv_colors_red = { -1 };
-sjs_color sjv_colors_white = { -1 };
-sjs_hash_string_weak_iface_element sjv_elementsbyid = { -1 };
-void* sjv_emptystringdata;
-float sjv_f32_pi;
-sjs_shader sjv_fadeshader = { -1 };
-sjs_filllayout* sjv_fieldbuyelement = 0;
-sjs_fieldcontroller* sjv_fieldcontroller = 0;
-sji_element sjv_fieldelement = { 0 };
-sjs_nauscene3delement* sjv_fieldscene = 0;
-sjs_texture sjv_fieldtexture = { -1 };
-sjs_hash_fontkey_weak_font sjv_fonthash = { -1 };
-sjs_filllayout* sjv_forestbuyelement = 0;
-sjs_forestcontroller* sjv_forestcontroller = 0;
-sji_element sjv_forestelement = { 0 };
-sjs_nauscene3delement* sjv_forestscene = 0;
-sjs_texture sjv_foresttexture = { -1 };
-sjs_list_u32 sjv_glframebuffers = { -1 };
-sjs_list_rect sjv_glviewports = { -1 };
-int32_t sjv_i32_maxvalue;
-int32_t sjv_i32_minvalue;
-sjs_shader sjv_imageshader = { -1 };
-sjs_log sjv_log = { -1 };
-sjs_hash_type_bool sjv_log_excludeall = { -1 };
-sjs_hash_type_bool sjv_log_includeall = { -1 };
-sjs_rect sjv_looplastrect = { -1 };
-int32_t sjv_mainloop_frames;
-int32_t sjv_mainloop_lasttick;
-bool sjv_mainloop_shouldcontinue;
-bool sjv_mainloop_showfps;
-sjs_menucontroller* sjv_menucontroller = 0;
-sji_element sjv_menuelement = { 0 };
-sjs_nauscene3delement* sjv_menuscene = 0;
-sjs_hash_string_weak_iface_model sjv_modelsbyid = { -1 };
-sji_element sjv_mouse_captureelement = { 0 };
-sjs_shader sjv_phongcolorshader = { -1 };
-sjs_shader sjv_phongtextureshader = { -1 };
-sji_element sjv_root = { 0 };
-sjs_scene2d sjv_rootscene = { -1 };
-sjs_windowrenderer sjv_rootwindowrenderer = { -1 };
-sjs_shader sjv_saturateshader = { -1 };
-sjs_style sjv_style = { -1 };
-sjs_shader sjv_textshader = { -1 };
-uint32_t sjv_u32_maxvalue;
-sjs_string sjv_vertex_location_texture_normal_format = { -1 };
 
 void sjf_animation_f32(sjs_animation_f32* _this);
 void sjf_animation_f32_as_sji_animation(sjs_animation_f32* _this, sji_animation* _return);
@@ -8415,8 +8414,8 @@ shader_read( const char *filename )
             "GL_VOID"
         };
         assert(self);
-        fprintf( stderr, "%zu vertices, %zu indices\n",
-        vector_size( self->vertices ), vector_size( self->indices ) );
+        fprintf( stderr, "%d vertices, %d indices\n",
+        (int)vector_size( self->vertices ), (int)vector_size( self->indices ) );
         while( self->attributes[i] )
         {
             int j = 8;
@@ -8844,27 +8843,27 @@ void sjf_animation_f32_heap(sjs_animation_f32* _this) {
 }
 
 void sjf_animation_f32_nextframe(sjs_animation_f32* _parent, int32_t time, bool* _return) {
+    float percent;
     int32_t sjt_cast70;
     int32_t sjt_cast71;
     float sjt_functionParam855;
     float sjt_functionParam856;
     float sjt_functionParam857;
     float sjt_functionParam858;
-    float sjv_percent;
 
 #line 13 "lib/ui/animation.sj"
     sjt_cast70 = time - _parent->start;
 #line 13
     sjt_cast71 = _parent->end - _parent->start;
 #line 13
-    sjv_percent = (float)sjt_cast70 / (float)sjt_cast71;
-    if (sjv_percent < 0.0f) {
+    percent = (float)sjt_cast70 / (float)sjt_cast71;
+    if (percent < 0.0f) {
 #line 15 "lib/ui/animation.sj"
-        sjv_percent = 0.0f;
+        percent = 0.0f;
     } else {
-        if (sjv_percent > 1.0f) {
+        if (percent > 1.0f) {
 #line 17 "lib/ui/animation.sj"
-            sjv_percent = 1.0f;
+            percent = 1.0f;
         }
     }
 
@@ -8873,13 +8872,13 @@ void sjf_animation_f32_nextframe(sjs_animation_f32* _parent, int32_t time, bool*
 #line 21
     sjt_functionParam857 = _parent->endvalue;
 #line 21
-    sjt_functionParam858 = sjv_percent;
+    sjt_functionParam858 = percent;
 #line 21
     sjf_f32_interpolate(sjt_functionParam856, sjt_functionParam857, sjt_functionParam858, &sjt_functionParam855);
 #line 21
     _parent->setvalue.inner._cb(_parent->setvalue.inner._parent, sjt_functionParam855);
 #line 23
-    (*_return) = sjv_percent == 1.0f;
+    (*_return) = percent == 1.0f;
 }
 
 void sjf_animation_vec3(sjs_animation_vec3* _this) {
@@ -8947,6 +8946,7 @@ void sjf_animation_vec3_heap(sjs_animation_vec3* _this) {
 }
 
 void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, bool* _return) {
+    float percent;
     sjs_vec3 sjt_call275 = { -1 };
     int32_t sjt_cast67;
     int32_t sjt_cast68;
@@ -8954,21 +8954,20 @@ void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, boo
     sjs_vec3* sjt_functionParam849 = 0;
     float sjt_functionParam850;
     sjs_vec3* sjt_parent407 = 0;
-    float sjv_percent;
 
 #line 13 "lib/ui/animation.sj"
     sjt_cast67 = time - _parent->start;
 #line 13
     sjt_cast68 = _parent->end - _parent->start;
 #line 13
-    sjv_percent = (float)sjt_cast67 / (float)sjt_cast68;
-    if (sjv_percent < 0.0f) {
+    percent = (float)sjt_cast67 / (float)sjt_cast68;
+    if (percent < 0.0f) {
 #line 15 "lib/ui/animation.sj"
-        sjv_percent = 0.0f;
+        percent = 0.0f;
     } else {
-        if (sjv_percent > 1.0f) {
+        if (percent > 1.0f) {
 #line 17 "lib/ui/animation.sj"
-            sjv_percent = 1.0f;
+            percent = 1.0f;
         }
     }
 
@@ -8977,7 +8976,7 @@ void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, boo
 #line 21 "lib/ui/animation.sj"
     sjt_functionParam849 = &_parent->endvalue;
 #line 21
-    sjt_functionParam850 = sjv_percent;
+    sjt_functionParam850 = percent;
 #line 21
     sjf_vec3_interpolate(sjt_parent407, sjt_functionParam849, sjt_functionParam850, &sjt_call275);
 #line 21
@@ -8985,7 +8984,7 @@ void sjf_animation_vec3_nextframe(sjs_animation_vec3* _parent, int32_t time, boo
 #line 21
     _parent->setvalue.inner._cb(_parent->setvalue.inner._parent, sjt_functionParam848);
 #line 23
-    (*_return) = sjv_percent == 1.0f;
+    (*_return) = percent == 1.0f;
 
     if (sjt_call275._refCount == 1) { sjf_vec3_destroy(&sjt_call275); }
 ;
@@ -9035,21 +9034,21 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 35 "lib/ui/animation.sj"
         i = sjt_forEnd47 - 1;
         while (i >= sjt_forStart47) {
+            sji_animation a = { 0 };
             bool sjt_capture80;
             int32_t sjt_functionParam2022;
             int32_t sjt_interfaceParam96;
             sjs_list_heap_iface_animation* sjt_parent732 = 0;
             sji_animation sjt_parent733 = { 0 };
-            sji_animation sjv_a = { 0 };
 
 #line 8 "lib/common/list.sj"
             sjt_parent732 = &_parent->animations;
 #line 35 "lib/ui/animation.sj"
             sjt_functionParam2022 = i;
 #line 35
-            sjf_list_heap_iface_animation_getat_heap(sjt_parent732, sjt_functionParam2022, &sjv_a);
+            sjf_list_heap_iface_animation_getat_heap(sjt_parent732, sjt_functionParam2022, &a);
 #line 2
-            sjt_parent733 = sjv_a;
+            sjt_parent733 = a;
 #line 31
             sjt_interfaceParam96 = time;
 #line 37
@@ -9069,11 +9068,11 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 35
             i--;
 
-            if (sjv_a._parent != 0) {
-                sjv_a._parent->_refCount--;
-                if (sjv_a._parent->_refCount <= 0) {
-                    sjv_a._vtbl->destroy(sjv_a._parent);
-                    free(sjv_a._parent);
+            if (a._parent != 0) {
+                a._parent->_refCount--;
+                if (a._parent->_refCount <= 0) {
+                    a._vtbl->destroy(a._parent);
+                    free(a._parent);
                 }
             }
         }
@@ -9171,10 +9170,10 @@ return;;
 }
 
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -9184,9 +9183,9 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -9198,7 +9197,7 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
 #line 150
         char* p = (char*)_parent->data;
 #line 151
-        char* newp = (char*)sjv_newdata;
+        char* newp = (char*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -9224,7 +9223,7 @@ newp[i] = p[i];
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -9234,10 +9233,10 @@ newp[i] = p[i];
 }
 
 void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_array_char** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -9247,9 +9246,9 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -9261,7 +9260,7 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
 #line 150
         char* p = (char*)_parent->data;
 #line 151
-        char* newp = (char*)sjv_newdata;
+        char* newp = (char*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -9289,7 +9288,7 @@ newp[i] = p[i];
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -9462,10 +9461,10 @@ return;;
 }
 
 void sjf_array_heap_iface_animation_grow(sjs_array_heap_iface_animation* _parent, int32_t newsize, sjs_array_heap_iface_animation* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -9475,9 +9474,9 @@ void sjf_array_heap_iface_animation_grow(sjs_array_heap_iface_animation* _parent
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_animation))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_animation))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -9489,7 +9488,7 @@ void sjf_array_heap_iface_animation_grow(sjs_array_heap_iface_animation* _parent
 #line 150
         sji_animation* p = (sji_animation*)_parent->data;
 #line 151
-        sji_animation* newp = (sji_animation*)sjv_newdata;
+        sji_animation* newp = (sji_animation*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -9518,7 +9517,7 @@ if (newp[i]._parent != 0) {
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -9528,10 +9527,10 @@ if (newp[i]._parent != 0) {
 }
 
 void sjf_array_heap_iface_animation_grow_heap(sjs_array_heap_iface_animation* _parent, int32_t newsize, sjs_array_heap_iface_animation** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -9541,9 +9540,9 @@ void sjf_array_heap_iface_animation_grow_heap(sjs_array_heap_iface_animation* _p
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_animation))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_animation))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -9555,7 +9554,7 @@ void sjf_array_heap_iface_animation_grow_heap(sjs_array_heap_iface_animation* _p
 #line 150
         sji_animation* p = (sji_animation*)_parent->data;
 #line 151
-        sji_animation* newp = (sji_animation*)sjv_newdata;
+        sji_animation* newp = (sji_animation*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -9586,7 +9585,7 @@ if (newp[i]._parent != 0) {
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -9823,32 +9822,32 @@ void sjf_array_heap_iface_model(sjs_array_heap_iface_model* _this) {
 }
 
 void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _parent, int32_t left, int32_t right, cb_heap_iface_model_heap_iface_model_i32 cb) {
+    int32_t i;
+    int32_t j;
+    sji_model pivot = { 0 };
     int32_t sjt_functionParam55;
     bool sjt_while1;
-    int32_t sjv_i;
-    int32_t sjv_j;
-    sji_model sjv_pivot = { 0 };
 
 #line 198 "lib/common/array.sj"
-    sjv_i = left;
+    i = left;
 #line 198
-    sjv_j = right;
+    j = right;
 #line 202
     sjt_functionParam55 = (left + right) / 2;
 #line 202
-    sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam55, &sjv_pivot);
+    sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam55, &pivot);
 #line 203
-    sjt_while1 = sjv_i <= sjv_j;
+    sjt_while1 = i <= j;
     while (sjt_while1) {
+        bool shouldcontinue;
         bool sjt_while2;
         bool sjt_while3;
-        bool sjv_continue;
 
 #line 204 "lib/common/array.sj"
-        sjv_continue = true;
-        if (sjv_i < _parent->count) {
+        shouldcontinue = true;
+        if (i < _parent->count) {
 #line 205 "lib/common/array.sj"
-            sjt_while2 = sjv_continue;
+            sjt_while2 = shouldcontinue;
         } else {
 #line 205 "lib/common/array.sj"
             sjt_while2 = false;
@@ -9861,11 +9860,11 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
             sji_model sjt_functionParam58 = { 0 };
 
 #line 206 "lib/common/array.sj"
-            sjt_functionParam57 = sjv_i;
+            sjt_functionParam57 = i;
 #line 206
             sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam57, &sjt_functionParam56);
 #line 206
-            sjt_functionParam58 = sjv_pivot;
+            sjt_functionParam58 = pivot;
             if (sjt_functionParam58._parent != 0) {
                 sjt_functionParam58._parent->_refCount++;
             }
@@ -9873,15 +9872,15 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
 #line 206
             cb._cb(cb._parent, sjt_functionParam56, sjt_functionParam58, &sjt_capture15);
 #line 206
-            sjv_continue = sjt_capture15 < 0;
-            if (sjv_continue) {
+            shouldcontinue = sjt_capture15 < 0;
+            if (shouldcontinue) {
 #line 208 "lib/common/array.sj"
-                sjv_i = sjv_i + 1;
+                i = i + 1;
             }
 
-            if (sjv_i < _parent->count) {
+            if (i < _parent->count) {
 #line 205 "lib/common/array.sj"
-                sjt_while2 = sjv_continue;
+                sjt_while2 = shouldcontinue;
             } else {
 #line 205 "lib/common/array.sj"
                 sjt_while2 = false;
@@ -9904,10 +9903,10 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
         }
 
 #line 212
-        sjv_continue = true;
-        if (sjv_j >= 0) {
+        shouldcontinue = true;
+        if (j >= 0) {
 #line 213 "lib/common/array.sj"
-            sjt_while3 = sjv_continue;
+            sjt_while3 = shouldcontinue;
         } else {
 #line 213 "lib/common/array.sj"
             sjt_while3 = false;
@@ -9920,11 +9919,11 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
             sji_model sjt_functionParam61 = { 0 };
 
 #line 214 "lib/common/array.sj"
-            sjt_functionParam60 = sjv_j;
+            sjt_functionParam60 = j;
 #line 214
             sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam60, &sjt_functionParam59);
 #line 214
-            sjt_functionParam61 = sjv_pivot;
+            sjt_functionParam61 = pivot;
             if (sjt_functionParam61._parent != 0) {
                 sjt_functionParam61._parent->_refCount++;
             }
@@ -9932,15 +9931,15 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
 #line 214
             cb._cb(cb._parent, sjt_functionParam59, sjt_functionParam61, &sjt_capture16);
 #line 214
-            sjv_continue = sjt_capture16 > 0;
-            if (sjv_continue) {
+            shouldcontinue = sjt_capture16 > 0;
+            if (shouldcontinue) {
 #line 216 "lib/common/array.sj"
-                sjv_j = sjv_j - 1;
+                j = j - 1;
             }
 
-            if (sjv_j >= 0) {
+            if (j >= 0) {
 #line 213 "lib/common/array.sj"
-                sjt_while3 = sjv_continue;
+                sjt_while3 = shouldcontinue;
             } else {
 #line 213 "lib/common/array.sj"
                 sjt_while3 = false;
@@ -9962,31 +9961,31 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
             }
         }
 
-        if (sjv_i <= sjv_j) {
+        if (i <= j) {
             int32_t sjt_functionParam62;
             int32_t sjt_functionParam63;
             sji_model sjt_functionParam64 = { 0 };
             int32_t sjt_functionParam65;
             int32_t sjt_functionParam66;
             sji_model sjt_functionParam67 = { 0 };
-            sji_model sjv_tmp = { 0 };
+            sji_model tmp = { 0 };
 
 #line 221 "lib/common/array.sj"
-            sjt_functionParam62 = sjv_i;
+            sjt_functionParam62 = i;
 #line 221
-            sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam62, &sjv_tmp);
+            sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam62, &tmp);
 #line 222
-            sjt_functionParam63 = sjv_i;
+            sjt_functionParam63 = i;
 #line 222
-            sjt_functionParam65 = sjv_j;
+            sjt_functionParam65 = j;
 #line 222
             sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam65, &sjt_functionParam64);
 #line 222
             sjf_array_heap_iface_model_setat(_parent, sjt_functionParam63, sjt_functionParam64);
 #line 223
-            sjt_functionParam66 = sjv_j;
+            sjt_functionParam66 = j;
 #line 223
-            sjt_functionParam67 = sjv_tmp;
+            sjt_functionParam67 = tmp;
             if (sjt_functionParam67._parent != 0) {
                 sjt_functionParam67._parent->_refCount++;
             }
@@ -9994,9 +9993,9 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
 #line 223
             sjf_array_heap_iface_model_setat(_parent, sjt_functionParam66, sjt_functionParam67);
 #line 224
-            sjv_i = sjv_i + 1;
+            i = i + 1;
 #line 225
-            sjv_j = sjv_j - 1;
+            j = j - 1;
 
             if (sjt_functionParam64._parent != 0) {
                 sjt_functionParam64._parent->_refCount--;
@@ -10012,20 +10011,20 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
                     free(sjt_functionParam67._parent);
                 }
             }
-            if (sjv_tmp._parent != 0) {
-                sjv_tmp._parent->_refCount--;
-                if (sjv_tmp._parent->_refCount <= 0) {
-                    sjv_tmp._vtbl->destroy(sjv_tmp._parent);
-                    free(sjv_tmp._parent);
+            if (tmp._parent != 0) {
+                tmp._parent->_refCount--;
+                if (tmp._parent->_refCount <= 0) {
+                    tmp._vtbl->destroy(tmp._parent);
+                    free(tmp._parent);
                 }
             }
         }
 
 #line 203
-        sjt_while1 = sjv_i <= sjv_j;
+        sjt_while1 = i <= j;
     }
 
-    if (left < sjv_j) {
+    if (left < j) {
         int32_t sjt_functionParam68;
         int32_t sjt_functionParam69;
         cb_heap_iface_model_heap_iface_model_i32 sjt_functionParam70;
@@ -10033,20 +10032,20 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
 #line 198 "lib/common/array.sj"
         sjt_functionParam68 = left;
 #line 230
-        sjt_functionParam69 = sjv_j;
+        sjt_functionParam69 = j;
 #line 198
         sjt_functionParam70 = cb;
 #line 198
         sjf_array_heap_iface_model__quicksortcallback(_parent, sjt_functionParam68, sjt_functionParam69, sjt_functionParam70);
     }
 
-    if (sjv_i < right) {
+    if (i < right) {
         int32_t sjt_functionParam71;
         int32_t sjt_functionParam72;
         cb_heap_iface_model_heap_iface_model_i32 sjt_functionParam73;
 
 #line 233 "lib/common/array.sj"
-        sjt_functionParam71 = sjv_i;
+        sjt_functionParam71 = i;
 #line 198
         sjt_functionParam72 = right;
 #line 198
@@ -10055,11 +10054,11 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
         sjf_array_heap_iface_model__quicksortcallback(_parent, sjt_functionParam71, sjt_functionParam72, sjt_functionParam73);
     }
 
-    if (sjv_pivot._parent != 0) {
-        sjv_pivot._parent->_refCount--;
-        if (sjv_pivot._parent->_refCount <= 0) {
-            sjv_pivot._vtbl->destroy(sjv_pivot._parent);
-            free(sjv_pivot._parent);
+    if (pivot._parent != 0) {
+        pivot._parent->_refCount--;
+        if (pivot._parent->_refCount <= 0) {
+            pivot._vtbl->destroy(pivot._parent);
+            free(pivot._parent);
         }
     }
 }
@@ -10140,10 +10139,10 @@ return;;
 }
 
 void sjf_array_heap_iface_model_grow(sjs_array_heap_iface_model* _parent, int32_t newsize, sjs_array_heap_iface_model* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -10153,9 +10152,9 @@ void sjf_array_heap_iface_model_grow(sjs_array_heap_iface_model* _parent, int32_
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_model))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_model))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -10167,7 +10166,7 @@ void sjf_array_heap_iface_model_grow(sjs_array_heap_iface_model* _parent, int32_
 #line 150
         sji_model* p = (sji_model*)_parent->data;
 #line 151
-        sji_model* newp = (sji_model*)sjv_newdata;
+        sji_model* newp = (sji_model*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -10196,7 +10195,7 @@ if (newp[i]._parent != 0) {
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -10206,10 +10205,10 @@ if (newp[i]._parent != 0) {
 }
 
 void sjf_array_heap_iface_model_grow_heap(sjs_array_heap_iface_model* _parent, int32_t newsize, sjs_array_heap_iface_model** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -10219,9 +10218,9 @@ void sjf_array_heap_iface_model_grow_heap(sjs_array_heap_iface_model* _parent, i
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_model))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sji_model))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -10233,7 +10232,7 @@ void sjf_array_heap_iface_model_grow_heap(sjs_array_heap_iface_model* _parent, i
 #line 150
         sji_model* p = (sji_model*)_parent->data;
 #line 151
-        sji_model* newp = (sji_model*)sjv_newdata;
+        sji_model* newp = (sji_model*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -10264,7 +10263,7 @@ if (newp[i]._parent != 0) {
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -10326,16 +10325,16 @@ if (p[index]._parent != 0) {
 
 void sjf_array_heap_iface_model_map_mat4(sjs_array_heap_iface_model* _parent, cb_heap_iface_model_mat4 cb, sjs_array_mat4* _return) {
     int32_t i;
+    void* newdata;
     int32_t sjt_forEnd20;
     int32_t sjt_forStart20;
-    void* sjv_newdata;
 
 #line 81 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 83
-    sjv_newdata = (int*)malloc(_parent->count * sizeof(sjs_mat4) + sizeof(int)) + 1;
+    newdata = (int*)malloc(_parent->count * sizeof(sjs_mat4) + sizeof(int)) + 1;
 #line 84
-    int* refcount = (int*)sjv_newdata - 1;
+    int* refcount = (int*)newdata - 1;
 #line 85
     *refcount = 1;
 #line 87
@@ -10345,22 +10344,22 @@ void sjf_array_heap_iface_model_map_mat4(sjs_array_heap_iface_model* _parent, cb
 #line 87
     i = sjt_forStart20;
     while (i < sjt_forEnd20) {
+        sjs_mat4 newitem = { -1 };
         sji_model sjt_functionParam541 = { 0 };
         int32_t sjt_functionParam542;
-        sjs_mat4 sjv_newitem = { -1 };
 
 #line 87 "lib/common/array.sj"
         sjt_functionParam542 = i;
 #line 87
         sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam542, &sjt_functionParam541);
 #line 87
-        cb._cb(cb._parent, sjt_functionParam541, &sjv_newitem);
+        cb._cb(cb._parent, sjt_functionParam541, &newitem);
 #line 90
-        sjs_mat4* p = (sjs_mat4*)sjv_newdata;
+        sjs_mat4* p = (sjs_mat4*)newdata;
 #line 91
         p[i]._refCount = 1;
 #line 89 "lib/common/array.sj"
-sjf_mat4_copy(&p[i], &sjv_newitem);
+sjf_mat4_copy(&p[i], &newitem);
 ;
 #line 87
         i++;
@@ -10372,7 +10371,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
                 free(sjt_functionParam541._parent);
             }
         }
-        if (sjv_newitem._refCount == 1) { sjf_mat4_destroy(&sjv_newitem); }
+        if (newitem._refCount == 1) { sjf_mat4_destroy(&newitem); }
 ;
     }
 
@@ -10381,7 +10380,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
 #line 94
     _return->datasize = _parent->count;
 #line 94
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 94
@@ -10392,16 +10391,16 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
 
 void sjf_array_heap_iface_model_map_mat4_heap(sjs_array_heap_iface_model* _parent, cb_heap_iface_model_mat4 cb, sjs_array_mat4** _return) {
     int32_t i;
+    void* newdata;
     int32_t sjt_forEnd21;
     int32_t sjt_forStart21;
-    void* sjv_newdata;
 
 #line 81 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 83
-    sjv_newdata = (int*)malloc(_parent->count * sizeof(sjs_mat4) + sizeof(int)) + 1;
+    newdata = (int*)malloc(_parent->count * sizeof(sjs_mat4) + sizeof(int)) + 1;
 #line 84
-    int* refcount = (int*)sjv_newdata - 1;
+    int* refcount = (int*)newdata - 1;
 #line 85
     *refcount = 1;
 #line 87
@@ -10411,22 +10410,22 @@ void sjf_array_heap_iface_model_map_mat4_heap(sjs_array_heap_iface_model* _paren
 #line 87
     i = sjt_forStart21;
     while (i < sjt_forEnd21) {
+        sjs_mat4 newitem = { -1 };
         sji_model sjt_functionParam543 = { 0 };
         int32_t sjt_functionParam544;
-        sjs_mat4 sjv_newitem = { -1 };
 
 #line 87 "lib/common/array.sj"
         sjt_functionParam544 = i;
 #line 87
         sjf_array_heap_iface_model_getat_heap(_parent, sjt_functionParam544, &sjt_functionParam543);
 #line 87
-        cb._cb(cb._parent, sjt_functionParam543, &sjv_newitem);
+        cb._cb(cb._parent, sjt_functionParam543, &newitem);
 #line 90
-        sjs_mat4* p = (sjs_mat4*)sjv_newdata;
+        sjs_mat4* p = (sjs_mat4*)newdata;
 #line 91
         p[i]._refCount = 1;
 #line 89 "lib/common/array.sj"
-sjf_mat4_copy(&p[i], &sjv_newitem);
+sjf_mat4_copy(&p[i], &newitem);
 ;
 #line 87
         i++;
@@ -10438,7 +10437,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
                 free(sjt_functionParam543._parent);
             }
         }
-        if (sjv_newitem._refCount == 1) { sjf_mat4_destroy(&sjv_newitem); }
+        if (newitem._refCount == 1) { sjf_mat4_destroy(&newitem); }
 ;
     }
 
@@ -10449,7 +10448,7 @@ sjf_mat4_copy(&p[i], &sjv_newitem);
 #line 94
     (*_return)->datasize = _parent->count;
 #line 94
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 94
@@ -10749,10 +10748,10 @@ return;;
 }
 
 void sjf_array_mat4_grow(sjs_array_mat4* _parent, int32_t newsize, sjs_array_mat4* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -10762,9 +10761,9 @@ void sjf_array_mat4_grow(sjs_array_mat4* _parent, int32_t newsize, sjs_array_mat
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_mat4))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_mat4))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -10776,7 +10775,7 @@ void sjf_array_mat4_grow(sjs_array_mat4* _parent, int32_t newsize, sjs_array_mat
 #line 150
         sjs_mat4* p = (sjs_mat4*)_parent->data;
 #line 151
-        sjs_mat4* newp = (sjs_mat4*)sjv_newdata;
+        sjs_mat4* newp = (sjs_mat4*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -10803,7 +10802,7 @@ sjf_mat4_copy(&newp[i], &p[i]);
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -10813,10 +10812,10 @@ sjf_mat4_copy(&newp[i], &p[i]);
 }
 
 void sjf_array_mat4_grow_heap(sjs_array_mat4* _parent, int32_t newsize, sjs_array_mat4** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -10826,9 +10825,9 @@ void sjf_array_mat4_grow_heap(sjs_array_mat4* _parent, int32_t newsize, sjs_arra
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_mat4))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_mat4))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -10840,7 +10839,7 @@ void sjf_array_mat4_grow_heap(sjs_array_mat4* _parent, int32_t newsize, sjs_arra
 #line 150
         sjs_mat4* p = (sjs_mat4*)_parent->data;
 #line 151
-        sjs_mat4* newp = (sjs_mat4*)sjv_newdata;
+        sjs_mat4* newp = (sjs_mat4*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -10869,7 +10868,7 @@ sjf_mat4_copy(&newp[i], &p[i]);
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -11036,10 +11035,10 @@ return;;
 }
 
 void sjf_array_rect_grow(sjs_array_rect* _parent, int32_t newsize, sjs_array_rect* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -11049,9 +11048,9 @@ void sjf_array_rect_grow(sjs_array_rect* _parent, int32_t newsize, sjs_array_rec
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_rect))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_rect))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -11063,7 +11062,7 @@ void sjf_array_rect_grow(sjs_array_rect* _parent, int32_t newsize, sjs_array_rec
 #line 150
         sjs_rect* p = (sjs_rect*)_parent->data;
 #line 151
-        sjs_rect* newp = (sjs_rect*)sjv_newdata;
+        sjs_rect* newp = (sjs_rect*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -11090,7 +11089,7 @@ sjf_rect_copy(&newp[i], &p[i]);
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -11100,10 +11099,10 @@ sjf_rect_copy(&newp[i], &p[i]);
 }
 
 void sjf_array_rect_grow_heap(sjs_array_rect* _parent, int32_t newsize, sjs_array_rect** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -11113,9 +11112,9 @@ void sjf_array_rect_grow_heap(sjs_array_rect* _parent, int32_t newsize, sjs_arra
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_rect))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(sjs_rect))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -11127,7 +11126,7 @@ void sjf_array_rect_grow_heap(sjs_array_rect* _parent, int32_t newsize, sjs_arra
 #line 150
         sjs_rect* p = (sjs_rect*)_parent->data;
 #line 151
-        sjs_rect* newp = (sjs_rect*)sjv_newdata;
+        sjs_rect* newp = (sjs_rect*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -11156,7 +11155,7 @@ sjf_rect_copy(&newp[i], &p[i]);
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -11373,16 +11372,16 @@ sjf_texture_copy(&p[index], item);
 
 void sjf_array_texture_map_heap_iface_model(sjs_array_texture* _parent, cb_texture_heap_iface_model cb, sjs_array_heap_iface_model* _return) {
     int32_t i;
+    void* newdata;
     int32_t sjt_forEnd13;
     int32_t sjt_forStart13;
-    void* sjv_newdata;
 
 #line 81 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 83
-    sjv_newdata = (int*)malloc(_parent->count * sizeof(sji_model) + sizeof(int)) + 1;
+    newdata = (int*)malloc(_parent->count * sizeof(sji_model) + sizeof(int)) + 1;
 #line 84
-    int* refcount = (int*)sjv_newdata - 1;
+    int* refcount = (int*)newdata - 1;
 #line 85
     *refcount = 1;
 #line 87
@@ -11392,10 +11391,10 @@ void sjf_array_texture_map_heap_iface_model(sjs_array_texture* _parent, cb_textu
 #line 87
     i = sjt_forStart13;
     while (i < sjt_forEnd13) {
+        sji_model newitem = { 0 };
         sjs_texture sjt_call95 = { -1 };
         sjs_texture* sjt_functionParam483 = 0;
         int32_t sjt_functionParam484;
-        sji_model sjv_newitem = { 0 };
 
 #line 87 "lib/common/array.sj"
         sjt_functionParam484 = i;
@@ -11404,12 +11403,12 @@ void sjf_array_texture_map_heap_iface_model(sjs_array_texture* _parent, cb_textu
 #line 88
         sjt_functionParam483 = &sjt_call95;
 #line 88
-        cb._cb_heap(cb._parent, sjt_functionParam483, &sjv_newitem);
+        cb._cb_heap(cb._parent, sjt_functionParam483, &newitem);
 #line 90
-        sji_model* p = (sji_model*)sjv_newdata;
+        sji_model* p = (sji_model*)newdata;
 #line 91
         #line 89 "lib/common/array.sj"
-p[i] = sjv_newitem;
+p[i] = newitem;
 if (p[i]._parent != 0) {
     p[i]._parent->_refCount++;
 }
@@ -11417,11 +11416,11 @@ if (p[i]._parent != 0) {
 #line 87
         i++;
 
-        if (sjv_newitem._parent != 0) {
-            sjv_newitem._parent->_refCount--;
-            if (sjv_newitem._parent->_refCount <= 0) {
-                sjv_newitem._vtbl->destroy(sjv_newitem._parent);
-                free(sjv_newitem._parent);
+        if (newitem._parent != 0) {
+            newitem._parent->_refCount--;
+            if (newitem._parent->_refCount <= 0) {
+                newitem._vtbl->destroy(newitem._parent);
+                free(newitem._parent);
             }
         }
         if (sjt_call95._refCount == 1) { sjf_texture_destroy(&sjt_call95); }
@@ -11433,7 +11432,7 @@ if (p[i]._parent != 0) {
 #line 94
     _return->datasize = _parent->count;
 #line 94
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 94
@@ -11444,16 +11443,16 @@ if (p[i]._parent != 0) {
 
 void sjf_array_texture_map_heap_iface_model_heap(sjs_array_texture* _parent, cb_texture_heap_iface_model cb, sjs_array_heap_iface_model** _return) {
     int32_t i;
+    void* newdata;
     int32_t sjt_forEnd14;
     int32_t sjt_forStart14;
-    void* sjv_newdata;
 
 #line 81 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 83
-    sjv_newdata = (int*)malloc(_parent->count * sizeof(sji_model) + sizeof(int)) + 1;
+    newdata = (int*)malloc(_parent->count * sizeof(sji_model) + sizeof(int)) + 1;
 #line 84
-    int* refcount = (int*)sjv_newdata - 1;
+    int* refcount = (int*)newdata - 1;
 #line 85
     *refcount = 1;
 #line 87
@@ -11463,10 +11462,10 @@ void sjf_array_texture_map_heap_iface_model_heap(sjs_array_texture* _parent, cb_
 #line 87
     i = sjt_forStart14;
     while (i < sjt_forEnd14) {
+        sji_model newitem = { 0 };
         sjs_texture sjt_call96 = { -1 };
         sjs_texture* sjt_functionParam485 = 0;
         int32_t sjt_functionParam486;
-        sji_model sjv_newitem = { 0 };
 
 #line 87 "lib/common/array.sj"
         sjt_functionParam486 = i;
@@ -11475,12 +11474,12 @@ void sjf_array_texture_map_heap_iface_model_heap(sjs_array_texture* _parent, cb_
 #line 88
         sjt_functionParam485 = &sjt_call96;
 #line 88
-        cb._cb_heap(cb._parent, sjt_functionParam485, &sjv_newitem);
+        cb._cb_heap(cb._parent, sjt_functionParam485, &newitem);
 #line 90
-        sji_model* p = (sji_model*)sjv_newdata;
+        sji_model* p = (sji_model*)newdata;
 #line 91
         #line 89 "lib/common/array.sj"
-p[i] = sjv_newitem;
+p[i] = newitem;
 if (p[i]._parent != 0) {
     p[i]._parent->_refCount++;
 }
@@ -11488,11 +11487,11 @@ if (p[i]._parent != 0) {
 #line 87
         i++;
 
-        if (sjv_newitem._parent != 0) {
-            sjv_newitem._parent->_refCount--;
-            if (sjv_newitem._parent->_refCount <= 0) {
-                sjv_newitem._vtbl->destroy(sjv_newitem._parent);
-                free(sjv_newitem._parent);
+        if (newitem._parent != 0) {
+            newitem._parent->_refCount--;
+            if (newitem._parent->_refCount <= 0) {
+                newitem._vtbl->destroy(newitem._parent);
+                free(newitem._parent);
             }
         }
         if (sjt_call96._refCount == 1) { sjf_texture_destroy(&sjt_call96); }
@@ -11506,7 +11505,7 @@ if (p[i]._parent != 0) {
 #line 94
     (*_return)->datasize = _parent->count;
 #line 94
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 94
@@ -11606,10 +11605,10 @@ return;;
 }
 
 void sjf_array_u32_grow(sjs_array_u32* _parent, int32_t newsize, sjs_array_u32* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -11619,9 +11618,9 @@ void sjf_array_u32_grow(sjs_array_u32* _parent, int32_t newsize, sjs_array_u32* 
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(uint32_t))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(uint32_t))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -11633,7 +11632,7 @@ void sjf_array_u32_grow(sjs_array_u32* _parent, int32_t newsize, sjs_array_u32* 
 #line 150
         uint32_t* p = (uint32_t*)_parent->data;
 #line 151
-        uint32_t* newp = (uint32_t*)sjv_newdata;
+        uint32_t* newp = (uint32_t*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -11659,7 +11658,7 @@ newp[i] = p[i];
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -11669,10 +11668,10 @@ newp[i] = p[i];
 }
 
 void sjf_array_u32_grow_heap(sjs_array_u32* _parent, int32_t newsize, sjs_array_u32** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -11682,9 +11681,9 @@ void sjf_array_u32_grow_heap(sjs_array_u32* _parent, int32_t newsize, sjs_array_
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(uint32_t))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(uint32_t))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -11696,7 +11695,7 @@ void sjf_array_u32_grow_heap(sjs_array_u32* _parent, int32_t newsize, sjs_array_
 #line 150
         uint32_t* p = (uint32_t*)_parent->data;
 #line 151
-        uint32_t* newp = (uint32_t*)sjv_newdata;
+        uint32_t* newp = (uint32_t*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -11724,7 +11723,7 @@ newp[i] = p[i];
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -12287,20 +12286,20 @@ void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
 #line 95
     i = sjt_forStart12;
     while (i < sjt_forEnd12) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam141;
         sjs_scene2d* sjt_interfaceParam23 = 0;
         sjs_array_heap_iface_element* sjt_parent75 = 0;
         sji_element sjt_parent76 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent75 = &_parent->children;
 #line 95 "lib/ui/borderLayout.sj"
         sjt_functionParam141 = i;
 #line 95
-        sjf_array_heap_iface_element_getat_heap(sjt_parent75, sjt_functionParam141, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent75, sjt_functionParam141, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent76 = sjv_child;
+        sjt_parent76 = child;
 #line 94 "lib/ui/borderLayout.sj"
         sjt_interfaceParam23 = scene;
 #line 97
@@ -12308,11 +12307,11 @@ void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
 #line 95
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -12320,13 +12319,13 @@ void sjf_borderlayout_render(sjs_borderlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
     int32_t i;
+    sjs_rect remaining = { -1 };
     int32_t sjt_forEnd10;
     int32_t sjt_forEnd11;
     int32_t sjt_forStart10;
     int32_t sjt_forStart11;
     sjs_margin* sjt_functionParam138 = 0;
     sjs_rect* sjt_parent62 = 0;
-    sjs_rect sjv_remaining = { -1 };
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -12337,7 +12336,7 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 54
     sjt_functionParam138 = &_parent->margin;
 #line 54
-    sjf_rect_subtractmargin(sjt_parent62, sjt_functionParam138, &sjv_remaining);
+    sjf_rect_subtractmargin(sjt_parent62, sjt_functionParam138, &remaining);
 #line 55
     sjt_forStart10 = 0;
 #line 55
@@ -12345,6 +12344,10 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 55
     i = sjt_forStart10;
     while (i < sjt_forEnd10) {
+        sji_borderchild borderchild = { 0 };
+        sji_element child = { 0 };
+        sjs_size childsize = { -1 };
+        int32_t position;
         sjs_size sjt_call30 = { -1 };
         sjs_rect sjt_call31 = { -1 };
         sjs_rect sjt_call32 = { -1 };
@@ -12358,31 +12361,27 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         sjs_rect sjt_funcold13 = { -1 };
         int32_t sjt_functionParam139;
         sjs_array_heap_iface_element* sjt_parent63 = 0;
-        sji_borderchild sjv_borderchild = { 0 };
-        sji_element sjv_child = { 0 };
-        sjs_size sjv_childsize = { -1 };
-        int32_t sjv_position;
 
 #line 7 "lib/common/array.sj"
         sjt_parent63 = &_parent->children;
 #line 55 "lib/ui/borderLayout.sj"
         sjt_functionParam139 = i;
 #line 55
-        sjf_array_heap_iface_element_getat_heap(sjt_parent63, sjt_functionParam139, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent63, sjt_functionParam139, &child);
 #line 57
-        sjt_cast17 = sjv_child;
+        sjt_cast17 = child;
 #line 9
-        sjt_cast17._vtbl->asinterface(sjt_cast17._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild);
-        if (sjv_borderchild._parent != 0) {
-            sjv_borderchild._parent->_refCount++;
+        sjt_cast17._vtbl->asinterface(sjt_cast17._parent, sji_borderchild_typeId, (sjs_interface*)&borderchild);
+        if (borderchild._parent != 0) {
+            borderchild._parent->_refCount++;
         }
 
-        if (sjv_borderchild._parent != 0) {
+        if (borderchild._parent != 0) {
             sji_borderchild sjt_parent64 = { 0 };
             int32_t sjt_value3;
 
 #line 10 "lib/ui/borderLayout.sj"
-            sjt_parent64 = sjv_borderchild;
+            sjt_parent64 = borderchild;
 #line 58
             sjt_parent64._vtbl->getposition(sjt_parent64._parent, &sjt_value3);
 #line 58
@@ -12397,12 +12396,12 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         if (sjt_capture19.isvalid) {
             int32_option sjt_getValue1;
 
-            if (sjv_borderchild._parent != 0) {
+            if (borderchild._parent != 0) {
                 sji_borderchild sjt_parent65 = { 0 };
                 int32_t sjt_value4;
 
 #line 10 "lib/ui/borderLayout.sj"
-                sjt_parent65 = sjv_borderchild;
+                sjt_parent65 = borderchild;
 #line 58
                 sjt_parent65._vtbl->getposition(sjt_parent65._parent, &sjt_value4);
 #line 58
@@ -12415,46 +12414,46 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
             }
 
 #line 58 "lib/ui/borderLayout.sj"
-            sjv_position = sjt_getValue1.value;
+            position = sjt_getValue1.value;
         } else {
 #line 58 "lib/ui/borderLayout.sj"
-            sjv_position = sjv_borderposition_fill;
+            position = g_borderposition_fill;
         }
 
-        if (sjv_position != sjv_borderposition_fill) {
+        if (position != g_borderposition_fill) {
             sjs_size* sjt_interfaceParam17 = 0;
             sji_element sjt_parent66 = { 0 };
 
 #line 2 "lib/ui/element.sj"
-            sjt_parent66 = sjv_child;
+            sjt_parent66 = child;
 #line 2
             sjt_call30._refCount = 1;
 #line 61 "lib/ui/borderLayout.sj"
-            sjt_call30.w = (&sjv_remaining)->w;
+            sjt_call30.w = (&remaining)->w;
 #line 61
-            sjt_call30.h = (&sjv_remaining)->h;
+            sjt_call30.h = (&remaining)->h;
 #line 61
             sjf_size(&sjt_call30);
 #line 61
             sjt_interfaceParam17 = &sjt_call30;
 #line 61
-            sjt_parent66._vtbl->getsize(sjt_parent66._parent, sjt_interfaceParam17, &sjv_childsize);
-            if (sjv_position == sjv_borderposition_left) {
+            sjt_parent66._vtbl->getsize(sjt_parent66._parent, sjt_interfaceParam17, &childsize);
+            if (position == g_borderposition_left) {
                 sjs_rect* sjt_interfaceParam18 = 0;
                 sji_element sjt_parent67 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-                sjt_parent67 = sjv_child;
+                sjt_parent67 = child;
 #line 4
                 sjt_call31._refCount = 1;
 #line 63 "lib/ui/borderLayout.sj"
-                sjt_call31.x = (&sjv_remaining)->x;
+                sjt_call31.x = (&remaining)->x;
 #line 63
-                sjt_call31.y = (&sjv_remaining)->y;
+                sjt_call31.y = (&remaining)->y;
 #line 63
-                sjt_call31.w = (&sjv_childsize)->w;
+                sjt_call31.w = (&childsize)->w;
 #line 63
-                sjt_call31.h = (&sjv_remaining)->h;
+                sjt_call31.h = (&remaining)->h;
 #line 63
                 sjf_rect(&sjt_call31);
 #line 63
@@ -12464,41 +12463,41 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 63
                 sjt_funcold10._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                sjf_rect_copy(&sjt_funcold10, &sjv_remaining);
+                sjf_rect_copy(&sjt_funcold10, &remaining);
 #line 1
                 sjt_funcold10._refCount = 1;
 #line 64 "lib/ui/borderLayout.sj"
-                sjt_funcold10.x = (&sjv_remaining)->x + (&sjv_childsize)->w;
+                sjt_funcold10.x = (&remaining)->x + (&childsize)->w;
 #line 64
-                sjt_funcold10.y = (&sjv_remaining)->y;
+                sjt_funcold10.y = (&remaining)->y;
 #line 64
-                sjt_funcold10.w = (&sjv_remaining)->w - (&sjv_childsize)->w;
+                sjt_funcold10.w = (&remaining)->w - (&childsize)->w;
 #line 64
-                sjt_funcold10.h = (&sjv_remaining)->h;
+                sjt_funcold10.h = (&remaining)->h;
 #line 64
                 sjf_rect(&sjt_funcold10);
 #line 64
-                if (sjv_remaining._refCount == 1) { sjf_rect_destroy(&sjv_remaining); }
+                if (remaining._refCount == 1) { sjf_rect_destroy(&remaining); }
 ;
 #line 1 "lib/ui/rect.sj"
-                sjf_rect_copy(&sjv_remaining, &sjt_funcold10);
+                sjf_rect_copy(&remaining, &sjt_funcold10);
             } else {
-                if (sjv_position == sjv_borderposition_right) {
+                if (position == g_borderposition_right) {
                     sjs_rect* sjt_interfaceParam19 = 0;
                     sji_element sjt_parent68 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-                    sjt_parent68 = sjv_child;
+                    sjt_parent68 = child;
 #line 4
                     sjt_call32._refCount = 1;
 #line 67 "lib/ui/borderLayout.sj"
-                    sjt_call32.x = ((&sjv_remaining)->x + (&sjv_remaining)->w) - (&sjv_childsize)->w;
+                    sjt_call32.x = ((&remaining)->x + (&remaining)->w) - (&childsize)->w;
 #line 67
-                    sjt_call32.y = (&sjv_remaining)->y;
+                    sjt_call32.y = (&remaining)->y;
 #line 67
-                    sjt_call32.w = (&sjv_childsize)->w;
+                    sjt_call32.w = (&childsize)->w;
 #line 67
-                    sjt_call32.h = (&sjv_remaining)->h;
+                    sjt_call32.h = (&remaining)->h;
 #line 67
                     sjf_rect(&sjt_call32);
 #line 67
@@ -12508,41 +12507,41 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 67
                     sjt_funcold11._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                    sjf_rect_copy(&sjt_funcold11, &sjv_remaining);
+                    sjf_rect_copy(&sjt_funcold11, &remaining);
 #line 1
                     sjt_funcold11._refCount = 1;
 #line 68 "lib/ui/borderLayout.sj"
-                    sjt_funcold11.x = (&sjv_remaining)->x;
+                    sjt_funcold11.x = (&remaining)->x;
 #line 68
-                    sjt_funcold11.y = (&sjv_remaining)->y;
+                    sjt_funcold11.y = (&remaining)->y;
 #line 68
-                    sjt_funcold11.w = (&sjv_remaining)->w - (&sjv_childsize)->w;
+                    sjt_funcold11.w = (&remaining)->w - (&childsize)->w;
 #line 68
-                    sjt_funcold11.h = (&sjv_remaining)->h;
+                    sjt_funcold11.h = (&remaining)->h;
 #line 68
                     sjf_rect(&sjt_funcold11);
 #line 68
-                    if (sjv_remaining._refCount == 1) { sjf_rect_destroy(&sjv_remaining); }
+                    if (remaining._refCount == 1) { sjf_rect_destroy(&remaining); }
 ;
 #line 1 "lib/ui/rect.sj"
-                    sjf_rect_copy(&sjv_remaining, &sjt_funcold11);
+                    sjf_rect_copy(&remaining, &sjt_funcold11);
                 } else {
-                    if (sjv_position == sjv_borderposition_top) {
+                    if (position == g_borderposition_top) {
                         sjs_rect* sjt_interfaceParam20 = 0;
                         sji_element sjt_parent69 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-                        sjt_parent69 = sjv_child;
+                        sjt_parent69 = child;
 #line 4
                         sjt_call33._refCount = 1;
 #line 71 "lib/ui/borderLayout.sj"
-                        sjt_call33.x = (&sjv_remaining)->x;
+                        sjt_call33.x = (&remaining)->x;
 #line 71
-                        sjt_call33.y = (&sjv_remaining)->y;
+                        sjt_call33.y = (&remaining)->y;
 #line 71
-                        sjt_call33.w = (&sjv_remaining)->w;
+                        sjt_call33.w = (&remaining)->w;
 #line 71
-                        sjt_call33.h = (&sjv_childsize)->h;
+                        sjt_call33.h = (&childsize)->h;
 #line 71
                         sjf_rect(&sjt_call33);
 #line 71
@@ -12552,41 +12551,41 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 71
                         sjt_funcold12._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                        sjf_rect_copy(&sjt_funcold12, &sjv_remaining);
+                        sjf_rect_copy(&sjt_funcold12, &remaining);
 #line 1
                         sjt_funcold12._refCount = 1;
 #line 72 "lib/ui/borderLayout.sj"
-                        sjt_funcold12.x = (&sjv_remaining)->x;
+                        sjt_funcold12.x = (&remaining)->x;
 #line 72
-                        sjt_funcold12.y = (&sjv_remaining)->y + (&sjv_childsize)->h;
+                        sjt_funcold12.y = (&remaining)->y + (&childsize)->h;
 #line 72
-                        sjt_funcold12.w = (&sjv_remaining)->w;
+                        sjt_funcold12.w = (&remaining)->w;
 #line 72
-                        sjt_funcold12.h = (&sjv_remaining)->h - (&sjv_childsize)->h;
+                        sjt_funcold12.h = (&remaining)->h - (&childsize)->h;
 #line 72
                         sjf_rect(&sjt_funcold12);
 #line 72
-                        if (sjv_remaining._refCount == 1) { sjf_rect_destroy(&sjv_remaining); }
+                        if (remaining._refCount == 1) { sjf_rect_destroy(&remaining); }
 ;
 #line 1 "lib/ui/rect.sj"
-                        sjf_rect_copy(&sjv_remaining, &sjt_funcold12);
+                        sjf_rect_copy(&remaining, &sjt_funcold12);
                     } else {
-                        if (sjv_position == sjv_borderposition_bottom) {
+                        if (position == g_borderposition_bottom) {
                             sjs_rect* sjt_interfaceParam21 = 0;
                             sji_element sjt_parent70 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-                            sjt_parent70 = sjv_child;
+                            sjt_parent70 = child;
 #line 4
                             sjt_call34._refCount = 1;
 #line 75 "lib/ui/borderLayout.sj"
-                            sjt_call34.x = (&sjv_remaining)->x;
+                            sjt_call34.x = (&remaining)->x;
 #line 75
-                            sjt_call34.y = ((&sjv_remaining)->y + (&sjv_remaining)->h) - (&sjv_childsize)->h;
+                            sjt_call34.y = ((&remaining)->y + (&remaining)->h) - (&childsize)->h;
 #line 75
-                            sjt_call34.w = (&sjv_remaining)->w;
+                            sjt_call34.w = (&remaining)->w;
 #line 75
-                            sjt_call34.h = (&sjv_childsize)->h;
+                            sjt_call34.h = (&childsize)->h;
 #line 75
                             sjf_rect(&sjt_call34);
 #line 75
@@ -12596,24 +12595,24 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 75
                             sjt_funcold13._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                            sjf_rect_copy(&sjt_funcold13, &sjv_remaining);
+                            sjf_rect_copy(&sjt_funcold13, &remaining);
 #line 1
                             sjt_funcold13._refCount = 1;
 #line 76 "lib/ui/borderLayout.sj"
-                            sjt_funcold13.x = (&sjv_remaining)->x;
+                            sjt_funcold13.x = (&remaining)->x;
 #line 76
-                            sjt_funcold13.y = (&sjv_remaining)->y;
+                            sjt_funcold13.y = (&remaining)->y;
 #line 76
-                            sjt_funcold13.w = (&sjv_remaining)->w;
+                            sjt_funcold13.w = (&remaining)->w;
 #line 76
-                            sjt_funcold13.h = (&sjv_remaining)->h - (&sjv_childsize)->h;
+                            sjt_funcold13.h = (&remaining)->h - (&childsize)->h;
 #line 76
                             sjf_rect(&sjt_funcold13);
 #line 76
-                            if (sjv_remaining._refCount == 1) { sjf_rect_destroy(&sjv_remaining); }
+                            if (remaining._refCount == 1) { sjf_rect_destroy(&remaining); }
 ;
 #line 1 "lib/ui/rect.sj"
-                            sjf_rect_copy(&sjv_remaining, &sjt_funcold13);
+                            sjf_rect_copy(&remaining, &sjt_funcold13);
                         }
                     }
                 }
@@ -12623,20 +12622,22 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 55
         i++;
 
-        if (sjv_borderchild._parent != 0) {
-            sjv_borderchild._parent->_refCount--;
-            if (sjv_borderchild._parent->_refCount <= 0) {
-                sjv_borderchild._vtbl->destroy(sjv_borderchild._parent);
-                free(sjv_borderchild._parent);
+        if (borderchild._parent != 0) {
+            borderchild._parent->_refCount--;
+            if (borderchild._parent->_refCount <= 0) {
+                borderchild._vtbl->destroy(borderchild._parent);
+                free(borderchild._parent);
             }
         }
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
+        if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
         if (sjt_call30._refCount == 1) { sjf_size_destroy(&sjt_call30); }
 ;
         if (sjt_call31._refCount == 1) { sjf_rect_destroy(&sjt_call31); }
@@ -12655,8 +12656,6 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 ;
         if (sjt_funcold13._refCount == 1) { sjf_rect_destroy(&sjt_funcold13); }
 ;
-        if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
     }
 
 #line 82
@@ -12666,34 +12665,34 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 82
     i = sjt_forStart11;
     while (i < sjt_forEnd11) {
+        sji_borderchild borderchild2 = { 0 };
+        sji_element child2 = { 0 };
+        int32_t position2;
         int32_option sjt_capture20;
         sji_element sjt_cast18 = { 0 };
         int32_t sjt_functionParam140;
         sjs_array_heap_iface_element* sjt_parent71 = 0;
-        sji_borderchild sjv_borderchild2 = { 0 };
-        sji_element sjv_child2 = { 0 };
-        int32_t sjv_position2;
 
 #line 7 "lib/common/array.sj"
         sjt_parent71 = &_parent->children;
 #line 82 "lib/ui/borderLayout.sj"
         sjt_functionParam140 = i;
 #line 82
-        sjf_array_heap_iface_element_getat_heap(sjt_parent71, sjt_functionParam140, &sjv_child2);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent71, sjt_functionParam140, &child2);
 #line 84
-        sjt_cast18 = sjv_child2;
+        sjt_cast18 = child2;
 #line 9
-        sjt_cast18._vtbl->asinterface(sjt_cast18._parent, sji_borderchild_typeId, (sjs_interface*)&sjv_borderchild2);
-        if (sjv_borderchild2._parent != 0) {
-            sjv_borderchild2._parent->_refCount++;
+        sjt_cast18._vtbl->asinterface(sjt_cast18._parent, sji_borderchild_typeId, (sjs_interface*)&borderchild2);
+        if (borderchild2._parent != 0) {
+            borderchild2._parent->_refCount++;
         }
 
-        if (sjv_borderchild2._parent != 0) {
+        if (borderchild2._parent != 0) {
             sji_borderchild sjt_parent72 = { 0 };
             int32_t sjt_value5;
 
 #line 10 "lib/ui/borderLayout.sj"
-            sjt_parent72 = sjv_borderchild2;
+            sjt_parent72 = borderchild2;
 #line 85
             sjt_parent72._vtbl->getposition(sjt_parent72._parent, &sjt_value5);
 #line 85
@@ -12708,12 +12707,12 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         if (sjt_capture20.isvalid) {
             int32_option sjt_getValue2;
 
-            if (sjv_borderchild2._parent != 0) {
+            if (borderchild2._parent != 0) {
                 sji_borderchild sjt_parent73 = { 0 };
                 int32_t sjt_value6;
 
 #line 10 "lib/ui/borderLayout.sj"
-                sjt_parent73 = sjv_borderchild2;
+                sjt_parent73 = borderchild2;
 #line 85
                 sjt_parent73._vtbl->getposition(sjt_parent73._parent, &sjt_value6);
 #line 85
@@ -12726,20 +12725,20 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
             }
 
 #line 85 "lib/ui/borderLayout.sj"
-            sjv_position2 = sjt_getValue2.value;
+            position2 = sjt_getValue2.value;
         } else {
 #line 85 "lib/ui/borderLayout.sj"
-            sjv_position2 = sjv_borderposition_fill;
+            position2 = g_borderposition_fill;
         }
 
-        if (sjv_position2 == sjv_borderposition_fill) {
+        if (position2 == g_borderposition_fill) {
             sjs_rect* sjt_interfaceParam22 = 0;
             sji_element sjt_parent74 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-            sjt_parent74 = sjv_child2;
+            sjt_parent74 = child2;
 #line 87 "lib/ui/borderLayout.sj"
-            sjt_interfaceParam22 = &sjv_remaining;
+            sjt_interfaceParam22 = &remaining;
 #line 87
             sjt_parent74._vtbl->setrect(sjt_parent74._parent, sjt_interfaceParam22);
         }
@@ -12747,23 +12746,23 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 82
         i++;
 
-        if (sjv_borderchild2._parent != 0) {
-            sjv_borderchild2._parent->_refCount--;
-            if (sjv_borderchild2._parent->_refCount <= 0) {
-                sjv_borderchild2._vtbl->destroy(sjv_borderchild2._parent);
-                free(sjv_borderchild2._parent);
+        if (borderchild2._parent != 0) {
+            borderchild2._parent->_refCount--;
+            if (borderchild2._parent->_refCount <= 0) {
+                borderchild2._vtbl->destroy(borderchild2._parent);
+                free(borderchild2._parent);
             }
         }
-        if (sjv_child2._parent != 0) {
-            sjv_child2._parent->_refCount--;
-            if (sjv_child2._parent->_refCount <= 0) {
-                sjv_child2._vtbl->destroy(sjv_child2._parent);
-                free(sjv_child2._parent);
+        if (child2._parent != 0) {
+            child2._parent->_refCount--;
+            if (child2._parent->_refCount <= 0) {
+                child2._vtbl->destroy(child2._parent);
+                free(child2._parent);
             }
         }
     }
 
-    if (sjv_remaining._refCount == 1) { sjf_rect_destroy(&sjv_remaining); }
+    if (remaining._refCount == 1) { sjf_rect_destroy(&remaining); }
 ;
 }
 
@@ -13042,13 +13041,13 @@ void sjf_boxrenderer_heap(sjs_boxrenderer* _this) {
 
 void sjf_boxrenderer_render(sjs_boxrenderer* _parent, sjs_scene2d* scene) {
 #line 10 "lib/ui/boxRenderer.sj"
-    glUseProgram(sjv_boxshader.id);
+    glUseProgram(g_boxshader.id);
 #line 11
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boxshader.id, "model" ), 1, 0, (GLfloat*)&scene->model.m00);
+    glUniformMatrix4fv(glGetUniformLocation(g_boxshader.id, "model" ), 1, 0, (GLfloat*)&scene->model.m00);
 #line 12
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boxshader.id, "view" ), 1, 0, (GLfloat*)&scene->view.m00);
+    glUniformMatrix4fv(glGetUniformLocation(g_boxshader.id, "view" ), 1, 0, (GLfloat*)&scene->view.m00);
 #line 13
-    glUniformMatrix4fv(glGetUniformLocation(sjv_boxshader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection.m00);
+    glUniformMatrix4fv(glGetUniformLocation(g_boxshader.id, "projection" ), 1, 0, (GLfloat*)&scene->projection.m00);
 #line 14
     vertex_buffer_render(_parent->buffer, GL_TRIANGLES);
 }
@@ -13352,7 +13351,7 @@ void sjf_buttonelement_getsize(sjs_buttonelement* _parent, sjs_size* maxsize, sj
     sjs_size* sjt_parent86 = 0;
     sjs_font* sjt_parent87 = 0;
     sjs_size* sjt_parent88 = 0;
-    sjs_size sjv_textsize = { -1 };
+    sjs_size textsize = { -1 };
 
 #line 53 "lib/ui/font.sj"
     sjt_parent87 = _parent->font;
@@ -13365,9 +13364,9 @@ void sjf_buttonelement_getsize(sjs_buttonelement* _parent, sjs_size* maxsize, sj
 #line 17
     sjt_functionParam146 = &_parent->margin;
 #line 17
-    sjf_size_addmargin(sjt_parent86, sjt_functionParam146, &sjv_textsize);
+    sjf_size_addmargin(sjt_parent86, sjt_functionParam146, &textsize);
 #line 5 "lib/ui/size.sj"
-    sjt_parent88 = &sjv_textsize;
+    sjt_parent88 = &textsize;
 #line 16 "lib/ui/buttonElement.sj"
     sjt_functionParam147 = maxsize;
 #line 16
@@ -13375,7 +13374,7 @@ void sjf_buttonelement_getsize(sjs_buttonelement* _parent, sjs_size* maxsize, sj
 
     if (sjt_call37._refCount == 1) { sjf_size_destroy(&sjt_call37); }
 ;
-    if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+    if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
 }
 
@@ -13387,7 +13386,7 @@ void sjf_buttonelement_getsize_heap(sjs_buttonelement* _parent, sjs_size* maxsiz
     sjs_size* sjt_parent89 = 0;
     sjs_font* sjt_parent90 = 0;
     sjs_size* sjt_parent91 = 0;
-    sjs_size sjv_textsize = { -1 };
+    sjs_size textsize = { -1 };
 
 #line 53 "lib/ui/font.sj"
     sjt_parent90 = _parent->font;
@@ -13400,9 +13399,9 @@ void sjf_buttonelement_getsize_heap(sjs_buttonelement* _parent, sjs_size* maxsiz
 #line 17
     sjt_functionParam149 = &_parent->margin;
 #line 17
-    sjf_size_addmargin(sjt_parent89, sjt_functionParam149, &sjv_textsize);
+    sjf_size_addmargin(sjt_parent89, sjt_functionParam149, &textsize);
 #line 5 "lib/ui/size.sj"
-    sjt_parent91 = &sjv_textsize;
+    sjt_parent91 = &textsize;
 #line 16 "lib/ui/buttonElement.sj"
     sjt_functionParam150 = maxsize;
 #line 16
@@ -13410,7 +13409,7 @@ void sjf_buttonelement_getsize_heap(sjs_buttonelement* _parent, sjs_size* maxsiz
 
     if (sjt_call38._refCount == 1) { sjf_size_destroy(&sjt_call38); }
 ;
-    if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+    if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
 }
 
@@ -13453,7 +13452,7 @@ void sjf_buttonelement_heap(sjs_buttonelement* _this) {
 #line 5
     sjf_rect(&sjt_funcold14.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_funcold14._state = sjv_clickstate_none;
+    sjt_funcold14._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_funcold14);
 #line 14
@@ -13529,10 +13528,10 @@ void sjf_buttonelement_onclickgesturepress(sjs_buttonelement* _parent, sji_eleme
 }
 
 void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
+    sjs_image image = { -1 };
+    sjs_rect innerrect = { -1 };
     sjs_textrenderer sjt_value8 = { -1 };
-    sjs_image sjv_image = { -1 };
-    sjs_rect sjv_innerrect = { -1 };
-    sjs_size sjv_textsize = { -1 };
+    sjs_size textsize = { -1 };
 
     if ((_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0) == 0) {
         sjs_clickgesture* sjt_parent93 = 0;
@@ -13542,46 +13541,46 @@ void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
         sjt_parent93 = &_parent->_clickgesture;
 #line 20
         sjf_clickgesture_getstate(sjt_parent93, &underscore3);
-        if (underscore3 == sjv_clickstate_entered) {
+        if (underscore3 == g_clickstate_entered) {
 #line 34 "lib/ui/buttonElement.sj"
             sjs_image* copyoption19 = (_parent->hotimage._refCount != -1 ? &_parent->hotimage : 0);
             if (copyoption19 != 0) {
-                sjv_image._refCount = 1;
+                image._refCount = 1;
 #line 34 "lib/ui/buttonElement.sj"
-                sjf_image_copy(&sjv_image, copyoption19);
+                sjf_image_copy(&image, copyoption19);
             } else {
-                sjv_image._refCount = -1;
+                image._refCount = -1;
             }
         } else {
-            if (underscore3 == sjv_clickstate_pressed) {
+            if (underscore3 == g_clickstate_pressed) {
 #line 34 "lib/ui/buttonElement.sj"
                 sjs_image* copyoption20 = (_parent->pressedimage._refCount != -1 ? &_parent->pressedimage : 0);
                 if (copyoption20 != 0) {
-                    sjv_image._refCount = 1;
+                    image._refCount = 1;
 #line 34 "lib/ui/buttonElement.sj"
-                    sjf_image_copy(&sjv_image, copyoption20);
+                    sjf_image_copy(&image, copyoption20);
                 } else {
-                    sjv_image._refCount = -1;
+                    image._refCount = -1;
                 }
             } else {
 #line 34 "lib/ui/buttonElement.sj"
                 sjs_image* copyoption21 = (_parent->normalimage._refCount != -1 ? &_parent->normalimage : 0);
                 if (copyoption21 != 0) {
-                    sjv_image._refCount = 1;
+                    image._refCount = 1;
 #line 34 "lib/ui/buttonElement.sj"
-                    sjf_image_copy(&sjv_image, copyoption21);
+                    sjf_image_copy(&image, copyoption21);
                 } else {
-                    sjv_image._refCount = -1;
+                    image._refCount = -1;
                 }
             }
         }
 
-        if (((sjv_image._refCount != -1 ? &sjv_image : 0) != 0)) {
+        if (((image._refCount != -1 ? &image : 0) != 0)) {
             sjs_image* ifValue17 = 0;
             sjs_imagerenderer sjt_value7 = { -1 };
 
 #line 40 "lib/ui/buttonElement.sj"
-            ifValue17 = (sjv_image._refCount != -1 ? &sjv_image : 0);
+            ifValue17 = (image._refCount != -1 ? &image : 0);
 #line 40
             sjt_value7._refCount = 1;
 #line 40
@@ -13623,13 +13622,13 @@ void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
 #line 49 "lib/ui/buttonElement.sj"
         sjt_functionParam152 = &_parent->margin;
 #line 49
-        sjf_rect_subtractmargin(sjt_parent94, sjt_functionParam152, &sjv_innerrect);
+        sjf_rect_subtractmargin(sjt_parent94, sjt_functionParam152, &innerrect);
 #line 53 "lib/ui/font.sj"
         sjt_parent95 = _parent->font;
 #line 51 "lib/ui/buttonElement.sj"
         sjt_functionParam153 = &_parent->text;
 #line 51
-        sjf_font_gettextsize(sjt_parent95, sjt_functionParam153, &sjv_textsize);
+        sjf_font_gettextsize(sjt_parent95, sjt_functionParam153, &textsize);
 #line 51
         sjt_value8._refCount = 1;
 #line 51
@@ -13639,9 +13638,9 @@ void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
 #line 53
         sjt_value8.point._refCount = 1;
 #line 55
-        sjt_value8.point.x = (&sjv_innerrect)->x + (((&sjv_innerrect)->w - (&sjv_textsize)->w) / 2);
+        sjt_value8.point.x = (&innerrect)->x + (((&innerrect)->w - (&textsize)->w) / 2);
 #line 55
-        sjt_value8.point.y = (&sjv_innerrect)->y + (((&sjv_innerrect)->h - (&sjv_textsize)->h) / 2);
+        sjt_value8.point.y = (&innerrect)->y + (((&innerrect)->h - (&textsize)->h) / 2);
 #line 55
         sjf_point(&sjt_value8.point);
 #line 55
@@ -13692,13 +13691,13 @@ void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
         sjf_textrenderer_render(sjt_parent97, sjt_functionParam195);
     }
 
+    if (image._refCount == 1) { sjf_image_destroy(&image); }
+;
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
+;
     if (sjt_value8._refCount == 1) { sjf_textrenderer_destroy(&sjt_value8); }
 ;
-    if (sjv_image._refCount == 1) { sjf_image_destroy(&sjv_image); }
-;
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
-;
-    if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+    if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
 }
 
@@ -13819,28 +13818,28 @@ void sjf_centerlayout_getrect_heap(sjs_centerlayout* _parent, sjs_rect** _return
 
 void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size* _return) {
     int32_t i;
+    sjs_size innersize = { -1 };
+    sjs_size size = { -1 };
     int32_t sjt_forEnd41;
     int32_t sjt_forStart41;
     sjs_margin* sjt_functionParam1883 = 0;
     sjs_margin* sjt_functionParam1886 = 0;
     sjs_size* sjt_parent648 = 0;
     sjs_size* sjt_parent652 = 0;
-    sjs_size sjv_innersize = { -1 };
-    sjs_size sjv_size = { -1 };
 
-    sjv_size._refCount = 1;
+    size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_size.w = 0;
+    size.w = 0;
 #line 3
-    sjv_size.h = 0;
+    size.h = 0;
 #line 3
-    sjf_size(&sjv_size);
+    sjf_size(&size);
 #line 8 "lib/ui/centerLayout.sj"
     sjt_parent648 = maxsize;
 #line 10
     sjt_functionParam1883 = &_parent->margin;
 #line 10
-    sjf_size_subtractmargin(sjt_parent648, sjt_functionParam1883, &sjv_innersize);
+    sjf_size_subtractmargin(sjt_parent648, sjt_functionParam1883, &innersize);
 #line 11
     sjt_forStart41 = 0;
 #line 11
@@ -13848,6 +13847,7 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
 #line 11
     i = sjt_forStart41;
     while (i < sjt_forEnd41) {
+        sji_element child = { 0 };
         sjs_size sjt_call599 = { -1 };
         sjs_size sjt_funcold55 = { -1 };
         int32_t sjt_functionParam1884;
@@ -13856,24 +13856,23 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
         sjs_array_heap_iface_element* sjt_parent649 = 0;
         sjs_size* sjt_parent650 = 0;
         sji_element sjt_parent651 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent649 = &_parent->children;
 #line 11 "lib/ui/centerLayout.sj"
         sjt_functionParam1884 = i;
 #line 11
-        sjf_array_heap_iface_element_getat_heap(sjt_parent649, sjt_functionParam1884, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent649, sjt_functionParam1884, &child);
 #line 11
         sjt_funcold55._refCount = 1;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjt_funcold55, &sjv_size);
+        sjf_size_copy(&sjt_funcold55, &size);
 #line 12
-        sjt_parent650 = &sjv_size;
+        sjt_parent650 = &size;
 #line 2 "lib/ui/element.sj"
-        sjt_parent651 = sjv_child;
+        sjt_parent651 = child;
 #line 13 "lib/ui/centerLayout.sj"
-        sjt_interfaceParam82 = &sjv_innersize;
+        sjt_interfaceParam82 = &innersize;
 #line 13
         sjt_parent651._vtbl->getsize(sjt_parent651._parent, sjt_interfaceParam82, &sjt_call599);
 #line 13
@@ -13881,18 +13880,18 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
 #line 13
         sjf_size_max(sjt_parent650, sjt_functionParam1885, &sjt_funcold55);
 #line 13
-        if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+        if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjv_size, &sjt_funcold55);
+        sjf_size_copy(&size, &sjt_funcold55);
 #line 11 "lib/ui/centerLayout.sj"
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
         if (sjt_call599._refCount == 1) { sjf_size_destroy(&sjt_call599); }
@@ -13902,42 +13901,42 @@ void sjf_centerlayout_getsize(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_
     }
 
 #line 19 "lib/ui/size.sj"
-    sjt_parent652 = &sjv_size;
+    sjt_parent652 = &size;
 #line 15 "lib/ui/centerLayout.sj"
     sjt_functionParam1886 = &_parent->margin;
 #line 15
     sjf_size_addmargin(sjt_parent652, sjt_functionParam1886, _return);
 
-    if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
+    if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 }
 
 void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize, sjs_size** _return) {
     int32_t i;
+    sjs_size innersize = { -1 };
+    sjs_size size = { -1 };
     int32_t sjt_forEnd42;
     int32_t sjt_forStart42;
     sjs_margin* sjt_functionParam1887 = 0;
     sjs_margin* sjt_functionParam1890 = 0;
     sjs_size* sjt_parent653 = 0;
     sjs_size* sjt_parent657 = 0;
-    sjs_size sjv_innersize = { -1 };
-    sjs_size sjv_size = { -1 };
 
-    sjv_size._refCount = 1;
+    size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_size.w = 0;
+    size.w = 0;
 #line 3
-    sjv_size.h = 0;
+    size.h = 0;
 #line 3
-    sjf_size(&sjv_size);
+    sjf_size(&size);
 #line 8 "lib/ui/centerLayout.sj"
     sjt_parent653 = maxsize;
 #line 10
     sjt_functionParam1887 = &_parent->margin;
 #line 10
-    sjf_size_subtractmargin(sjt_parent653, sjt_functionParam1887, &sjv_innersize);
+    sjf_size_subtractmargin(sjt_parent653, sjt_functionParam1887, &innersize);
 #line 11
     sjt_forStart42 = 0;
 #line 11
@@ -13945,6 +13944,7 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
 #line 11
     i = sjt_forStart42;
     while (i < sjt_forEnd42) {
+        sji_element child = { 0 };
         sjs_size sjt_call600 = { -1 };
         sjs_size sjt_funcold56 = { -1 };
         int32_t sjt_functionParam1888;
@@ -13953,24 +13953,23 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
         sjs_array_heap_iface_element* sjt_parent654 = 0;
         sjs_size* sjt_parent655 = 0;
         sji_element sjt_parent656 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent654 = &_parent->children;
 #line 11 "lib/ui/centerLayout.sj"
         sjt_functionParam1888 = i;
 #line 11
-        sjf_array_heap_iface_element_getat_heap(sjt_parent654, sjt_functionParam1888, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent654, sjt_functionParam1888, &child);
 #line 11
         sjt_funcold56._refCount = 1;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjt_funcold56, &sjv_size);
+        sjf_size_copy(&sjt_funcold56, &size);
 #line 12
-        sjt_parent655 = &sjv_size;
+        sjt_parent655 = &size;
 #line 2 "lib/ui/element.sj"
-        sjt_parent656 = sjv_child;
+        sjt_parent656 = child;
 #line 13 "lib/ui/centerLayout.sj"
-        sjt_interfaceParam83 = &sjv_innersize;
+        sjt_interfaceParam83 = &innersize;
 #line 13
         sjt_parent656._vtbl->getsize(sjt_parent656._parent, sjt_interfaceParam83, &sjt_call600);
 #line 13
@@ -13978,18 +13977,18 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
 #line 13
         sjf_size_max(sjt_parent655, sjt_functionParam1889, &sjt_funcold56);
 #line 13
-        if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+        if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjv_size, &sjt_funcold56);
+        sjf_size_copy(&size, &sjt_funcold56);
 #line 11 "lib/ui/centerLayout.sj"
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
         if (sjt_call600._refCount == 1) { sjf_size_destroy(&sjt_call600); }
@@ -13999,15 +13998,15 @@ void sjf_centerlayout_getsize_heap(sjs_centerlayout* _parent, sjs_size* maxsize,
     }
 
 #line 19 "lib/ui/size.sj"
-    sjt_parent657 = &sjv_size;
+    sjt_parent657 = &size;
 #line 15 "lib/ui/centerLayout.sj"
     sjt_functionParam1890 = &_parent->margin;
 #line 15
     sjf_size_addmargin_heap(sjt_parent657, sjt_functionParam1890, _return);
 
-    if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
+    if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 }
 
@@ -14026,20 +14025,20 @@ void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
 #line 47
     i = sjt_forStart44;
     while (i < sjt_forEnd44) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam1893;
         sjs_scene2d* sjt_interfaceParam86 = 0;
         sjs_array_heap_iface_element* sjt_parent662 = 0;
         sji_element sjt_parent663 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent662 = &_parent->children;
 #line 47 "lib/ui/centerLayout.sj"
         sjt_functionParam1893 = i;
 #line 47
-        sjf_array_heap_iface_element_getat_heap(sjt_parent662, sjt_functionParam1893, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent662, sjt_functionParam1893, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent663 = sjv_child;
+        sjt_parent663 = child;
 #line 46 "lib/ui/centerLayout.sj"
         sjt_interfaceParam86 = scene;
 #line 49
@@ -14047,11 +14046,11 @@ void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
 #line 47
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -14059,11 +14058,11 @@ void sjf_centerlayout_render(sjs_centerlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
     int32_t i;
+    sjs_rect innerrect = { -1 };
     int32_t sjt_forEnd43;
     int32_t sjt_forStart43;
     sjs_margin* sjt_functionParam1891 = 0;
     sjs_rect* sjt_parent658 = 0;
-    sjs_rect sjv_innerrect = { -1 };
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -14074,7 +14073,7 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
 #line 22 "lib/ui/centerLayout.sj"
     sjt_functionParam1891 = &_parent->margin;
 #line 22
-    sjf_rect_subtractmargin(sjt_parent658, sjt_functionParam1891, &sjv_innerrect);
+    sjf_rect_subtractmargin(sjt_parent658, sjt_functionParam1891, &innerrect);
 #line 23
     sjt_forStart43 = 0;
 #line 23
@@ -14082,6 +14081,9 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
 #line 23
     i = sjt_forStart43;
     while (i < sjt_forEnd43) {
+        sji_element child = { 0 };
+        sjs_size childsize = { -1 };
+        int32_t h;
         sjs_size sjt_call601 = { -1 };
         sjs_rect sjt_call602 = { -1 };
         int32_t sjt_functionParam1892;
@@ -14090,37 +14092,34 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
         sjs_array_heap_iface_element* sjt_parent659 = 0;
         sji_element sjt_parent660 = { 0 };
         sji_element sjt_parent661 = { 0 };
-        sji_element sjv_child = { 0 };
-        sjs_size sjv_childsize = { -1 };
-        int32_t sjv_h;
-        int32_t sjv_w;
-        int32_t sjv_x;
-        int32_t sjv_y;
+        int32_t w;
+        int32_t x;
+        int32_t y;
 
 #line 7 "lib/common/array.sj"
         sjt_parent659 = &_parent->children;
 #line 23 "lib/ui/centerLayout.sj"
         sjt_functionParam1892 = i;
 #line 23
-        sjf_array_heap_iface_element_getat_heap(sjt_parent659, sjt_functionParam1892, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent659, sjt_functionParam1892, &child);
 #line 2 "lib/ui/element.sj"
-        sjt_parent660 = sjv_child;
+        sjt_parent660 = child;
 #line 2
         sjt_call601._refCount = 1;
 #line 25 "lib/ui/centerLayout.sj"
-        sjt_call601.w = (&sjv_innerrect)->w;
+        sjt_call601.w = (&innerrect)->w;
 #line 25
-        sjt_call601.h = (&sjv_innerrect)->h;
+        sjt_call601.h = (&innerrect)->h;
 #line 25
         sjf_size(&sjt_call601);
 #line 25
         sjt_interfaceParam84 = &sjt_call601;
 #line 25
-        sjt_parent660._vtbl->getsize(sjt_parent660._parent, sjt_interfaceParam84, &sjv_childsize);
+        sjt_parent660._vtbl->getsize(sjt_parent660._parent, sjt_interfaceParam84, &childsize);
 #line 27
-        sjv_x = (&sjv_innerrect)->x;
+        x = (&innerrect)->x;
 #line 28
-        sjv_w = (&sjv_innerrect)->w;
+        w = (&innerrect)->w;
         if (_parent->centerx.isvalid) {
             float ifValue43;
             float sjt_cast205;
@@ -14132,19 +14131,19 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
 #line 29
             ifValue43 = sjt_getValue7.value;
 #line 30
-            sjt_cast206 = (&sjv_innerrect)->w - (&sjv_childsize)->w;
+            sjt_cast206 = (&innerrect)->w - (&childsize)->w;
 #line 30
             sjt_cast205 = (float)sjt_cast206 * ifValue43;
 #line 30
-            sjv_x = (&sjv_innerrect)->x + (int32_t)sjt_cast205;
+            x = (&innerrect)->x + (int32_t)sjt_cast205;
 #line 31
-            sjv_w = (&sjv_childsize)->w;
+            w = (&childsize)->w;
         }
 
 #line 34
-        sjv_y = (&sjv_innerrect)->y;
+        y = (&innerrect)->y;
 #line 35
-        sjv_h = (&sjv_innerrect)->h;
+        h = (&innerrect)->h;
         if (_parent->centery.isvalid) {
             float ifValue44;
             float sjt_cast207;
@@ -14156,27 +14155,27 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
 #line 36
             ifValue44 = sjt_getValue8.value;
 #line 37
-            sjt_cast208 = (&sjv_innerrect)->h - (&sjv_childsize)->h;
+            sjt_cast208 = (&innerrect)->h - (&childsize)->h;
 #line 37
             sjt_cast207 = (float)sjt_cast208 * ifValue44;
 #line 37
-            sjv_y = (&sjv_innerrect)->y + (int32_t)sjt_cast207;
+            y = (&innerrect)->y + (int32_t)sjt_cast207;
 #line 38
-            sjv_h = (&sjv_childsize)->h;
+            h = (&childsize)->h;
         }
 
 #line 4 "lib/ui/element.sj"
-        sjt_parent661 = sjv_child;
+        sjt_parent661 = child;
 #line 4
         sjt_call602._refCount = 1;
 #line 41 "lib/ui/centerLayout.sj"
-        sjt_call602.x = sjv_x;
+        sjt_call602.x = x;
 #line 41
-        sjt_call602.y = sjv_y;
+        sjt_call602.y = y;
 #line 41
-        sjt_call602.w = sjv_w;
+        sjt_call602.w = w;
 #line 41
-        sjt_call602.h = sjv_h;
+        sjt_call602.h = h;
 #line 41
         sjf_rect(&sjt_call602);
 #line 41
@@ -14186,22 +14185,22 @@ void sjf_centerlayout_setrect(sjs_centerlayout* _parent, sjs_rect* rect_) {
 #line 23
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
+        if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
         if (sjt_call601._refCount == 1) { sjf_size_destroy(&sjt_call601); }
 ;
         if (sjt_call602._refCount == 1) { sjf_rect_destroy(&sjt_call602); }
 ;
-        if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
     }
 
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
 ;
 }
 
@@ -14269,11 +14268,11 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
 
 #line 25 "lib/ui/clickGesture.sj"
             underscore5 = mouseevent->eventtype;
-            if (underscore5 == sjv_mouseeventtype_up) {
+            if (underscore5 == g_mouseeventtype_up) {
                 sji_element sjt_functionParam197 = { 0 };
 
 #line 27 "lib/ui/clickGesture.sj"
-                _parent->_state = sjv_clickstate_none;
+                _parent->_state = g_clickstate_none;
 #line 28
                 sjt_functionParam197 = ifValue19;
                 if (sjt_functionParam197._parent != 0) {
@@ -14305,11 +14304,11 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                     }
                 }
             } else {
-                if (underscore5 == sjv_mouseeventtype_down) {
+                if (underscore5 == g_mouseeventtype_down) {
                     sji_element sjt_functionParam198 = { 0 };
 
 #line 33 "lib/ui/clickGesture.sj"
-                    _parent->_state = sjv_clickstate_pressed;
+                    _parent->_state = g_clickstate_pressed;
 #line 34
                     sjt_functionParam198 = ifValue19;
                     if (sjt_functionParam198._parent != 0) {
@@ -14341,18 +14340,18 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                         }
                     }
                 } else {
-                    if (underscore5 == sjv_mouseeventtype_move) {
+                    if (underscore5 == g_mouseeventtype_move) {
                         bool result11;
                         bool sjt_capture27;
                         sji_element sjt_functionParam199 = { 0 };
 
-                        if (_parent->_state == sjv_clickstate_none) {
+                        if (_parent->_state == g_clickstate_none) {
                             if (mouseevent->isleftdown) {
 #line 41 "lib/ui/clickGesture.sj"
-                                _parent->_state = sjv_clickstate_pressed;
+                                _parent->_state = g_clickstate_pressed;
                             } else {
 #line 43 "lib/ui/clickGesture.sj"
-                                _parent->_state = sjv_clickstate_entered;
+                                _parent->_state = g_clickstate_entered;
                             }
 
                             if (_parent->clickable._parent != 0) {
@@ -14397,7 +14396,7 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
         } else {
             bool sjt_capture28;
 
-            if ((_parent->_state == sjv_clickstate_entered) || (_parent->_state == sjv_clickstate_pressed)) {
+            if ((_parent->_state == g_clickstate_entered) || (_parent->_state == g_clickstate_pressed)) {
                 if (_parent->clickable._parent != 0) {
                     sji_element sjt_interfaceParam32 = { 0 };
                     sji_clickable sjt_parent102 = { 0 };
@@ -14411,10 +14410,10 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
 
 #line 56 "lib/ui/clickGesture.sj"
-                _parent->_state = sjv_clickstate_none;
+                _parent->_state = g_clickstate_none;
             }
 
-            if (mouseevent->eventtype == sjv_mouseeventtype_up) {
+            if (mouseevent->eventtype == g_mouseeventtype_up) {
                 bool sjt_capture29;
                 sji_element sjt_functionParam200 = { 0 };
 
@@ -14823,37 +14822,37 @@ void sjf_debug_writeline(sjs_string* data) {
 }
 
 void sjf_f32_asstring(float val, sjs_string* _return) {
-    int32_t sjv_count;
-    void* sjv_data;
+    int32_t count;
+    void* data;
 
 #line 94 "lib/common/f32.sj"
-    sjv_count = 0;
+    count = 0;
 #line 95
-    sjv_data = 0;
+    data = 0;
 #line 97
-    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
 #line 98
-    int* refcount = (int*)sjv_data - 1;
+    int* refcount = (int*)data - 1;
 #line 99
     *refcount = 1;
 #line 100
-    snprintf((char*)sjv_data, 256, "%f", val);
+    snprintf((char*)data, 256, "%f", val);
 #line 101
-    sjv_count = (int)strlen((char*)sjv_data);
+    count = (int)strlen((char*)data);
 #line 101
     _return->_refCount = 1;
 #line 103
-    _return->count = sjv_count;
+    _return->count = count;
 #line 103
     _return->data._refCount = 1;
 #line 103
-    _return->data.datasize = sjv_count;
+    _return->data.datasize = count;
 #line 103
-    _return->data.data = sjv_data;
+    _return->data.data = data;
 #line 4 "lib/common/array.sj"
     _return->data.isglobal = false;
 #line 103 "lib/common/f32.sj"
-    _return->data.count = sjv_count;
+    _return->data.count = count;
 #line 103
     sjf_array_char(&_return->data);
 #line 14 "lib/common/string.sj"
@@ -14863,39 +14862,39 @@ void sjf_f32_asstring(float val, sjs_string* _return) {
 }
 
 void sjf_f32_asstring_heap(float val, sjs_string** _return) {
-    int32_t sjv_count;
-    void* sjv_data;
+    int32_t count;
+    void* data;
 
 #line 94 "lib/common/f32.sj"
-    sjv_count = 0;
+    count = 0;
 #line 95
-    sjv_data = 0;
+    data = 0;
 #line 97
-    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
 #line 98
-    int* refcount = (int*)sjv_data - 1;
+    int* refcount = (int*)data - 1;
 #line 99
     *refcount = 1;
 #line 100
-    snprintf((char*)sjv_data, 256, "%f", val);
+    snprintf((char*)data, 256, "%f", val);
 #line 101
-    sjv_count = (int)strlen((char*)sjv_data);
+    count = (int)strlen((char*)data);
 #line 101
     (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
 #line 101
     (*_return)->_refCount = 1;
 #line 103
-    (*_return)->count = sjv_count;
+    (*_return)->count = count;
 #line 103
     (*_return)->data._refCount = 1;
 #line 103
-    (*_return)->data.datasize = sjv_count;
+    (*_return)->data.datasize = count;
 #line 103
-    (*_return)->data.data = sjv_data;
+    (*_return)->data.data = data;
 #line 4 "lib/common/array.sj"
     (*_return)->data.isglobal = false;
 #line 103 "lib/common/f32.sj"
-    (*_return)->data.count = sjv_count;
+    (*_return)->data.count = count;
 #line 103
     sjf_array_char(&(*_return)->data);
 #line 14 "lib/common/string.sj"
@@ -14905,14 +14904,14 @@ void sjf_f32_asstring_heap(float val, sjs_string** _return) {
 }
 
 void sjf_f32_ceil(float v, float* _return) {
-    float sjv_x;
+    float x;
 
 #line 60 "lib/common/f32.sj"
-    sjv_x = 0.0f;
+    x = 0.0f;
 #line 62
-    sjv_x = ceilf(v);
+    x = ceilf(v);
 #line 59
-    (*_return) = sjv_x;
+    (*_return) = x;
 }
 
 void sjf_f32_compare(float l, float r, int32_t* _return) {
@@ -14935,38 +14934,38 @@ void sjf_f32_compare(float l, float r, int32_t* _return) {
 }
 
 void sjf_f32_cos(float v, float* _return) {
-    float sjv_result;
+    float result;
 
 #line 12 "lib/common/f32.sj"
-    sjv_result = 0.0f;
+    result = 0.0f;
 #line 14
-    sjv_result = cosf(v);
+    result = cosf(v);
 #line 11
-    (*_return) = sjv_result;
+    (*_return) = result;
 }
 
 void sjf_f32_floor(float v, float* _return) {
-    float sjv_x;
+    float x;
 
 #line 68 "lib/common/f32.sj"
-    sjv_x = 0.0f;
+    x = 0.0f;
 #line 70
-    sjv_x = floorf(v);
+    x = floorf(v);
 #line 67
-    (*_return) = sjv_x;
+    (*_return) = x;
 }
 
 void sjf_f32_hash(float val, uint32_t* _return) {
-    uint32_t sjv_result;
+    uint32_t result;
 
 #line 107 "lib/common/f32.sj"
-    sjv_result = (uint32_t)0u;
+    result = (uint32_t)0u;
 #line 109
     int32_t* p = (int32_t*)&val;
 #line 110
-    sjv_result = *p;
+    result = *p;
 #line 106
-    (*_return) = sjv_result;
+    (*_return) = result;
 }
 
 void sjf_f32_interpolate(float x, float y, float percent, float* _return) {
@@ -14995,47 +14994,47 @@ void sjf_f32_min(float a, float b, float* _return) {
 }
 
 void sjf_f32_random(float* _return) {
-    float sjv_x;
+    float x;
 
 #line 52 "lib/common/f32.sj"
-    sjv_x = 0.0f;
+    x = 0.0f;
 #line 54
-    sjv_x = (float)rand() / (float)RAND_MAX;
+    x = (float)rand() / (float)RAND_MAX;
 #line 51
-    (*_return) = sjv_x;
+    (*_return) = x;
 }
 
 void sjf_f32_sin(float v, float* _return) {
-    float sjv_result;
+    float result;
 
 #line 20 "lib/common/f32.sj"
-    sjv_result = 0.0f;
+    result = 0.0f;
 #line 22
-    sjv_result = sinf(v);
+    result = sinf(v);
 #line 19
-    (*_return) = sjv_result;
+    (*_return) = result;
 }
 
 void sjf_f32_sqrt(float v, float* _return) {
-    float sjv_result;
+    float result;
 
 #line 4 "lib/common/f32.sj"
-    sjv_result = 0.0f;
+    result = 0.0f;
 #line 6
-    sjv_result = sqrtf(v);
+    result = sqrtf(v);
 #line 3
-    (*_return) = sjv_result;
+    (*_return) = result;
 }
 
 void sjf_f32_tan(float v, float* _return) {
-    float sjv_result;
+    float result;
 
 #line 28 "lib/common/f32.sj"
-    sjv_result = 0.0f;
+    result = 0.0f;
 #line 30
-    sjv_result = tanf(v);
+    result = tanf(v);
 #line 27
-    (*_return) = sjv_result;
+    (*_return) = result;
 }
 
 void sjf_fadeeffect_animatealpha(sjs_fadeeffect* _parent, float a, int32_t duration) {
@@ -15045,17 +15044,17 @@ void sjf_fadeeffect_animatealpha(sjs_fadeeffect* _parent, float a, int32_t durat
     sjs_list_heap_iface_animation* sjt_parent410 = 0;
 
 #line 44 "lib/common/list.sj"
-    sjt_parent410 = &(&sjv_animator)->animations;
+    sjt_parent410 = &(&g_animator)->animations;
 #line 44
     sjt_call276 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
     sjt_call276->_refCount = 1;
 #line 15 "lib/ui/fadeEffect.sj"
-    sjt_call276->start = (&sjv_animator)->current;
+    sjt_call276->start = (&g_animator)->current;
 #line 15
     sjt_call276->startvalue = _parent->alpha;
 #line 19
-    sjt_call276->end = (&sjv_animator)->current + duration;
+    sjt_call276->end = (&g_animator)->current + duration;
 #line 13
     sjt_call276->endvalue = a;
 #line 20
@@ -15343,23 +15342,23 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
 #line 68
         sjf_glpopframebuffer(sjt_functionParam344);
 #line 70
-        sjt_functionParam345 = sjv_gltexture_gl_texture_2d;
+        sjt_functionParam345 = g_gltexture_gl_texture_2d;
 #line 70
         sjt_functionParam346 = &ifValue11->texture;
 #line 70
         sjf_glbindtexture(sjt_functionParam345, sjt_functionParam346);
 #line 71
-        sjt_functionParam347 = &sjv_fadeshader;
+        sjt_functionParam347 = &g_fadeshader;
 #line 71
         sjf_gluseprogram(sjt_functionParam347);
 #line 72
-        sjt_functionParam348 = sjv_glblendfunctype_gl_src_alpha;
+        sjt_functionParam348 = g_glblendfunctype_gl_src_alpha;
 #line 72
-        sjt_functionParam349 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+        sjt_functionParam349 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 72
         sjf_glblendfunc(sjt_functionParam348, sjt_functionParam349);
 #line 73
-        sjt_functionParam351 = &sjv_fadeshader;
+        sjt_functionParam351 = &g_fadeshader;
 #line 73
         sjt_call64._refCount = 1;
 #line 73
@@ -15389,7 +15388,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
 #line 73
         sjf_gluniformi32(sjt_functionParam350, sjt_functionParam353);
 #line 74
-        sjt_functionParam355 = &sjv_fadeshader;
+        sjt_functionParam355 = &g_fadeshader;
 #line 74
         sjt_call65._refCount = 1;
 #line 74
@@ -15419,7 +15418,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
 #line 74
         sjf_gluniformf32(sjt_functionParam354, sjt_functionParam357);
 #line 75
-        sjt_functionParam359 = &sjv_fadeshader;
+        sjt_functionParam359 = &g_fadeshader;
 #line 75
         sjt_call66._refCount = 1;
 #line 75
@@ -15449,7 +15448,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
 #line 75
         sjf_gluniformmat4(sjt_functionParam358, sjt_functionParam361);
 #line 76
-        sjt_functionParam363 = &sjv_fadeshader;
+        sjt_functionParam363 = &g_fadeshader;
 #line 76
         sjt_call67._refCount = 1;
 #line 76
@@ -15479,7 +15478,7 @@ void sjf_fadeeffect_render(sjs_fadeeffect* _parent, sjs_scene2d* scene, cb_scene
 #line 76
         sjf_gluniformmat4(sjt_functionParam362, sjt_functionParam365);
 #line 77
-        sjt_functionParam367 = &sjv_fadeshader;
+        sjt_functionParam367 = &g_fadeshader;
 #line 77
         sjt_call68._refCount = 1;
 #line 77
@@ -15645,7 +15644,7 @@ void sjf_fieldcontroller_onback(sjs_fieldcontroller* _parent) {
     sjs_menucontroller* sjt_parent524 = 0;
 
 #line 30 "nau/nauScene3dElement.sj"
-    sjt_parent510 = sjv_fieldscene;
+    sjt_parent510 = g_fieldscene;
 #line 30
     sjt_parent510->_refCount++;
 #line 30
@@ -15667,7 +15666,7 @@ void sjf_fieldcontroller_onback(sjs_fieldcontroller* _parent) {
 #line 27
     sjf_nauscene3delement_animatelookat(sjt_parent510, sjt_functionParam1205, sjt_functionParam1206);
 #line 37 "nau/menuController.sj"
-    sjt_parent524 = sjv_menucontroller;
+    sjt_parent524 = g_menucontroller;
 #line 37
     sjf_menucontroller_onbackfromfield(sjt_parent524);
 
@@ -15712,13 +15711,17 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 3
     sjf_debug_writeline(sjt_functionParam799);
 #line 21 "lib/common/hash.sj"
-    sjt_parent370 = &sjv_modelsbyid;
+    sjt_parent370 = &g_modelsbyid;
 #line 2 "nau/fieldController.sj"
     sjt_functionParam800 = id;
 #line 2
     sjf_hash_string_weak_iface_model_getat(sjt_parent370, sjt_functionParam800, &sjt_call222);
     if ((sjt_call222._parent != 0)) {
+        sjs_vec3 c = { -1 };
+        sjs_vec3 d = { -1 };
+        sjs_fadeeffect* e = 0;
         sji_model ifValue38 = { 0 };
+        sjs_vec4 l = { -1 };
         sji_model sjt_call223 = { 0 };
         sjs_vec4 sjt_call224 = { -1 };
         sjs_string sjt_call225 = { -1 };
@@ -15759,14 +15762,10 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
         sjs_nauscene3delement* sjt_parent408 = 0;
         sjs_fadeeffect* sjt_parent409 = 0;
         sjs_fadeeffect* sjt_parent411 = 0;
-        sjs_vec3 sjv_c = { -1 };
-        sjs_vec3 sjv_d = { -1 };
-        sjs_fadeeffect* sjv_e = 0;
-        sjs_vec4 sjv_l = { -1 };
-        sjs_mat4 sjv_w = { -1 };
+        sjs_mat4 w = { -1 };
 
 #line 21 "lib/common/hash.sj"
-        sjt_parent371 = &sjv_modelsbyid;
+        sjt_parent371 = &g_modelsbyid;
 #line 2 "nau/fieldController.sj"
         sjt_functionParam801 = id;
 #line 2
@@ -15776,27 +15775,27 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 4 "lib/ui/model.sj"
         sjt_parent372 = ifValue38;
 #line 5 "nau/fieldController.sj"
-        sjt_parent372._vtbl->getcenter(sjt_parent372._parent, &sjv_c);
+        sjt_parent372._vtbl->getcenter(sjt_parent372._parent, &c);
 #line 5 "lib/ui/model.sj"
         sjt_parent373 = ifValue38;
 #line 6 "nau/fieldController.sj"
-        sjt_parent373._vtbl->getworld(sjt_parent373._parent, &sjv_w);
+        sjt_parent373._vtbl->getworld(sjt_parent373._parent, &w);
 #line 62 "lib/ui/mat4.sj"
-        sjt_parent374 = &sjv_w;
+        sjt_parent374 = &w;
 #line 59 "lib/ui/vec3.sj"
-        sjt_parent375 = &sjv_c;
+        sjt_parent375 = &c;
 #line 59
         sjf_vec3_asvec4(sjt_parent375, &sjt_call224);
 #line 7 "nau/fieldController.sj"
         sjt_functionParam802 = &sjt_call224;
 #line 7
-        sjf_mat4_multiplyvec4(sjt_parent374, sjt_functionParam802, &sjv_l);
+        sjf_mat4_multiplyvec4(sjt_parent374, sjt_functionParam802, &l);
 #line 56 "lib/ui/vec4.sj"
-        sjt_parent376 = &sjv_l;
+        sjt_parent376 = &l;
 #line 56
-        sjf_vec4_asvec3(sjt_parent376, &sjv_d);
+        sjf_vec4_asvec3(sjt_parent376, &d);
 #line 18 "lib/ui/vec3.sj"
-        sjt_parent389 = &sjv_c;
+        sjt_parent389 = &c;
 #line 18
         sjf_vec3_asstring(sjt_parent389, &sjt_call229);
 #line 10 "nau/fieldController.sj"
@@ -15828,7 +15827,7 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 10
         sjt_parent379 = &sjt_call228;
 #line 20 "lib/ui/vec4.sj"
-        sjt_parent402 = &sjv_l;
+        sjt_parent402 = &l;
 #line 20
         sjf_vec4_asstring(sjt_parent402, &sjt_call247);
 #line 10 "nau/fieldController.sj"
@@ -15864,7 +15863,7 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 10
         sjt_parent377 = &sjt_call226;
 #line 18 "lib/ui/vec3.sj"
-        sjt_parent403 = &sjv_d;
+        sjt_parent403 = &d;
 #line 18
         sjf_vec3_asstring(sjt_parent403, &sjt_call273);
 #line 10 "nau/fieldController.sj"
@@ -15876,173 +15875,173 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 10
         sjf_debug_writeline(sjt_functionParam803);
 #line 30 "nau/nauScene3dElement.sj"
-        sjt_parent408 = sjv_fieldscene;
+        sjt_parent408 = g_fieldscene;
 #line 30
         sjt_parent408->_refCount++;
 #line 12 "nau/fieldController.sj"
-        sjt_functionParam851 = &sjv_d;
+        sjt_functionParam851 = &d;
 #line 12
         sjt_functionParam852 = 2000;
 #line 12
         sjf_nauscene3delement_animatelookat(sjt_parent408, sjt_functionParam851, sjt_functionParam852);
 #line 12
-        sjv_e = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+        e = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 12
-        sjv_e->_refCount = 1;
+        e->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-        sjv_e->alpha = 1.0f;
+        e->alpha = 1.0f;
 #line 5
-        sjv_e->_rect._refCount = 1;
+        e->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_e->_rect.x = 0;
+        e->_rect.x = 0;
 #line 3
-        sjv_e->_rect.y = 0;
+        e->_rect.y = 0;
 #line 4
-        sjv_e->_rect.w = 0;
+        e->_rect.w = 0;
 #line 5
-        sjv_e->_rect.h = 0;
+        e->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_e->_rect);
+        sjf_rect(&e->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-        sjv_e->_vertexbuffer._refCount = -1;
+        e->_vertexbuffer._refCount = -1;
 #line 8
-        sjv_e->_scenebuffer._refCount = -1;
+        e->_scenebuffer._refCount = -1;
 #line 8
-        sjv_e->_innerscene._refCount = 1;
+        e->_innerscene._refCount = 1;
 #line 8
-        sjv_e->_innerscene._size._refCount = 1;
+        e->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-        sjv_e->_innerscene._size.w = 0;
+        e->_innerscene._size.w = 0;
 #line 3
-        sjv_e->_innerscene._size.h = 0;
+        e->_innerscene._size.h = 0;
 #line 3
-        sjf_size(&sjv_e->_innerscene._size);
+        sjf_size(&e->_innerscene._size);
 #line 3
-        sjv_e->_innerscene.model._refCount = 1;
+        e->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-        sjv_e->_innerscene.model.m00 = 0.0f;
+        e->_innerscene.model.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.model.m01 = 0.0f;
+        e->_innerscene.model.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.model.m02 = 0.0f;
+        e->_innerscene.model.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.model.m03 = 0.0f;
+        e->_innerscene.model.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.model.m10 = 0.0f;
+        e->_innerscene.model.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.model.m11 = 0.0f;
+        e->_innerscene.model.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.model.m12 = 0.0f;
+        e->_innerscene.model.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.model.m13 = 0.0f;
+        e->_innerscene.model.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.model.m20 = 0.0f;
+        e->_innerscene.model.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.model.m21 = 0.0f;
+        e->_innerscene.model.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.model.m22 = 0.0f;
+        e->_innerscene.model.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.model.m23 = 0.0f;
+        e->_innerscene.model.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.model.m30 = 0.0f;
+        e->_innerscene.model.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.model.m31 = 0.0f;
+        e->_innerscene.model.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.model.m32 = 0.0f;
+        e->_innerscene.model.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.model.m33 = 0.0f;
+        e->_innerscene.model.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.model);
+        sjf_mat4(&e->_innerscene.model);
 #line 17
-        sjv_e->_innerscene.view._refCount = 1;
+        e->_innerscene.view._refCount = 1;
 #line 2
-        sjv_e->_innerscene.view.m00 = 0.0f;
+        e->_innerscene.view.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.view.m01 = 0.0f;
+        e->_innerscene.view.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.view.m02 = 0.0f;
+        e->_innerscene.view.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.view.m03 = 0.0f;
+        e->_innerscene.view.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.view.m10 = 0.0f;
+        e->_innerscene.view.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.view.m11 = 0.0f;
+        e->_innerscene.view.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.view.m12 = 0.0f;
+        e->_innerscene.view.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.view.m13 = 0.0f;
+        e->_innerscene.view.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.view.m20 = 0.0f;
+        e->_innerscene.view.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.view.m21 = 0.0f;
+        e->_innerscene.view.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.view.m22 = 0.0f;
+        e->_innerscene.view.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.view.m23 = 0.0f;
+        e->_innerscene.view.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.view.m30 = 0.0f;
+        e->_innerscene.view.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.view.m31 = 0.0f;
+        e->_innerscene.view.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.view.m32 = 0.0f;
+        e->_innerscene.view.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.view.m33 = 0.0f;
+        e->_innerscene.view.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.view);
+        sjf_mat4(&e->_innerscene.view);
 #line 17
-        sjv_e->_innerscene.projection._refCount = 1;
+        e->_innerscene.projection._refCount = 1;
 #line 2
-        sjv_e->_innerscene.projection.m00 = 0.0f;
+        e->_innerscene.projection.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.projection.m01 = 0.0f;
+        e->_innerscene.projection.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.projection.m02 = 0.0f;
+        e->_innerscene.projection.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.projection.m03 = 0.0f;
+        e->_innerscene.projection.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.projection.m10 = 0.0f;
+        e->_innerscene.projection.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.projection.m11 = 0.0f;
+        e->_innerscene.projection.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.projection.m12 = 0.0f;
+        e->_innerscene.projection.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.projection.m13 = 0.0f;
+        e->_innerscene.projection.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.projection.m20 = 0.0f;
+        e->_innerscene.projection.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.projection.m21 = 0.0f;
+        e->_innerscene.projection.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.projection.m22 = 0.0f;
+        e->_innerscene.projection.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.projection.m23 = 0.0f;
+        e->_innerscene.projection.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.projection.m30 = 0.0f;
+        e->_innerscene.projection.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.projection.m31 = 0.0f;
+        e->_innerscene.projection.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.projection.m32 = 0.0f;
+        e->_innerscene.projection.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.projection.m33 = 0.0f;
+        e->_innerscene.projection.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.projection);
+        sjf_mat4(&e->_innerscene.projection);
 #line 17
-        sjv_e->_innerscene.windowrect._refCount = 1;
+        e->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_e->_innerscene.windowrect.x = 0;
+        e->_innerscene.windowrect.x = 0;
 #line 3
-        sjv_e->_innerscene.windowrect.y = 0;
+        e->_innerscene.windowrect.y = 0;
 #line 4
-        sjv_e->_innerscene.windowrect.w = 0;
+        e->_innerscene.windowrect.w = 0;
 #line 5
-        sjv_e->_innerscene.windowrect.h = 0;
+        e->_innerscene.windowrect.h = 0;
 #line 5
-        sjf_rect(&sjv_e->_innerscene.windowrect);
+        sjf_rect(&e->_innerscene.windowrect);
 #line 5
-        sjf_scene2d(&sjv_e->_innerscene);
+        sjf_scene2d(&e->_innerscene);
 #line 5
-        sjf_fadeeffect_heap(sjv_e);
+        sjf_fadeeffect_heap(e);
 #line 11 "lib/ui/fadeEffect.sj"
-        sjt_parent409 = sjv_e;
+        sjt_parent409 = e;
 #line 11
         sjt_parent409->_refCount++;
 #line 15 "nau/fieldController.sj"
@@ -16050,7 +16049,7 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 15
         sjf_fadeeffect_setalpha(sjt_parent409, sjt_functionParam853);
 #line 13 "lib/ui/fadeEffect.sj"
-        sjt_parent411 = sjv_e;
+        sjt_parent411 = e;
 #line 13
         sjt_parent411->_refCount++;
 #line 16 "nau/fieldController.sj"
@@ -16060,21 +16059,27 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 #line 16
         sjf_fadeeffect_animatealpha(sjt_parent411, sjt_functionParam859, sjt_functionParam860);
 #line 17
-        sjt_cast72 = sjv_e;
-        if (sjv_fieldbuyelement->effect._parent != 0) {
-            sjv_fieldbuyelement->effect._parent->_refCount--;
-            if (sjv_fieldbuyelement->effect._parent->_refCount <= 0) {
-                sjv_fieldbuyelement->effect._vtbl->destroy(sjv_fieldbuyelement->effect._parent);
-                free(sjv_fieldbuyelement->effect._parent);
+        sjt_cast72 = e;
+        if (g_fieldbuyelement->effect._parent != 0) {
+            g_fieldbuyelement->effect._parent->_refCount--;
+            if (g_fieldbuyelement->effect._parent->_refCount <= 0) {
+                g_fieldbuyelement->effect._vtbl->destroy(g_fieldbuyelement->effect._parent);
+                free(g_fieldbuyelement->effect._parent);
             }
         }
 
 #line 1 "lib/ui/effect.sj"
-        sjf_fadeeffect_as_sji_effect(sjt_cast72, &sjv_fieldbuyelement->effect);
-        if (sjv_fieldbuyelement->effect._parent != 0) {
-            sjv_fieldbuyelement->effect._parent->_refCount++;
+        sjf_fadeeffect_as_sji_effect(sjt_cast72, &g_fieldbuyelement->effect);
+        if (g_fieldbuyelement->effect._parent != 0) {
+            g_fieldbuyelement->effect._parent->_refCount++;
         }
 
+        e->_refCount--;
+        if (e->_refCount <= 0) {
+            weakptr_release(e);
+            sjf_fadeeffect_destroy(e);
+            free(e);
+        }
         delete_cb weakptrcb37 = { &sjt_call223._parent, weakptr_clear };
         if (sjt_call223._parent != 0) { weakptr_cb_remove(sjt_call223._parent, weakptrcb37); }
         sjt_parent408->_refCount--;
@@ -16095,12 +16100,12 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
             sjf_fadeeffect_destroy(sjt_parent411);
             free(sjt_parent411);
         }
-        sjv_e->_refCount--;
-        if (sjv_e->_refCount <= 0) {
-            weakptr_release(sjv_e);
-            sjf_fadeeffect_destroy(sjv_e);
-            free(sjv_e);
-        }
+        if (c._refCount == 1) { sjf_vec3_destroy(&c); }
+;
+        if (d._refCount == 1) { sjf_vec3_destroy(&d); }
+;
+        if (l._refCount == 1) { sjf_vec4_destroy(&l); }
+;
         if (sjt_call224._refCount == 1) { sjf_vec4_destroy(&sjt_call224); }
 ;
         if (sjt_call225._refCount == 1) { sjf_string_destroy(&sjt_call225); }
@@ -16121,13 +16126,7 @@ void sjf_fieldcontroller_selectperson(sjs_fieldcontroller* _parent, sjs_string* 
 ;
         if (sjt_call273._refCount == 1) { sjf_string_destroy(&sjt_call273); }
 ;
-        if (sjv_c._refCount == 1) { sjf_vec3_destroy(&sjv_c); }
-;
-        if (sjv_d._refCount == 1) { sjf_vec3_destroy(&sjv_d); }
-;
-        if (sjv_l._refCount == 1) { sjf_vec4_destroy(&sjv_l); }
-;
-        if (sjv_w._refCount == 1) { sjf_mat4_destroy(&sjv_w); }
+        if (w._refCount == 1) { sjf_mat4_destroy(&w); }
 ;
     } else {
         sjs_string sjt_call277 = { -1 };
@@ -16268,28 +16267,28 @@ void sjf_filllayout_getrect_heap(sjs_filllayout* _parent, sjs_rect** _return) {
 
 void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size* _return) {
     int32_t i;
+    sjs_size innersize = { -1 };
+    sjs_size size = { -1 };
     int32_t sjt_forEnd1;
     int32_t sjt_forStart1;
     sjs_margin* sjt_functionParam12 = 0;
     sjs_margin* sjt_functionParam15 = 0;
     sjs_size* sjt_parent4 = 0;
     sjs_size* sjt_parent8 = 0;
-    sjs_size sjv_innersize = { -1 };
-    sjs_size sjv_size = { -1 };
 
-    sjv_size._refCount = 1;
+    size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_size.w = 0;
+    size.w = 0;
 #line 3
-    sjv_size.h = 0;
+    size.h = 0;
 #line 3
-    sjf_size(&sjv_size);
+    sjf_size(&size);
 #line 7 "lib/ui/fillLayout.sj"
     sjt_parent4 = maxsize;
 #line 9
     sjt_functionParam12 = &_parent->margin;
 #line 9
-    sjf_size_subtractmargin(sjt_parent4, sjt_functionParam12, &sjv_innersize);
+    sjf_size_subtractmargin(sjt_parent4, sjt_functionParam12, &innersize);
 #line 10
     sjt_forStart1 = 0;
 #line 10
@@ -16297,6 +16296,7 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
 #line 10
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
+        sji_element child = { 0 };
         sjs_size sjt_call4 = { -1 };
         sjs_size sjt_funcold1 = { -1 };
         int32_t sjt_functionParam13;
@@ -16305,24 +16305,23 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
         sjs_array_heap_iface_element* sjt_parent5 = 0;
         sjs_size* sjt_parent6 = 0;
         sji_element sjt_parent7 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent5 = &_parent->children;
 #line 10 "lib/ui/fillLayout.sj"
         sjt_functionParam13 = i;
 #line 10
-        sjf_array_heap_iface_element_getat_heap(sjt_parent5, sjt_functionParam13, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent5, sjt_functionParam13, &child);
 #line 10
         sjt_funcold1._refCount = 1;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjt_funcold1, &sjv_size);
+        sjf_size_copy(&sjt_funcold1, &size);
 #line 12
-        sjt_parent6 = &sjv_size;
+        sjt_parent6 = &size;
 #line 2 "lib/ui/element.sj"
-        sjt_parent7 = sjv_child;
+        sjt_parent7 = child;
 #line 12 "lib/ui/fillLayout.sj"
-        sjt_interfaceParam1 = &sjv_innersize;
+        sjt_interfaceParam1 = &innersize;
 #line 12
         sjt_parent7._vtbl->getsize(sjt_parent7._parent, sjt_interfaceParam1, &sjt_call4);
 #line 12
@@ -16330,18 +16329,18 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
 #line 12
         sjf_size_max(sjt_parent6, sjt_functionParam14, &sjt_funcold1);
 #line 12
-        if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+        if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjv_size, &sjt_funcold1);
+        sjf_size_copy(&size, &sjt_funcold1);
 #line 10 "lib/ui/fillLayout.sj"
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
         if (sjt_call4._refCount == 1) { sjf_size_destroy(&sjt_call4); }
@@ -16351,42 +16350,42 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
     }
 
 #line 19 "lib/ui/size.sj"
-    sjt_parent8 = &sjv_size;
+    sjt_parent8 = &size;
 #line 14 "lib/ui/fillLayout.sj"
     sjt_functionParam15 = &_parent->margin;
 #line 14
     sjf_size_addmargin(sjt_parent8, sjt_functionParam15, _return);
 
-    if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
+    if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 }
 
 void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size** _return) {
     int32_t i;
+    sjs_size innersize = { -1 };
+    sjs_size size = { -1 };
     int32_t sjt_forEnd2;
     int32_t sjt_forStart2;
     sjs_margin* sjt_functionParam16 = 0;
     sjs_margin* sjt_functionParam19 = 0;
     sjs_size* sjt_parent13 = 0;
     sjs_size* sjt_parent9 = 0;
-    sjs_size sjv_innersize = { -1 };
-    sjs_size sjv_size = { -1 };
 
-    sjv_size._refCount = 1;
+    size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_size.w = 0;
+    size.w = 0;
 #line 3
-    sjv_size.h = 0;
+    size.h = 0;
 #line 3
-    sjf_size(&sjv_size);
+    sjf_size(&size);
 #line 7 "lib/ui/fillLayout.sj"
     sjt_parent9 = maxsize;
 #line 9
     sjt_functionParam16 = &_parent->margin;
 #line 9
-    sjf_size_subtractmargin(sjt_parent9, sjt_functionParam16, &sjv_innersize);
+    sjf_size_subtractmargin(sjt_parent9, sjt_functionParam16, &innersize);
 #line 10
     sjt_forStart2 = 0;
 #line 10
@@ -16394,6 +16393,7 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 #line 10
     i = sjt_forStart2;
     while (i < sjt_forEnd2) {
+        sji_element child = { 0 };
         sjs_size sjt_call5 = { -1 };
         sjs_size sjt_funcold2 = { -1 };
         int32_t sjt_functionParam17;
@@ -16402,24 +16402,23 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
         sjs_array_heap_iface_element* sjt_parent10 = 0;
         sjs_size* sjt_parent11 = 0;
         sji_element sjt_parent12 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent10 = &_parent->children;
 #line 10 "lib/ui/fillLayout.sj"
         sjt_functionParam17 = i;
 #line 10
-        sjf_array_heap_iface_element_getat_heap(sjt_parent10, sjt_functionParam17, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent10, sjt_functionParam17, &child);
 #line 10
         sjt_funcold2._refCount = 1;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjt_funcold2, &sjv_size);
+        sjf_size_copy(&sjt_funcold2, &size);
 #line 12
-        sjt_parent11 = &sjv_size;
+        sjt_parent11 = &size;
 #line 2 "lib/ui/element.sj"
-        sjt_parent12 = sjv_child;
+        sjt_parent12 = child;
 #line 12 "lib/ui/fillLayout.sj"
-        sjt_interfaceParam2 = &sjv_innersize;
+        sjt_interfaceParam2 = &innersize;
 #line 12
         sjt_parent12._vtbl->getsize(sjt_parent12._parent, sjt_interfaceParam2, &sjt_call5);
 #line 12
@@ -16427,18 +16426,18 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 #line 12
         sjf_size_max(sjt_parent11, sjt_functionParam18, &sjt_funcold2);
 #line 12
-        if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+        if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 #line 12 "lib/ui/size.sj"
-        sjf_size_copy(&sjv_size, &sjt_funcold2);
+        sjf_size_copy(&size, &sjt_funcold2);
 #line 10 "lib/ui/fillLayout.sj"
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
         if (sjt_call5._refCount == 1) { sjf_size_destroy(&sjt_call5); }
@@ -16448,15 +16447,15 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
     }
 
 #line 19 "lib/ui/size.sj"
-    sjt_parent13 = &sjv_size;
+    sjt_parent13 = &size;
 #line 14 "lib/ui/fillLayout.sj"
     sjt_functionParam19 = &_parent->margin;
 #line 14
     sjf_size_addmargin_heap(sjt_parent13, sjt_functionParam19, _return);
 
-    if (sjv_innersize._refCount == 1) { sjf_size_destroy(&sjv_innersize); }
+    if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
 }
 
@@ -16516,20 +16515,20 @@ void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene) {
 #line 49
     i = sjt_forStart4;
     while (i < sjt_forEnd4) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam23;
         sjs_scene2d* sjt_interfaceParam8 = 0;
         sjs_array_heap_iface_element* sjt_parent19 = 0;
         sji_element sjt_parent20 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent19 = &_parent->children;
 #line 49 "lib/ui/fillLayout.sj"
         sjt_functionParam23 = i;
 #line 49
-        sjf_array_heap_iface_element_getat_heap(sjt_parent19, sjt_functionParam23, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent19, sjt_functionParam23, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent20 = sjv_child;
+        sjt_parent20 = child;
 #line 48 "lib/ui/fillLayout.sj"
         sjt_interfaceParam8 = scene;
 #line 51
@@ -16537,20 +16536,20 @@ void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene) {
 #line 49
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 }
 
 void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
+    sjs_rect innerrect = { -1 };
     sjs_margin* sjt_functionParam20 = 0;
     sjs_rect* sjt_parent14 = 0;
-    sjs_rect sjv_innerrect = { -1 };
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -16561,7 +16560,7 @@ void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
 #line 21 "lib/ui/fillLayout.sj"
     sjt_functionParam20 = &_parent->margin;
 #line 21
-    sjf_rect_subtractmargin(sjt_parent14, sjt_functionParam20, &sjv_innerrect);
+    sjf_rect_subtractmargin(sjt_parent14, sjt_functionParam20, &innerrect);
     if ((_parent->effect._parent != 0)) {
         sji_effect ifValue1 = { 0 };
         sjs_rect* sjt_interfaceParam3 = 0;
@@ -16577,7 +16576,7 @@ void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
 #line 3 "lib/ui/effect.sj"
         sjt_parent15 = ifValue1;
 #line 24 "lib/ui/fillLayout.sj"
-        sjt_interfaceParam3 = &sjv_innerrect;
+        sjt_interfaceParam3 = &innerrect;
 #line 24
         sjt_interfaceParam4._parent = (sjs_object*)_parent;
 #line 24
@@ -16596,12 +16595,12 @@ void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
         sjs_rect* sjt_functionParam22 = 0;
 
 #line 26 "lib/ui/fillLayout.sj"
-        sjt_functionParam22 = &sjv_innerrect;
+        sjt_functionParam22 = &innerrect;
 #line 26
         sjf_filllayout_setrectinner(_parent, sjt_functionParam22);
     }
 
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
 ;
 }
 
@@ -16617,20 +16616,20 @@ void sjf_filllayout_setrectinner(sjs_filllayout* _parent, sjs_rect* innerrect) {
 #line 33
     i = sjt_forStart3;
     while (i < sjt_forEnd3) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam21;
         sjs_rect* sjt_interfaceParam5 = 0;
         sjs_array_heap_iface_element* sjt_parent16 = 0;
         sji_element sjt_parent17 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent16 = &_parent->children;
 #line 33 "lib/ui/fillLayout.sj"
         sjt_functionParam21 = i;
 #line 33
-        sjf_array_heap_iface_element_getat_heap(sjt_parent16, sjt_functionParam21, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent16, sjt_functionParam21, &child);
 #line 4 "lib/ui/element.sj"
-        sjt_parent17 = sjv_child;
+        sjt_parent17 = child;
 #line 32 "lib/ui/fillLayout.sj"
         sjt_interfaceParam5 = innerrect;
 #line 35
@@ -16638,11 +16637,11 @@ void sjf_filllayout_setrectinner(sjs_filllayout* _parent, sjs_rect* innerrect) {
 #line 33
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -16760,20 +16759,20 @@ void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
 #line 84
     i = sjt_forStart35;
     while (i < sjt_forEnd35) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam1198;
         sjs_scene2d* sjt_interfaceParam64 = 0;
         sjs_array_heap_iface_element* sjt_parent505 = 0;
         sji_element sjt_parent506 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent505 = &_parent->children;
 #line 84 "lib/ui/flowLayout.sj"
         sjt_functionParam1198 = i;
 #line 84
-        sjf_array_heap_iface_element_getat_heap(sjt_parent505, sjt_functionParam1198, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent505, sjt_functionParam1198, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent506 = sjv_child;
+        sjt_parent506 = child;
 #line 83 "lib/ui/flowLayout.sj"
         sjt_interfaceParam64 = scene;
 #line 86
@@ -16781,11 +16780,11 @@ void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
 #line 84
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -16793,14 +16792,14 @@ void sjf_flowlayout_render(sjs_flowlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
     int32_t i;
+    sjs_rect innerrect = { -1 };
     int32_t sjt_forEnd34;
     int32_t sjt_forStart34;
     sjs_margin* sjt_functionParam1188 = 0;
     sjs_rect* sjt_parent495 = 0;
-    sjs_rect sjv_innerrect = { -1 };
-    int32_t sjv_val1;
-    int32_t sjv_val2;
-    int32_t sjv_valmax;
+    int32_t val1;
+    int32_t val2;
+    int32_t valmax;
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -16811,13 +16810,13 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 22
     sjt_functionParam1188 = &_parent->margin;
 #line 22
-    sjf_rect_subtractmargin(sjt_parent495, sjt_functionParam1188, &sjv_innerrect);
+    sjf_rect_subtractmargin(sjt_parent495, sjt_functionParam1188, &innerrect);
 #line 24
-    sjv_val1 = 0;
+    val1 = 0;
 #line 25
-    sjv_val2 = 0;
+    val2 = 0;
 #line 26
-    sjv_valmax = 0;
+    valmax = 0;
 #line 27
     sjt_forStart34 = 0;
 #line 27
@@ -16825,9 +16824,9 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 27
     i = sjt_forStart34;
     while (i < sjt_forEnd34) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam1189;
         sjs_array_heap_iface_element* sjt_parent496 = 0;
-        sji_element sjv_child = { 0 };
         int32_t underscore15;
 
 #line 7 "lib/common/array.sj"
@@ -16835,10 +16834,11 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 27 "lib/ui/flowLayout.sj"
         sjt_functionParam1189 = i;
 #line 27
-        sjf_array_heap_iface_element_getat_heap(sjt_parent496, sjt_functionParam1189, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent496, sjt_functionParam1189, &child);
 #line 29
         underscore15 = _parent->orientation;
-        if (underscore15 == sjv_flowlayoutorientation_topbottom) {
+        if (underscore15 == g_flowlayoutorientation_topbottom) {
+            sjs_size childsize = { -1 };
             sjs_size sjt_call384 = { -1 };
             sjs_rect sjt_call385 = { -1 };
             int32_t sjt_funcold47;
@@ -16848,53 +16848,52 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
             sjs_rect* sjt_interfaceParam57 = 0;
             sji_element sjt_parent497 = { 0 };
             sji_element sjt_parent498 = { 0 };
-            sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-            sjt_parent497 = sjv_child;
+            sjt_parent497 = child;
 #line 2
             sjt_call384._refCount = 1;
 #line 31 "lib/ui/flowLayout.sj"
-            sjt_call384.w = (&sjv_innerrect)->w;
+            sjt_call384.w = (&innerrect)->w;
 #line 31
-            sjt_call384.h = (&sjv_innerrect)->h;
+            sjt_call384.h = (&innerrect)->h;
 #line 31
             sjf_size(&sjt_call384);
 #line 31
             sjt_interfaceParam56 = &sjt_call384;
 #line 31
-            sjt_parent497._vtbl->getsize(sjt_parent497._parent, sjt_interfaceParam56, &sjv_childsize);
+            sjt_parent497._vtbl->getsize(sjt_parent497._parent, sjt_interfaceParam56, &childsize);
 #line 6 "lib/common/i32.sj"
-            sjt_funcold47 = sjv_valmax;
+            sjt_funcold47 = valmax;
 #line 32 "lib/ui/flowLayout.sj"
-            sjt_functionParam1190 = sjv_valmax;
+            sjt_functionParam1190 = valmax;
 #line 32
-            sjt_functionParam1191 = (&sjv_childsize)->w;
+            sjt_functionParam1191 = (&childsize)->w;
 #line 32
             sjf_i32_max(sjt_functionParam1190, sjt_functionParam1191, &sjt_funcold47);
 #line 6 "lib/common/i32.sj"
-            sjv_valmax = sjt_funcold47;
-            if ((sjv_val1 + (&sjv_childsize)->h) > (&sjv_innerrect)->h) {
+            valmax = sjt_funcold47;
+            if ((val1 + (&childsize)->h) > (&innerrect)->h) {
 #line 34 "lib/ui/flowLayout.sj"
-                sjv_val1 = 0;
+                val1 = 0;
 #line 35
-                sjv_val2 = sjv_val2 + sjv_valmax;
+                val2 = val2 + valmax;
 #line 36
-                sjv_valmax = 0;
+                valmax = 0;
             }
 
 #line 4 "lib/ui/element.sj"
-            sjt_parent498 = sjv_child;
+            sjt_parent498 = child;
 #line 4
             sjt_call385._refCount = 1;
 #line 39 "lib/ui/flowLayout.sj"
-            sjt_call385.x = (&sjv_innerrect)->x + sjv_val2;
+            sjt_call385.x = (&innerrect)->x + val2;
 #line 39
-            sjt_call385.y = (&sjv_innerrect)->y + sjv_val1;
+            sjt_call385.y = (&innerrect)->y + val1;
 #line 39
-            sjt_call385.w = (&sjv_childsize)->w;
+            sjt_call385.w = (&childsize)->w;
 #line 39
-            sjt_call385.h = (&sjv_childsize)->h;
+            sjt_call385.h = (&childsize)->h;
 #line 39
             sjf_rect(&sjt_call385);
 #line 39
@@ -16902,16 +16901,17 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 39
             sjt_parent498._vtbl->setrect(sjt_parent498._parent, sjt_interfaceParam57);
 #line 40
-            sjv_val1 = sjv_val1 + (&sjv_childsize)->h;
+            val1 = val1 + (&childsize)->h;
 
+            if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
             if (sjt_call384._refCount == 1) { sjf_size_destroy(&sjt_call384); }
 ;
             if (sjt_call385._refCount == 1) { sjf_rect_destroy(&sjt_call385); }
 ;
-            if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
         } else {
-            if (underscore15 == sjv_flowlayoutorientation_bottomtop) {
+            if (underscore15 == g_flowlayoutorientation_bottomtop) {
+                sjs_size childsize = { -1 };
                 sjs_size sjt_call386 = { -1 };
                 sjs_rect sjt_call387 = { -1 };
                 int32_t sjt_funcold48;
@@ -16921,53 +16921,52 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                 sjs_rect* sjt_interfaceParam59 = 0;
                 sji_element sjt_parent499 = { 0 };
                 sji_element sjt_parent500 = { 0 };
-                sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                sjt_parent499 = sjv_child;
+                sjt_parent499 = child;
 #line 2
                 sjt_call386._refCount = 1;
 #line 43 "lib/ui/flowLayout.sj"
-                sjt_call386.w = (&sjv_innerrect)->w;
+                sjt_call386.w = (&innerrect)->w;
 #line 43
-                sjt_call386.h = (&sjv_innerrect)->h;
+                sjt_call386.h = (&innerrect)->h;
 #line 43
                 sjf_size(&sjt_call386);
 #line 43
                 sjt_interfaceParam58 = &sjt_call386;
 #line 43
-                sjt_parent499._vtbl->getsize(sjt_parent499._parent, sjt_interfaceParam58, &sjv_childsize);
+                sjt_parent499._vtbl->getsize(sjt_parent499._parent, sjt_interfaceParam58, &childsize);
 #line 6 "lib/common/i32.sj"
-                sjt_funcold48 = sjv_valmax;
+                sjt_funcold48 = valmax;
 #line 44 "lib/ui/flowLayout.sj"
-                sjt_functionParam1192 = sjv_valmax;
+                sjt_functionParam1192 = valmax;
 #line 44
-                sjt_functionParam1193 = (&sjv_childsize)->w;
+                sjt_functionParam1193 = (&childsize)->w;
 #line 44
                 sjf_i32_max(sjt_functionParam1192, sjt_functionParam1193, &sjt_funcold48);
 #line 6 "lib/common/i32.sj"
-                sjv_valmax = sjt_funcold48;
-                if ((sjv_val1 + (&sjv_childsize)->h) >= (&sjv_innerrect)->h) {
+                valmax = sjt_funcold48;
+                if ((val1 + (&childsize)->h) >= (&innerrect)->h) {
 #line 46 "lib/ui/flowLayout.sj"
-                    sjv_val1 = 0;
+                    val1 = 0;
 #line 47
-                    sjv_val2 = sjv_val2 + sjv_valmax;
+                    val2 = val2 + valmax;
 #line 48
-                    sjv_valmax = 0;
+                    valmax = 0;
                 }
 
 #line 4 "lib/ui/element.sj"
-                sjt_parent500 = sjv_child;
+                sjt_parent500 = child;
 #line 4
                 sjt_call387._refCount = 1;
 #line 51 "lib/ui/flowLayout.sj"
-                sjt_call387.x = (&sjv_innerrect)->x + sjv_val2;
+                sjt_call387.x = (&innerrect)->x + val2;
 #line 51
-                sjt_call387.y = (((&sjv_innerrect)->y + (&sjv_innerrect)->h) - sjv_val1) - (&sjv_childsize)->h;
+                sjt_call387.y = (((&innerrect)->y + (&innerrect)->h) - val1) - (&childsize)->h;
 #line 51
-                sjt_call387.w = (&sjv_childsize)->w;
+                sjt_call387.w = (&childsize)->w;
 #line 51
-                sjt_call387.h = (&sjv_childsize)->h;
+                sjt_call387.h = (&childsize)->h;
 #line 51
                 sjf_rect(&sjt_call387);
 #line 51
@@ -16975,16 +16974,17 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 51
                 sjt_parent500._vtbl->setrect(sjt_parent500._parent, sjt_interfaceParam59);
 #line 52
-                sjv_val1 = sjv_val1 + (&sjv_childsize)->h;
+                val1 = val1 + (&childsize)->h;
 
+                if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                 if (sjt_call386._refCount == 1) { sjf_size_destroy(&sjt_call386); }
 ;
                 if (sjt_call387._refCount == 1) { sjf_rect_destroy(&sjt_call387); }
 ;
-                if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
             } else {
-                if (underscore15 == sjv_flowlayoutorientation_leftright) {
+                if (underscore15 == g_flowlayoutorientation_leftright) {
+                    sjs_size childsize = { -1 };
                     sjs_size sjt_call388 = { -1 };
                     sjs_rect sjt_call389 = { -1 };
                     int32_t sjt_funcold49;
@@ -16994,53 +16994,52 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                     sjs_rect* sjt_interfaceParam61 = 0;
                     sji_element sjt_parent501 = { 0 };
                     sji_element sjt_parent502 = { 0 };
-                    sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                    sjt_parent501 = sjv_child;
+                    sjt_parent501 = child;
 #line 2
                     sjt_call388._refCount = 1;
 #line 55 "lib/ui/flowLayout.sj"
-                    sjt_call388.w = (&sjv_innerrect)->w;
+                    sjt_call388.w = (&innerrect)->w;
 #line 55
-                    sjt_call388.h = (&sjv_innerrect)->h;
+                    sjt_call388.h = (&innerrect)->h;
 #line 55
                     sjf_size(&sjt_call388);
 #line 55
                     sjt_interfaceParam60 = &sjt_call388;
 #line 55
-                    sjt_parent501._vtbl->getsize(sjt_parent501._parent, sjt_interfaceParam60, &sjv_childsize);
+                    sjt_parent501._vtbl->getsize(sjt_parent501._parent, sjt_interfaceParam60, &childsize);
 #line 6 "lib/common/i32.sj"
-                    sjt_funcold49 = sjv_valmax;
+                    sjt_funcold49 = valmax;
 #line 56 "lib/ui/flowLayout.sj"
-                    sjt_functionParam1194 = sjv_valmax;
+                    sjt_functionParam1194 = valmax;
 #line 56
-                    sjt_functionParam1195 = (&sjv_childsize)->h;
+                    sjt_functionParam1195 = (&childsize)->h;
 #line 56
                     sjf_i32_max(sjt_functionParam1194, sjt_functionParam1195, &sjt_funcold49);
 #line 6 "lib/common/i32.sj"
-                    sjv_valmax = sjt_funcold49;
-                    if ((sjv_val1 + (&sjv_childsize)->w) > (&sjv_innerrect)->w) {
+                    valmax = sjt_funcold49;
+                    if ((val1 + (&childsize)->w) > (&innerrect)->w) {
 #line 58 "lib/ui/flowLayout.sj"
-                        sjv_val1 = 0;
+                        val1 = 0;
 #line 59
-                        sjv_val2 = sjv_val2 + sjv_valmax;
+                        val2 = val2 + valmax;
 #line 60
-                        sjv_valmax = 0;
+                        valmax = 0;
                     }
 
 #line 4 "lib/ui/element.sj"
-                    sjt_parent502 = sjv_child;
+                    sjt_parent502 = child;
 #line 4
                     sjt_call389._refCount = 1;
 #line 63 "lib/ui/flowLayout.sj"
-                    sjt_call389.x = (&sjv_innerrect)->x + sjv_val1;
+                    sjt_call389.x = (&innerrect)->x + val1;
 #line 63
-                    sjt_call389.y = (&sjv_innerrect)->y + sjv_val2;
+                    sjt_call389.y = (&innerrect)->y + val2;
 #line 63
-                    sjt_call389.w = (&sjv_childsize)->w;
+                    sjt_call389.w = (&childsize)->w;
 #line 63
-                    sjt_call389.h = (&sjv_childsize)->h;
+                    sjt_call389.h = (&childsize)->h;
 #line 63
                     sjf_rect(&sjt_call389);
 #line 63
@@ -17048,16 +17047,17 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 63
                     sjt_parent502._vtbl->setrect(sjt_parent502._parent, sjt_interfaceParam61);
 #line 64
-                    sjv_val1 = sjv_val1 + (&sjv_childsize)->w;
+                    val1 = val1 + (&childsize)->w;
 
+                    if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                     if (sjt_call388._refCount == 1) { sjf_size_destroy(&sjt_call388); }
 ;
                     if (sjt_call389._refCount == 1) { sjf_rect_destroy(&sjt_call389); }
 ;
-                    if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
                 } else {
-                    if (underscore15 == sjv_flowlayoutorientation_rightleft) {
+                    if (underscore15 == g_flowlayoutorientation_rightleft) {
+                        sjs_size childsize = { -1 };
                         sjs_size sjt_call390 = { -1 };
                         sjs_rect sjt_call391 = { -1 };
                         int32_t sjt_funcold50;
@@ -17067,53 +17067,52 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
                         sjs_rect* sjt_interfaceParam63 = 0;
                         sji_element sjt_parent503 = { 0 };
                         sji_element sjt_parent504 = { 0 };
-                        sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                        sjt_parent503 = sjv_child;
+                        sjt_parent503 = child;
 #line 2
                         sjt_call390._refCount = 1;
 #line 67 "lib/ui/flowLayout.sj"
-                        sjt_call390.w = (&sjv_innerrect)->w;
+                        sjt_call390.w = (&innerrect)->w;
 #line 67
-                        sjt_call390.h = (&sjv_innerrect)->h;
+                        sjt_call390.h = (&innerrect)->h;
 #line 67
                         sjf_size(&sjt_call390);
 #line 67
                         sjt_interfaceParam62 = &sjt_call390;
 #line 67
-                        sjt_parent503._vtbl->getsize(sjt_parent503._parent, sjt_interfaceParam62, &sjv_childsize);
+                        sjt_parent503._vtbl->getsize(sjt_parent503._parent, sjt_interfaceParam62, &childsize);
 #line 6 "lib/common/i32.sj"
-                        sjt_funcold50 = sjv_valmax;
+                        sjt_funcold50 = valmax;
 #line 68 "lib/ui/flowLayout.sj"
-                        sjt_functionParam1196 = sjv_valmax;
+                        sjt_functionParam1196 = valmax;
 #line 68
-                        sjt_functionParam1197 = (&sjv_childsize)->h;
+                        sjt_functionParam1197 = (&childsize)->h;
 #line 68
                         sjf_i32_max(sjt_functionParam1196, sjt_functionParam1197, &sjt_funcold50);
 #line 6 "lib/common/i32.sj"
-                        sjv_valmax = sjt_funcold50;
-                        if ((sjv_val1 + (&sjv_childsize)->w) > (&sjv_innerrect)->w) {
+                        valmax = sjt_funcold50;
+                        if ((val1 + (&childsize)->w) > (&innerrect)->w) {
 #line 70 "lib/ui/flowLayout.sj"
-                            sjv_val1 = 0;
+                            val1 = 0;
 #line 71
-                            sjv_val2 = sjv_val2 + sjv_valmax;
+                            val2 = val2 + valmax;
 #line 72
-                            sjv_valmax = 0;
+                            valmax = 0;
                         }
 
 #line 4 "lib/ui/element.sj"
-                        sjt_parent504 = sjv_child;
+                        sjt_parent504 = child;
 #line 4
                         sjt_call391._refCount = 1;
 #line 75 "lib/ui/flowLayout.sj"
-                        sjt_call391.x = (((&sjv_innerrect)->x + (&sjv_innerrect)->w) - sjv_val1) - (&sjv_childsize)->w;
+                        sjt_call391.x = (((&innerrect)->x + (&innerrect)->w) - val1) - (&childsize)->w;
 #line 75
-                        sjt_call391.y = (&sjv_innerrect)->y + sjv_val2;
+                        sjt_call391.y = (&innerrect)->y + val2;
 #line 75
-                        sjt_call391.w = (&sjv_childsize)->w;
+                        sjt_call391.w = (&childsize)->w;
 #line 75
-                        sjt_call391.h = (&sjv_childsize)->h;
+                        sjt_call391.h = (&childsize)->h;
 #line 75
                         sjf_rect(&sjt_call391);
 #line 75
@@ -17121,13 +17120,13 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 75
                         sjt_parent504._vtbl->setrect(sjt_parent504._parent, sjt_interfaceParam63);
 #line 76
-                        sjv_val1 = sjv_val1 + (&sjv_childsize)->w;
+                        val1 = val1 + (&childsize)->w;
 
+                        if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                         if (sjt_call390._refCount == 1) { sjf_size_destroy(&sjt_call390); }
 ;
                         if (sjt_call391._refCount == 1) { sjf_rect_destroy(&sjt_call391); }
-;
-                        if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
 ;
                     }
                 }
@@ -17137,16 +17136,16 @@ void sjf_flowlayout_setrect(sjs_flowlayout* _parent, sjs_rect* rect_) {
 #line 27
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
 ;
 }
 
@@ -17214,51 +17213,51 @@ void sjf_font_destroy(sjs_font* _this) {
 }
 
 void sjf_font_gettextsize(sjs_font* _parent, sjs_string* str, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
+    int32_t h;
+    int32_t w;
 
 #line 54 "lib/ui/font.sj"
-    sjv_w = 0;
+    w = 0;
 #line 55
-    sjv_h = 0;
+    h = 0;
 #line 57
     vec2 size = get_text_size(_parent->font, (char*)str->data.data);
 #line 58
-    sjv_w = (int)size.x;
+    w = (int)size.x;
 #line 59
-    sjv_h = (int)size.y;
+    h = (int)size.y;
 #line 59
     _return->_refCount = 1;
 #line 61
-    _return->w = sjv_w;
+    _return->w = w;
 #line 61
-    _return->h = sjv_h;
+    _return->h = h;
 #line 61
     sjf_size(_return);
 }
 
 void sjf_font_gettextsize_heap(sjs_font* _parent, sjs_string* str, sjs_size** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
+    int32_t h;
+    int32_t w;
 
 #line 54 "lib/ui/font.sj"
-    sjv_w = 0;
+    w = 0;
 #line 55
-    sjv_h = 0;
+    h = 0;
 #line 57
     vec2 size = get_text_size(_parent->font, (char*)str->data.data);
 #line 58
-    sjv_w = (int)size.x;
+    w = (int)size.x;
 #line 59
-    sjv_h = (int)size.y;
+    h = (int)size.y;
 #line 59
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
 #line 59
     (*_return)->_refCount = 1;
 #line 61
-    (*_return)->w = sjv_w;
+    (*_return)->w = w;
 #line 61
-    (*_return)->h = sjv_h;
+    (*_return)->h = h;
 #line 61
     sjf_size_heap((*_return));
 }
@@ -17293,37 +17292,37 @@ void sjf_font_heap(sjs_font* _this) {
 }
 
 void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
+    sjs_font* h = 0;
+    sjs_fontkey k = { -1 };
     sjs_fontkey* sjt_functionParam204 = 0;
     sjs_hash_fontkey_weak_font* sjt_parent104 = 0;
-    sjs_font* sjv_h = 0;
-    sjs_fontkey sjv_k = { -1 };
-    sjs_font* sjv_w = 0;
+    sjs_font* w = 0;
 
-    sjv_k._refCount = 1;
-    sjv_k.src._refCount = 1;
+    k._refCount = 1;
+    k.src._refCount = 1;
 #line 3 "lib/ui/font.sj"
-    sjf_string_copy(&sjv_k.src, src);
+    sjf_string_copy(&k.src, src);
 #line 3
-    sjv_k.size = size;
+    k.size = size;
 #line 3
-    sjf_fontkey(&sjv_k);
+    sjf_fontkey(&k);
 #line 21 "lib/common/hash.sj"
-    sjt_parent104 = &sjv_fonthash;
+    sjt_parent104 = &g_fonthash;
 #line 7 "lib/ui/font.sj"
-    sjt_functionParam204 = &sjv_k;
+    sjt_functionParam204 = &k;
 #line 7
-    sjf_hash_fontkey_weak_font_getat(sjt_parent104, sjt_functionParam204, &sjv_w);
+    sjf_hash_fontkey_weak_font_getat(sjt_parent104, sjt_functionParam204, &w);
 #line 8
-    sjv_h = sjv_w;
-    if (sjv_h != 0) {
-        sjv_h->_refCount++;
+    h = w;
+    if (h != 0) {
+        h->_refCount++;
     }
 
-    if ((sjv_h != 0)) {
+    if ((h != 0)) {
         sjs_font* ifValue16 = 0;
 
 #line 9 "lib/ui/font.sj"
-        ifValue16 = sjv_h;
+        ifValue16 = h;
         if (ifValue16 != 0) {
             ifValue16->_refCount++;
         }
@@ -17340,26 +17339,26 @@ void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
             free(ifValue16);
         }
     } else {
+        sjs_font* result = 0;
         sjs_fontkey* sjt_functionParam205 = 0;
         sjs_font* sjt_functionParam206 = 0;
         sjs_hash_fontkey_weak_font* sjt_parent105 = 0;
-        sjs_font* sjv_result = 0;
 
-        sjv_result = (sjs_font*)malloc(sizeof(sjs_font));
-        sjv_result->_refCount = 1;
-        sjv_result->src._refCount = 1;
+        result = (sjs_font*)malloc(sizeof(sjs_font));
+        result->_refCount = 1;
+        result->src._refCount = 1;
 #line 3 "lib/ui/font.sj"
-        sjf_string_copy(&sjv_result->src, src);
+        sjf_string_copy(&result->src, src);
 #line 3
-        sjv_result->size = size;
+        result->size = size;
 #line 3
-        sjf_font_heap(sjv_result);
+        sjf_font_heap(result);
 #line 38 "lib/common/hash.sj"
-        sjt_parent105 = &sjv_fonthash;
+        sjt_parent105 = &g_fonthash;
 #line 15 "lib/ui/font.sj"
-        sjt_functionParam205 = &sjv_k;
+        sjt_functionParam205 = &k;
 #line 15
-        sjt_functionParam206 = sjv_result;
+        sjt_functionParam206 = result;
 #line 15
         delete_cb weakptrcb26 = { &sjt_functionParam206, weakptr_clear };
 #line 15
@@ -17367,31 +17366,31 @@ void sjf_font_load_heap(sjs_string* src, float size, sjs_font** _return) {
 #line 15
         sjf_hash_fontkey_weak_font_setat(sjt_parent105, sjt_functionParam205, sjt_functionParam206);
 #line 3
-        (*_return) = sjv_result;
+        (*_return) = result;
 #line 3
         (*_return)->_refCount++;
 
+        result->_refCount--;
+        if (result->_refCount <= 0) {
+            weakptr_release(result);
+            sjf_font_destroy(result);
+            free(result);
+        }
         delete_cb weakptrcb39 = { &sjt_functionParam206, weakptr_clear };
         if (sjt_functionParam206 != 0) { weakptr_cb_remove(sjt_functionParam206, weakptrcb39); }
-        sjv_result->_refCount--;
-        if (sjv_result->_refCount <= 0) {
-            weakptr_release(sjv_result);
-            sjf_font_destroy(sjv_result);
-            free(sjv_result);
-        }
     }
 
-    if (sjv_h != 0) {
-        sjv_h->_refCount--;
-        if (sjv_h->_refCount <= 0) {
-            weakptr_release(sjv_h);
-            sjf_font_destroy(sjv_h);
-            free(sjv_h);
+    if (h != 0) {
+        h->_refCount--;
+        if (h->_refCount <= 0) {
+            weakptr_release(h);
+            sjf_font_destroy(h);
+            free(h);
         }
     }
-    delete_cb weakptrcb40 = { &sjv_w, weakptr_clear };
-    if (sjv_w != 0) { weakptr_cb_remove(sjv_w, weakptrcb40); }
-    if (sjv_k._refCount == 1) { sjf_fontkey_destroy(&sjv_k); }
+    delete_cb weakptrcb40 = { &w, weakptr_clear };
+    if (w != 0) { weakptr_cb_remove(w, weakptrcb40); }
+    if (k._refCount == 1) { sjf_fontkey_destroy(&k); }
 ;
 }
 
@@ -17473,7 +17472,7 @@ void sjf_forestcontroller_onback(sjs_forestcontroller* _parent) {
     sjs_menucontroller* sjt_parent600 = 0;
 
 #line 30 "nau/nauScene3dElement.sj"
-    sjt_parent596 = sjv_forestscene;
+    sjt_parent596 = g_forestscene;
 #line 30
     sjt_parent596->_refCount++;
 #line 30
@@ -17495,7 +17494,7 @@ void sjf_forestcontroller_onback(sjs_forestcontroller* _parent) {
 #line 27
     sjf_nauscene3delement_animatelookat(sjt_parent596, sjt_functionParam1566, sjt_functionParam1567);
 #line 92 "nau/menuController.sj"
-    sjt_parent600 = sjv_menucontroller;
+    sjt_parent600 = g_menucontroller;
 #line 92
     sjf_menucontroller_onbackfromforest(sjt_parent600);
 
@@ -17540,13 +17539,17 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 3
     sjf_debug_writeline(sjt_functionParam864);
 #line 21 "lib/common/hash.sj"
-    sjt_parent414 = &sjv_modelsbyid;
+    sjt_parent414 = &g_modelsbyid;
 #line 2 "nau/forestController.sj"
     sjt_functionParam865 = id;
 #line 2
     sjf_hash_string_weak_iface_model_getat(sjt_parent414, sjt_functionParam865, &sjt_call280);
     if ((sjt_call280._parent != 0)) {
+        sjs_vec3 c = { -1 };
+        sjs_vec3 d = { -1 };
+        sjs_fadeeffect* e = 0;
         sji_model ifValue40 = { 0 };
+        sjs_vec4 l = { -1 };
         sji_model sjt_call281 = { 0 };
         sjs_vec4 sjt_call282 = { -1 };
         sjs_string sjt_call283 = { -1 };
@@ -17587,14 +17590,10 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
         sjs_nauscene3delement* sjt_parent428 = 0;
         sjs_fadeeffect* sjt_parent429 = 0;
         sjs_fadeeffect* sjt_parent430 = 0;
-        sjs_vec3 sjv_c = { -1 };
-        sjs_vec3 sjv_d = { -1 };
-        sjs_fadeeffect* sjv_e = 0;
-        sjs_vec4 sjv_l = { -1 };
-        sjs_mat4 sjv_w = { -1 };
+        sjs_mat4 w = { -1 };
 
 #line 21 "lib/common/hash.sj"
-        sjt_parent415 = &sjv_modelsbyid;
+        sjt_parent415 = &g_modelsbyid;
 #line 2 "nau/forestController.sj"
         sjt_functionParam866 = id;
 #line 2
@@ -17604,27 +17603,27 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 4 "lib/ui/model.sj"
         sjt_parent416 = ifValue40;
 #line 5 "nau/forestController.sj"
-        sjt_parent416._vtbl->getcenter(sjt_parent416._parent, &sjv_c);
+        sjt_parent416._vtbl->getcenter(sjt_parent416._parent, &c);
 #line 5 "lib/ui/model.sj"
         sjt_parent417 = ifValue40;
 #line 6 "nau/forestController.sj"
-        sjt_parent417._vtbl->getworld(sjt_parent417._parent, &sjv_w);
+        sjt_parent417._vtbl->getworld(sjt_parent417._parent, &w);
 #line 62 "lib/ui/mat4.sj"
-        sjt_parent418 = &sjv_w;
+        sjt_parent418 = &w;
 #line 59 "lib/ui/vec3.sj"
-        sjt_parent419 = &sjv_c;
+        sjt_parent419 = &c;
 #line 59
         sjf_vec3_asvec4(sjt_parent419, &sjt_call282);
 #line 7 "nau/forestController.sj"
         sjt_functionParam867 = &sjt_call282;
 #line 7
-        sjf_mat4_multiplyvec4(sjt_parent418, sjt_functionParam867, &sjv_l);
+        sjf_mat4_multiplyvec4(sjt_parent418, sjt_functionParam867, &l);
 #line 56 "lib/ui/vec4.sj"
-        sjt_parent420 = &sjv_l;
+        sjt_parent420 = &l;
 #line 56
-        sjf_vec4_asvec3(sjt_parent420, &sjv_d);
+        sjf_vec4_asvec3(sjt_parent420, &d);
 #line 18 "lib/ui/vec3.sj"
-        sjt_parent425 = &sjv_c;
+        sjt_parent425 = &c;
 #line 18
         sjf_vec3_asstring(sjt_parent425, &sjt_call287);
 #line 10 "nau/forestController.sj"
@@ -17656,7 +17655,7 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 10
         sjt_parent423 = &sjt_call286;
 #line 20 "lib/ui/vec4.sj"
-        sjt_parent426 = &sjv_l;
+        sjt_parent426 = &l;
 #line 20
         sjf_vec4_asstring(sjt_parent426, &sjt_call289);
 #line 10 "nau/forestController.sj"
@@ -17692,7 +17691,7 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 10
         sjt_parent421 = &sjt_call284;
 #line 18 "lib/ui/vec3.sj"
-        sjt_parent427 = &sjv_d;
+        sjt_parent427 = &d;
 #line 18
         sjf_vec3_asstring(sjt_parent427, &sjt_call291);
 #line 10 "nau/forestController.sj"
@@ -17704,173 +17703,173 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 10
         sjf_debug_writeline(sjt_functionParam868);
 #line 30 "nau/nauScene3dElement.sj"
-        sjt_parent428 = sjv_forestscene;
+        sjt_parent428 = g_forestscene;
 #line 30
         sjt_parent428->_refCount++;
 #line 12 "nau/forestController.sj"
-        sjt_functionParam873 = &sjv_d;
+        sjt_functionParam873 = &d;
 #line 12
         sjt_functionParam874 = 2000;
 #line 12
         sjf_nauscene3delement_animatelookat(sjt_parent428, sjt_functionParam873, sjt_functionParam874);
 #line 12
-        sjv_e = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+        e = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 12
-        sjv_e->_refCount = 1;
+        e->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-        sjv_e->alpha = 1.0f;
+        e->alpha = 1.0f;
 #line 5
-        sjv_e->_rect._refCount = 1;
+        e->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_e->_rect.x = 0;
+        e->_rect.x = 0;
 #line 3
-        sjv_e->_rect.y = 0;
+        e->_rect.y = 0;
 #line 4
-        sjv_e->_rect.w = 0;
+        e->_rect.w = 0;
 #line 5
-        sjv_e->_rect.h = 0;
+        e->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_e->_rect);
+        sjf_rect(&e->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-        sjv_e->_vertexbuffer._refCount = -1;
+        e->_vertexbuffer._refCount = -1;
 #line 8
-        sjv_e->_scenebuffer._refCount = -1;
+        e->_scenebuffer._refCount = -1;
 #line 8
-        sjv_e->_innerscene._refCount = 1;
+        e->_innerscene._refCount = 1;
 #line 8
-        sjv_e->_innerscene._size._refCount = 1;
+        e->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-        sjv_e->_innerscene._size.w = 0;
+        e->_innerscene._size.w = 0;
 #line 3
-        sjv_e->_innerscene._size.h = 0;
+        e->_innerscene._size.h = 0;
 #line 3
-        sjf_size(&sjv_e->_innerscene._size);
+        sjf_size(&e->_innerscene._size);
 #line 3
-        sjv_e->_innerscene.model._refCount = 1;
+        e->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-        sjv_e->_innerscene.model.m00 = 0.0f;
+        e->_innerscene.model.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.model.m01 = 0.0f;
+        e->_innerscene.model.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.model.m02 = 0.0f;
+        e->_innerscene.model.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.model.m03 = 0.0f;
+        e->_innerscene.model.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.model.m10 = 0.0f;
+        e->_innerscene.model.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.model.m11 = 0.0f;
+        e->_innerscene.model.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.model.m12 = 0.0f;
+        e->_innerscene.model.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.model.m13 = 0.0f;
+        e->_innerscene.model.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.model.m20 = 0.0f;
+        e->_innerscene.model.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.model.m21 = 0.0f;
+        e->_innerscene.model.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.model.m22 = 0.0f;
+        e->_innerscene.model.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.model.m23 = 0.0f;
+        e->_innerscene.model.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.model.m30 = 0.0f;
+        e->_innerscene.model.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.model.m31 = 0.0f;
+        e->_innerscene.model.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.model.m32 = 0.0f;
+        e->_innerscene.model.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.model.m33 = 0.0f;
+        e->_innerscene.model.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.model);
+        sjf_mat4(&e->_innerscene.model);
 #line 17
-        sjv_e->_innerscene.view._refCount = 1;
+        e->_innerscene.view._refCount = 1;
 #line 2
-        sjv_e->_innerscene.view.m00 = 0.0f;
+        e->_innerscene.view.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.view.m01 = 0.0f;
+        e->_innerscene.view.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.view.m02 = 0.0f;
+        e->_innerscene.view.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.view.m03 = 0.0f;
+        e->_innerscene.view.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.view.m10 = 0.0f;
+        e->_innerscene.view.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.view.m11 = 0.0f;
+        e->_innerscene.view.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.view.m12 = 0.0f;
+        e->_innerscene.view.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.view.m13 = 0.0f;
+        e->_innerscene.view.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.view.m20 = 0.0f;
+        e->_innerscene.view.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.view.m21 = 0.0f;
+        e->_innerscene.view.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.view.m22 = 0.0f;
+        e->_innerscene.view.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.view.m23 = 0.0f;
+        e->_innerscene.view.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.view.m30 = 0.0f;
+        e->_innerscene.view.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.view.m31 = 0.0f;
+        e->_innerscene.view.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.view.m32 = 0.0f;
+        e->_innerscene.view.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.view.m33 = 0.0f;
+        e->_innerscene.view.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.view);
+        sjf_mat4(&e->_innerscene.view);
 #line 17
-        sjv_e->_innerscene.projection._refCount = 1;
+        e->_innerscene.projection._refCount = 1;
 #line 2
-        sjv_e->_innerscene.projection.m00 = 0.0f;
+        e->_innerscene.projection.m00 = 0.0f;
 #line 3
-        sjv_e->_innerscene.projection.m01 = 0.0f;
+        e->_innerscene.projection.m01 = 0.0f;
 #line 4
-        sjv_e->_innerscene.projection.m02 = 0.0f;
+        e->_innerscene.projection.m02 = 0.0f;
 #line 5
-        sjv_e->_innerscene.projection.m03 = 0.0f;
+        e->_innerscene.projection.m03 = 0.0f;
 #line 6
-        sjv_e->_innerscene.projection.m10 = 0.0f;
+        e->_innerscene.projection.m10 = 0.0f;
 #line 7
-        sjv_e->_innerscene.projection.m11 = 0.0f;
+        e->_innerscene.projection.m11 = 0.0f;
 #line 8
-        sjv_e->_innerscene.projection.m12 = 0.0f;
+        e->_innerscene.projection.m12 = 0.0f;
 #line 9
-        sjv_e->_innerscene.projection.m13 = 0.0f;
+        e->_innerscene.projection.m13 = 0.0f;
 #line 10
-        sjv_e->_innerscene.projection.m20 = 0.0f;
+        e->_innerscene.projection.m20 = 0.0f;
 #line 11
-        sjv_e->_innerscene.projection.m21 = 0.0f;
+        e->_innerscene.projection.m21 = 0.0f;
 #line 12
-        sjv_e->_innerscene.projection.m22 = 0.0f;
+        e->_innerscene.projection.m22 = 0.0f;
 #line 13
-        sjv_e->_innerscene.projection.m23 = 0.0f;
+        e->_innerscene.projection.m23 = 0.0f;
 #line 14
-        sjv_e->_innerscene.projection.m30 = 0.0f;
+        e->_innerscene.projection.m30 = 0.0f;
 #line 15
-        sjv_e->_innerscene.projection.m31 = 0.0f;
+        e->_innerscene.projection.m31 = 0.0f;
 #line 16
-        sjv_e->_innerscene.projection.m32 = 0.0f;
+        e->_innerscene.projection.m32 = 0.0f;
 #line 17
-        sjv_e->_innerscene.projection.m33 = 0.0f;
+        e->_innerscene.projection.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_e->_innerscene.projection);
+        sjf_mat4(&e->_innerscene.projection);
 #line 17
-        sjv_e->_innerscene.windowrect._refCount = 1;
+        e->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_e->_innerscene.windowrect.x = 0;
+        e->_innerscene.windowrect.x = 0;
 #line 3
-        sjv_e->_innerscene.windowrect.y = 0;
+        e->_innerscene.windowrect.y = 0;
 #line 4
-        sjv_e->_innerscene.windowrect.w = 0;
+        e->_innerscene.windowrect.w = 0;
 #line 5
-        sjv_e->_innerscene.windowrect.h = 0;
+        e->_innerscene.windowrect.h = 0;
 #line 5
-        sjf_rect(&sjv_e->_innerscene.windowrect);
+        sjf_rect(&e->_innerscene.windowrect);
 #line 5
-        sjf_scene2d(&sjv_e->_innerscene);
+        sjf_scene2d(&e->_innerscene);
 #line 5
-        sjf_fadeeffect_heap(sjv_e);
+        sjf_fadeeffect_heap(e);
 #line 11 "lib/ui/fadeEffect.sj"
-        sjt_parent429 = sjv_e;
+        sjt_parent429 = e;
 #line 11
         sjt_parent429->_refCount++;
 #line 15 "nau/forestController.sj"
@@ -17878,7 +17877,7 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 15
         sjf_fadeeffect_setalpha(sjt_parent429, sjt_functionParam875);
 #line 13 "lib/ui/fadeEffect.sj"
-        sjt_parent430 = sjv_e;
+        sjt_parent430 = e;
 #line 13
         sjt_parent430->_refCount++;
 #line 16 "nau/forestController.sj"
@@ -17888,21 +17887,27 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 #line 16
         sjf_fadeeffect_animatealpha(sjt_parent430, sjt_functionParam876, sjt_functionParam877);
 #line 17
-        sjt_cast73 = sjv_e;
-        if (sjv_forestbuyelement->effect._parent != 0) {
-            sjv_forestbuyelement->effect._parent->_refCount--;
-            if (sjv_forestbuyelement->effect._parent->_refCount <= 0) {
-                sjv_forestbuyelement->effect._vtbl->destroy(sjv_forestbuyelement->effect._parent);
-                free(sjv_forestbuyelement->effect._parent);
+        sjt_cast73 = e;
+        if (g_forestbuyelement->effect._parent != 0) {
+            g_forestbuyelement->effect._parent->_refCount--;
+            if (g_forestbuyelement->effect._parent->_refCount <= 0) {
+                g_forestbuyelement->effect._vtbl->destroy(g_forestbuyelement->effect._parent);
+                free(g_forestbuyelement->effect._parent);
             }
         }
 
 #line 1 "lib/ui/effect.sj"
-        sjf_fadeeffect_as_sji_effect(sjt_cast73, &sjv_forestbuyelement->effect);
-        if (sjv_forestbuyelement->effect._parent != 0) {
-            sjv_forestbuyelement->effect._parent->_refCount++;
+        sjf_fadeeffect_as_sji_effect(sjt_cast73, &g_forestbuyelement->effect);
+        if (g_forestbuyelement->effect._parent != 0) {
+            g_forestbuyelement->effect._parent->_refCount++;
         }
 
+        e->_refCount--;
+        if (e->_refCount <= 0) {
+            weakptr_release(e);
+            sjf_fadeeffect_destroy(e);
+            free(e);
+        }
         delete_cb weakptrcb41 = { &sjt_call281._parent, weakptr_clear };
         if (sjt_call281._parent != 0) { weakptr_cb_remove(sjt_call281._parent, weakptrcb41); }
         sjt_parent428->_refCount--;
@@ -17923,12 +17928,12 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
             sjf_fadeeffect_destroy(sjt_parent430);
             free(sjt_parent430);
         }
-        sjv_e->_refCount--;
-        if (sjv_e->_refCount <= 0) {
-            weakptr_release(sjv_e);
-            sjf_fadeeffect_destroy(sjv_e);
-            free(sjv_e);
-        }
+        if (c._refCount == 1) { sjf_vec3_destroy(&c); }
+;
+        if (d._refCount == 1) { sjf_vec3_destroy(&d); }
+;
+        if (l._refCount == 1) { sjf_vec4_destroy(&l); }
+;
         if (sjt_call282._refCount == 1) { sjf_vec4_destroy(&sjt_call282); }
 ;
         if (sjt_call283._refCount == 1) { sjf_string_destroy(&sjt_call283); }
@@ -17949,13 +17954,7 @@ void sjf_forestcontroller_selectperson(sjs_forestcontroller* _parent, sjs_string
 ;
         if (sjt_call291._refCount == 1) { sjf_string_destroy(&sjt_call291); }
 ;
-        if (sjv_c._refCount == 1) { sjf_vec3_destroy(&sjv_c); }
-;
-        if (sjv_d._refCount == 1) { sjf_vec3_destroy(&sjv_d); }
-;
-        if (sjv_l._refCount == 1) { sjf_vec4_destroy(&sjv_l); }
-;
-        if (sjv_w._refCount == 1) { sjf_mat4_destroy(&sjv_w); }
+        if (w._refCount == 1) { sjf_mat4_destroy(&w); }
 ;
     } else {
         sjs_string sjt_call292 = { -1 };
@@ -18052,14 +18051,14 @@ void sjf_glblendfunc(int32_t sfactor, int32_t dfactor) {
 }
 
 void sjf_glcheckframebufferstatus(int32_t* _return) {
-    int32_t sjv_status;
+    int32_t status;
 
 #line 263 "lib/ui/gl.sj"
-    sjv_status = sjv_glframebufferstatus_gl_framebuffer_unsupported;
+    status = g_glframebufferstatus_gl_framebuffer_unsupported;
 #line 265
-    sjv_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 #line 262
-    (*_return) = sjv_status;
+    (*_return) = status;
 }
 
 void sjf_glclearcolor(sjs_color* color) {
@@ -18088,12 +18087,12 @@ void sjf_glframebuffertexture2d(int32_t attachment, int32_t target, sjs_texture*
 }
 
 void sjf_glgenframebuffer(sjs_size* size, sjs_framebuffer* _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 209 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 211
-    glGenFramebuffers(1, &sjv_id);
+    glGenFramebuffers(1, &id);
 #line 211
     _return->_refCount = 1;
 #line 211
@@ -18101,18 +18100,18 @@ void sjf_glgenframebuffer(sjs_size* size, sjs_framebuffer* _return) {
 #line 208
     sjf_size_copy(&_return->size, size);
 #line 213
-    _return->id = sjv_id;
+    _return->id = id;
 #line 213
     sjf_framebuffer(_return);
 }
 
 void sjf_glgenframebuffer_heap(sjs_size* size, sjs_framebuffer** _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 209 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 211
-    glGenFramebuffers(1, &sjv_id);
+    glGenFramebuffers(1, &id);
 #line 211
     (*_return) = (sjs_framebuffer*)malloc(sizeof(sjs_framebuffer));
 #line 211
@@ -18122,18 +18121,18 @@ void sjf_glgenframebuffer_heap(sjs_size* size, sjs_framebuffer** _return) {
 #line 208
     sjf_size_copy(&(*_return)->size, size);
 #line 213
-    (*_return)->id = sjv_id;
+    (*_return)->id = id;
 #line 213
     sjf_framebuffer_heap((*_return));
 }
 
 void sjf_glgenrenderbuffer(sjs_size* size, sjs_renderbuffer* _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 243 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 245
-    glGenRenderbuffers(1, &sjv_id); 
+    glGenRenderbuffers(1, &id); 
 #line 245
     _return->_refCount = 1;
 #line 245
@@ -18141,18 +18140,18 @@ void sjf_glgenrenderbuffer(sjs_size* size, sjs_renderbuffer* _return) {
 #line 242
     sjf_size_copy(&_return->size, size);
 #line 247
-    _return->id = sjv_id;
+    _return->id = id;
 #line 247
     sjf_renderbuffer(_return);
 }
 
 void sjf_glgenrenderbuffer_heap(sjs_size* size, sjs_renderbuffer** _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 243 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 245
-    glGenRenderbuffers(1, &sjv_id); 
+    glGenRenderbuffers(1, &id); 
 #line 245
     (*_return) = (sjs_renderbuffer*)malloc(sizeof(sjs_renderbuffer));
 #line 245
@@ -18162,18 +18161,18 @@ void sjf_glgenrenderbuffer_heap(sjs_size* size, sjs_renderbuffer** _return) {
 #line 242
     sjf_size_copy(&(*_return)->size, size);
 #line 247
-    (*_return)->id = sjv_id;
+    (*_return)->id = id;
 #line 247
     sjf_renderbuffer_heap((*_return));
 }
 
 void sjf_glgentexture(sjs_size* size, sjs_texture* _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 217 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 219
-    glGenTextures(1, &sjv_id);
+    glGenTextures(1, &id);
 #line 219
     _return->_refCount = 1;
 #line 219
@@ -18181,18 +18180,18 @@ void sjf_glgentexture(sjs_size* size, sjs_texture* _return) {
 #line 216
     sjf_size_copy(&_return->size, size);
 #line 221
-    _return->id = sjv_id;
+    _return->id = id;
 #line 221
     sjf_texture(_return);
 }
 
 void sjf_glgentexture_heap(sjs_size* size, sjs_texture** _return) {
-    uint32_t sjv_id;
+    uint32_t id;
 
 #line 217 "lib/ui/gl.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 219
-    glGenTextures(1, &sjv_id);
+    glGenTextures(1, &id);
 #line 219
     (*_return) = (sjs_texture*)malloc(sizeof(sjs_texture));
 #line 219
@@ -18202,7 +18201,7 @@ void sjf_glgentexture_heap(sjs_size* size, sjs_texture** _return) {
 #line 216
     sjf_size_copy(&(*_return)->size, size);
 #line 221
-    (*_return)->id = sjv_id;
+    (*_return)->id = id;
 #line 221
     sjf_texture_heap((*_return));
 }
@@ -18217,6 +18216,7 @@ return;;
 }
 
 void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
+    uint32_t id;
     sjs_string sjt_call58 = { -1 };
     int32_t sjt_capture32;
     uint32_t sjt_capture33;
@@ -18229,12 +18229,11 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
     sjs_list_u32* sjt_parent130 = 0;
     sjs_list_u32* sjt_parent131 = 0;
     sjs_list_u32* sjt_parent132 = 0;
-    uint32_t sjv_id;
 
 #line 8 "lib/common/list.sj"
-    sjt_parent128 = &sjv_glframebuffers;
+    sjt_parent128 = &g_glframebuffers;
 #line 4
-    sjt_parent129 = &sjv_glframebuffers;
+    sjt_parent129 = &g_glframebuffers;
 #line 4
     sjf_list_u32_getcount(sjt_parent129, &sjt_capture32);
 #line 155 "lib/ui/gl.sj"
@@ -18270,9 +18269,9 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
     }
 
 #line 53 "lib/common/list.sj"
-    sjt_parent130 = &sjv_glframebuffers;
+    sjt_parent130 = &g_glframebuffers;
 #line 4
-    sjt_parent131 = &sjv_glframebuffers;
+    sjt_parent131 = &g_glframebuffers;
 #line 4
     sjf_list_u32_getcount(sjt_parent131, &sjt_capture34);
 #line 158 "lib/ui/gl.sj"
@@ -18280,7 +18279,7 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
 #line 158
     sjf_list_u32_removeat(sjt_parent130, sjt_functionParam273);
 #line 4 "lib/common/list.sj"
-    sjt_parent132 = &sjv_glframebuffers;
+    sjt_parent132 = &g_glframebuffers;
 #line 4
     sjf_list_u32_getcount(sjt_parent132, &sjt_capture35);
     if (sjt_capture35 > 0) {
@@ -18290,28 +18289,30 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
         sjs_list_u32* sjt_parent134 = 0;
 
 #line 8 "lib/common/list.sj"
-        sjt_parent133 = &sjv_glframebuffers;
+        sjt_parent133 = &g_glframebuffers;
 #line 4
-        sjt_parent134 = &sjv_glframebuffers;
+        sjt_parent134 = &g_glframebuffers;
 #line 4
         sjf_list_u32_getcount(sjt_parent134, &sjt_capture36);
 #line 159 "lib/ui/gl.sj"
         sjt_functionParam274 = sjt_capture36 - 1;
 #line 159
-        sjf_list_u32_getat(sjt_parent133, sjt_functionParam274, &sjv_id);
+        sjf_list_u32_getat(sjt_parent133, sjt_functionParam274, &id);
     } else {
 #line 159 "lib/ui/gl.sj"
-        sjv_id = (uint32_t)0u;
+        id = (uint32_t)0u;
     }
 
 #line 161 "lib/ui/gl.sj"
-    glBindFramebuffer(GL_FRAMEBUFFER, sjv_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, id);
 
     if (sjt_call58._refCount == 1) { sjf_string_destroy(&sjt_call58); }
 ;
 }
 
 void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
+    sjs_rect newrect = { -1 };
+    sjs_rect oldrect = { -1 };
     bool result21;
     sjs_rect sjt_call62 = { -1 };
     sjs_string sjt_call63 = { -1 };
@@ -18328,24 +18329,22 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     sjs_list_rect* sjt_parent148 = 0;
     sjs_list_rect* sjt_parent149 = 0;
     sjs_list_rect* sjt_parent150 = 0;
-    sjs_rect sjv_newrect = { -1 };
-    sjs_rect sjv_oldrect = { -1 };
 
-    sjv_oldrect._refCount = 1;
+    oldrect._refCount = 1;
 #line 134 "lib/ui/gl.sj"
-    sjv_oldrect.x = rect->x;
+    oldrect.x = rect->x;
 #line 134
-    sjv_oldrect.y = scenerect->h - (rect->y + rect->h);
+    oldrect.y = scenerect->h - (rect->y + rect->h);
 #line 134
-    sjv_oldrect.w = rect->w;
+    oldrect.w = rect->w;
 #line 134
-    sjv_oldrect.h = rect->h;
+    oldrect.h = rect->h;
 #line 134
-    sjf_rect(&sjv_oldrect);
+    sjf_rect(&oldrect);
 #line 8 "lib/common/list.sj"
-    sjt_parent146 = &sjv_glviewports;
+    sjt_parent146 = &g_glviewports;
 #line 4
-    sjt_parent147 = &sjv_glviewports;
+    sjt_parent147 = &g_glviewports;
 #line 4
     sjf_list_rect_getcount(sjt_parent147, &sjt_capture40);
 #line 135 "lib/ui/gl.sj"
@@ -18355,7 +18354,7 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 135
     sjt_parent143 = &sjt_call62;
 #line 135
-    sjt_functionParam338 = &sjv_oldrect;
+    sjt_functionParam338 = &oldrect;
 #line 135
     sjf_rect_isequal(sjt_parent143, sjt_functionParam338, &sjt_capture41);
 #line 135
@@ -18389,9 +18388,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     }
 
 #line 53 "lib/common/list.sj"
-    sjt_parent148 = &sjv_glviewports;
+    sjt_parent148 = &g_glviewports;
 #line 4
-    sjt_parent149 = &sjv_glviewports;
+    sjt_parent149 = &g_glviewports;
 #line 4
     sjf_list_rect_getcount(sjt_parent149, &sjt_capture42);
 #line 138 "lib/ui/gl.sj"
@@ -18399,7 +18398,7 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 138
     sjf_list_rect_removeat(sjt_parent148, sjt_functionParam340);
 #line 4 "lib/common/list.sj"
-    sjt_parent150 = &sjv_glviewports;
+    sjt_parent150 = &g_glviewports;
 #line 4
     sjf_list_rect_getcount(sjt_parent150, &sjt_capture43);
     if (sjt_capture43 > 0) {
@@ -18409,39 +18408,39 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
         sjs_list_rect* sjt_parent152 = 0;
 
 #line 8 "lib/common/list.sj"
-        sjt_parent151 = &sjv_glviewports;
+        sjt_parent151 = &g_glviewports;
 #line 4
-        sjt_parent152 = &sjv_glviewports;
+        sjt_parent152 = &g_glviewports;
 #line 4
         sjf_list_rect_getcount(sjt_parent152, &sjt_capture44);
 #line 139 "lib/ui/gl.sj"
         sjt_functionParam341 = sjt_capture44 - 1;
 #line 139
-        sjf_list_rect_getat(sjt_parent151, sjt_functionParam341, &sjv_newrect);
+        sjf_list_rect_getat(sjt_parent151, sjt_functionParam341, &newrect);
     } else {
-        sjv_newrect._refCount = 1;
+        newrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_newrect.x = 0;
+        newrect.x = 0;
 #line 3
-        sjv_newrect.y = 0;
+        newrect.y = 0;
 #line 4
-        sjv_newrect.w = 0;
+        newrect.w = 0;
 #line 5
-        sjv_newrect.h = 0;
+        newrect.h = 0;
 #line 5
-        sjf_rect(&sjv_newrect);
+        sjf_rect(&newrect);
     }
 
 #line 141 "lib/ui/gl.sj"
-    glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
+    glViewport(newrect.x, newrect.y, newrect.w, newrect.h);
 
+    if (newrect._refCount == 1) { sjf_rect_destroy(&newrect); }
+;
+    if (oldrect._refCount == 1) { sjf_rect_destroy(&oldrect); }
+;
     if (sjt_call62._refCount == 1) { sjf_rect_destroy(&sjt_call62); }
 ;
     if (sjt_call63._refCount == 1) { sjf_string_destroy(&sjt_call63); }
-;
-    if (sjv_newrect._refCount == 1) { sjf_rect_destroy(&sjv_newrect); }
-;
-    if (sjv_oldrect._refCount == 1) { sjf_rect_destroy(&sjv_oldrect); }
 ;
 }
 
@@ -18450,7 +18449,7 @@ void sjf_glpushframebuffer(sjs_framebuffer* framebuffer) {
     sjs_list_u32* sjt_parent125 = 0;
 
 #line 44 "lib/common/list.sj"
-    sjt_parent125 = &sjv_glframebuffers;
+    sjt_parent125 = &g_glframebuffers;
 #line 148 "lib/ui/gl.sj"
     sjt_functionParam238 = framebuffer->id;
 #line 148
@@ -18460,31 +18459,31 @@ void sjf_glpushframebuffer(sjs_framebuffer* framebuffer) {
 }
 
 void sjf_glpushviewport(sjs_rect* rect, sjs_rect* scenerect) {
+    sjs_rect newrect = { -1 };
     sjs_rect* sjt_functionParam331 = 0;
     sjs_list_rect* sjt_parent141 = 0;
-    sjs_rect sjv_newrect = { -1 };
 
-    sjv_newrect._refCount = 1;
+    newrect._refCount = 1;
 #line 126 "lib/ui/gl.sj"
-    sjv_newrect.x = rect->x;
+    newrect.x = rect->x;
 #line 126
-    sjv_newrect.y = scenerect->h - (rect->y + rect->h);
+    newrect.y = scenerect->h - (rect->y + rect->h);
 #line 126
-    sjv_newrect.w = rect->w;
+    newrect.w = rect->w;
 #line 126
-    sjv_newrect.h = rect->h;
+    newrect.h = rect->h;
 #line 126
-    sjf_rect(&sjv_newrect);
+    sjf_rect(&newrect);
 #line 44 "lib/common/list.sj"
-    sjt_parent141 = &sjv_glviewports;
+    sjt_parent141 = &g_glviewports;
 #line 127 "lib/ui/gl.sj"
-    sjt_functionParam331 = &sjv_newrect;
+    sjt_functionParam331 = &newrect;
 #line 127
     sjf_list_rect_add(sjt_parent141, sjt_functionParam331);
 #line 129
-    glViewport(sjv_newrect.x, sjv_newrect.y, sjv_newrect.w, sjv_newrect.h);
+    glViewport(newrect.x, newrect.y, newrect.w, newrect.h);
 
-    if (sjv_newrect._refCount == 1) { sjf_rect_destroy(&sjv_newrect); }
+    if (newrect._refCount == 1) { sjf_rect_destroy(&newrect); }
 ;
 }
 
@@ -19287,23 +19286,23 @@ void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this) {
 }
 
 void sjf_i32_asstring(int32_t val, int32_t base, sjs_string* _return) {
-    int32_t sjv_count;
-    void* sjv_data;
+    int32_t count;
+    void* data;
 
 #line 23 "lib/common/i32.sj"
-    sjv_count = 0;
+    count = 0;
 #line 24
-    sjv_data = 0;
+    data = 0;
 #line 26
-    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
 #line 27
-    int* refcount = (int*)sjv_data - 1;
+    int* refcount = (int*)data - 1;
 #line 28
     *refcount = 1;
 #line 30
-    char *tmp = (char*)sjv_data + 128;
+    char *tmp = (char*)data + 128;
 #line 31
-    char *tp = (char*)sjv_data + 128;
+    char *tp = (char*)data + 128;
 #line 32
     int i;
 #line 33
@@ -19339,7 +19338,7 @@ void sjf_i32_asstring(int32_t val, int32_t base, sjs_string* _return) {
 #line 51
     int len = tp - tmp;
 #line 53
-    char* sp = (char*)sjv_data;
+    char* sp = (char*)data;
 #line 54
     if (sign) 
 #line 55
@@ -19355,21 +19354,21 @@ void sjf_i32_asstring(int32_t val, int32_t base, sjs_string* _return) {
 #line 61
     *sp++ = *--tp;
 #line 63
-    sjv_count = len;
+    count = len;
 #line 63
     _return->_refCount = 1;
 #line 65
-    _return->count = sjv_count;
+    _return->count = count;
 #line 65
     _return->data._refCount = 1;
 #line 65
     _return->data.datasize = 256;
 #line 65
-    _return->data.data = sjv_data;
+    _return->data.data = data;
 #line 4 "lib/common/array.sj"
     _return->data.isglobal = false;
 #line 65 "lib/common/i32.sj"
-    _return->data.count = sjv_count;
+    _return->data.count = count;
 #line 65
     sjf_array_char(&_return->data);
 #line 14 "lib/common/string.sj"
@@ -19379,23 +19378,23 @@ void sjf_i32_asstring(int32_t val, int32_t base, sjs_string* _return) {
 }
 
 void sjf_i32_asstring_heap(int32_t val, int32_t base, sjs_string** _return) {
-    int32_t sjv_count;
-    void* sjv_data;
+    int32_t count;
+    void* data;
 
 #line 23 "lib/common/i32.sj"
-    sjv_count = 0;
+    count = 0;
 #line 24
-    sjv_data = 0;
+    data = 0;
 #line 26
-    sjv_data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
+    data = (int*)malloc(sizeof(int) + sizeof(char) * 256) + 1;
 #line 27
-    int* refcount = (int*)sjv_data - 1;
+    int* refcount = (int*)data - 1;
 #line 28
     *refcount = 1;
 #line 30
-    char *tmp = (char*)sjv_data + 128;
+    char *tmp = (char*)data + 128;
 #line 31
-    char *tp = (char*)sjv_data + 128;
+    char *tp = (char*)data + 128;
 #line 32
     int i;
 #line 33
@@ -19431,7 +19430,7 @@ void sjf_i32_asstring_heap(int32_t val, int32_t base, sjs_string** _return) {
 #line 51
     int len = tp - tmp;
 #line 53
-    char* sp = (char*)sjv_data;
+    char* sp = (char*)data;
 #line 54
     if (sign) 
 #line 55
@@ -19447,23 +19446,23 @@ void sjf_i32_asstring_heap(int32_t val, int32_t base, sjs_string** _return) {
 #line 61
     *sp++ = *--tp;
 #line 63
-    sjv_count = len;
+    count = len;
 #line 63
     (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
 #line 63
     (*_return)->_refCount = 1;
 #line 65
-    (*_return)->count = sjv_count;
+    (*_return)->count = count;
 #line 65
     (*_return)->data._refCount = 1;
 #line 65
     (*_return)->data.datasize = 256;
 #line 65
-    (*_return)->data.data = sjv_data;
+    (*_return)->data.data = data;
 #line 4 "lib/common/array.sj"
     (*_return)->data.isglobal = false;
 #line 65 "lib/common/i32.sj"
-    (*_return)->data.count = sjv_count;
+    (*_return)->data.count = count;
 #line 65
     sjf_array_char(&(*_return)->data);
 #line 14 "lib/common/string.sj"
@@ -19483,9 +19482,9 @@ void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
 }
 
 void sjf_image(sjs_image* _this) {
+    sjs_size size = { -1 };
     bool sjt_capture21;
     sjs_rect sjt_funcold15 = { -1 };
-    sjs_size sjv_size = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/ui/image.sj"
@@ -19501,7 +19500,7 @@ void sjf_image(sjs_image* _this) {
 #line 1 "lib/ui/image.sj"
         sjt_parent84 = &_this->texture;
 #line 1
-        sjf_texture_getsize(sjt_parent84, &sjv_size);
+        sjf_texture_getsize(sjt_parent84, &size);
 #line 1
         sjt_funcold15._refCount = 1;
 #line 1 "lib/ui/rect.sj"
@@ -19513,9 +19512,9 @@ void sjf_image(sjs_image* _this) {
 #line 8
         sjt_funcold15.y = 0;
 #line 8
-        sjt_funcold15.w = (&sjv_size)->w;
+        sjt_funcold15.w = (&size)->w;
 #line 8
-        sjt_funcold15.h = (&sjv_size)->h;
+        sjt_funcold15.h = (&size)->h;
 #line 8
         sjf_rect(&sjt_funcold15);
 #line 8
@@ -19525,9 +19524,9 @@ void sjf_image(sjs_image* _this) {
         sjf_rect_copy(&_this->rect, &sjt_funcold15);
     }
 
-    if (sjt_funcold15._refCount == 1) { sjf_rect_destroy(&sjt_funcold15); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (sjt_funcold15._refCount == 1) { sjf_rect_destroy(&sjt_funcold15); }
 ;
 }
 
@@ -19555,9 +19554,9 @@ void sjf_image_destroy(sjs_image* _this) {
 }
 
 void sjf_image_heap(sjs_image* _this) {
+    sjs_size size = { -1 };
     bool sjt_capture22;
     sjs_rect sjt_funcold16 = { -1 };
-    sjs_size sjv_size = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/ui/image.sj"
@@ -19573,7 +19572,7 @@ void sjf_image_heap(sjs_image* _this) {
 #line 5 "lib/ui/texture.sj"
         sjt_parent85 = &_this->texture;
 #line 5
-        sjf_texture_getsize(sjt_parent85, &sjv_size);
+        sjf_texture_getsize(sjt_parent85, &size);
 #line 5
         sjt_funcold16._refCount = 1;
 #line 1 "lib/ui/rect.sj"
@@ -19585,9 +19584,9 @@ void sjf_image_heap(sjs_image* _this) {
 #line 8
         sjt_funcold16.y = 0;
 #line 8
-        sjt_funcold16.w = (&sjv_size)->w;
+        sjt_funcold16.w = (&size)->w;
 #line 8
-        sjt_funcold16.h = (&sjv_size)->h;
+        sjt_funcold16.h = (&size)->h;
 #line 8
         sjf_rect(&sjt_funcold16);
 #line 8
@@ -19597,9 +19596,9 @@ void sjf_image_heap(sjs_image* _this) {
         sjf_rect_copy(&_this->rect, &sjt_funcold16);
     }
 
-    if (sjt_funcold16._refCount == 1) { sjf_rect_destroy(&sjt_funcold16); }
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
+    if (sjt_funcold16._refCount == 1) { sjf_rect_destroy(&sjt_funcold16); }
 ;
 }
 
@@ -19708,8 +19707,8 @@ void sjf_imageelement_heap(sjs_imageelement* _this) {
 }
 
 void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
+    sjs_rect r = { -1 };
     sjs_imagerenderer sjt_value30 = { -1 };
-    sjs_rect sjv_r = { -1 };
 
     if ((_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0) == 0) {
         sjs_margin* sjt_functionParam884 = 0;
@@ -19721,29 +19720,29 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 #line 30 "lib/ui/imageElement.sj"
         sjt_functionParam884 = &_parent->margin;
 #line 30
-        sjf_rect_subtractmargin(sjt_parent435, sjt_functionParam884, &sjv_r);
+        sjf_rect_subtractmargin(sjt_parent435, sjt_functionParam884, &r);
 #line 31
         underscore13 = _parent->stretch;
-        if (underscore13 == sjv_imagestretch_fill) {
+        if (underscore13 == g_imagestretch_fill) {
         } else {
-            if (underscore13 == sjv_imagestretch_center) {
+            if (underscore13 == g_imagestretch_center) {
+                sjs_size finalsize = { -1 };
+                sjs_size s = { -1 };
                 sjs_size sjt_call295 = { -1 };
                 sjs_rect sjt_funcold45 = { -1 };
                 sjs_size* sjt_functionParam885 = 0;
                 sjs_size* sjt_parent436 = 0;
                 sjs_texture* sjt_parent437 = 0;
-                sjs_size sjv_finalsize = { -1 };
-                sjs_size sjv_s = { -1 };
 
-                sjv_s._refCount = 1;
+                s._refCount = 1;
 #line 34 "lib/ui/imageElement.sj"
-                sjv_s.w = (&sjv_r)->w;
+                s.w = (&r)->w;
 #line 34
-                sjv_s.h = (&sjv_r)->h;
+                s.h = (&r)->h;
 #line 34
-                sjf_size(&sjv_s);
+                sjf_size(&s);
 #line 5 "lib/ui/size.sj"
-                sjt_parent436 = &sjv_s;
+                sjt_parent436 = &s;
 #line 5 "lib/ui/texture.sj"
                 sjt_parent437 = &(&_parent->image)->texture;
 #line 5
@@ -19751,39 +19750,42 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 #line 35 "lib/ui/imageElement.sj"
                 sjt_functionParam885 = &sjt_call295;
 #line 35
-                sjf_size_min(sjt_parent436, sjt_functionParam885, &sjv_finalsize);
+                sjf_size_min(sjt_parent436, sjt_functionParam885, &finalsize);
 #line 35
                 sjt_funcold45._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                sjf_rect_copy(&sjt_funcold45, &sjv_r);
+                sjf_rect_copy(&sjt_funcold45, &r);
 #line 1
                 sjt_funcold45._refCount = 1;
 #line 37 "lib/ui/imageElement.sj"
-                sjt_funcold45.x = ((&sjv_r)->w - (&sjv_finalsize)->w) / 2;
+                sjt_funcold45.x = ((&r)->w - (&finalsize)->w) / 2;
 #line 38
-                sjt_funcold45.y = ((&sjv_r)->h - (&sjv_finalsize)->h) / 2;
+                sjt_funcold45.y = ((&r)->h - (&finalsize)->h) / 2;
 #line 36
-                sjt_funcold45.w = (&sjv_finalsize)->w;
+                sjt_funcold45.w = (&finalsize)->w;
 #line 36
-                sjt_funcold45.h = (&sjv_finalsize)->h;
+                sjt_funcold45.h = (&finalsize)->h;
 #line 36
                 sjf_rect(&sjt_funcold45);
 #line 36
-                if (sjv_r._refCount == 1) { sjf_rect_destroy(&sjv_r); }
+                if (r._refCount == 1) { sjf_rect_destroy(&r); }
 ;
 #line 1 "lib/ui/rect.sj"
-                sjf_rect_copy(&sjv_r, &sjt_funcold45);
+                sjf_rect_copy(&r, &sjt_funcold45);
 
+                if (finalsize._refCount == 1) { sjf_size_destroy(&finalsize); }
+;
+                if (s._refCount == 1) { sjf_size_destroy(&s); }
+;
                 if (sjt_call295._refCount == 1) { sjf_size_destroy(&sjt_call295); }
 ;
                 if (sjt_funcold45._refCount == 1) { sjf_rect_destroy(&sjt_funcold45); }
 ;
-                if (sjv_finalsize._refCount == 1) { sjf_size_destroy(&sjv_finalsize); }
-;
-                if (sjv_s._refCount == 1) { sjf_size_destroy(&sjv_s); }
-;
             } else {
-                if (underscore13 == sjv_imagestretch_aspectratio) {
+                if (underscore13 == g_imagestretch_aspectratio) {
+                    sjs_size finalsize = { -1 };
+                    float imageaspectratio;
+                    float rectaspectratio;
                     sjs_size sjt_call296 = { -1 };
                     sjs_size sjt_call297 = { -1 };
                     int32_t sjt_cast75;
@@ -19793,9 +19795,6 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
                     sjs_rect sjt_funcold46 = { -1 };
                     sjs_texture* sjt_parent438 = 0;
                     sjs_texture* sjt_parent439 = 0;
-                    sjs_size sjv_finalsize = { -1 };
-                    float sjv_imageaspectratio;
-                    float sjv_rectaspectratio;
 
 #line 5 "lib/ui/texture.sj"
                     sjt_parent438 = &(&_parent->image)->texture;
@@ -19810,74 +19809,74 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 #line 45 "lib/ui/imageElement.sj"
                     sjt_cast76 = (&sjt_call297)->h;
 #line 45
-                    sjv_imageaspectratio = (float)sjt_cast75 / (float)sjt_cast76;
+                    imageaspectratio = (float)sjt_cast75 / (float)sjt_cast76;
 #line 46
-                    sjt_cast77 = (&sjv_r)->w;
+                    sjt_cast77 = (&r)->w;
 #line 46
-                    sjt_cast78 = (&sjv_r)->h;
+                    sjt_cast78 = (&r)->h;
 #line 46
-                    sjv_rectaspectratio = (float)sjt_cast77 / (float)sjt_cast78;
-                    if (sjv_imageaspectratio > sjv_rectaspectratio) {
+                    rectaspectratio = (float)sjt_cast77 / (float)sjt_cast78;
+                    if (imageaspectratio > rectaspectratio) {
                         float sjt_cast79;
                         int32_t sjt_cast80;
 
-                        sjv_finalsize._refCount = 1;
+                        finalsize._refCount = 1;
 #line 48 "lib/ui/imageElement.sj"
-                        sjv_finalsize.w = (&sjv_r)->w;
+                        finalsize.w = (&r)->w;
 #line 48
-                        sjt_cast80 = (&sjv_r)->h;
+                        sjt_cast80 = (&r)->h;
 #line 48
-                        sjt_cast79 = (float)sjt_cast80 / sjv_imageaspectratio;
+                        sjt_cast79 = (float)sjt_cast80 / imageaspectratio;
 #line 48
-                        sjv_finalsize.h = (int32_t)sjt_cast79;
+                        finalsize.h = (int32_t)sjt_cast79;
 #line 48
-                        sjf_size(&sjv_finalsize);
+                        sjf_size(&finalsize);
                     } else {
                         float sjt_cast81;
                         int32_t sjt_cast82;
 
-                        sjv_finalsize._refCount = 1;
+                        finalsize._refCount = 1;
 #line 50 "lib/ui/imageElement.sj"
-                        sjt_cast82 = (&sjv_r)->w;
+                        sjt_cast82 = (&r)->w;
 #line 50
-                        sjt_cast81 = (float)sjt_cast82 * sjv_imageaspectratio;
+                        sjt_cast81 = (float)sjt_cast82 * imageaspectratio;
 #line 50
-                        sjv_finalsize.w = (int32_t)sjt_cast81;
+                        finalsize.w = (int32_t)sjt_cast81;
 #line 50
-                        sjv_finalsize.h = (&sjv_r)->h;
+                        finalsize.h = (&r)->h;
 #line 50
-                        sjf_size(&sjv_finalsize);
+                        sjf_size(&finalsize);
                     }
 
 #line 46
                     sjt_funcold46._refCount = 1;
 #line 1 "lib/ui/rect.sj"
-                    sjf_rect_copy(&sjt_funcold46, &sjv_r);
+                    sjf_rect_copy(&sjt_funcold46, &r);
 #line 1
                     sjt_funcold46._refCount = 1;
 #line 53 "lib/ui/imageElement.sj"
-                    sjt_funcold46.x = ((&sjv_r)->w - (&sjv_finalsize)->w) / 2;
+                    sjt_funcold46.x = ((&r)->w - (&finalsize)->w) / 2;
 #line 54
-                    sjt_funcold46.y = ((&sjv_r)->h - (&sjv_finalsize)->h) / 2;
+                    sjt_funcold46.y = ((&r)->h - (&finalsize)->h) / 2;
 #line 52
-                    sjt_funcold46.w = (&sjv_finalsize)->w;
+                    sjt_funcold46.w = (&finalsize)->w;
 #line 52
-                    sjt_funcold46.h = (&sjv_finalsize)->h;
+                    sjt_funcold46.h = (&finalsize)->h;
 #line 52
                     sjf_rect(&sjt_funcold46);
 #line 52
-                    if (sjv_r._refCount == 1) { sjf_rect_destroy(&sjv_r); }
+                    if (r._refCount == 1) { sjf_rect_destroy(&r); }
 ;
 #line 1 "lib/ui/rect.sj"
-                    sjf_rect_copy(&sjv_r, &sjt_funcold46);
+                    sjf_rect_copy(&r, &sjt_funcold46);
 
+                    if (finalsize._refCount == 1) { sjf_size_destroy(&finalsize); }
+;
                     if (sjt_call296._refCount == 1) { sjf_size_destroy(&sjt_call296); }
 ;
                     if (sjt_call297._refCount == 1) { sjf_size_destroy(&sjt_call297); }
 ;
                     if (sjt_funcold46._refCount == 1) { sjf_rect_destroy(&sjt_funcold46); }
-;
-                    if (sjv_finalsize._refCount == 1) { sjf_size_destroy(&sjv_finalsize); }
 ;
                 }
             }
@@ -19888,7 +19887,7 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 #line 31
         sjt_value30.rect._refCount = 1;
 #line 62
-        sjf_rect_copy(&sjt_value30.rect, &sjv_r);
+        sjf_rect_copy(&sjt_value30.rect, &r);
 #line 62
         sjt_value30.image._refCount = 1;
 #line 62
@@ -19921,9 +19920,9 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
         sjf_imagerenderer_render(sjt_parent440, sjt_functionParam886);
     }
 
-    if (sjt_value30._refCount == 1) { sjf_imagerenderer_destroy(&sjt_value30); }
+    if (r._refCount == 1) { sjf_rect_destroy(&r); }
 ;
-    if (sjv_r._refCount == 1) { sjf_rect_destroy(&sjv_r); }
+    if (sjt_value30._refCount == 1) { sjf_imagerenderer_destroy(&sjt_value30); }
 ;
 }
 
@@ -20577,23 +20576,23 @@ void sjf_imagerenderer_render(sjs_imagerenderer* _parent, sjs_scene2d* scene) {
     sjs_mat4* sjt_functionParam174 = 0;
 
 #line 9 "lib/ui/imageRenderer.sj"
-    sjt_functionParam154 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam154 = g_gltexture_gl_texture_2d;
 #line 9
     sjt_functionParam155 = &(&_parent->image)->texture;
 #line 9
     sjf_glbindtexture(sjt_functionParam154, sjt_functionParam155);
 #line 10
-    sjt_functionParam156 = &sjv_imageshader;
+    sjt_functionParam156 = &g_imageshader;
 #line 10
     sjf_gluseprogram(sjt_functionParam156);
 #line 11
-    sjt_functionParam157 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam157 = g_glblendfunctype_gl_src_alpha;
 #line 11
-    sjt_functionParam158 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam158 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 11
     sjf_glblendfunc(sjt_functionParam157, sjt_functionParam158);
 #line 12
-    sjt_functionParam160 = &sjv_imageshader;
+    sjt_functionParam160 = &g_imageshader;
 #line 12
     sjt_call39._refCount = 1;
 #line 12
@@ -20623,7 +20622,7 @@ void sjf_imagerenderer_render(sjs_imagerenderer* _parent, sjs_scene2d* scene) {
 #line 12
     sjf_gluniformi32(sjt_functionParam159, sjt_functionParam162);
 #line 13
-    sjt_functionParam164 = &sjv_imageshader;
+    sjt_functionParam164 = &g_imageshader;
 #line 13
     sjt_call40._refCount = 1;
 #line 13
@@ -20653,7 +20652,7 @@ void sjf_imagerenderer_render(sjs_imagerenderer* _parent, sjs_scene2d* scene) {
 #line 13
     sjf_gluniformmat4(sjt_functionParam163, sjt_functionParam166);
 #line 14
-    sjt_functionParam168 = &sjv_imageshader;
+    sjt_functionParam168 = &g_imageshader;
 #line 14
     sjt_call41._refCount = 1;
 #line 14
@@ -20683,7 +20682,7 @@ void sjf_imagerenderer_render(sjs_imagerenderer* _parent, sjs_scene2d* scene) {
 #line 14
     sjf_gluniformmat4(sjt_functionParam167, sjt_functionParam170);
 #line 15
-    sjt_functionParam172 = &sjv_imageshader;
+    sjt_functionParam172 = &g_imageshader;
 #line 15
     sjt_call42._refCount = 1;
 #line 15
@@ -20726,6 +20725,11 @@ void sjf_imagerenderer_render(sjs_imagerenderer* _parent, sjs_scene2d* scene) {
 }
 
 void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3* v1, sjs_vec3* v2, sjs_vec3* _return) {
+    float det;
+    sjs_vec3 edge1 = { -1 };
+    sjs_vec3 edge2 = { -1 };
+    sjs_vec3 pvec = { -1 };
+    sjs_vec3 qvec = { -1 };
     sjs_vec3* sjt_functionParam659 = 0;
     sjs_vec3* sjt_functionParam660 = 0;
     sjs_vec3* sjt_functionParam661 = 0;
@@ -20735,38 +20739,33 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
     sjs_vec3* sjt_parent275 = 0;
     sjs_vec3* sjt_parent276 = 0;
     sjs_vec3 sjt_value18 = { -1 };
-    float sjv_det;
-    sjs_vec3 sjv_edge1 = { -1 };
-    sjs_vec3 sjv_edge2 = { -1 };
-    sjs_vec3 sjv_pvec = { -1 };
-    sjs_vec3 sjv_qvec = { -1 };
-    sjs_vec3 sjv_tvec = { -1 };
+    sjs_vec3 tvec = { -1 };
 
 #line 135 "lib/ui/vertexBuffer.sj"
     sjt_parent273 = v1;
 #line 135
     sjt_functionParam659 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent273, sjt_functionParam659, &sjv_edge1);
+    sjf_vec3_subtract(sjt_parent273, sjt_functionParam659, &edge1);
 #line 135
     sjt_parent274 = v2;
 #line 135
     sjt_functionParam660 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent274, sjt_functionParam660, &sjv_edge2);
+    sjf_vec3_subtract(sjt_parent274, sjt_functionParam660, &edge2);
 #line 135
     sjt_parent275 = dir;
 #line 139
-    sjt_functionParam661 = &sjv_edge2;
+    sjt_functionParam661 = &edge2;
 #line 139
-    sjf_vec3_cross(sjt_parent275, sjt_functionParam661, &sjv_pvec);
+    sjf_vec3_cross(sjt_parent275, sjt_functionParam661, &pvec);
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent276 = &sjv_edge1;
+    sjt_parent276 = &edge1;
 #line 140 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam662 = &sjv_pvec;
+    sjt_functionParam662 = &pvec;
 #line 140
-    sjf_vec3_dot(sjt_parent276, sjt_functionParam662, &sjv_det);
-    if (sjv_det > 0.0f) {
+    sjf_vec3_dot(sjt_parent276, sjt_functionParam662, &det);
+    if (det > 0.0f) {
         sjs_vec3* sjt_functionParam663 = 0;
         sjs_vec3* sjt_parent277 = 0;
 
@@ -20775,36 +20774,36 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
 #line 135
         sjt_functionParam663 = v0;
 #line 135
-        sjf_vec3_subtract(sjt_parent277, sjt_functionParam663, &sjv_tvec);
+        sjf_vec3_subtract(sjt_parent277, sjt_functionParam663, &tvec);
     } else {
         sjs_vec3* sjt_functionParam664 = 0;
         sjs_vec3* sjt_parent278 = 0;
 
 #line 144 "lib/ui/vertexBuffer.sj"
-        sjv_det = 0.0f - sjv_det;
+        det = 0.0f - det;
 #line 135
         sjt_parent278 = v0;
 #line 135
         sjt_functionParam664 = orig;
 #line 135
-        sjf_vec3_subtract(sjt_parent278, sjt_functionParam664, &sjv_tvec);
+        sjf_vec3_subtract(sjt_parent278, sjt_functionParam664, &tvec);
     }
 
-    if (sjv_det < 0.0001f) {
+    if (det < 0.0001f) {
 #line 149 "lib/ui/vertexBuffer.sj"
         _return->_refCount = -1;
     } else {
         sjs_vec3* sjt_functionParam665 = 0;
         sjs_vec3* sjt_parent279 = 0;
-        float sjv_u;
+        float u;
 
 #line 55 "lib/ui/vec3.sj"
-        sjt_parent279 = &sjv_tvec;
+        sjt_parent279 = &tvec;
 #line 151 "lib/ui/vertexBuffer.sj"
-        sjt_functionParam665 = &sjv_pvec;
+        sjt_functionParam665 = &pvec;
 #line 151
-        sjf_vec3_dot(sjt_parent279, sjt_functionParam665, &sjv_u);
-        if ((sjv_u < 0.0f) || (sjv_u > sjv_det)) {
+        sjf_vec3_dot(sjt_parent279, sjt_functionParam665, &u);
+        if ((u < 0.0f) || (u > det)) {
 #line 153 "lib/ui/vertexBuffer.sj"
             _return->_refCount = -1;
         } else {
@@ -20812,45 +20811,45 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
             sjs_vec3* sjt_functionParam667 = 0;
             sjs_vec3* sjt_parent280 = 0;
             sjs_vec3* sjt_parent281 = 0;
-            float sjv_v;
+            float v;
 
 #line 47 "lib/ui/vec3.sj"
-            sjt_parent280 = &sjv_tvec;
+            sjt_parent280 = &tvec;
 #line 155 "lib/ui/vertexBuffer.sj"
-            sjt_functionParam666 = &sjv_edge1;
+            sjt_functionParam666 = &edge1;
 #line 155
-            sjf_vec3_cross(sjt_parent280, sjt_functionParam666, &sjv_qvec);
+            sjf_vec3_cross(sjt_parent280, sjt_functionParam666, &qvec);
 #line 135
             sjt_parent281 = dir;
 #line 156
-            sjt_functionParam667 = &sjv_qvec;
+            sjt_functionParam667 = &qvec;
 #line 156
-            sjf_vec3_dot(sjt_parent281, sjt_functionParam667, &sjv_v);
-            if ((sjv_v < 0.0f) || ((sjv_u + sjv_v) > sjv_det)) {
+            sjf_vec3_dot(sjt_parent281, sjt_functionParam667, &v);
+            if ((v < 0.0f) || ((u + v) > det)) {
 #line 158 "lib/ui/vertexBuffer.sj"
                 _return->_refCount = -1;
             } else {
+                float finvdet;
                 sjs_vec3* sjt_functionParam668 = 0;
                 sjs_vec3* sjt_parent282 = 0;
-                float sjv_finvdet;
-                float sjv_t;
+                float t;
 
 #line 55 "lib/ui/vec3.sj"
-                sjt_parent282 = &sjv_edge2;
+                sjt_parent282 = &edge2;
 #line 161 "lib/ui/vertexBuffer.sj"
-                sjt_functionParam668 = &sjv_qvec;
+                sjt_functionParam668 = &qvec;
 #line 161
-                sjf_vec3_dot(sjt_parent282, sjt_functionParam668, &sjv_t);
+                sjf_vec3_dot(sjt_parent282, sjt_functionParam668, &t);
 #line 162
-                sjv_finvdet = 1.0f / sjv_det;
+                finvdet = 1.0f / det;
 #line 162
                 sjt_value18._refCount = 1;
 #line 163
-                sjt_value18.x = sjv_u * sjv_finvdet;
+                sjt_value18.x = u * finvdet;
 #line 163
-                sjt_value18.y = sjv_v * sjv_finvdet;
+                sjt_value18.y = v * finvdet;
 #line 163
-                sjt_value18.z = sjv_t * sjv_finvdet;
+                sjt_value18.z = t * finvdet;
 #line 163
                 sjf_vec3(&sjt_value18);
 #line 163
@@ -20866,21 +20865,26 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
         }
     }
 
+    if (edge1._refCount == 1) { sjf_vec3_destroy(&edge1); }
+;
+    if (edge2._refCount == 1) { sjf_vec3_destroy(&edge2); }
+;
+    if (pvec._refCount == 1) { sjf_vec3_destroy(&pvec); }
+;
+    if (qvec._refCount == 1) { sjf_vec3_destroy(&qvec); }
+;
     if (sjt_value18._refCount == 1) { sjf_vec3_destroy(&sjt_value18); }
 ;
-    if (sjv_edge1._refCount == 1) { sjf_vec3_destroy(&sjv_edge1); }
-;
-    if (sjv_edge2._refCount == 1) { sjf_vec3_destroy(&sjv_edge2); }
-;
-    if (sjv_pvec._refCount == 1) { sjf_vec3_destroy(&sjv_pvec); }
-;
-    if (sjv_qvec._refCount == 1) { sjf_vec3_destroy(&sjv_qvec); }
-;
-    if (sjv_tvec._refCount == 1) { sjf_vec3_destroy(&sjv_tvec); }
+    if (tvec._refCount == 1) { sjf_vec3_destroy(&tvec); }
 ;
 }
 
 void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3* v1, sjs_vec3* v2, sjs_vec3** _return) {
+    float det;
+    sjs_vec3 edge1 = { -1 };
+    sjs_vec3 edge2 = { -1 };
+    sjs_vec3 pvec = { -1 };
+    sjs_vec3 qvec = { -1 };
     sjs_vec3* sjt_functionParam669 = 0;
     sjs_vec3* sjt_functionParam670 = 0;
     sjs_vec3* sjt_functionParam671 = 0;
@@ -20889,38 +20893,33 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
     sjs_vec3* sjt_parent284 = 0;
     sjs_vec3* sjt_parent285 = 0;
     sjs_vec3* sjt_parent286 = 0;
-    float sjv_det;
-    sjs_vec3 sjv_edge1 = { -1 };
-    sjs_vec3 sjv_edge2 = { -1 };
-    sjs_vec3 sjv_pvec = { -1 };
-    sjs_vec3 sjv_qvec = { -1 };
-    sjs_vec3 sjv_tvec = { -1 };
+    sjs_vec3 tvec = { -1 };
 
 #line 135 "lib/ui/vertexBuffer.sj"
     sjt_parent283 = v1;
 #line 135
     sjt_functionParam669 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent283, sjt_functionParam669, &sjv_edge1);
+    sjf_vec3_subtract(sjt_parent283, sjt_functionParam669, &edge1);
 #line 135
     sjt_parent284 = v2;
 #line 135
     sjt_functionParam670 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent284, sjt_functionParam670, &sjv_edge2);
+    sjf_vec3_subtract(sjt_parent284, sjt_functionParam670, &edge2);
 #line 135
     sjt_parent285 = dir;
 #line 139
-    sjt_functionParam671 = &sjv_edge2;
+    sjt_functionParam671 = &edge2;
 #line 139
-    sjf_vec3_cross(sjt_parent285, sjt_functionParam671, &sjv_pvec);
+    sjf_vec3_cross(sjt_parent285, sjt_functionParam671, &pvec);
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent286 = &sjv_edge1;
+    sjt_parent286 = &edge1;
 #line 140 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam672 = &sjv_pvec;
+    sjt_functionParam672 = &pvec;
 #line 140
-    sjf_vec3_dot(sjt_parent286, sjt_functionParam672, &sjv_det);
-    if (sjv_det > 0.0f) {
+    sjf_vec3_dot(sjt_parent286, sjt_functionParam672, &det);
+    if (det > 0.0f) {
         sjs_vec3* sjt_functionParam673 = 0;
         sjs_vec3* sjt_parent287 = 0;
 
@@ -20929,22 +20928,22 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
 #line 135
         sjt_functionParam673 = v0;
 #line 135
-        sjf_vec3_subtract(sjt_parent287, sjt_functionParam673, &sjv_tvec);
+        sjf_vec3_subtract(sjt_parent287, sjt_functionParam673, &tvec);
     } else {
         sjs_vec3* sjt_functionParam674 = 0;
         sjs_vec3* sjt_parent288 = 0;
 
 #line 144 "lib/ui/vertexBuffer.sj"
-        sjv_det = 0.0f - sjv_det;
+        det = 0.0f - det;
 #line 135
         sjt_parent288 = v0;
 #line 135
         sjt_functionParam674 = orig;
 #line 135
-        sjf_vec3_subtract(sjt_parent288, sjt_functionParam674, &sjv_tvec);
+        sjf_vec3_subtract(sjt_parent288, sjt_functionParam674, &tvec);
     }
 
-    if (sjv_det < 0.0001f) {
+    if (det < 0.0001f) {
 #line 149 "lib/ui/vertexBuffer.sj"
         (*_return) = 0;
         if ((*_return) != 0) {
@@ -20953,15 +20952,15 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
     } else {
         sjs_vec3* sjt_functionParam675 = 0;
         sjs_vec3* sjt_parent289 = 0;
-        float sjv_u;
+        float u;
 
 #line 55 "lib/ui/vec3.sj"
-        sjt_parent289 = &sjv_tvec;
+        sjt_parent289 = &tvec;
 #line 151 "lib/ui/vertexBuffer.sj"
-        sjt_functionParam675 = &sjv_pvec;
+        sjt_functionParam675 = &pvec;
 #line 151
-        sjf_vec3_dot(sjt_parent289, sjt_functionParam675, &sjv_u);
-        if ((sjv_u < 0.0f) || (sjv_u > sjv_det)) {
+        sjf_vec3_dot(sjt_parent289, sjt_functionParam675, &u);
+        if ((u < 0.0f) || (u > det)) {
 #line 153 "lib/ui/vertexBuffer.sj"
             (*_return) = 0;
             if ((*_return) != 0) {
@@ -20972,51 +20971,51 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
             sjs_vec3* sjt_functionParam677 = 0;
             sjs_vec3* sjt_parent290 = 0;
             sjs_vec3* sjt_parent291 = 0;
-            float sjv_v;
+            float v;
 
 #line 47 "lib/ui/vec3.sj"
-            sjt_parent290 = &sjv_tvec;
+            sjt_parent290 = &tvec;
 #line 155 "lib/ui/vertexBuffer.sj"
-            sjt_functionParam676 = &sjv_edge1;
+            sjt_functionParam676 = &edge1;
 #line 155
-            sjf_vec3_cross(sjt_parent290, sjt_functionParam676, &sjv_qvec);
+            sjf_vec3_cross(sjt_parent290, sjt_functionParam676, &qvec);
 #line 135
             sjt_parent291 = dir;
 #line 156
-            sjt_functionParam677 = &sjv_qvec;
+            sjt_functionParam677 = &qvec;
 #line 156
-            sjf_vec3_dot(sjt_parent291, sjt_functionParam677, &sjv_v);
-            if ((sjv_v < 0.0f) || ((sjv_u + sjv_v) > sjv_det)) {
+            sjf_vec3_dot(sjt_parent291, sjt_functionParam677, &v);
+            if ((v < 0.0f) || ((u + v) > det)) {
 #line 158 "lib/ui/vertexBuffer.sj"
                 (*_return) = 0;
                 if ((*_return) != 0) {
                     (*_return)->_refCount++;
                 }
             } else {
+                float finvdet;
                 sjs_vec3* sjt_functionParam678 = 0;
                 sjs_vec3* sjt_parent292 = 0;
                 sjs_vec3* sjt_value19 = 0;
-                float sjv_finvdet;
-                float sjv_t;
+                float t;
 
 #line 55 "lib/ui/vec3.sj"
-                sjt_parent292 = &sjv_edge2;
+                sjt_parent292 = &edge2;
 #line 161 "lib/ui/vertexBuffer.sj"
-                sjt_functionParam678 = &sjv_qvec;
+                sjt_functionParam678 = &qvec;
 #line 161
-                sjf_vec3_dot(sjt_parent292, sjt_functionParam678, &sjv_t);
+                sjf_vec3_dot(sjt_parent292, sjt_functionParam678, &t);
 #line 162
-                sjv_finvdet = 1.0f / sjv_det;
+                finvdet = 1.0f / det;
 #line 162
                 sjt_value19 = (sjs_vec3*)malloc(sizeof(sjs_vec3));
 #line 162
                 sjt_value19->_refCount = 1;
 #line 163
-                sjt_value19->x = sjv_u * sjv_finvdet;
+                sjt_value19->x = u * finvdet;
 #line 163
-                sjt_value19->y = sjv_v * sjv_finvdet;
+                sjt_value19->y = v * finvdet;
 #line 163
-                sjt_value19->z = sjv_t * sjv_finvdet;
+                sjt_value19->z = t * finvdet;
 #line 163
                 sjf_vec3_heap(sjt_value19);
 #line 163
@@ -21035,15 +21034,15 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
         }
     }
 
-    if (sjv_edge1._refCount == 1) { sjf_vec3_destroy(&sjv_edge1); }
+    if (edge1._refCount == 1) { sjf_vec3_destroy(&edge1); }
 ;
-    if (sjv_edge2._refCount == 1) { sjf_vec3_destroy(&sjv_edge2); }
+    if (edge2._refCount == 1) { sjf_vec3_destroy(&edge2); }
 ;
-    if (sjv_pvec._refCount == 1) { sjf_vec3_destroy(&sjv_pvec); }
+    if (pvec._refCount == 1) { sjf_vec3_destroy(&pvec); }
 ;
-    if (sjv_qvec._refCount == 1) { sjf_vec3_destroy(&sjv_qvec); }
+    if (qvec._refCount == 1) { sjf_vec3_destroy(&qvec); }
 ;
-    if (sjv_tvec._refCount == 1) { sjf_vec3_destroy(&sjv_tvec); }
+    if (tvec._refCount == 1) { sjf_vec3_destroy(&tvec); }
 ;
 }
 
@@ -21474,20 +21473,20 @@ void sjf_leafpanel_firemouseevent(sjs_leafpanel* _parent, sjs_mouseevent* mousee
 #line 30
     i = sjt_forStart19;
     while (i < sjt_forEnd19) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam512;
         sjs_mouseevent* sjt_interfaceParam39 = 0;
         sjs_array_heap_iface_model* sjt_parent209 = 0;
         sji_model sjt_parent210 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent209 = &_parent->children;
 #line 30 "nau/leafPanel.sj"
         sjt_functionParam512 = i;
 #line 30
-        sjf_array_heap_iface_model_getat_heap(sjt_parent209, sjt_functionParam512, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent209, sjt_functionParam512, &c);
 #line 8 "lib/ui/model.sj"
-        sjt_parent210 = sjv_c;
+        sjt_parent210 = c;
 #line 29 "nau/leafPanel.sj"
         sjt_interfaceParam39 = mouseevent;
 #line 32
@@ -21495,11 +21494,11 @@ void sjf_leafpanel_firemouseevent(sjs_leafpanel* _parent, sjs_mouseevent* mousee
 #line 30
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -21599,20 +21598,20 @@ void sjf_leafpanel_renderorqueue(sjs_leafpanel* _parent, sjs_list_heap_iface_mod
 #line 19
     i = sjt_forStart18;
     while (i < sjt_forEnd18) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam511;
         sjs_list_heap_iface_model* sjt_interfaceParam38 = 0;
         sjs_array_heap_iface_model* sjt_parent207 = 0;
         sji_model sjt_parent208 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent207 = &_parent->children;
 #line 19 "nau/leafPanel.sj"
         sjt_functionParam511 = i;
 #line 19
-        sjf_array_heap_iface_model_getat_heap(sjt_parent207, sjt_functionParam511, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent207, sjt_functionParam511, &c);
 #line 6 "lib/ui/model.sj"
-        sjt_parent208 = sjv_c;
+        sjt_parent208 = c;
 #line 18 "nau/leafPanel.sj"
         sjt_interfaceParam38 = zqueue;
 #line 21
@@ -21620,17 +21619,18 @@ void sjf_leafpanel_renderorqueue(sjs_leafpanel* _parent, sjs_list_heap_iface_mod
 #line 19
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
 }
 
 void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* texture, sji_model* _return) {
+    float noise;
     sjs_model* object2 = 0;
     float result32;
     float result33;
@@ -21656,24 +21656,23 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
     float sjt_functionParam509;
     sjs_string* sjt_parent204 = 0;
     sjs_string sjt_value17 = { -1 };
-    float sjv_noise;
-    float sjv_x;
-    float sjv_y;
-    float sjv_z;
+    float x;
+    float y;
+    float z;
 
     sjf_f32_random(&sjt_capture50);
 #line 39 "nau/leafPanel.sj"
-    sjv_noise = sjt_capture50 - 0.5f;
+    noise = sjt_capture50 - 0.5f;
 #line 40
-    sjv_x = (_parent->_angle * 2.0f) + (sjv_noise * 0.2f);
+    x = (_parent->_angle * 2.0f) + (noise * 0.2f);
 #line 41
-    sjv_y = sjv_noise * 3.0f;
+    y = noise * 3.0f;
 #line 42
-    sjt_functionParam488 = _parent->_angle + (sjv_noise * 0.2f);
+    sjt_functionParam488 = _parent->_angle + (noise * 0.2f);
 #line 42
     sjf_f32_cos(sjt_functionParam488, &sjt_capture51);
 #line 42
-    sjv_z = sjt_capture51 * 2.0f;
+    z = sjt_capture51 * 2.0f;
 #line 43
     _parent->_angle = _parent->_angle + 0.8f;
 #line 43
@@ -21707,7 +21706,7 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
 #line 85
     object2->shader._refCount = 1;
 #line 45 "nau/leafPanel.sj"
-    sjf_shader_copy(&object2->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object2->shader, &g_phongtextureshader);
 #line 45
     object2->texture._refCount = 1;
 #line 38
@@ -21715,11 +21714,11 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
 #line 38
     sjt_call98._refCount = 1;
 #line 49
-    sjt_call98.x = sjv_x;
+    sjt_call98.x = x;
 #line 49
-    sjt_call98.y = sjv_y;
+    sjt_call98.y = y;
 #line 49
-    sjt_call98.z = sjv_z;
+    sjt_call98.z = z;
 #line 49
     sjf_vec3(&sjt_call98);
 #line 49
@@ -21761,7 +21760,7 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
 #line 46 "nau/leafPanel.sj"
     sjt_parent204 = &sjt_call99;
 #line 46
-    sjt_functionParam509 = sjv_z;
+    sjt_functionParam509 = z;
 #line 46
     sjf_f32_asstring(sjt_functionParam509, &sjt_call100);
 #line 46
@@ -21978,6 +21977,7 @@ void sjf_leafpanel_update(sjs_leafpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 7
     i = sjt_forStart17;
     while (i < sjt_forEnd17) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam510;
         sjs_rect* sjt_interfaceParam33 = 0;
         sjs_mat4* sjt_interfaceParam34 = 0;
@@ -21986,16 +21986,15 @@ void sjf_leafpanel_update(sjs_leafpanel* _parent, sjs_rect* scenerect, sjs_mat4*
         sjs_light* sjt_interfaceParam37 = 0;
         sjs_array_heap_iface_model* sjt_parent205 = 0;
         sji_model sjt_parent206 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent205 = &_parent->children;
 #line 7 "nau/leafPanel.sj"
         sjt_functionParam510 = i;
 #line 7
-        sjf_array_heap_iface_model_getat_heap(sjt_parent205, sjt_functionParam510, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent205, sjt_functionParam510, &c);
 #line 2 "lib/ui/model.sj"
-        sjt_parent206 = sjv_c;
+        sjt_parent206 = c;
 #line 6 "nau/leafPanel.sj"
         sjt_interfaceParam33 = scenerect;
 #line 6
@@ -22011,11 +22010,11 @@ void sjf_leafpanel_update(sjs_leafpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 7
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -22680,20 +22679,20 @@ void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
 #line 54
     i = sjt_forStart46;
     while (i < sjt_forEnd46) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam1899;
         sjs_scene2d* sjt_interfaceParam95 = 0;
         sjs_array_heap_iface_element* sjt_parent676 = 0;
         sji_element sjt_parent677 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent676 = &_parent->children;
 #line 54 "lib/ui/listLayout.sj"
         sjt_functionParam1899 = i;
 #line 54
-        sjf_array_heap_iface_element_getat_heap(sjt_parent676, sjt_functionParam1899, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent676, sjt_functionParam1899, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent677 = sjv_child;
+        sjt_parent677 = child;
 #line 53 "lib/ui/listLayout.sj"
         sjt_interfaceParam95 = scene;
 #line 56
@@ -22701,11 +22700,11 @@ void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
 #line 54
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -22713,12 +22712,12 @@ void sjf_listlayout_render(sjs_listlayout* _parent, sjs_scene2d* scene) {
 
 void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
     int32_t i;
+    sjs_rect innerrect = { -1 };
     int32_t sjt_forEnd45;
     int32_t sjt_forStart45;
     sjs_margin* sjt_functionParam1897 = 0;
     sjs_rect* sjt_parent666 = 0;
-    sjs_rect sjv_innerrect = { -1 };
-    int32_t sjv_val;
+    int32_t val;
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -22729,9 +22728,9 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 22
     sjt_functionParam1897 = &_parent->margin;
 #line 22
-    sjf_rect_subtractmargin(sjt_parent666, sjt_functionParam1897, &sjv_innerrect);
+    sjf_rect_subtractmargin(sjt_parent666, sjt_functionParam1897, &innerrect);
 #line 24
-    sjv_val = 0;
+    val = 0;
 #line 25
     sjt_forStart45 = 0;
 #line 25
@@ -22739,9 +22738,9 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 25
     i = sjt_forStart45;
     while (i < sjt_forEnd45) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam1898;
         sjs_array_heap_iface_element* sjt_parent667 = 0;
-        sji_element sjv_child = { 0 };
         int32_t underscore17;
 
 #line 7 "lib/common/array.sj"
@@ -22749,44 +22748,44 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 25 "lib/ui/listLayout.sj"
         sjt_functionParam1898 = i;
 #line 25
-        sjf_array_heap_iface_element_getat_heap(sjt_parent667, sjt_functionParam1898, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent667, sjt_functionParam1898, &child);
 #line 27
         underscore17 = _parent->orientation;
-        if (underscore17 == sjv_listlayoutorientation_topbottom) {
+        if (underscore17 == g_listlayoutorientation_topbottom) {
+            sjs_size childsize = { -1 };
             sjs_size sjt_call604 = { -1 };
             sjs_rect sjt_call605 = { -1 };
             sjs_size* sjt_interfaceParam87 = 0;
             sjs_rect* sjt_interfaceParam88 = 0;
             sji_element sjt_parent668 = { 0 };
             sji_element sjt_parent669 = { 0 };
-            sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-            sjt_parent668 = sjv_child;
+            sjt_parent668 = child;
 #line 2
             sjt_call604._refCount = 1;
 #line 29 "lib/ui/listLayout.sj"
-            sjt_call604.w = (&sjv_innerrect)->w;
+            sjt_call604.w = (&innerrect)->w;
 #line 29
-            sjt_call604.h = (&sjv_innerrect)->h - sjv_val;
+            sjt_call604.h = (&innerrect)->h - val;
 #line 29
             sjf_size(&sjt_call604);
 #line 29
             sjt_interfaceParam87 = &sjt_call604;
 #line 29
-            sjt_parent668._vtbl->getsize(sjt_parent668._parent, sjt_interfaceParam87, &sjv_childsize);
+            sjt_parent668._vtbl->getsize(sjt_parent668._parent, sjt_interfaceParam87, &childsize);
 #line 4 "lib/ui/element.sj"
-            sjt_parent669 = sjv_child;
+            sjt_parent669 = child;
 #line 4
             sjt_call605._refCount = 1;
 #line 30 "lib/ui/listLayout.sj"
-            sjt_call605.x = (&sjv_innerrect)->x;
+            sjt_call605.x = (&innerrect)->x;
 #line 30
-            sjt_call605.y = (&sjv_innerrect)->y + sjv_val;
+            sjt_call605.y = (&innerrect)->y + val;
 #line 30
-            sjt_call605.w = (&sjv_innerrect)->w;
+            sjt_call605.w = (&innerrect)->w;
 #line 30
-            sjt_call605.h = (&sjv_childsize)->h;
+            sjt_call605.h = (&childsize)->h;
 #line 30
             sjf_rect(&sjt_call605);
 #line 30
@@ -22794,50 +22793,50 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 30
             sjt_parent669._vtbl->setrect(sjt_parent669._parent, sjt_interfaceParam88);
 #line 31
-            sjv_val = sjv_val + (&sjv_childsize)->h;
+            val = val + (&childsize)->h;
 
+            if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
             if (sjt_call604._refCount == 1) { sjf_size_destroy(&sjt_call604); }
 ;
             if (sjt_call605._refCount == 1) { sjf_rect_destroy(&sjt_call605); }
 ;
-            if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
         } else {
-            if (underscore17 == sjv_listlayoutorientation_bottomtop) {
+            if (underscore17 == g_listlayoutorientation_bottomtop) {
+                sjs_size childsize = { -1 };
                 sjs_size sjt_call606 = { -1 };
                 sjs_rect sjt_call607 = { -1 };
                 sjs_size* sjt_interfaceParam89 = 0;
                 sjs_rect* sjt_interfaceParam90 = 0;
                 sji_element sjt_parent670 = { 0 };
                 sji_element sjt_parent671 = { 0 };
-                sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                sjt_parent670 = sjv_child;
+                sjt_parent670 = child;
 #line 2
                 sjt_call606._refCount = 1;
 #line 34 "lib/ui/listLayout.sj"
-                sjt_call606.w = (&sjv_innerrect)->w;
+                sjt_call606.w = (&innerrect)->w;
 #line 34
-                sjt_call606.h = (&sjv_innerrect)->h - sjv_val;
+                sjt_call606.h = (&innerrect)->h - val;
 #line 34
                 sjf_size(&sjt_call606);
 #line 34
                 sjt_interfaceParam89 = &sjt_call606;
 #line 34
-                sjt_parent670._vtbl->getsize(sjt_parent670._parent, sjt_interfaceParam89, &sjv_childsize);
+                sjt_parent670._vtbl->getsize(sjt_parent670._parent, sjt_interfaceParam89, &childsize);
 #line 4 "lib/ui/element.sj"
-                sjt_parent671 = sjv_child;
+                sjt_parent671 = child;
 #line 4
                 sjt_call607._refCount = 1;
 #line 35 "lib/ui/listLayout.sj"
-                sjt_call607.x = (&sjv_innerrect)->x;
+                sjt_call607.x = (&innerrect)->x;
 #line 35
-                sjt_call607.y = (((&sjv_innerrect)->y + (&sjv_innerrect)->h) - sjv_val) - (&sjv_childsize)->h;
+                sjt_call607.y = (((&innerrect)->y + (&innerrect)->h) - val) - (&childsize)->h;
 #line 35
-                sjt_call607.w = (&sjv_innerrect)->w;
+                sjt_call607.w = (&innerrect)->w;
 #line 35
-                sjt_call607.h = (&sjv_childsize)->h;
+                sjt_call607.h = (&childsize)->h;
 #line 35
                 sjf_rect(&sjt_call607);
 #line 35
@@ -22845,50 +22844,50 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 35
                 sjt_parent671._vtbl->setrect(sjt_parent671._parent, sjt_interfaceParam90);
 #line 36
-                sjv_val = sjv_val + (&sjv_childsize)->h;
+                val = val + (&childsize)->h;
 
+                if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                 if (sjt_call606._refCount == 1) { sjf_size_destroy(&sjt_call606); }
 ;
                 if (sjt_call607._refCount == 1) { sjf_rect_destroy(&sjt_call607); }
 ;
-                if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
             } else {
-                if (underscore17 == sjv_listlayoutorientation_leftright) {
+                if (underscore17 == g_listlayoutorientation_leftright) {
+                    sjs_size childsize = { -1 };
                     sjs_size sjt_call608 = { -1 };
                     sjs_rect sjt_call609 = { -1 };
                     sjs_size* sjt_interfaceParam91 = 0;
                     sjs_rect* sjt_interfaceParam92 = 0;
                     sji_element sjt_parent672 = { 0 };
                     sji_element sjt_parent673 = { 0 };
-                    sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                    sjt_parent672 = sjv_child;
+                    sjt_parent672 = child;
 #line 2
                     sjt_call608._refCount = 1;
 #line 39 "lib/ui/listLayout.sj"
-                    sjt_call608.w = (&sjv_innerrect)->w - sjv_val;
+                    sjt_call608.w = (&innerrect)->w - val;
 #line 39
-                    sjt_call608.h = (&sjv_innerrect)->h;
+                    sjt_call608.h = (&innerrect)->h;
 #line 39
                     sjf_size(&sjt_call608);
 #line 39
                     sjt_interfaceParam91 = &sjt_call608;
 #line 39
-                    sjt_parent672._vtbl->getsize(sjt_parent672._parent, sjt_interfaceParam91, &sjv_childsize);
+                    sjt_parent672._vtbl->getsize(sjt_parent672._parent, sjt_interfaceParam91, &childsize);
 #line 4 "lib/ui/element.sj"
-                    sjt_parent673 = sjv_child;
+                    sjt_parent673 = child;
 #line 4
                     sjt_call609._refCount = 1;
 #line 40 "lib/ui/listLayout.sj"
-                    sjt_call609.x = (&sjv_innerrect)->x + sjv_val;
+                    sjt_call609.x = (&innerrect)->x + val;
 #line 40
-                    sjt_call609.y = (&sjv_innerrect)->y;
+                    sjt_call609.y = (&innerrect)->y;
 #line 40
-                    sjt_call609.w = (&sjv_childsize)->w;
+                    sjt_call609.w = (&childsize)->w;
 #line 40
-                    sjt_call609.h = (&sjv_innerrect)->h;
+                    sjt_call609.h = (&innerrect)->h;
 #line 40
                     sjf_rect(&sjt_call609);
 #line 40
@@ -22896,50 +22895,50 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 40
                     sjt_parent673._vtbl->setrect(sjt_parent673._parent, sjt_interfaceParam92);
 #line 41
-                    sjv_val = sjv_val + (&sjv_childsize)->w;
+                    val = val + (&childsize)->w;
 
+                    if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                     if (sjt_call608._refCount == 1) { sjf_size_destroy(&sjt_call608); }
 ;
                     if (sjt_call609._refCount == 1) { sjf_rect_destroy(&sjt_call609); }
 ;
-                    if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
-;
                 } else {
-                    if (underscore17 == sjv_listlayoutorientation_rightleft) {
+                    if (underscore17 == g_listlayoutorientation_rightleft) {
+                        sjs_size childsize = { -1 };
                         sjs_size sjt_call610 = { -1 };
                         sjs_rect sjt_call611 = { -1 };
                         sjs_size* sjt_interfaceParam93 = 0;
                         sjs_rect* sjt_interfaceParam94 = 0;
                         sji_element sjt_parent674 = { 0 };
                         sji_element sjt_parent675 = { 0 };
-                        sjs_size sjv_childsize = { -1 };
 
 #line 2 "lib/ui/element.sj"
-                        sjt_parent674 = sjv_child;
+                        sjt_parent674 = child;
 #line 2
                         sjt_call610._refCount = 1;
 #line 44 "lib/ui/listLayout.sj"
-                        sjt_call610.w = (&sjv_innerrect)->w - sjv_val;
+                        sjt_call610.w = (&innerrect)->w - val;
 #line 44
-                        sjt_call610.h = (&sjv_innerrect)->h;
+                        sjt_call610.h = (&innerrect)->h;
 #line 44
                         sjf_size(&sjt_call610);
 #line 44
                         sjt_interfaceParam93 = &sjt_call610;
 #line 44
-                        sjt_parent674._vtbl->getsize(sjt_parent674._parent, sjt_interfaceParam93, &sjv_childsize);
+                        sjt_parent674._vtbl->getsize(sjt_parent674._parent, sjt_interfaceParam93, &childsize);
 #line 4 "lib/ui/element.sj"
-                        sjt_parent675 = sjv_child;
+                        sjt_parent675 = child;
 #line 4
                         sjt_call611._refCount = 1;
 #line 45 "lib/ui/listLayout.sj"
-                        sjt_call611.x = (((&sjv_innerrect)->x + (&sjv_innerrect)->w) - sjv_val) - (&sjv_childsize)->w;
+                        sjt_call611.x = (((&innerrect)->x + (&innerrect)->w) - val) - (&childsize)->w;
 #line 45
-                        sjt_call611.y = (&sjv_innerrect)->y;
+                        sjt_call611.y = (&innerrect)->y;
 #line 45
-                        sjt_call611.w = (&sjv_childsize)->w;
+                        sjt_call611.w = (&childsize)->w;
 #line 45
-                        sjt_call611.h = (&sjv_innerrect)->h;
+                        sjt_call611.h = (&innerrect)->h;
 #line 45
                         sjf_rect(&sjt_call611);
 #line 45
@@ -22947,13 +22946,13 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 45
                         sjt_parent675._vtbl->setrect(sjt_parent675._parent, sjt_interfaceParam94);
 #line 46
-                        sjv_val = sjv_val + (&sjv_childsize)->w;
+                        val = val + (&childsize)->w;
 
+                        if (childsize._refCount == 1) { sjf_size_destroy(&childsize); }
+;
                         if (sjt_call610._refCount == 1) { sjf_size_destroy(&sjt_call610); }
 ;
                         if (sjt_call611._refCount == 1) { sjf_rect_destroy(&sjt_call611); }
-;
-                        if (sjv_childsize._refCount == 1) { sjf_size_destroy(&sjv_childsize); }
 ;
                     }
                 }
@@ -22963,16 +22962,16 @@ void sjf_listlayout_setrect(sjs_listlayout* _parent, sjs_rect* rect_) {
 #line 25
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
 ;
 }
 
@@ -23362,7 +23361,7 @@ void sjf_log_trace(sjs_log* _parent, int32_t t, cb_string_heap_string cb) {
     cb_string_heap_string sjt_functionParam736;
 
 #line 23 "lib/common/log.sj"
-    sjt_functionParam733 = sjv_loglevel_trace;
+    sjt_functionParam733 = g_loglevel_trace;
 #line 23
     sjt_functionParam734 = (_parent->traceincludes._refCount != -1 ? &_parent->traceincludes : 0);
 #line 22
@@ -23767,7 +23766,15 @@ void sjf_loglevel_asstring_heap(int32_t e, sjs_string** _return) {
 }
 
 void sjf_mainloop(void) {
+    int32_option mouse_eventtype;
+    bool mouse_isleftdown;
+    int32_t mouse_x;
+    int32_t mouse_y;
+    sjs_rect rect = { -1 };
     bool result200;
+    bool shouldappcontinue;
+    bool shouldcontinue;
+    sjs_size size = { -1 };
     sjs_string sjt_call660 = { -1 };
     sjs_string sjt_call661 = { -1 };
     sjs_string sjt_call662 = { -1 };
@@ -23784,46 +23791,38 @@ void sjf_mainloop(void) {
     sji_element sjt_parent742 = { 0 };
     sjs_scene2d* sjt_parent743 = 0;
     sjs_windowrenderer* sjt_parent744 = 0;
-    int32_option sjv_mouse_eventtype;
-    bool sjv_mouse_isleftdown;
-    int32_t sjv_mouse_x;
-    int32_t sjv_mouse_y;
-    sjs_rect sjv_rect = { -1 };
-    bool sjv_shouldappcontinue;
-    bool sjv_shouldcontinue;
-    sjs_size sjv_size = { -1 };
-    int32_t sjv_ticks;
+    int32_t ticks;
 
 #line 9 "lib/ui/loop.sj"
-    sjv_shouldappcontinue = true;
+    shouldappcontinue = true;
 #line 10
-    sjv_ticks = 0;
+    ticks = 0;
 #line 12
-    sjv_ticks = SDL_GetTicks();
+    ticks = SDL_GetTicks();
 #line 31 "lib/ui/animation.sj"
-    sjt_parent735 = &sjv_animator;
+    sjt_parent735 = &g_animator;
 #line 14 "lib/ui/loop.sj"
-    sjt_functionParam2024 = sjv_ticks;
+    sjt_functionParam2024 = ticks;
 #line 14
     sjf_animator_nextframe(sjt_parent735, sjt_functionParam2024);
-    if (sjv_mainloop_showfps) {
+    if (g_mainloop_showfps) {
 #line 17 "lib/ui/loop.sj"
-        sjv_mainloop_frames = sjv_mainloop_frames + 1;
-        if ((sjv_mainloop_lasttick + 1000) < sjv_ticks) {
+        g_mainloop_frames = g_mainloop_frames + 1;
+        if ((g_mainloop_lasttick + 1000) < ticks) {
+            float fps;
             int32_t sjt_cast239;
             int32_t sjt_cast240;
             sjs_string* sjt_functionParam2025 = 0;
             sjs_string* sjt_functionParam2026 = 0;
             float sjt_functionParam2027;
             sjs_string* sjt_parent736 = 0;
-            float sjv_fps;
 
 #line 19 "lib/ui/loop.sj"
-            sjt_cast239 = sjv_mainloop_frames;
+            sjt_cast239 = g_mainloop_frames;
 #line 19
-            sjt_cast240 = sjv_ticks - sjv_mainloop_lasttick;
+            sjt_cast240 = ticks - g_mainloop_lasttick;
 #line 19
-            sjv_fps = ((float)sjt_cast239 * 1000.0f) / (float)sjt_cast240;
+            fps = ((float)sjt_cast239 * 1000.0f) / (float)sjt_cast240;
 #line 19
             sjt_call661._refCount = 1;
 #line 20
@@ -23847,7 +23846,7 @@ void sjf_mainloop(void) {
 #line 20 "lib/ui/loop.sj"
             sjt_parent736 = &sjt_call661;
 #line 20
-            sjt_functionParam2027 = sjv_fps;
+            sjt_functionParam2027 = fps;
 #line 20
             sjf_f32_asstring(sjt_functionParam2027, &sjt_call662);
 #line 20
@@ -23859,42 +23858,42 @@ void sjf_mainloop(void) {
 #line 20
             sjf_debug_writeline(sjt_functionParam2025);
 #line 21
-            sjv_mainloop_lasttick = sjv_ticks;
+            g_mainloop_lasttick = ticks;
 #line 22
-            sjv_mainloop_frames = 0;
+            g_mainloop_frames = 0;
         }
     }
 
 #line 7 "lib/ui/windowRenderer.sj"
-    sjt_parent737 = &sjv_rootwindowrenderer;
+    sjt_parent737 = &g_rootwindowrenderer;
 #line 7
-    sjf_windowrenderer_getsize(sjt_parent737, &sjv_size);
+    sjf_windowrenderer_getsize(sjt_parent737, &size);
 #line 27 "lib/ui/scene2d.sj"
-    sjt_parent738 = &sjv_rootscene;
+    sjt_parent738 = &g_rootscene;
 #line 27 "lib/ui/loop.sj"
-    sjt_functionParam2028 = &sjv_size;
+    sjt_functionParam2028 = &size;
 #line 27
     sjf_scene2d_setsize(sjt_parent738, sjt_functionParam2028);
 #line 8 "lib/ui/scene2d.sj"
-    sjt_parent739 = &sjv_rootscene;
+    sjt_parent739 = &g_rootscene;
 #line 8
     sjf_scene2d_start(sjt_parent739);
 #line 8
-    sjv_rect._refCount = 1;
+    rect._refCount = 1;
 #line 29 "lib/ui/loop.sj"
-    sjv_rect.x = 0;
+    rect.x = 0;
 #line 29
-    sjv_rect.y = 0;
+    rect.y = 0;
 #line 29
-    sjv_rect.w = (&sjv_size)->w;
+    rect.w = (&size)->w;
 #line 29
-    sjv_rect.h = (&sjv_size)->h;
+    rect.h = (&size)->h;
 #line 29
-    sjf_rect(&sjv_rect);
+    sjf_rect(&rect);
 #line 15 "lib/ui/rect.sj"
-    sjt_parent740 = &sjv_looplastrect;
+    sjt_parent740 = &g_looplastrect;
 #line 30 "lib/ui/loop.sj"
-    sjt_functionParam2029 = &sjv_rect;
+    sjt_functionParam2029 = &rect;
 #line 30
     sjf_rect_isequal(sjt_parent740, sjt_functionParam2029, &sjt_capture81);
 #line 30
@@ -23904,25 +23903,25 @@ void sjf_mainloop(void) {
         sji_element sjt_parent741 = { 0 };
 
 #line 4 "lib/ui/element.sj"
-        sjt_parent741 = sjv_root;
+        sjt_parent741 = g_root;
 #line 31 "lib/ui/loop.sj"
-        sjt_interfaceParam97 = &sjv_rect;
+        sjt_interfaceParam97 = &rect;
 #line 31
         sjt_parent741._vtbl->setrect(sjt_parent741._parent, sjt_interfaceParam97);
     }
 
 #line 5 "lib/ui/element.sj"
-    sjt_parent742 = sjv_root;
+    sjt_parent742 = g_root;
 #line 33 "lib/ui/loop.sj"
-    sjt_interfaceParam98 = &sjv_rootscene;
+    sjt_interfaceParam98 = &g_rootscene;
 #line 33
     sjt_parent742._vtbl->render(sjt_parent742._parent, sjt_interfaceParam98);
 #line 19 "lib/ui/scene2d.sj"
-    sjt_parent743 = &sjv_rootscene;
+    sjt_parent743 = &g_rootscene;
 #line 19
     sjf_scene2d_end(sjt_parent743);
 #line 22 "lib/ui/windowRenderer.sj"
-    sjt_parent744 = &sjv_rootwindowrenderer;
+    sjt_parent744 = &g_rootwindowrenderer;
 #line 22
     sjf_windowrenderer_present(sjt_parent744);
 #line 38 "lib/ui/loop.sj"
@@ -23930,76 +23929,76 @@ void sjf_mainloop(void) {
 #line 39
     while(SDL_PollEvent( &e ) != 0) {
 #line 41
-        sjv_mouse_eventtype = int32_empty;
+        mouse_eventtype = int32_empty;
 #line 42
-        sjv_mouse_x = 0;
+        mouse_x = 0;
 #line 43
-        sjv_mouse_y = 0;
+        mouse_y = 0;
 #line 44
-        sjv_mouse_isleftdown = false;
+        mouse_isleftdown = false;
 #line 47
         switch (e.type) {
 #line 48
             case SDL_QUIT:
 #line 49
-            sjv_shouldappcontinue = false;
+            shouldappcontinue = false;
 #line 50
             break;
 #line 51
             case SDL_MOUSEBUTTONDOWN:
 #line 52
-            sjv_mouse_eventtype.isvalid = true;
+            mouse_eventtype.isvalid = true;
 #line 53
-            sjv_mouse_eventtype.value = sjv_mouseeventtype_down;
+            mouse_eventtype.value = g_mouseeventtype_down;
 #line 54
-            sjv_mouse_x = e.button.x;
+            mouse_x = e.button.x;
 #line 55
-            sjv_mouse_y = e.button.y;
+            mouse_y = e.button.y;
 #line 56
-            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
+            mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
 #line 57
             break;
 #line 58
             case SDL_MOUSEBUTTONUP:
 #line 59
-            sjv_mouse_eventtype.isvalid = true;
+            mouse_eventtype.isvalid = true;
 #line 60
-            sjv_mouse_eventtype.value = sjv_mouseeventtype_up;
+            mouse_eventtype.value = g_mouseeventtype_up;
 #line 61
-            sjv_mouse_x = e.button.x;
+            mouse_x = e.button.x;
 #line 62
-            sjv_mouse_y = e.button.y;
+            mouse_y = e.button.y;
 #line 63
-            sjv_mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
+            mouse_isleftdown = e.button.state & SDL_BUTTON(SDL_BUTTON_LEFT);
 #line 64
             break;
 #line 65
             case SDL_MOUSEMOTION:
 #line 66
-            sjv_mouse_eventtype.isvalid = true;
+            mouse_eventtype.isvalid = true;
 #line 67
-            sjv_mouse_eventtype.value = sjv_mouseeventtype_move;
+            mouse_eventtype.value = g_mouseeventtype_move;
 #line 68
-            sjv_mouse_x = e.motion.x;
+            mouse_x = e.motion.x;
 #line 69
-            sjv_mouse_y = e.motion.y;
+            mouse_y = e.motion.y;
 #line 70
-            sjv_mouse_isleftdown = SDL_GetGlobalMouseState(0, 0) & SDL_BUTTON(SDL_BUTTON_LEFT);
+            mouse_isleftdown = SDL_GetGlobalMouseState(0, 0) & SDL_BUTTON(SDL_BUTTON_LEFT);
 #line 71
             break;
 #line 72
         }
 #line 75
-        sjv_shouldcontinue = true;
-        if (sjv_mouse_eventtype.isvalid) {
+        shouldcontinue = true;
+        if (mouse_eventtype.isvalid) {
             int32_t ifValue51;
             int32_option sjt_getValue9;
 
 #line 76 "lib/ui/loop.sj"
-            sjt_getValue9 = sjv_mouse_eventtype;
+            sjt_getValue9 = mouse_eventtype;
 #line 76
             ifValue51 = sjt_getValue9.value;
-            if ((sjv_mouse_captureelement._parent != 0)) {
+            if ((g_mouse_captureelement._parent != 0)) {
                 sji_element ifValue52 = { 0 };
                 sjs_mouseevent sjt_call663 = { -1 };
                 bool sjt_funcold57;
@@ -24007,7 +24006,7 @@ void sjf_mainloop(void) {
                 sji_element sjt_parent745 = { 0 };
 
 #line 77 "lib/ui/loop.sj"
-                ifValue52 = sjv_mouse_captureelement;
+                ifValue52 = g_mouse_captureelement;
                 if (ifValue52._parent != 0) {
                     ifValue52._parent->_refCount++;
                 }
@@ -24015,7 +24014,7 @@ void sjf_mainloop(void) {
 #line 6 "lib/ui/element.sj"
                 sjt_parent745 = ifValue52;
 #line 6
-                sjt_funcold57 = sjv_shouldcontinue;
+                sjt_funcold57 = shouldcontinue;
 #line 6
                 sjt_call663._refCount = 1;
 #line 78 "lib/ui/loop.sj"
@@ -24023,15 +24022,15 @@ void sjf_mainloop(void) {
 #line 78
                 sjt_call663.point._refCount = 1;
 #line 80
-                sjt_call663.point.x = sjv_mouse_x;
+                sjt_call663.point.x = mouse_x;
 #line 80
-                sjt_call663.point.y = sjv_mouse_y;
+                sjt_call663.point.y = mouse_y;
 #line 80
                 sjf_point(&sjt_call663.point);
 #line 81
                 sjt_call663.iscaptured = true;
 #line 78
-                sjt_call663.isleftdown = sjv_mouse_isleftdown;
+                sjt_call663.isleftdown = mouse_isleftdown;
 #line 78
                 sjf_mouseevent(&sjt_call663);
 #line 78
@@ -24039,7 +24038,7 @@ void sjf_mainloop(void) {
 #line 78
                 sjt_parent745._vtbl->firemouseevent(sjt_parent745._parent, sjt_interfaceParam99, &sjt_funcold57);
 #line 6 "lib/ui/element.sj"
-                sjv_shouldcontinue = sjt_funcold57;
+                shouldcontinue = sjt_funcold57;
 
                 if (ifValue52._parent != 0) {
                     ifValue52._parent->_refCount--;
@@ -24057,9 +24056,9 @@ void sjf_mainloop(void) {
                 sji_element sjt_parent746 = { 0 };
 
 #line 6 "lib/ui/element.sj"
-                sjt_parent746 = sjv_root;
+                sjt_parent746 = g_root;
 #line 6
-                sjt_funcold58 = sjv_shouldcontinue;
+                sjt_funcold58 = shouldcontinue;
 #line 6
                 sjt_call664._refCount = 1;
 #line 86 "lib/ui/loop.sj"
@@ -24067,15 +24066,15 @@ void sjf_mainloop(void) {
 #line 86
                 sjt_call664.point._refCount = 1;
 #line 88
-                sjt_call664.point.x = sjv_mouse_x;
+                sjt_call664.point.x = mouse_x;
 #line 88
-                sjt_call664.point.y = sjv_mouse_y;
+                sjt_call664.point.y = mouse_y;
 #line 88
                 sjf_point(&sjt_call664.point);
 #line 89
                 sjt_call664.iscaptured = false;
 #line 86
-                sjt_call664.isleftdown = sjv_mouse_isleftdown;
+                sjt_call664.isleftdown = mouse_isleftdown;
 #line 86
                 sjf_mouseevent(&sjt_call664);
 #line 86
@@ -24083,7 +24082,7 @@ void sjf_mainloop(void) {
 #line 86
                 sjt_parent746._vtbl->firemouseevent(sjt_parent746._parent, sjt_interfaceParam100, &sjt_funcold58);
 #line 6 "lib/ui/element.sj"
-                sjv_shouldcontinue = sjt_funcold58;
+                shouldcontinue = sjt_funcold58;
 
                 if (sjt_call664._refCount == 1) { sjf_mouseevent_destroy(&sjt_call664); }
 ;
@@ -24093,37 +24092,37 @@ void sjf_mainloop(void) {
 #line 96
     }
 #line 99
-    sjv_mainloop_shouldcontinue = sjv_shouldappcontinue;
+    g_mainloop_shouldcontinue = shouldappcontinue;
 
+    if (rect._refCount == 1) { sjf_rect_destroy(&rect); }
+;
+    if (size._refCount == 1) { sjf_size_destroy(&size); }
+;
     if (sjt_call660._refCount == 1) { sjf_string_destroy(&sjt_call660); }
 ;
     if (sjt_call661._refCount == 1) { sjf_string_destroy(&sjt_call661); }
 ;
     if (sjt_call662._refCount == 1) { sjf_string_destroy(&sjt_call662); }
 ;
-    if (sjv_rect._refCount == 1) { sjf_rect_destroy(&sjv_rect); }
-;
-    if (sjv_size._refCount == 1) { sjf_size_destroy(&sjv_size); }
-;
 }
 
 void sjf_mainpanel(sjs_mainpanel* _this) {
+    float angle;
+    float angleincrement;
     int32_t i;
     float result137;
     int32_t sjt_cast177;
     int32_t sjt_forEnd36;
     int32_t sjt_forStart36;
-    float sjv_angle;
-    float sjv_angleincrement;
 
 #line 40 "nau/mainPanel.sj"
-    sjv_angleincrement = 0.08f;
+    angleincrement = 0.08f;
 #line 41
     sjt_cast177 = (&_this->children)->count;
 #line 41
     result137 = -(float)sjt_cast177;
 #line 41
-    sjv_angle = (result137 * sjv_angleincrement) / 2.0f;
+    angle = (result137 * angleincrement) / 2.0f;
 #line 42
     sjt_forStart36 = 0;
 #line 42
@@ -24131,6 +24130,8 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
 #line 42
     i = sjt_forStart36;
     while (i < sjt_forEnd36) {
+        float angleoffset;
+        float radiusoffset;
         sjs_mat4 sjt_call519 = { -1 };
         sjs_mat4 sjt_call520 = { -1 };
         sjs_vec3 sjt_call521 = { -1 };
@@ -24150,45 +24151,43 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
         sjs_vec3* sjt_functionParam1590 = 0;
         sjs_list_mat4* sjt_parent605 = 0;
         sjs_mat4* sjt_parent606 = 0;
-        float sjv_angleoffset;
-        float sjv_radiusoffset;
-        float sjv_x;
-        float sjv_y;
-        float sjv_z;
+        float x;
+        float y;
+        float z;
 
         sjf_f32_random(&sjt_capture68);
 #line 43 "nau/mainPanel.sj"
-        sjv_angleoffset = sjt_capture68 * 0.01f;
+        angleoffset = sjt_capture68 * 0.01f;
 #line 43
         sjf_f32_random(&sjt_capture69);
 #line 44
-        sjv_radiusoffset = sjt_capture69 * 0.5f;
+        radiusoffset = sjt_capture69 * 0.5f;
 #line 44
         sjf_f32_random(&sjt_capture70);
 #line 45
-        sjv_y = (sjt_capture70 - 0.5f) * 0.4f;
+        y = (sjt_capture70 - 0.5f) * 0.4f;
 #line 46
-        sjt_functionParam1579 = sjv_angle + sjv_angleoffset;
+        sjt_functionParam1579 = angle + angleoffset;
 #line 46
         sjf_f32_sin(sjt_functionParam1579, &sjt_capture71);
 #line 46
-        sjv_x = sjt_capture71 * (_this->radius + sjv_radiusoffset);
+        x = sjt_capture71 * (_this->radius + radiusoffset);
 #line 47
-        sjt_functionParam1580 = sjv_angle + sjv_angleoffset;
+        sjt_functionParam1580 = angle + angleoffset;
 #line 47
         sjf_f32_cos(sjt_functionParam1580, &sjt_capture72);
 #line 47
-        sjv_z = sjt_capture72 * (_this->radius + sjv_radiusoffset);
+        z = sjt_capture72 * (_this->radius + radiusoffset);
 #line 44 "lib/common/list.sj"
         sjt_parent605 = &_this->_childworlds;
 #line 44
         sjt_call521._refCount = 1;
 #line 49 "nau/mainPanel.sj"
-        sjt_call521.x = sjv_x;
+        sjt_call521.x = x;
 #line 49
-        sjt_call521.y = sjv_y;
+        sjt_call521.y = y;
 #line 49
-        sjt_call521.z = sjv_z;
+        sjt_call521.z = z;
 #line 49
         sjf_vec3(&sjt_call521);
 #line 49
@@ -24198,7 +24197,7 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
 #line 49
         sjt_parent606 = &sjt_call520;
 #line 49
-        sjt_functionParam1589 = sjv_angle;
+        sjt_functionParam1589 = angle;
 #line 49
         sjt_call523._refCount = 1;
 #line 49
@@ -24222,7 +24221,7 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
 #line 49
         sjf_list_mat4_add(sjt_parent605, sjt_functionParam1586);
 #line 51
-        sjv_angle = sjv_angle + sjv_angleincrement;
+        angle = angle + angleincrement;
 #line 42
         i++;
 
@@ -24301,20 +24300,20 @@ void sjf_mainpanel_firemouseevent(sjs_mainpanel* _parent, sjs_mouseevent* mousee
 #line 34
     i = sjt_forStart39;
     while (i < sjt_forEnd39) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam1600;
         sjs_mouseevent* sjt_interfaceParam81 = 0;
         sjs_array_heap_iface_model* sjt_parent618 = 0;
         sji_model sjt_parent619 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent618 = &_parent->children;
 #line 34 "nau/mainPanel.sj"
         sjt_functionParam1600 = i;
 #line 34
-        sjf_array_heap_iface_model_getat_heap(sjt_parent618, sjt_functionParam1600, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent618, sjt_functionParam1600, &c);
 #line 8 "lib/ui/model.sj"
-        sjt_parent619 = sjv_c;
+        sjt_parent619 = c;
 #line 33 "nau/mainPanel.sj"
         sjt_interfaceParam81 = mouseevent;
 #line 36
@@ -24322,11 +24321,11 @@ void sjf_mainpanel_firemouseevent(sjs_mainpanel* _parent, sjs_mouseevent* mousee
 #line 34
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -24391,22 +24390,22 @@ void sjf_mainpanel_getz(sjs_mainpanel* _parent, float* _return) {
 }
 
 void sjf_mainpanel_heap(sjs_mainpanel* _this) {
+    float angle;
+    float angleincrement;
     int32_t i;
     float result138;
     int32_t sjt_cast178;
     int32_t sjt_forEnd40;
     int32_t sjt_forStart40;
-    float sjv_angle;
-    float sjv_angleincrement;
 
 #line 40 "nau/mainPanel.sj"
-    sjv_angleincrement = 0.08f;
+    angleincrement = 0.08f;
 #line 41
     sjt_cast178 = (&_this->children)->count;
 #line 41
     result138 = -(float)sjt_cast178;
 #line 41
-    sjv_angle = (result138 * sjv_angleincrement) / 2.0f;
+    angle = (result138 * angleincrement) / 2.0f;
 #line 42
     sjt_forStart40 = 0;
 #line 42
@@ -24414,6 +24413,8 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
 #line 42
     i = sjt_forStart40;
     while (i < sjt_forEnd40) {
+        float angleoffset;
+        float radiusoffset;
         sjs_mat4 sjt_call525 = { -1 };
         sjs_mat4 sjt_call526 = { -1 };
         sjs_vec3 sjt_call527 = { -1 };
@@ -24433,45 +24434,43 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
         sjs_vec3* sjt_functionParam1607 = 0;
         sjs_list_mat4* sjt_parent620 = 0;
         sjs_mat4* sjt_parent621 = 0;
-        float sjv_angleoffset;
-        float sjv_radiusoffset;
-        float sjv_x;
-        float sjv_y;
-        float sjv_z;
+        float x;
+        float y;
+        float z;
 
         sjf_f32_random(&sjt_capture73);
 #line 43 "nau/mainPanel.sj"
-        sjv_angleoffset = sjt_capture73 * 0.01f;
+        angleoffset = sjt_capture73 * 0.01f;
 #line 43
         sjf_f32_random(&sjt_capture74);
 #line 44
-        sjv_radiusoffset = sjt_capture74 * 0.5f;
+        radiusoffset = sjt_capture74 * 0.5f;
 #line 44
         sjf_f32_random(&sjt_capture75);
 #line 45
-        sjv_y = (sjt_capture75 - 0.5f) * 0.4f;
+        y = (sjt_capture75 - 0.5f) * 0.4f;
 #line 46
-        sjt_functionParam1601 = sjv_angle + sjv_angleoffset;
+        sjt_functionParam1601 = angle + angleoffset;
 #line 46
         sjf_f32_sin(sjt_functionParam1601, &sjt_capture76);
 #line 46
-        sjv_x = sjt_capture76 * (_this->radius + sjv_radiusoffset);
+        x = sjt_capture76 * (_this->radius + radiusoffset);
 #line 47
-        sjt_functionParam1602 = sjv_angle + sjv_angleoffset;
+        sjt_functionParam1602 = angle + angleoffset;
 #line 47
         sjf_f32_cos(sjt_functionParam1602, &sjt_capture77);
 #line 47
-        sjv_z = sjt_capture77 * (_this->radius + sjv_radiusoffset);
+        z = sjt_capture77 * (_this->radius + radiusoffset);
 #line 44 "lib/common/list.sj"
         sjt_parent620 = &_this->_childworlds;
 #line 44
         sjt_call527._refCount = 1;
 #line 49 "nau/mainPanel.sj"
-        sjt_call527.x = sjv_x;
+        sjt_call527.x = x;
 #line 49
-        sjt_call527.y = sjv_y;
+        sjt_call527.y = y;
 #line 49
-        sjt_call527.z = sjv_z;
+        sjt_call527.z = z;
 #line 49
         sjf_vec3(&sjt_call527);
 #line 49
@@ -24481,7 +24480,7 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
 #line 49
         sjt_parent621 = &sjt_call526;
 #line 49
-        sjt_functionParam1606 = sjv_angle;
+        sjt_functionParam1606 = angle;
 #line 49
         sjt_call529._refCount = 1;
 #line 49
@@ -24505,7 +24504,7 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
 #line 49
         sjf_list_mat4_add(sjt_parent620, sjt_functionParam1603);
 #line 51
-        sjv_angle = sjv_angle + sjv_angleincrement;
+        angle = angle + angleincrement;
 #line 42
         i++;
 
@@ -24537,20 +24536,20 @@ void sjf_mainpanel_renderorqueue(sjs_mainpanel* _parent, sjs_list_heap_iface_mod
 #line 23
     i = sjt_forStart38;
     while (i < sjt_forEnd38) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam1599;
         sjs_list_heap_iface_model* sjt_interfaceParam80 = 0;
         sjs_array_heap_iface_model* sjt_parent616 = 0;
         sji_model sjt_parent617 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent616 = &_parent->children;
 #line 23 "nau/mainPanel.sj"
         sjt_functionParam1599 = i;
 #line 23
-        sjf_array_heap_iface_model_getat_heap(sjt_parent616, sjt_functionParam1599, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent616, sjt_functionParam1599, &c);
 #line 6 "lib/ui/model.sj"
-        sjt_parent617 = sjv_c;
+        sjt_parent617 = c;
 #line 22 "nau/mainPanel.sj"
         sjt_interfaceParam80 = zqueue;
 #line 25
@@ -24558,11 +24557,11 @@ void sjf_mainpanel_renderorqueue(sjs_mainpanel* _parent, sjs_list_heap_iface_mod
 #line 23
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -24580,6 +24579,8 @@ void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 9
     i = sjt_forStart37;
     while (i < sjt_forEnd37) {
+        sji_model c = { 0 };
+        sjs_mat4 childworld = { -1 };
         sjs_mat4 sjt_call524 = { -1 };
         int32_t sjt_functionParam1591;
         int32_t sjt_functionParam1594;
@@ -24595,22 +24596,20 @@ void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4*
         sjs_mat4* sjt_parent611 = 0;
         sjs_mat4* sjt_parent612 = 0;
         sji_model sjt_parent613 = { 0 };
-        sji_model sjv_c = { 0 };
-        sjs_mat4 sjv_childworld = { -1 };
-        sjs_mat4 sjv_t = { -1 };
+        sjs_mat4 t = { -1 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent607 = &_parent->children;
 #line 9 "nau/mainPanel.sj"
         sjt_functionParam1591 = i;
 #line 9
-        sjf_array_heap_iface_model_getat_heap(sjt_parent607, sjt_functionParam1591, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent607, sjt_functionParam1591, &c);
 #line 8 "lib/common/list.sj"
         sjt_parent610 = &_parent->_childworlds;
 #line 9 "nau/mainPanel.sj"
         sjt_functionParam1594 = i;
 #line 9
-        sjf_list_mat4_getat(sjt_parent610, sjt_functionParam1594, &sjv_childworld);
+        sjf_list_mat4_getat(sjt_parent610, sjt_functionParam1594, &childworld);
 #line 8
         sjt_parent612 = world;
 #line 12
@@ -24620,11 +24619,11 @@ void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 12
         sjt_parent611 = &sjt_call524;
 #line 12
-        sjt_functionParam1596 = &sjv_childworld;
+        sjt_functionParam1596 = &childworld;
 #line 12
-        sjf_mat4_multiply(sjt_parent611, sjt_functionParam1596, &sjv_t);
+        sjf_mat4_multiply(sjt_parent611, sjt_functionParam1596, &t);
 #line 2 "lib/ui/model.sj"
-        sjt_parent613 = sjv_c;
+        sjt_parent613 = c;
 #line 8 "nau/mainPanel.sj"
         sjt_interfaceParam75 = scenerect;
 #line 8
@@ -24632,7 +24631,7 @@ void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 8
         sjt_interfaceParam77 = view;
 #line 13
-        sjt_interfaceParam78 = &sjv_t;
+        sjt_interfaceParam78 = &t;
 #line 8
         sjt_interfaceParam79 = light;
 #line 13
@@ -24640,18 +24639,18 @@ void sjf_mainpanel_update(sjs_mainpanel* _parent, sjs_rect* scenerect, sjs_mat4*
 #line 9
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
+        if (childworld._refCount == 1) { sjf_mat4_destroy(&childworld); }
+;
         if (sjt_call524._refCount == 1) { sjf_mat4_destroy(&sjt_call524); }
 ;
-        if (sjv_childworld._refCount == 1) { sjf_mat4_destroy(&sjv_childworld); }
-;
-        if (sjv_t._refCount == 1) { sjf_mat4_destroy(&sjv_t); }
+        if (t._refCount == 1) { sjf_mat4_destroy(&t); }
 ;
     }
 }
@@ -24806,45 +24805,45 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
     float sjt_capture48;
     float sjt_functionParam394;
     sjs_mat4* sjt_parent168 = 0;
-    sjs_mat4 sjv_t = { -1 };
+    sjs_mat4 t = { -1 };
 
-    sjv_t._refCount = 1;
+    t._refCount = 1;
 #line 73 "lib/ui/mat4.sj"
-    sjv_t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
+    t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
 #line 74
-    sjv_t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
+    t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
 #line 75
-    sjv_t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
+    t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
 #line 76
-    sjv_t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
+    t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
 #line 77
-    sjv_t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
+    t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
 #line 78
-    sjv_t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
+    t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
 #line 79
-    sjv_t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
+    t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
 #line 80
-    sjv_t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
+    t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
 #line 81
-    sjv_t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
+    t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
 #line 82
-    sjv_t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
+    t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
 #line 83
-    sjv_t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
+    t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
 #line 84
-    sjv_t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
+    t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
 #line 85
-    sjv_t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
+    t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
 #line 86
-    sjv_t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
+    t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
 #line 87
-    sjv_t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
+    t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
 #line 88
-    sjv_t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
+    t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
 #line 88
-    sjf_mat4(&sjv_t);
+    sjf_mat4(&t);
 #line 40
-    sjt_parent168 = &sjv_t;
+    sjt_parent168 = &t;
 #line 40
     sjf_mat4_determinant(_parent, &sjt_capture48);
 #line 91
@@ -24852,7 +24851,7 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
 #line 91
     sjf_mat4_multiplyf32(sjt_parent168, sjt_functionParam394, _return);
 
-    if (sjv_t._refCount == 1) { sjf_mat4_destroy(&sjv_t); }
+    if (t._refCount == 1) { sjf_mat4_destroy(&t); }
 ;
 }
 
@@ -24860,45 +24859,45 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
     float sjt_capture49;
     float sjt_functionParam395;
     sjs_mat4* sjt_parent169 = 0;
-    sjs_mat4 sjv_t = { -1 };
+    sjs_mat4 t = { -1 };
 
-    sjv_t._refCount = 1;
+    t._refCount = 1;
 #line 73 "lib/ui/mat4.sj"
-    sjv_t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
+    t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
 #line 74
-    sjv_t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
+    t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
 #line 75
-    sjv_t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
+    t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
 #line 76
-    sjv_t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
+    t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
 #line 77
-    sjv_t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
+    t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
 #line 78
-    sjv_t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
+    t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
 #line 79
-    sjv_t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
+    t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
 #line 80
-    sjv_t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
+    t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
 #line 81
-    sjv_t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
+    t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
 #line 82
-    sjv_t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
+    t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
 #line 83
-    sjv_t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
+    t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
 #line 84
-    sjv_t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
+    t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
 #line 85
-    sjv_t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
+    t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
 #line 86
-    sjv_t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
+    t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
 #line 87
-    sjv_t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
+    t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
 #line 88
-    sjv_t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
+    t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
 #line 88
-    sjf_mat4(&sjv_t);
+    sjf_mat4(&t);
 #line 40
-    sjt_parent169 = &sjv_t;
+    sjt_parent169 = &t;
 #line 40
     sjf_mat4_determinant(_parent, &sjt_capture49);
 #line 91
@@ -24906,7 +24905,7 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
 #line 91
     sjf_mat4_multiplyf32_heap(sjt_parent169, sjt_functionParam395, _return);
 
-    if (sjv_t._refCount == 1) { sjf_mat4_destroy(&sjv_t); }
+    if (t._refCount == 1) { sjf_mat4_destroy(&t); }
 ;
 }
 
@@ -24929,65 +24928,65 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
     sjs_vec3* sjt_parent31 = 0;
     sjs_vec3* sjt_parent32 = 0;
     sjs_vec3* sjt_parent33 = 0;
-    sjs_vec3 sjv_temp = { -1 };
-    sjs_vec3 sjv_xaxis = { -1 };
-    sjs_vec3 sjv_yaxis = { -1 };
-    sjs_vec3 sjv_zaxis = { -1 };
+    sjs_vec3 temp = { -1 };
+    sjs_vec3 xaxis = { -1 };
+    sjs_vec3 yaxis = { -1 };
+    sjs_vec3 zaxis = { -1 };
 
 #line 133 "lib/ui/mat4.sj"
     sjt_parent26 = target;
 #line 133
     sjt_functionParam35 = camera;
 #line 133
-    sjf_vec3_subtract(sjt_parent26, sjt_functionParam35, &sjv_temp);
+    sjf_vec3_subtract(sjt_parent26, sjt_functionParam35, &temp);
 #line 38 "lib/ui/vec3.sj"
-    sjt_parent27 = &sjv_temp;
+    sjt_parent27 = &temp;
 #line 38
-    sjf_vec3_normalize(sjt_parent27, &sjv_zaxis);
+    sjf_vec3_normalize(sjt_parent27, &zaxis);
 #line 133 "lib/ui/mat4.sj"
     sjt_parent29 = up;
 #line 136
-    sjt_functionParam38 = &sjv_zaxis;
+    sjt_functionParam38 = &zaxis;
 #line 136
     sjf_vec3_cross(sjt_parent29, sjt_functionParam38, &sjt_call7);
 #line 136
     sjt_parent28 = &sjt_call7;
 #line 136
-    sjf_vec3_normalize(sjt_parent28, &sjv_xaxis);
+    sjf_vec3_normalize(sjt_parent28, &xaxis);
 #line 47 "lib/ui/vec3.sj"
-    sjt_parent30 = &sjv_zaxis;
+    sjt_parent30 = &zaxis;
 #line 137 "lib/ui/mat4.sj"
-    sjt_functionParam39 = &sjv_xaxis;
+    sjt_functionParam39 = &xaxis;
 #line 137
-    sjf_vec3_cross(sjt_parent30, sjt_functionParam39, &sjv_yaxis);
+    sjf_vec3_cross(sjt_parent30, sjt_functionParam39, &yaxis);
 #line 137
     _return->_refCount = 1;
 #line 138
-    _return->m00 = (&sjv_xaxis)->x;
+    _return->m00 = (&xaxis)->x;
 #line 138
-    _return->m01 = (&sjv_yaxis)->x;
+    _return->m01 = (&yaxis)->x;
 #line 138
-    _return->m02 = (&sjv_zaxis)->x;
+    _return->m02 = (&zaxis)->x;
 #line 142
     _return->m03 = 0.0f;
 #line 138
-    _return->m10 = (&sjv_xaxis)->y;
+    _return->m10 = (&xaxis)->y;
 #line 138
-    _return->m11 = (&sjv_yaxis)->y;
+    _return->m11 = (&yaxis)->y;
 #line 138
-    _return->m12 = (&sjv_zaxis)->y;
+    _return->m12 = (&zaxis)->y;
 #line 146
     _return->m13 = 0.0f;
 #line 138
-    _return->m20 = (&sjv_xaxis)->z;
+    _return->m20 = (&xaxis)->z;
 #line 138
-    _return->m21 = (&sjv_yaxis)->z;
+    _return->m21 = (&yaxis)->z;
 #line 138
-    _return->m22 = (&sjv_zaxis)->z;
+    _return->m22 = (&zaxis)->z;
 #line 150
     _return->m23 = 0.0f;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent31 = &sjv_xaxis;
+    sjt_parent31 = &xaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam40 = camera;
 #line 133
@@ -24995,7 +24994,7 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 #line 151
     _return->m30 = 0.0f - sjt_capture9;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent32 = &sjv_yaxis;
+    sjt_parent32 = &yaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam41 = camera;
 #line 133
@@ -25003,7 +25002,7 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 #line 152
     _return->m31 = 0.0f - sjt_capture10;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent33 = &sjv_zaxis;
+    sjt_parent33 = &zaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam42 = camera;
 #line 133
@@ -25017,13 +25016,13 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 
     if (sjt_call7._refCount == 1) { sjf_vec3_destroy(&sjt_call7); }
 ;
-    if (sjv_temp._refCount == 1) { sjf_vec3_destroy(&sjv_temp); }
+    if (temp._refCount == 1) { sjf_vec3_destroy(&temp); }
 ;
-    if (sjv_xaxis._refCount == 1) { sjf_vec3_destroy(&sjv_xaxis); }
+    if (xaxis._refCount == 1) { sjf_vec3_destroy(&xaxis); }
 ;
-    if (sjv_yaxis._refCount == 1) { sjf_vec3_destroy(&sjv_yaxis); }
+    if (yaxis._refCount == 1) { sjf_vec3_destroy(&yaxis); }
 ;
-    if (sjv_zaxis._refCount == 1) { sjf_vec3_destroy(&sjv_zaxis); }
+    if (zaxis._refCount == 1) { sjf_vec3_destroy(&zaxis); }
 ;
 }
 
@@ -25046,67 +25045,67 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
     sjs_vec3* sjt_parent39 = 0;
     sjs_vec3* sjt_parent40 = 0;
     sjs_vec3* sjt_parent41 = 0;
-    sjs_vec3 sjv_temp = { -1 };
-    sjs_vec3 sjv_xaxis = { -1 };
-    sjs_vec3 sjv_yaxis = { -1 };
-    sjs_vec3 sjv_zaxis = { -1 };
+    sjs_vec3 temp = { -1 };
+    sjs_vec3 xaxis = { -1 };
+    sjs_vec3 yaxis = { -1 };
+    sjs_vec3 zaxis = { -1 };
 
 #line 133 "lib/ui/mat4.sj"
     sjt_parent34 = target;
 #line 133
     sjt_functionParam43 = camera;
 #line 133
-    sjf_vec3_subtract(sjt_parent34, sjt_functionParam43, &sjv_temp);
+    sjf_vec3_subtract(sjt_parent34, sjt_functionParam43, &temp);
 #line 38 "lib/ui/vec3.sj"
-    sjt_parent35 = &sjv_temp;
+    sjt_parent35 = &temp;
 #line 38
-    sjf_vec3_normalize(sjt_parent35, &sjv_zaxis);
+    sjf_vec3_normalize(sjt_parent35, &zaxis);
 #line 133 "lib/ui/mat4.sj"
     sjt_parent37 = up;
 #line 136
-    sjt_functionParam44 = &sjv_zaxis;
+    sjt_functionParam44 = &zaxis;
 #line 136
     sjf_vec3_cross(sjt_parent37, sjt_functionParam44, &sjt_call8);
 #line 136
     sjt_parent36 = &sjt_call8;
 #line 136
-    sjf_vec3_normalize(sjt_parent36, &sjv_xaxis);
+    sjf_vec3_normalize(sjt_parent36, &xaxis);
 #line 47 "lib/ui/vec3.sj"
-    sjt_parent38 = &sjv_zaxis;
+    sjt_parent38 = &zaxis;
 #line 137 "lib/ui/mat4.sj"
-    sjt_functionParam45 = &sjv_xaxis;
+    sjt_functionParam45 = &xaxis;
 #line 137
-    sjf_vec3_cross(sjt_parent38, sjt_functionParam45, &sjv_yaxis);
+    sjf_vec3_cross(sjt_parent38, sjt_functionParam45, &yaxis);
 #line 137
     (*_return) = (sjs_mat4*)malloc(sizeof(sjs_mat4));
 #line 137
     (*_return)->_refCount = 1;
 #line 138
-    (*_return)->m00 = (&sjv_xaxis)->x;
+    (*_return)->m00 = (&xaxis)->x;
 #line 138
-    (*_return)->m01 = (&sjv_yaxis)->x;
+    (*_return)->m01 = (&yaxis)->x;
 #line 138
-    (*_return)->m02 = (&sjv_zaxis)->x;
+    (*_return)->m02 = (&zaxis)->x;
 #line 142
     (*_return)->m03 = 0.0f;
 #line 138
-    (*_return)->m10 = (&sjv_xaxis)->y;
+    (*_return)->m10 = (&xaxis)->y;
 #line 138
-    (*_return)->m11 = (&sjv_yaxis)->y;
+    (*_return)->m11 = (&yaxis)->y;
 #line 138
-    (*_return)->m12 = (&sjv_zaxis)->y;
+    (*_return)->m12 = (&zaxis)->y;
 #line 146
     (*_return)->m13 = 0.0f;
 #line 138
-    (*_return)->m20 = (&sjv_xaxis)->z;
+    (*_return)->m20 = (&xaxis)->z;
 #line 138
-    (*_return)->m21 = (&sjv_yaxis)->z;
+    (*_return)->m21 = (&yaxis)->z;
 #line 138
-    (*_return)->m22 = (&sjv_zaxis)->z;
+    (*_return)->m22 = (&zaxis)->z;
 #line 150
     (*_return)->m23 = 0.0f;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent39 = &sjv_xaxis;
+    sjt_parent39 = &xaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam46 = camera;
 #line 133
@@ -25114,7 +25113,7 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 #line 151
     (*_return)->m30 = 0.0f - sjt_capture12;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent40 = &sjv_yaxis;
+    sjt_parent40 = &yaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam47 = camera;
 #line 133
@@ -25122,7 +25121,7 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 #line 152
     (*_return)->m31 = 0.0f - sjt_capture13;
 #line 55 "lib/ui/vec3.sj"
-    sjt_parent41 = &sjv_zaxis;
+    sjt_parent41 = &zaxis;
 #line 133 "lib/ui/mat4.sj"
     sjt_functionParam48 = camera;
 #line 133
@@ -25136,13 +25135,13 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 
     if (sjt_call8._refCount == 1) { sjf_vec3_destroy(&sjt_call8); }
 ;
-    if (sjv_temp._refCount == 1) { sjf_vec3_destroy(&sjv_temp); }
+    if (temp._refCount == 1) { sjf_vec3_destroy(&temp); }
 ;
-    if (sjv_xaxis._refCount == 1) { sjf_vec3_destroy(&sjv_xaxis); }
+    if (xaxis._refCount == 1) { sjf_vec3_destroy(&xaxis); }
 ;
-    if (sjv_yaxis._refCount == 1) { sjf_vec3_destroy(&sjv_yaxis); }
+    if (yaxis._refCount == 1) { sjf_vec3_destroy(&yaxis); }
 ;
-    if (sjv_zaxis._refCount == 1) { sjf_vec3_destroy(&sjv_zaxis); }
+    if (zaxis._refCount == 1) { sjf_vec3_destroy(&zaxis); }
 ;
 }
 
@@ -25417,21 +25416,21 @@ void sjf_mat4_orthographic_heap(float left, float right, float bottom, float top
 void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs_mat4* _return) {
     float sjt_capture7;
     float sjt_functionParam28;
-    float sjv_xscale;
-    float sjv_yscale;
+    float xscale;
+    float yscale;
 
 #line 159 "lib/ui/mat4.sj"
     sjt_functionParam28 = (fovy / 180.0f) / 2.0f;
 #line 159
     sjf_f32_tan(sjt_functionParam28, &sjt_capture7);
 #line 159
-    sjv_yscale = 1.0f / sjt_capture7;
+    yscale = 1.0f / sjt_capture7;
 #line 160
-    sjv_xscale = sjv_yscale * aspect;
+    xscale = yscale * aspect;
 #line 160
     _return->_refCount = 1;
 #line 161
-    _return->m00 = sjv_xscale;
+    _return->m00 = xscale;
 #line 3
     _return->m01 = 0.0f;
 #line 4
@@ -25441,7 +25440,7 @@ void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs
 #line 6
     _return->m10 = 0.0f;
 #line 161
-    _return->m11 = sjv_yscale;
+    _return->m11 = yscale;
 #line 8
     _return->m12 = 0.0f;
 #line 9
@@ -25469,23 +25468,23 @@ void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs
 void sjf_mat4_perspective_heap(float fovy, float aspect, float znear, float zfar, sjs_mat4** _return) {
     float sjt_capture8;
     float sjt_functionParam29;
-    float sjv_xscale;
-    float sjv_yscale;
+    float xscale;
+    float yscale;
 
 #line 159 "lib/ui/mat4.sj"
     sjt_functionParam29 = (fovy / 180.0f) / 2.0f;
 #line 159
     sjf_f32_tan(sjt_functionParam29, &sjt_capture8);
 #line 159
-    sjv_yscale = 1.0f / sjt_capture8;
+    yscale = 1.0f / sjt_capture8;
 #line 160
-    sjv_xscale = sjv_yscale * aspect;
+    xscale = yscale * aspect;
 #line 160
     (*_return) = (sjs_mat4*)malloc(sizeof(sjs_mat4));
 #line 160
     (*_return)->_refCount = 1;
 #line 161
-    (*_return)->m00 = sjv_xscale;
+    (*_return)->m00 = xscale;
 #line 3
     (*_return)->m01 = 0.0f;
 #line 4
@@ -25495,7 +25494,7 @@ void sjf_mat4_perspective_heap(float fovy, float aspect, float znear, float zfar
 #line 6
     (*_return)->m10 = 0.0f;
 #line 161
-    (*_return)->m11 = sjv_yscale;
+    (*_return)->m11 = yscale;
 #line 8
     (*_return)->m12 = 0.0f;
 #line 9
@@ -25521,49 +25520,49 @@ void sjf_mat4_perspective_heap(float fovy, float aspect, float znear, float zfar
 }
 
 void sjf_mat4_rotate(float angle, sjs_vec3* axis, sjs_mat4* _return) {
+    float c;
+    sjs_vec3 norm = { -1 };
+    float s;
     float sjt_functionParam1426;
     float sjt_functionParam1427;
     sjs_vec3* sjt_parent579 = 0;
-    float sjv_c;
-    sjs_vec3 sjv_norm = { -1 };
-    float sjv_s;
 
 #line 183 "lib/ui/mat4.sj"
-    sjt_functionParam1426 = (sjv_f32_pi * angle) / 180.0f;
+    sjt_functionParam1426 = (g_f32_pi * angle) / 180.0f;
 #line 183
-    sjf_f32_cos(sjt_functionParam1426, &sjv_c);
+    sjf_f32_cos(sjt_functionParam1426, &c);
 #line 184
-    sjt_functionParam1427 = (sjv_f32_pi * angle) / 180.0f;
+    sjt_functionParam1427 = (g_f32_pi * angle) / 180.0f;
 #line 184
-    sjf_f32_sin(sjt_functionParam1427, &sjv_s);
+    sjf_f32_sin(sjt_functionParam1427, &s);
 #line 182
     sjt_parent579 = axis;
 #line 182
-    sjf_vec3_normalize(sjt_parent579, &sjv_norm);
+    sjf_vec3_normalize(sjt_parent579, &norm);
 #line 182
     _return->_refCount = 1;
 #line 188
-    _return->m00 = (((&sjv_norm)->x * (&sjv_norm)->x) * (1.0f - sjv_c)) + sjv_c;
+    _return->m00 = (((&norm)->x * (&norm)->x) * (1.0f - c)) + c;
 #line 191
-    _return->m01 = (((&sjv_norm)->x * (&sjv_norm)->y) * (1.0f - sjv_c)) + ((&sjv_norm)->z * sjv_s);
+    _return->m01 = (((&norm)->x * (&norm)->y) * (1.0f - c)) + ((&norm)->z * s);
 #line 194
-    _return->m02 = (((&sjv_norm)->x * (&sjv_norm)->z) * (1.0f - sjv_c)) - ((&sjv_norm)->y * sjv_s);
+    _return->m02 = (((&norm)->x * (&norm)->z) * (1.0f - c)) - ((&norm)->y * s);
 #line 5
     _return->m03 = 0.0f;
 #line 189
-    _return->m10 = (((&sjv_norm)->y * (&sjv_norm)->x) * (1.0f - sjv_c)) - ((&sjv_norm)->z * sjv_s);
+    _return->m10 = (((&norm)->y * (&norm)->x) * (1.0f - c)) - ((&norm)->z * s);
 #line 192
-    _return->m11 = (((&sjv_norm)->y * (&sjv_norm)->y) * (1.0f - sjv_c)) + sjv_c;
+    _return->m11 = (((&norm)->y * (&norm)->y) * (1.0f - c)) + c;
 #line 195
-    _return->m12 = (((&sjv_norm)->y * (&sjv_norm)->z) * (1.0f - sjv_c)) + ((&sjv_norm)->x * sjv_s);
+    _return->m12 = (((&norm)->y * (&norm)->z) * (1.0f - c)) + ((&norm)->x * s);
 #line 9
     _return->m13 = 0.0f;
 #line 190
-    _return->m20 = (((&sjv_norm)->z * (&sjv_norm)->x) * (1.0f - sjv_c)) + ((&sjv_norm)->y * sjv_s);
+    _return->m20 = (((&norm)->z * (&norm)->x) * (1.0f - c)) + ((&norm)->y * s);
 #line 193
-    _return->m21 = (((&sjv_norm)->z * (&sjv_norm)->y) * (1.0f - sjv_c)) - ((&sjv_norm)->x * sjv_s);
+    _return->m21 = (((&norm)->z * (&norm)->y) * (1.0f - c)) - ((&norm)->x * s);
 #line 196
-    _return->m22 = (((&sjv_norm)->z * (&sjv_norm)->z) * (1.0f - sjv_c)) + sjv_c;
+    _return->m22 = (((&norm)->z * (&norm)->z) * (1.0f - c)) + c;
 #line 13
     _return->m23 = 0.0f;
 #line 14
@@ -25577,56 +25576,56 @@ void sjf_mat4_rotate(float angle, sjs_vec3* axis, sjs_mat4* _return) {
 #line 197
     sjf_mat4(_return);
 
-    if (sjv_norm._refCount == 1) { sjf_vec3_destroy(&sjv_norm); }
+    if (norm._refCount == 1) { sjf_vec3_destroy(&norm); }
 ;
 }
 
 void sjf_mat4_rotate_heap(float angle, sjs_vec3* axis, sjs_mat4** _return) {
+    float c;
+    sjs_vec3 norm = { -1 };
+    float s;
     float sjt_functionParam1428;
     float sjt_functionParam1429;
     sjs_vec3* sjt_parent580 = 0;
-    float sjv_c;
-    sjs_vec3 sjv_norm = { -1 };
-    float sjv_s;
 
 #line 183 "lib/ui/mat4.sj"
-    sjt_functionParam1428 = (sjv_f32_pi * angle) / 180.0f;
+    sjt_functionParam1428 = (g_f32_pi * angle) / 180.0f;
 #line 183
-    sjf_f32_cos(sjt_functionParam1428, &sjv_c);
+    sjf_f32_cos(sjt_functionParam1428, &c);
 #line 184
-    sjt_functionParam1429 = (sjv_f32_pi * angle) / 180.0f;
+    sjt_functionParam1429 = (g_f32_pi * angle) / 180.0f;
 #line 184
-    sjf_f32_sin(sjt_functionParam1429, &sjv_s);
+    sjf_f32_sin(sjt_functionParam1429, &s);
 #line 182
     sjt_parent580 = axis;
 #line 182
-    sjf_vec3_normalize(sjt_parent580, &sjv_norm);
+    sjf_vec3_normalize(sjt_parent580, &norm);
 #line 182
     (*_return) = (sjs_mat4*)malloc(sizeof(sjs_mat4));
 #line 182
     (*_return)->_refCount = 1;
 #line 188
-    (*_return)->m00 = (((&sjv_norm)->x * (&sjv_norm)->x) * (1.0f - sjv_c)) + sjv_c;
+    (*_return)->m00 = (((&norm)->x * (&norm)->x) * (1.0f - c)) + c;
 #line 191
-    (*_return)->m01 = (((&sjv_norm)->x * (&sjv_norm)->y) * (1.0f - sjv_c)) + ((&sjv_norm)->z * sjv_s);
+    (*_return)->m01 = (((&norm)->x * (&norm)->y) * (1.0f - c)) + ((&norm)->z * s);
 #line 194
-    (*_return)->m02 = (((&sjv_norm)->x * (&sjv_norm)->z) * (1.0f - sjv_c)) - ((&sjv_norm)->y * sjv_s);
+    (*_return)->m02 = (((&norm)->x * (&norm)->z) * (1.0f - c)) - ((&norm)->y * s);
 #line 5
     (*_return)->m03 = 0.0f;
 #line 189
-    (*_return)->m10 = (((&sjv_norm)->y * (&sjv_norm)->x) * (1.0f - sjv_c)) - ((&sjv_norm)->z * sjv_s);
+    (*_return)->m10 = (((&norm)->y * (&norm)->x) * (1.0f - c)) - ((&norm)->z * s);
 #line 192
-    (*_return)->m11 = (((&sjv_norm)->y * (&sjv_norm)->y) * (1.0f - sjv_c)) + sjv_c;
+    (*_return)->m11 = (((&norm)->y * (&norm)->y) * (1.0f - c)) + c;
 #line 195
-    (*_return)->m12 = (((&sjv_norm)->y * (&sjv_norm)->z) * (1.0f - sjv_c)) + ((&sjv_norm)->x * sjv_s);
+    (*_return)->m12 = (((&norm)->y * (&norm)->z) * (1.0f - c)) + ((&norm)->x * s);
 #line 9
     (*_return)->m13 = 0.0f;
 #line 190
-    (*_return)->m20 = (((&sjv_norm)->z * (&sjv_norm)->x) * (1.0f - sjv_c)) + ((&sjv_norm)->y * sjv_s);
+    (*_return)->m20 = (((&norm)->z * (&norm)->x) * (1.0f - c)) + ((&norm)->y * s);
 #line 193
-    (*_return)->m21 = (((&sjv_norm)->z * (&sjv_norm)->y) * (1.0f - sjv_c)) - ((&sjv_norm)->x * sjv_s);
+    (*_return)->m21 = (((&norm)->z * (&norm)->y) * (1.0f - c)) - ((&norm)->x * s);
 #line 196
-    (*_return)->m22 = (((&sjv_norm)->z * (&sjv_norm)->z) * (1.0f - sjv_c)) + sjv_c;
+    (*_return)->m22 = (((&norm)->z * (&norm)->z) * (1.0f - c)) + c;
 #line 13
     (*_return)->m23 = 0.0f;
 #line 14
@@ -25640,7 +25639,7 @@ void sjf_mat4_rotate_heap(float angle, sjs_vec3* axis, sjs_mat4** _return) {
 #line 197
     sjf_mat4_heap((*_return));
 
-    if (sjv_norm._refCount == 1) { sjf_vec3_destroy(&sjv_norm); }
+    if (norm._refCount == 1) { sjf_vec3_destroy(&norm); }
 ;
 }
 
@@ -25888,6 +25887,7 @@ void sjf_menucontroller_heap(sjs_menucontroller* _this) {
 }
 
 void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
+    sjs_crossfadeelement* crossfade = 0;
     sjs_vec3 sjt_call397 = { -1 };
     sjs_animation_f32* sjt_call399 = 0;
     sjs_crossfadeelement* sjt_cast120 = 0;
@@ -25900,210 +25900,209 @@ void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
     sjs_nauscene3delement* sjt_parent519 = 0;
     sjs_nauscene3delement* sjt_parent521 = 0;
     sjs_list_heap_iface_animation* sjt_parent522 = 0;
-    sjs_crossfadeelement* sjv_crossfade = 0;
 
-    sjv_crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
-    sjv_crossfade->_refCount = 1;
+    crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
+    crossfade->_refCount = 1;
 #line 38 "nau/menuController.sj"
-    sjv_crossfade->fromelement = sjv_fieldelement;
-    if (sjv_crossfade->fromelement._parent != 0) {
-        sjv_crossfade->fromelement._parent->_refCount++;
+    crossfade->fromelement = g_fieldelement;
+    if (crossfade->fromelement._parent != 0) {
+        crossfade->fromelement._parent->_refCount++;
     }
 
 #line 38
-    sjv_crossfade->toelement = sjv_menuelement;
-    if (sjv_crossfade->toelement._parent != 0) {
-        sjv_crossfade->toelement._parent->_refCount++;
+    crossfade->toelement = g_menuelement;
+    if (crossfade->toelement._parent != 0) {
+        crossfade->toelement._parent->_refCount++;
     }
 
 #line 38
-    sjv_crossfade->_rect._refCount = 1;
+    crossfade->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_rect.x = 0;
+    crossfade->_rect.x = 0;
 #line 3
-    sjv_crossfade->_rect.y = 0;
+    crossfade->_rect.y = 0;
 #line 4
-    sjv_crossfade->_rect.w = 0;
+    crossfade->_rect.w = 0;
 #line 5
-    sjv_crossfade->_rect.h = 0;
+    crossfade->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_rect);
+    sjf_rect(&crossfade->_rect);
 #line 5
-    sjv_crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+    crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 5
-    sjv_crossfade->_fromeffect->_refCount = 1;
+    crossfade->_fromeffect->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-    sjv_crossfade->_fromeffect->alpha = 1.0f;
+    crossfade->_fromeffect->alpha = 1.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_rect._refCount = 1;
+    crossfade->_fromeffect->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_fromeffect->_rect.x = 0;
+    crossfade->_fromeffect->_rect.x = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_rect.y = 0;
+    crossfade->_fromeffect->_rect.y = 0;
 #line 4
-    sjv_crossfade->_fromeffect->_rect.w = 0;
+    crossfade->_fromeffect->_rect.w = 0;
 #line 5
-    sjv_crossfade->_fromeffect->_rect.h = 0;
+    crossfade->_fromeffect->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_fromeffect->_rect);
+    sjf_rect(&crossfade->_fromeffect->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-    sjv_crossfade->_fromeffect->_vertexbuffer._refCount = -1;
+    crossfade->_fromeffect->_vertexbuffer._refCount = -1;
 #line 8
-    sjv_crossfade->_fromeffect->_scenebuffer._refCount = -1;
+    crossfade->_fromeffect->_scenebuffer._refCount = -1;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene._refCount = 1;
+    crossfade->_fromeffect->_innerscene._refCount = 1;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene._size._refCount = 1;
+    crossfade->_fromeffect->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_crossfade->_fromeffect->_innerscene._size.w = 0;
+    crossfade->_fromeffect->_innerscene._size.w = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene._size.h = 0;
+    crossfade->_fromeffect->_innerscene._size.h = 0;
 #line 3
-    sjf_size(&sjv_crossfade->_fromeffect->_innerscene._size);
+    sjf_size(&crossfade->_fromeffect->_innerscene._size);
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.model._refCount = 1;
+    crossfade->_fromeffect->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.model);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.model);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.view._refCount = 1;
+    crossfade->_fromeffect->_innerscene.view._refCount = 1;
 #line 2
-    sjv_crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.view);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.view);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.projection._refCount = 1;
+    crossfade->_fromeffect->_innerscene.projection._refCount = 1;
 #line 2
-    sjv_crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.projection);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.projection);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
+    crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.x = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.x = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.y = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.y = 0;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.w = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.w = 0;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.h = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_fromeffect->_innerscene.windowrect);
+    sjf_rect(&crossfade->_fromeffect->_innerscene.windowrect);
 #line 5
-    sjf_scene2d(&sjv_crossfade->_fromeffect->_innerscene);
+    sjf_scene2d(&crossfade->_fromeffect->_innerscene);
 #line 5
-    sjf_fadeeffect_heap(sjv_crossfade->_fromeffect);
+    sjf_fadeeffect_heap(crossfade->_fromeffect);
 #line 5
-    sjf_crossfadeelement_heap(sjv_crossfade);
+    sjf_crossfadeelement_heap(crossfade);
 #line 43 "nau/menuController.sj"
-    sjt_cast120 = sjv_crossfade;
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount--;
-        if (sjv_root._parent->_refCount <= 0) {
-            sjv_root._vtbl->destroy(sjv_root._parent);
-            free(sjv_root._parent);
+    sjt_cast120 = crossfade;
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount--;
+        if (g_root._parent->_refCount <= 0) {
+            g_root._vtbl->destroy(g_root._parent);
+            free(g_root._parent);
         }
     }
 
 #line 1 "lib/ui/element.sj"
-    sjf_crossfadeelement_as_sji_element(sjt_cast120, &sjv_root);
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount++;
+    sjf_crossfadeelement_as_sji_element(sjt_cast120, &g_root);
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount++;
     }
 
 #line 30 "nau/nauScene3dElement.sj"
-    sjt_parent519 = sjv_menuscene;
+    sjt_parent519 = g_menuscene;
 #line 30
     sjt_parent519->_refCount++;
 #line 30
@@ -26123,7 +26122,7 @@ void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
 #line 45
     sjf_nauscene3delement_animatelookat(sjt_parent519, sjt_functionParam1211, sjt_functionParam1212);
 #line 43 "nau/nauScene3dElement.sj"
-    sjt_parent521 = sjv_menuscene;
+    sjt_parent521 = g_menuscene;
 #line 43
     sjt_parent521->_refCount++;
 #line 46 "nau/menuController.sj"
@@ -26133,21 +26132,21 @@ void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
 #line 46
     sjf_nauscene3delement_animatecameradistance(sjt_parent521, sjt_functionParam1214, sjt_functionParam1215);
 #line 44 "lib/common/list.sj"
-    sjt_parent522 = &(&sjv_animator)->animations;
+    sjt_parent522 = &(&g_animator)->animations;
 #line 44
     sjt_call399 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
     sjt_call399->_refCount = 1;
 #line 52 "nau/menuController.sj"
-    sjt_call399->start = (&sjv_animator)->current + 500;
+    sjt_call399->start = (&g_animator)->current + 500;
 #line 50
     sjt_call399->startvalue = 0.0f;
 #line 53
-    sjt_call399->end = (&sjv_animator)->current + 3000;
+    sjt_call399->end = (&g_animator)->current + 3000;
 #line 51
     sjt_call399->endvalue = 1.0f;
 #line 54
-    sjt_call399->setvalue.inner._parent = (sjs_object*)sjv_crossfade;
+    sjt_call399->setvalue.inner._parent = (sjs_object*)crossfade;
 #line 54
     sjt_call399->setvalue.inner._parent->_refCount++;
 #line 54
@@ -26167,6 +26166,12 @@ void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
 #line 1
     sjf_list_heap_iface_animation_add(sjt_parent522, sjt_functionParam1216);
 
+    crossfade->_refCount--;
+    if (crossfade->_refCount <= 0) {
+        weakptr_release(crossfade);
+        sjf_crossfadeelement_destroy(crossfade);
+        free(crossfade);
+    }
     sjt_call399->_refCount--;
     if (sjt_call399->_refCount <= 0) {
         weakptr_release(sjt_call399);
@@ -26192,17 +26197,12 @@ void sjf_menucontroller_onbackfromfield(sjs_menucontroller* _parent) {
         sjf_nauscene3delement_destroy(sjt_parent521);
         free(sjt_parent521);
     }
-    sjv_crossfade->_refCount--;
-    if (sjv_crossfade->_refCount <= 0) {
-        weakptr_release(sjv_crossfade);
-        sjf_crossfadeelement_destroy(sjv_crossfade);
-        free(sjv_crossfade);
-    }
     if (sjt_call397._refCount == 1) { sjf_vec3_destroy(&sjt_call397); }
 ;
 }
 
 void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
+    sjs_crossfadeelement* crossfade = 0;
     sjs_vec3 sjt_call514 = { -1 };
     sjs_animation_f32* sjt_call515 = 0;
     sjs_crossfadeelement* sjt_cast173 = 0;
@@ -26215,210 +26215,209 @@ void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
     sjs_nauscene3delement* sjt_parent597 = 0;
     sjs_nauscene3delement* sjt_parent598 = 0;
     sjs_list_heap_iface_animation* sjt_parent599 = 0;
-    sjs_crossfadeelement* sjv_crossfade = 0;
 
-    sjv_crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
-    sjv_crossfade->_refCount = 1;
+    crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
+    crossfade->_refCount = 1;
 #line 93 "nau/menuController.sj"
-    sjv_crossfade->fromelement = sjv_forestelement;
-    if (sjv_crossfade->fromelement._parent != 0) {
-        sjv_crossfade->fromelement._parent->_refCount++;
+    crossfade->fromelement = g_forestelement;
+    if (crossfade->fromelement._parent != 0) {
+        crossfade->fromelement._parent->_refCount++;
     }
 
 #line 93
-    sjv_crossfade->toelement = sjv_menuelement;
-    if (sjv_crossfade->toelement._parent != 0) {
-        sjv_crossfade->toelement._parent->_refCount++;
+    crossfade->toelement = g_menuelement;
+    if (crossfade->toelement._parent != 0) {
+        crossfade->toelement._parent->_refCount++;
     }
 
 #line 93
-    sjv_crossfade->_rect._refCount = 1;
+    crossfade->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_rect.x = 0;
+    crossfade->_rect.x = 0;
 #line 3
-    sjv_crossfade->_rect.y = 0;
+    crossfade->_rect.y = 0;
 #line 4
-    sjv_crossfade->_rect.w = 0;
+    crossfade->_rect.w = 0;
 #line 5
-    sjv_crossfade->_rect.h = 0;
+    crossfade->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_rect);
+    sjf_rect(&crossfade->_rect);
 #line 5
-    sjv_crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+    crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 5
-    sjv_crossfade->_fromeffect->_refCount = 1;
+    crossfade->_fromeffect->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-    sjv_crossfade->_fromeffect->alpha = 1.0f;
+    crossfade->_fromeffect->alpha = 1.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_rect._refCount = 1;
+    crossfade->_fromeffect->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_fromeffect->_rect.x = 0;
+    crossfade->_fromeffect->_rect.x = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_rect.y = 0;
+    crossfade->_fromeffect->_rect.y = 0;
 #line 4
-    sjv_crossfade->_fromeffect->_rect.w = 0;
+    crossfade->_fromeffect->_rect.w = 0;
 #line 5
-    sjv_crossfade->_fromeffect->_rect.h = 0;
+    crossfade->_fromeffect->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_fromeffect->_rect);
+    sjf_rect(&crossfade->_fromeffect->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-    sjv_crossfade->_fromeffect->_vertexbuffer._refCount = -1;
+    crossfade->_fromeffect->_vertexbuffer._refCount = -1;
 #line 8
-    sjv_crossfade->_fromeffect->_scenebuffer._refCount = -1;
+    crossfade->_fromeffect->_scenebuffer._refCount = -1;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene._refCount = 1;
+    crossfade->_fromeffect->_innerscene._refCount = 1;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene._size._refCount = 1;
+    crossfade->_fromeffect->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_crossfade->_fromeffect->_innerscene._size.w = 0;
+    crossfade->_fromeffect->_innerscene._size.w = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene._size.h = 0;
+    crossfade->_fromeffect->_innerscene._size.h = 0;
 #line 3
-    sjf_size(&sjv_crossfade->_fromeffect->_innerscene._size);
+    sjf_size(&crossfade->_fromeffect->_innerscene._size);
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.model._refCount = 1;
+    crossfade->_fromeffect->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.model);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.model);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.view._refCount = 1;
+    crossfade->_fromeffect->_innerscene.view._refCount = 1;
 #line 2
-    sjv_crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.view);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.view);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.projection._refCount = 1;
+    crossfade->_fromeffect->_innerscene.projection._refCount = 1;
 #line 2
-    sjv_crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
 #line 6
-    sjv_crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
 #line 7
-    sjv_crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
 #line 8
-    sjv_crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
 #line 9
-    sjv_crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
 #line 10
-    sjv_crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
 #line 11
-    sjv_crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
 #line 12
-    sjv_crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
 #line 13
-    sjv_crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
 #line 14
-    sjv_crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
 #line 15
-    sjv_crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
 #line 16
-    sjv_crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
+    crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.projection);
+    sjf_mat4(&crossfade->_fromeffect->_innerscene.projection);
 #line 17
-    sjv_crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
+    crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.x = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.x = 0;
 #line 3
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.y = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.y = 0;
 #line 4
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.w = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.w = 0;
 #line 5
-    sjv_crossfade->_fromeffect->_innerscene.windowrect.h = 0;
+    crossfade->_fromeffect->_innerscene.windowrect.h = 0;
 #line 5
-    sjf_rect(&sjv_crossfade->_fromeffect->_innerscene.windowrect);
+    sjf_rect(&crossfade->_fromeffect->_innerscene.windowrect);
 #line 5
-    sjf_scene2d(&sjv_crossfade->_fromeffect->_innerscene);
+    sjf_scene2d(&crossfade->_fromeffect->_innerscene);
 #line 5
-    sjf_fadeeffect_heap(sjv_crossfade->_fromeffect);
+    sjf_fadeeffect_heap(crossfade->_fromeffect);
 #line 5
-    sjf_crossfadeelement_heap(sjv_crossfade);
+    sjf_crossfadeelement_heap(crossfade);
 #line 98 "nau/menuController.sj"
-    sjt_cast173 = sjv_crossfade;
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount--;
-        if (sjv_root._parent->_refCount <= 0) {
-            sjv_root._vtbl->destroy(sjv_root._parent);
-            free(sjv_root._parent);
+    sjt_cast173 = crossfade;
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount--;
+        if (g_root._parent->_refCount <= 0) {
+            g_root._vtbl->destroy(g_root._parent);
+            free(g_root._parent);
         }
     }
 
 #line 1 "lib/ui/element.sj"
-    sjf_crossfadeelement_as_sji_element(sjt_cast173, &sjv_root);
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount++;
+    sjf_crossfadeelement_as_sji_element(sjt_cast173, &g_root);
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount++;
     }
 
 #line 30 "nau/nauScene3dElement.sj"
-    sjt_parent597 = sjv_menuscene;
+    sjt_parent597 = g_menuscene;
 #line 30
     sjt_parent597->_refCount++;
 #line 30
@@ -26438,7 +26437,7 @@ void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
 #line 100
     sjf_nauscene3delement_animatelookat(sjt_parent597, sjt_functionParam1568, sjt_functionParam1569);
 #line 43 "nau/nauScene3dElement.sj"
-    sjt_parent598 = sjv_menuscene;
+    sjt_parent598 = g_menuscene;
 #line 43
     sjt_parent598->_refCount++;
 #line 101 "nau/menuController.sj"
@@ -26448,21 +26447,21 @@ void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
 #line 101
     sjf_nauscene3delement_animatecameradistance(sjt_parent598, sjt_functionParam1570, sjt_functionParam1571);
 #line 44 "lib/common/list.sj"
-    sjt_parent599 = &(&sjv_animator)->animations;
+    sjt_parent599 = &(&g_animator)->animations;
 #line 44
     sjt_call515 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
     sjt_call515->_refCount = 1;
 #line 107 "nau/menuController.sj"
-    sjt_call515->start = (&sjv_animator)->current + 500;
+    sjt_call515->start = (&g_animator)->current + 500;
 #line 105
     sjt_call515->startvalue = 0.0f;
 #line 108
-    sjt_call515->end = (&sjv_animator)->current + 3000;
+    sjt_call515->end = (&g_animator)->current + 3000;
 #line 106
     sjt_call515->endvalue = 1.0f;
 #line 109
-    sjt_call515->setvalue.inner._parent = (sjs_object*)sjv_crossfade;
+    sjt_call515->setvalue.inner._parent = (sjs_object*)crossfade;
 #line 109
     sjt_call515->setvalue.inner._parent->_refCount++;
 #line 109
@@ -26482,6 +26481,12 @@ void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
 #line 1
     sjf_list_heap_iface_animation_add(sjt_parent599, sjt_functionParam1572);
 
+    crossfade->_refCount--;
+    if (crossfade->_refCount <= 0) {
+        weakptr_release(crossfade);
+        sjf_crossfadeelement_destroy(crossfade);
+        free(crossfade);
+    }
     sjt_call515->_refCount--;
     if (sjt_call515->_refCount <= 0) {
         weakptr_release(sjt_call515);
@@ -26507,12 +26512,6 @@ void sjf_menucontroller_onbackfromforest(sjs_menucontroller* _parent) {
         sjf_nauscene3delement_destroy(sjt_parent598);
         free(sjt_parent598);
     }
-    sjv_crossfade->_refCount--;
-    if (sjv_crossfade->_refCount <= 0) {
-        weakptr_release(sjv_crossfade);
-        sjf_crossfadeelement_destroy(sjv_crossfade);
-        free(sjv_crossfade);
-    }
     if (sjt_call514._refCount == 1) { sjf_vec3_destroy(&sjt_call514); }
 ;
 }
@@ -26524,7 +26523,7 @@ void sjf_menucontroller_start(sjs_menucontroller* _parent) {
     sjs_nauscene3delement* sjt_parent727 = 0;
 
 #line 30 "nau/nauScene3dElement.sj"
-    sjt_parent727 = sjv_menuscene;
+    sjt_parent727 = g_menuscene;
 #line 30
     sjt_parent727->_refCount++;
 #line 30
@@ -26555,13 +26554,13 @@ void sjf_menucontroller_start(sjs_menucontroller* _parent) {
 }
 
 void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
+    sji_model m = { 0 };
     sjs_string sjt_call643 = { -1 };
     sjs_string* sjt_functionParam1987 = 0;
     sjs_hash_string_weak_iface_model* sjt_parent708 = 0;
-    sji_model sjv_m = { 0 };
 
 #line 21 "lib/common/hash.sj"
-    sjt_parent708 = &sjv_modelsbyid;
+    sjt_parent708 = &g_modelsbyid;
 #line 21
     sjt_call643._refCount = 1;
 #line 7 "nau/menuController.sj"
@@ -26585,9 +26584,13 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
 #line 7 "nau/menuController.sj"
     sjt_functionParam1987 = &sjt_call643;
 #line 7
-    sjf_hash_string_weak_iface_model_getat(sjt_parent708, sjt_functionParam1987, &sjv_m);
-    if ((sjv_m._parent != 0)) {
+    sjf_hash_string_weak_iface_model_getat(sjt_parent708, sjt_functionParam1987, &m);
+    if ((m._parent != 0)) {
+        sjs_vec3 c = { -1 };
+        sjs_crossfadeelement* crossfade = 0;
+        sjs_vec3 d = { -1 };
         sji_model ifValue49 = { 0 };
+        sjs_vec4 l = { -1 };
         sjs_vec4 sjt_call644 = { -1 };
         sjs_animation_f32* sjt_call645 = 0;
         sjs_crossfadeelement* sjt_cast230 = 0;
@@ -26606,250 +26609,246 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
         sjs_nauscene3delement* sjt_parent714 = 0;
         sjs_nauscene3delement* sjt_parent715 = 0;
         sjs_list_heap_iface_animation* sjt_parent716 = 0;
-        sjs_vec3 sjv_c = { -1 };
-        sjs_crossfadeelement* sjv_crossfade = 0;
-        sjs_vec3 sjv_d = { -1 };
-        sjs_vec4 sjv_l = { -1 };
-        sjs_mat4 sjv_w = { -1 };
+        sjs_mat4 w = { -1 };
 
 #line 8 "nau/menuController.sj"
-        ifValue49 = sjv_m;
+        ifValue49 = m;
 #line 4 "lib/ui/model.sj"
         sjt_parent709 = ifValue49;
 #line 9 "nau/menuController.sj"
-        sjt_parent709._vtbl->getcenter(sjt_parent709._parent, &sjv_c);
+        sjt_parent709._vtbl->getcenter(sjt_parent709._parent, &c);
 #line 5 "lib/ui/model.sj"
         sjt_parent710 = ifValue49;
 #line 10 "nau/menuController.sj"
-        sjt_parent710._vtbl->getworld(sjt_parent710._parent, &sjv_w);
+        sjt_parent710._vtbl->getworld(sjt_parent710._parent, &w);
 #line 62 "lib/ui/mat4.sj"
-        sjt_parent711 = &sjv_w;
+        sjt_parent711 = &w;
 #line 59 "lib/ui/vec3.sj"
-        sjt_parent712 = &sjv_c;
+        sjt_parent712 = &c;
 #line 59
         sjf_vec3_asvec4(sjt_parent712, &sjt_call644);
 #line 11 "nau/menuController.sj"
         sjt_functionParam1988 = &sjt_call644;
 #line 11
-        sjf_mat4_multiplyvec4(sjt_parent711, sjt_functionParam1988, &sjv_l);
+        sjf_mat4_multiplyvec4(sjt_parent711, sjt_functionParam1988, &l);
 #line 56 "lib/ui/vec4.sj"
-        sjt_parent713 = &sjv_l;
+        sjt_parent713 = &l;
 #line 56
-        sjf_vec4_asvec3(sjt_parent713, &sjv_d);
+        sjf_vec4_asvec3(sjt_parent713, &d);
 #line 56
-        sjv_crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
+        crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
 #line 56
-        sjv_crossfade->_refCount = 1;
+        crossfade->_refCount = 1;
 #line 14 "nau/menuController.sj"
-        sjv_crossfade->fromelement = sjv_menuelement;
-        if (sjv_crossfade->fromelement._parent != 0) {
-            sjv_crossfade->fromelement._parent->_refCount++;
+        crossfade->fromelement = g_menuelement;
+        if (crossfade->fromelement._parent != 0) {
+            crossfade->fromelement._parent->_refCount++;
         }
 
 #line 14
-        sjv_crossfade->toelement = sjv_fieldelement;
-        if (sjv_crossfade->toelement._parent != 0) {
-            sjv_crossfade->toelement._parent->_refCount++;
+        crossfade->toelement = g_fieldelement;
+        if (crossfade->toelement._parent != 0) {
+            crossfade->toelement._parent->_refCount++;
         }
 
 #line 14
-        sjv_crossfade->_rect._refCount = 1;
+        crossfade->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_rect.x = 0;
+        crossfade->_rect.x = 0;
 #line 3
-        sjv_crossfade->_rect.y = 0;
+        crossfade->_rect.y = 0;
 #line 4
-        sjv_crossfade->_rect.w = 0;
+        crossfade->_rect.w = 0;
 #line 5
-        sjv_crossfade->_rect.h = 0;
+        crossfade->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_rect);
+        sjf_rect(&crossfade->_rect);
 #line 5
-        sjv_crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+        crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 5
-        sjv_crossfade->_fromeffect->_refCount = 1;
+        crossfade->_fromeffect->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-        sjv_crossfade->_fromeffect->alpha = 1.0f;
+        crossfade->_fromeffect->alpha = 1.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_rect._refCount = 1;
+        crossfade->_fromeffect->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_fromeffect->_rect.x = 0;
+        crossfade->_fromeffect->_rect.x = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_rect.y = 0;
+        crossfade->_fromeffect->_rect.y = 0;
 #line 4
-        sjv_crossfade->_fromeffect->_rect.w = 0;
+        crossfade->_fromeffect->_rect.w = 0;
 #line 5
-        sjv_crossfade->_fromeffect->_rect.h = 0;
+        crossfade->_fromeffect->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_fromeffect->_rect);
+        sjf_rect(&crossfade->_fromeffect->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-        sjv_crossfade->_fromeffect->_vertexbuffer._refCount = -1;
+        crossfade->_fromeffect->_vertexbuffer._refCount = -1;
 #line 8
-        sjv_crossfade->_fromeffect->_scenebuffer._refCount = -1;
+        crossfade->_fromeffect->_scenebuffer._refCount = -1;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene._refCount = 1;
+        crossfade->_fromeffect->_innerscene._refCount = 1;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene._size._refCount = 1;
+        crossfade->_fromeffect->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-        sjv_crossfade->_fromeffect->_innerscene._size.w = 0;
+        crossfade->_fromeffect->_innerscene._size.w = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene._size.h = 0;
+        crossfade->_fromeffect->_innerscene._size.h = 0;
 #line 3
-        sjf_size(&sjv_crossfade->_fromeffect->_innerscene._size);
+        sjf_size(&crossfade->_fromeffect->_innerscene._size);
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.model._refCount = 1;
+        crossfade->_fromeffect->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-        sjv_crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.model);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.model);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.view._refCount = 1;
+        crossfade->_fromeffect->_innerscene.view._refCount = 1;
 #line 2
-        sjv_crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.view);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.view);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.projection._refCount = 1;
+        crossfade->_fromeffect->_innerscene.projection._refCount = 1;
 #line 2
-        sjv_crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.projection);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.projection);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
+        crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.x = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.x = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.y = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.y = 0;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.w = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.w = 0;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.h = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_fromeffect->_innerscene.windowrect);
+        sjf_rect(&crossfade->_fromeffect->_innerscene.windowrect);
 #line 5
-        sjf_scene2d(&sjv_crossfade->_fromeffect->_innerscene);
+        sjf_scene2d(&crossfade->_fromeffect->_innerscene);
 #line 5
-        sjf_fadeeffect_heap(sjv_crossfade->_fromeffect);
+        sjf_fadeeffect_heap(crossfade->_fromeffect);
 #line 5
-        sjf_crossfadeelement_heap(sjv_crossfade);
+        sjf_crossfadeelement_heap(crossfade);
 #line 19 "nau/menuController.sj"
-        sjt_cast230 = sjv_crossfade;
-        if (sjv_root._parent != 0) {
-            sjv_root._parent->_refCount--;
-            if (sjv_root._parent->_refCount <= 0) {
-                sjv_root._vtbl->destroy(sjv_root._parent);
-                free(sjv_root._parent);
+        sjt_cast230 = crossfade;
+        if (g_root._parent != 0) {
+            g_root._parent->_refCount--;
+            if (g_root._parent->_refCount <= 0) {
+                g_root._vtbl->destroy(g_root._parent);
+                free(g_root._parent);
             }
         }
 
 #line 1 "lib/ui/element.sj"
-        sjf_crossfadeelement_as_sji_element(sjt_cast230, &sjv_root);
-        if (sjv_root._parent != 0) {
-            sjv_root._parent->_refCount++;
+        sjf_crossfadeelement_as_sji_element(sjt_cast230, &g_root);
+        if (g_root._parent != 0) {
+            g_root._parent->_refCount++;
         }
 
 #line 30 "nau/nauScene3dElement.sj"
-        sjt_parent714 = sjv_menuscene;
+        sjt_parent714 = g_menuscene;
 #line 30
         sjt_parent714->_refCount++;
 #line 21 "nau/menuController.sj"
-        sjt_functionParam1989 = &sjv_d;
+        sjt_functionParam1989 = &d;
 #line 21
         sjt_functionParam1990 = 2000;
 #line 21
         sjf_nauscene3delement_animatelookat(sjt_parent714, sjt_functionParam1989, sjt_functionParam1990);
 #line 43 "nau/nauScene3dElement.sj"
-        sjt_parent715 = sjv_menuscene;
+        sjt_parent715 = g_menuscene;
 #line 43
         sjt_parent715->_refCount++;
 #line 22 "nau/menuController.sj"
@@ -26859,21 +26858,21 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
 #line 22
         sjf_nauscene3delement_animatecameradistance(sjt_parent715, sjt_functionParam1991, sjt_functionParam1992);
 #line 44 "lib/common/list.sj"
-        sjt_parent716 = &(&sjv_animator)->animations;
+        sjt_parent716 = &(&g_animator)->animations;
 #line 44
         sjt_call645 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
         sjt_call645->_refCount = 1;
 #line 28 "nau/menuController.sj"
-        sjt_call645->start = (&sjv_animator)->current + 1500;
+        sjt_call645->start = (&g_animator)->current + 1500;
 #line 26
         sjt_call645->startvalue = 0.0f;
 #line 29
-        sjt_call645->end = (&sjv_animator)->current + 3000;
+        sjt_call645->end = (&g_animator)->current + 3000;
 #line 27
         sjt_call645->endvalue = 1.0f;
 #line 30
-        sjt_call645->setvalue.inner._parent = (sjs_object*)sjv_crossfade;
+        sjt_call645->setvalue.inner._parent = (sjs_object*)crossfade;
 #line 30
         sjt_call645->setvalue.inner._parent->_refCount++;
 #line 30
@@ -26893,6 +26892,12 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
 #line 1
         sjf_list_heap_iface_animation_add(sjt_parent716, sjt_functionParam1993);
 
+        crossfade->_refCount--;
+        if (crossfade->_refCount <= 0) {
+            weakptr_release(crossfade);
+            sjf_crossfadeelement_destroy(crossfade);
+            free(crossfade);
+        }
         sjt_call645->_refCount--;
         if (sjt_call645->_refCount <= 0) {
             weakptr_release(sjt_call645);
@@ -26918,38 +26923,32 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
             sjf_nauscene3delement_destroy(sjt_parent715);
             free(sjt_parent715);
         }
-        sjv_crossfade->_refCount--;
-        if (sjv_crossfade->_refCount <= 0) {
-            weakptr_release(sjv_crossfade);
-            sjf_crossfadeelement_destroy(sjv_crossfade);
-            free(sjv_crossfade);
-        }
+        if (c._refCount == 1) { sjf_vec3_destroy(&c); }
+;
+        if (d._refCount == 1) { sjf_vec3_destroy(&d); }
+;
+        if (l._refCount == 1) { sjf_vec4_destroy(&l); }
+;
         if (sjt_call644._refCount == 1) { sjf_vec4_destroy(&sjt_call644); }
 ;
-        if (sjv_c._refCount == 1) { sjf_vec3_destroy(&sjv_c); }
-;
-        if (sjv_d._refCount == 1) { sjf_vec3_destroy(&sjv_d); }
-;
-        if (sjv_l._refCount == 1) { sjf_vec4_destroy(&sjv_l); }
-;
-        if (sjv_w._refCount == 1) { sjf_mat4_destroy(&sjv_w); }
+        if (w._refCount == 1) { sjf_mat4_destroy(&w); }
 ;
     }
 
-    delete_cb weakptrcb43 = { &sjv_m._parent, weakptr_clear };
-    if (sjv_m._parent != 0) { weakptr_cb_remove(sjv_m._parent, weakptrcb43); }
+    delete_cb weakptrcb43 = { &m._parent, weakptr_clear };
+    if (m._parent != 0) { weakptr_cb_remove(m._parent, weakptrcb43); }
     if (sjt_call643._refCount == 1) { sjf_string_destroy(&sjt_call643); }
 ;
 }
 
 void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
+    sji_model m = { 0 };
     sjs_string sjt_call620 = { -1 };
     sjs_string* sjt_functionParam1925 = 0;
     sjs_hash_string_weak_iface_model* sjt_parent685 = 0;
-    sji_model sjv_m = { 0 };
 
 #line 21 "lib/common/hash.sj"
-    sjt_parent685 = &sjv_modelsbyid;
+    sjt_parent685 = &g_modelsbyid;
 #line 21
     sjt_call620._refCount = 1;
 #line 62 "nau/menuController.sj"
@@ -26973,9 +26972,13 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
 #line 62 "nau/menuController.sj"
     sjt_functionParam1925 = &sjt_call620;
 #line 62
-    sjf_hash_string_weak_iface_model_getat(sjt_parent685, sjt_functionParam1925, &sjv_m);
-    if ((sjv_m._parent != 0)) {
+    sjf_hash_string_weak_iface_model_getat(sjt_parent685, sjt_functionParam1925, &m);
+    if ((m._parent != 0)) {
+        sjs_vec3 c = { -1 };
+        sjs_crossfadeelement* crossfade = 0;
+        sjs_vec3 d = { -1 };
         sji_model ifValue47 = { 0 };
+        sjs_vec4 l = { -1 };
         sjs_vec4 sjt_call621 = { -1 };
         sjs_animation_f32* sjt_call622 = 0;
         sjs_crossfadeelement* sjt_cast215 = 0;
@@ -26994,250 +26997,246 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
         sjs_nauscene3delement* sjt_parent691 = 0;
         sjs_nauscene3delement* sjt_parent692 = 0;
         sjs_list_heap_iface_animation* sjt_parent693 = 0;
-        sjs_vec3 sjv_c = { -1 };
-        sjs_crossfadeelement* sjv_crossfade = 0;
-        sjs_vec3 sjv_d = { -1 };
-        sjs_vec4 sjv_l = { -1 };
-        sjs_mat4 sjv_w = { -1 };
+        sjs_mat4 w = { -1 };
 
 #line 63 "nau/menuController.sj"
-        ifValue47 = sjv_m;
+        ifValue47 = m;
 #line 4 "lib/ui/model.sj"
         sjt_parent686 = ifValue47;
 #line 64 "nau/menuController.sj"
-        sjt_parent686._vtbl->getcenter(sjt_parent686._parent, &sjv_c);
+        sjt_parent686._vtbl->getcenter(sjt_parent686._parent, &c);
 #line 5 "lib/ui/model.sj"
         sjt_parent687 = ifValue47;
 #line 65 "nau/menuController.sj"
-        sjt_parent687._vtbl->getworld(sjt_parent687._parent, &sjv_w);
+        sjt_parent687._vtbl->getworld(sjt_parent687._parent, &w);
 #line 62 "lib/ui/mat4.sj"
-        sjt_parent688 = &sjv_w;
+        sjt_parent688 = &w;
 #line 59 "lib/ui/vec3.sj"
-        sjt_parent689 = &sjv_c;
+        sjt_parent689 = &c;
 #line 59
         sjf_vec3_asvec4(sjt_parent689, &sjt_call621);
 #line 66 "nau/menuController.sj"
         sjt_functionParam1926 = &sjt_call621;
 #line 66
-        sjf_mat4_multiplyvec4(sjt_parent688, sjt_functionParam1926, &sjv_l);
+        sjf_mat4_multiplyvec4(sjt_parent688, sjt_functionParam1926, &l);
 #line 56 "lib/ui/vec4.sj"
-        sjt_parent690 = &sjv_l;
+        sjt_parent690 = &l;
 #line 56
-        sjf_vec4_asvec3(sjt_parent690, &sjv_d);
+        sjf_vec4_asvec3(sjt_parent690, &d);
 #line 56
-        sjv_crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
+        crossfade = (sjs_crossfadeelement*)malloc(sizeof(sjs_crossfadeelement));
 #line 56
-        sjv_crossfade->_refCount = 1;
+        crossfade->_refCount = 1;
 #line 69 "nau/menuController.sj"
-        sjv_crossfade->fromelement = sjv_menuelement;
-        if (sjv_crossfade->fromelement._parent != 0) {
-            sjv_crossfade->fromelement._parent->_refCount++;
+        crossfade->fromelement = g_menuelement;
+        if (crossfade->fromelement._parent != 0) {
+            crossfade->fromelement._parent->_refCount++;
         }
 
 #line 69
-        sjv_crossfade->toelement = sjv_forestelement;
-        if (sjv_crossfade->toelement._parent != 0) {
-            sjv_crossfade->toelement._parent->_refCount++;
+        crossfade->toelement = g_forestelement;
+        if (crossfade->toelement._parent != 0) {
+            crossfade->toelement._parent->_refCount++;
         }
 
 #line 69
-        sjv_crossfade->_rect._refCount = 1;
+        crossfade->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_rect.x = 0;
+        crossfade->_rect.x = 0;
 #line 3
-        sjv_crossfade->_rect.y = 0;
+        crossfade->_rect.y = 0;
 #line 4
-        sjv_crossfade->_rect.w = 0;
+        crossfade->_rect.w = 0;
 #line 5
-        sjv_crossfade->_rect.h = 0;
+        crossfade->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_rect);
+        sjf_rect(&crossfade->_rect);
 #line 5
-        sjv_crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
+        crossfade->_fromeffect = (sjs_fadeeffect*)malloc(sizeof(sjs_fadeeffect));
 #line 5
-        sjv_crossfade->_fromeffect->_refCount = 1;
+        crossfade->_fromeffect->_refCount = 1;
 #line 5 "lib/ui/fadeEffect.sj"
-        sjv_crossfade->_fromeffect->alpha = 1.0f;
+        crossfade->_fromeffect->alpha = 1.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_rect._refCount = 1;
+        crossfade->_fromeffect->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_fromeffect->_rect.x = 0;
+        crossfade->_fromeffect->_rect.x = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_rect.y = 0;
+        crossfade->_fromeffect->_rect.y = 0;
 #line 4
-        sjv_crossfade->_fromeffect->_rect.w = 0;
+        crossfade->_fromeffect->_rect.w = 0;
 #line 5
-        sjv_crossfade->_fromeffect->_rect.h = 0;
+        crossfade->_fromeffect->_rect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_fromeffect->_rect);
+        sjf_rect(&crossfade->_fromeffect->_rect);
 #line 7 "lib/ui/fadeEffect.sj"
-        sjv_crossfade->_fromeffect->_vertexbuffer._refCount = -1;
+        crossfade->_fromeffect->_vertexbuffer._refCount = -1;
 #line 8
-        sjv_crossfade->_fromeffect->_scenebuffer._refCount = -1;
+        crossfade->_fromeffect->_scenebuffer._refCount = -1;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene._refCount = 1;
+        crossfade->_fromeffect->_innerscene._refCount = 1;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene._size._refCount = 1;
+        crossfade->_fromeffect->_innerscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-        sjv_crossfade->_fromeffect->_innerscene._size.w = 0;
+        crossfade->_fromeffect->_innerscene._size.w = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene._size.h = 0;
+        crossfade->_fromeffect->_innerscene._size.h = 0;
 #line 3
-        sjf_size(&sjv_crossfade->_fromeffect->_innerscene._size);
+        sjf_size(&crossfade->_fromeffect->_innerscene._size);
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.model._refCount = 1;
+        crossfade->_fromeffect->_innerscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-        sjv_crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.model.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.model);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.model);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.view._refCount = 1;
+        crossfade->_fromeffect->_innerscene.view._refCount = 1;
 #line 2
-        sjv_crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.view.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.view);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.view);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.projection._refCount = 1;
+        crossfade->_fromeffect->_innerscene.projection._refCount = 1;
 #line 2
-        sjv_crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m00 = 0.0f;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m01 = 0.0f;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m02 = 0.0f;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m03 = 0.0f;
 #line 6
-        sjv_crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m10 = 0.0f;
 #line 7
-        sjv_crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m11 = 0.0f;
 #line 8
-        sjv_crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m12 = 0.0f;
 #line 9
-        sjv_crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m13 = 0.0f;
 #line 10
-        sjv_crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m20 = 0.0f;
 #line 11
-        sjv_crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m21 = 0.0f;
 #line 12
-        sjv_crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m22 = 0.0f;
 #line 13
-        sjv_crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m23 = 0.0f;
 #line 14
-        sjv_crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m30 = 0.0f;
 #line 15
-        sjv_crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m31 = 0.0f;
 #line 16
-        sjv_crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m32 = 0.0f;
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
+        crossfade->_fromeffect->_innerscene.projection.m33 = 0.0f;
 #line 17
-        sjf_mat4(&sjv_crossfade->_fromeffect->_innerscene.projection);
+        sjf_mat4(&crossfade->_fromeffect->_innerscene.projection);
 #line 17
-        sjv_crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
+        crossfade->_fromeffect->_innerscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.x = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.x = 0;
 #line 3
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.y = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.y = 0;
 #line 4
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.w = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.w = 0;
 #line 5
-        sjv_crossfade->_fromeffect->_innerscene.windowrect.h = 0;
+        crossfade->_fromeffect->_innerscene.windowrect.h = 0;
 #line 5
-        sjf_rect(&sjv_crossfade->_fromeffect->_innerscene.windowrect);
+        sjf_rect(&crossfade->_fromeffect->_innerscene.windowrect);
 #line 5
-        sjf_scene2d(&sjv_crossfade->_fromeffect->_innerscene);
+        sjf_scene2d(&crossfade->_fromeffect->_innerscene);
 #line 5
-        sjf_fadeeffect_heap(sjv_crossfade->_fromeffect);
+        sjf_fadeeffect_heap(crossfade->_fromeffect);
 #line 5
-        sjf_crossfadeelement_heap(sjv_crossfade);
+        sjf_crossfadeelement_heap(crossfade);
 #line 74 "nau/menuController.sj"
-        sjt_cast215 = sjv_crossfade;
-        if (sjv_root._parent != 0) {
-            sjv_root._parent->_refCount--;
-            if (sjv_root._parent->_refCount <= 0) {
-                sjv_root._vtbl->destroy(sjv_root._parent);
-                free(sjv_root._parent);
+        sjt_cast215 = crossfade;
+        if (g_root._parent != 0) {
+            g_root._parent->_refCount--;
+            if (g_root._parent->_refCount <= 0) {
+                g_root._vtbl->destroy(g_root._parent);
+                free(g_root._parent);
             }
         }
 
 #line 1 "lib/ui/element.sj"
-        sjf_crossfadeelement_as_sji_element(sjt_cast215, &sjv_root);
-        if (sjv_root._parent != 0) {
-            sjv_root._parent->_refCount++;
+        sjf_crossfadeelement_as_sji_element(sjt_cast215, &g_root);
+        if (g_root._parent != 0) {
+            g_root._parent->_refCount++;
         }
 
 #line 30 "nau/nauScene3dElement.sj"
-        sjt_parent691 = sjv_menuscene;
+        sjt_parent691 = g_menuscene;
 #line 30
         sjt_parent691->_refCount++;
 #line 76 "nau/menuController.sj"
-        sjt_functionParam1927 = &sjv_d;
+        sjt_functionParam1927 = &d;
 #line 76
         sjt_functionParam1928 = 2000;
 #line 76
         sjf_nauscene3delement_animatelookat(sjt_parent691, sjt_functionParam1927, sjt_functionParam1928);
 #line 43 "nau/nauScene3dElement.sj"
-        sjt_parent692 = sjv_menuscene;
+        sjt_parent692 = g_menuscene;
 #line 43
         sjt_parent692->_refCount++;
 #line 77 "nau/menuController.sj"
@@ -27247,21 +27246,21 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
 #line 77
         sjf_nauscene3delement_animatecameradistance(sjt_parent692, sjt_functionParam1929, sjt_functionParam1930);
 #line 44 "lib/common/list.sj"
-        sjt_parent693 = &(&sjv_animator)->animations;
+        sjt_parent693 = &(&g_animator)->animations;
 #line 44
         sjt_call622 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
         sjt_call622->_refCount = 1;
 #line 83 "nau/menuController.sj"
-        sjt_call622->start = (&sjv_animator)->current + 1500;
+        sjt_call622->start = (&g_animator)->current + 1500;
 #line 81
         sjt_call622->startvalue = 0.0f;
 #line 84
-        sjt_call622->end = (&sjv_animator)->current + 3000;
+        sjt_call622->end = (&g_animator)->current + 3000;
 #line 82
         sjt_call622->endvalue = 1.0f;
 #line 85
-        sjt_call622->setvalue.inner._parent = (sjs_object*)sjv_crossfade;
+        sjt_call622->setvalue.inner._parent = (sjs_object*)crossfade;
 #line 85
         sjt_call622->setvalue.inner._parent->_refCount++;
 #line 85
@@ -27281,6 +27280,12 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
 #line 1
         sjf_list_heap_iface_animation_add(sjt_parent693, sjt_functionParam1931);
 
+        crossfade->_refCount--;
+        if (crossfade->_refCount <= 0) {
+            weakptr_release(crossfade);
+            sjf_crossfadeelement_destroy(crossfade);
+            free(crossfade);
+        }
         sjt_call622->_refCount--;
         if (sjt_call622->_refCount <= 0) {
             weakptr_release(sjt_call622);
@@ -27306,26 +27311,20 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
             sjf_nauscene3delement_destroy(sjt_parent692);
             free(sjt_parent692);
         }
-        sjv_crossfade->_refCount--;
-        if (sjv_crossfade->_refCount <= 0) {
-            weakptr_release(sjv_crossfade);
-            sjf_crossfadeelement_destroy(sjv_crossfade);
-            free(sjv_crossfade);
-        }
+        if (c._refCount == 1) { sjf_vec3_destroy(&c); }
+;
+        if (d._refCount == 1) { sjf_vec3_destroy(&d); }
+;
+        if (l._refCount == 1) { sjf_vec4_destroy(&l); }
+;
         if (sjt_call621._refCount == 1) { sjf_vec4_destroy(&sjt_call621); }
 ;
-        if (sjv_c._refCount == 1) { sjf_vec3_destroy(&sjv_c); }
-;
-        if (sjv_d._refCount == 1) { sjf_vec3_destroy(&sjv_d); }
-;
-        if (sjv_l._refCount == 1) { sjf_vec4_destroy(&sjv_l); }
-;
-        if (sjv_w._refCount == 1) { sjf_mat4_destroy(&sjv_w); }
+        if (w._refCount == 1) { sjf_mat4_destroy(&w); }
 ;
     }
 
-    delete_cb weakptrcb44 = { &sjv_m._parent, weakptr_clear };
-    if (sjv_m._parent != 0) { weakptr_cb_remove(sjv_m._parent, weakptrcb44); }
+    delete_cb weakptrcb44 = { &m._parent, weakptr_clear };
+    if (m._parent != 0) { weakptr_cb_remove(m._parent, weakptrcb44); }
     if (sjt_call620._refCount == 1) { sjf_string_destroy(&sjt_call620); }
 ;
 }
@@ -27488,7 +27487,7 @@ void sjf_model_heap(sjs_model* _this, sjs_model** _return) {
 #line 72 "lib/ui/model.sj"
         ifValue28 = (_this->id._refCount != -1 ? &_this->id : 0);
 #line 38 "lib/common/hash.sj"
-        sjt_parent156 = &sjv_modelsbyid;
+        sjt_parent156 = &g_modelsbyid;
 #line 73 "lib/ui/model.sj"
         sjt_functionParam373 = ifValue28;
 #line 15
@@ -27513,6 +27512,7 @@ void sjf_model_heap(sjs_model* _this, sjs_model** _return) {
 }
 
 void sjf_model_render(sjs_model* _parent) {
+    sjs_mat4 normalmat = { -1 };
     sjs_mat4 sjt_call73 = { -1 };
     sjs_string sjt_call74 = { -1 };
     sjs_string sjt_call75 = { -1 };
@@ -27561,42 +27561,41 @@ void sjf_model_render(sjs_model* _parent) {
     sjs_color* sjt_parent171 = 0;
     sjs_color* sjt_parent172 = 0;
     sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent173 = 0;
-    sjs_mat4 sjv_normalmat = { -1 };
-    sjs_mat4 sjv_viewworld = { -1 };
-    sjs_mat4 sjv_world = { -1 };
+    sjs_mat4 viewworld = { -1 };
+    sjs_mat4 world = { -1 };
 
 #line 19 "lib/ui/mat4.sj"
     sjt_parent165 = &_parent->_world;
 #line 53 "lib/ui/model.sj"
     sjt_functionParam392 = &_parent->model;
 #line 53
-    sjf_mat4_multiply(sjt_parent165, sjt_functionParam392, &sjv_world);
+    sjf_mat4_multiply(sjt_parent165, sjt_functionParam392, &world);
 #line 19 "lib/ui/mat4.sj"
     sjt_parent166 = &_parent->_view;
 #line 54 "lib/ui/model.sj"
-    sjt_functionParam393 = &sjv_world;
+    sjt_functionParam393 = &world;
 #line 54
-    sjf_mat4_multiply(sjt_parent166, sjt_functionParam393, &sjv_viewworld);
+    sjf_mat4_multiply(sjt_parent166, sjt_functionParam393, &viewworld);
 #line 71 "lib/ui/mat4.sj"
-    sjt_parent170 = &sjv_viewworld;
+    sjt_parent170 = &viewworld;
 #line 71
     sjf_mat4_invert(sjt_parent170, &sjt_call73);
 #line 55 "lib/ui/model.sj"
     sjt_parent167 = &sjt_call73;
 #line 55
-    sjf_mat4_transpose(sjt_parent167, &sjv_normalmat);
+    sjf_mat4_transpose(sjt_parent167, &normalmat);
 #line 56
     sjt_functionParam396 = &_parent->shader;
 #line 56
     sjf_gluseprogram(sjt_functionParam396);
 #line 57
-    sjt_functionParam397 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam397 = g_glblendfunctype_gl_src_alpha;
 #line 57
-    sjt_functionParam398 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam398 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 57
     sjf_glblendfunc(sjt_functionParam397, sjt_functionParam398);
 #line 58
-    sjt_functionParam399 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam399 = g_gltexture_gl_texture_2d;
 #line 58
     sjt_functionParam400 = &_parent->texture;
 #line 58
@@ -27628,7 +27627,7 @@ void sjf_model_render(sjs_model* _parent) {
 #line 59
     sjf_glgetuniformlocation(sjt_functionParam402, sjt_functionParam403, &sjt_functionParam401);
 #line 59
-    sjt_functionParam404 = &sjv_viewworld;
+    sjt_functionParam404 = &viewworld;
 #line 59
     sjf_gluniformmat4(sjt_functionParam401, sjt_functionParam404);
 #line 60
@@ -27658,7 +27657,7 @@ void sjf_model_render(sjs_model* _parent) {
 #line 60
     sjf_glgetuniformlocation(sjt_functionParam406, sjt_functionParam407, &sjt_functionParam405);
 #line 60
-    sjt_functionParam408 = &sjv_normalmat;
+    sjt_functionParam408 = &normalmat;
 #line 60
     sjf_gluniformmat4(sjt_functionParam405, sjt_functionParam408);
 #line 61
@@ -27792,10 +27791,12 @@ void sjf_model_render(sjs_model* _parent) {
 #line 94 "lib/ui/vertexBuffer.sj"
     sjt_parent173 = &_parent->vertexbuffer;
 #line 65 "lib/ui/model.sj"
-    sjt_functionParam425 = sjv_gldrawmode_gl_triangles;
+    sjt_functionParam425 = g_gldrawmode_gl_triangles;
 #line 65
     sjf_vertexbuffer_vertex_location_texture_normal_render(sjt_parent173, sjt_functionParam425);
 
+    if (normalmat._refCount == 1) { sjf_mat4_destroy(&normalmat); }
+;
     if (sjt_call73._refCount == 1) { sjf_mat4_destroy(&sjt_call73); }
 ;
     if (sjt_call74._refCount == 1) { sjf_string_destroy(&sjt_call74); }
@@ -27814,11 +27815,9 @@ void sjf_model_render(sjs_model* _parent) {
 ;
     if (sjt_call81._refCount == 1) { sjf_vec3_destroy(&sjt_call81); }
 ;
-    if (sjv_normalmat._refCount == 1) { sjf_mat4_destroy(&sjv_normalmat); }
+    if (viewworld._refCount == 1) { sjf_mat4_destroy(&viewworld); }
 ;
-    if (sjv_viewworld._refCount == 1) { sjf_mat4_destroy(&sjv_viewworld); }
-;
-    if (sjv_world._refCount == 1) { sjf_mat4_destroy(&sjv_world); }
+    if (world._refCount == 1) { sjf_mat4_destroy(&world); }
 ;
 }
 
@@ -27864,7 +27863,7 @@ void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* project
     sjs_mat4* sjt_parent157 = 0;
     sjs_mat4* sjt_parent158 = 0;
     sjs_mat4* sjt_parent159 = 0;
-    sjs_vec4 sjv_t2 = { -1 };
+    sjs_vec4 t2 = { -1 };
 
     if (_parent->_projection._refCount == 1) { sjf_mat4_destroy(&_parent->_projection); }
 ;
@@ -27909,7 +27908,7 @@ void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* project
 #line 34
     sjt_functionParam383 = &sjt_call72;
 #line 34
-    sjf_mat4_multiplyvec4(sjt_parent157, sjt_functionParam383, &sjv_t2);
+    sjf_mat4_multiplyvec4(sjt_parent157, sjt_functionParam383, &t2);
 #line 34
     sjt_funcold33._refCount = 1;
 #line 1 "lib/ui/vec3.sj"
@@ -27917,11 +27916,11 @@ void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* project
 #line 1
     sjt_funcold33._refCount = 1;
 #line 35 "lib/ui/model.sj"
-    sjt_funcold33.x = (&sjv_t2)->x / (&sjv_t2)->w;
+    sjt_funcold33.x = (&t2)->x / (&t2)->w;
 #line 35
-    sjt_funcold33.y = (&sjv_t2)->y / (&sjv_t2)->w;
+    sjt_funcold33.y = (&t2)->y / (&t2)->w;
 #line 35
-    sjt_funcold33.z = (&sjv_t2)->z / (&sjv_t2)->w;
+    sjt_funcold33.z = (&t2)->z / (&t2)->w;
 #line 35
     sjf_vec3(&sjt_funcold33);
 #line 35
@@ -27943,7 +27942,7 @@ void sjf_model_update(sjs_model* _parent, sjs_rect* scenerect, sjs_mat4* project
 ;
     if (sjt_funcold33._refCount == 1) { sjf_vec3_destroy(&sjt_funcold33); }
 ;
-    if (sjv_t2._refCount == 1) { sjf_vec4_destroy(&sjv_t2); }
+    if (t2._refCount == 1) { sjf_vec4_destroy(&t2); }
 ;
 }
 
@@ -27978,18 +27977,18 @@ void sjf_mouse_capture(sji_element element) {
         sjt_value2._parent->_refCount++;
     }
 
-    if (sjv_mouse_captureelement._parent != 0) {
-        sjv_mouse_captureelement._parent->_refCount--;
-        if (sjv_mouse_captureelement._parent->_refCount <= 0) {
-            sjv_mouse_captureelement._vtbl->destroy(sjv_mouse_captureelement._parent);
-            free(sjv_mouse_captureelement._parent);
+    if (g_mouse_captureelement._parent != 0) {
+        g_mouse_captureelement._parent->_refCount--;
+        if (g_mouse_captureelement._parent->_refCount <= 0) {
+            g_mouse_captureelement._vtbl->destroy(g_mouse_captureelement._parent);
+            free(g_mouse_captureelement._parent);
         }
     }
 
 #line 4
-    sjv_mouse_captureelement = sjt_value2;
-    if (sjv_mouse_captureelement._parent != 0) {
-        sjv_mouse_captureelement._parent->_refCount++;
+    g_mouse_captureelement = sjt_value2;
+    if (g_mouse_captureelement._parent != 0) {
+        g_mouse_captureelement._parent->_refCount++;
     }
 
 #line 6
@@ -28005,11 +28004,11 @@ void sjf_mouse_capture(sji_element element) {
 }
 
 void sjf_mouse_hascapture(sji_element element, bool* _return) {
-    if ((sjv_mouse_captureelement._parent != 0)) {
+    if ((g_mouse_captureelement._parent != 0)) {
         sji_element ifValue5 = { 0 };
 
 #line 11 "lib/ui/mouse.sj"
-        ifValue5 = sjv_mouse_captureelement;
+        ifValue5 = g_mouse_captureelement;
         if (ifValue5._parent != 0) {
             ifValue5._parent->_refCount++;
         }
@@ -28057,12 +28056,12 @@ void sjf_mouse_release(sji_element element) {
     sjt_functionParam122 = &sjt_call15;
 #line 19
     sjf_console_writeline(sjt_functionParam122);
-    if ((sjv_mouse_captureelement._parent != 0)) {
+    if ((g_mouse_captureelement._parent != 0)) {
         sji_element ifValue7 = { 0 };
         sjs_string sjt_call16 = { -1 };
 
 #line 20 "lib/ui/mouse.sj"
-        ifValue7 = sjv_mouse_captureelement;
+        ifValue7 = g_mouse_captureelement;
         if (ifValue7._parent != 0) {
             ifValue7._parent->_refCount++;
         }
@@ -28093,16 +28092,16 @@ void sjf_mouse_release(sji_element element) {
             sjt_functionParam123 = &sjt_call16;
 #line 22
             sjf_console_writeline(sjt_functionParam123);
-            if (sjv_mouse_captureelement._parent != 0) {
-                sjv_mouse_captureelement._parent->_refCount--;
-                if (sjv_mouse_captureelement._parent->_refCount <= 0) {
-                    sjv_mouse_captureelement._vtbl->destroy(sjv_mouse_captureelement._parent);
-                    free(sjv_mouse_captureelement._parent);
+            if (g_mouse_captureelement._parent != 0) {
+                g_mouse_captureelement._parent->_refCount--;
+                if (g_mouse_captureelement._parent->_refCount <= 0) {
+                    g_mouse_captureelement._vtbl->destroy(g_mouse_captureelement._parent);
+                    free(g_mouse_captureelement._parent);
                 }
             }
 
 #line 23
-            sjv_mouse_captureelement._parent = 0;
+            g_mouse_captureelement._parent = 0;
 #line 25
             SDL_CaptureMouse(false);
         }
@@ -28443,12 +28442,12 @@ void sjf_mouseevent_destroy(sjs_mouseevent* _this) {
 
 void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_element* children, bool* _return) {
     int32_t i;
+    bool shouldcontinue;
     int32_t sjt_forEnd5;
     int32_t sjt_forStart5;
-    bool sjv_shouldcontinue;
 
 #line 45 "lib/ui/mouse.sj"
-    sjv_shouldcontinue = true;
+    shouldcontinue = true;
 #line 46
     sjt_forStart5 = 0;
 #line 46
@@ -28456,36 +28455,36 @@ void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_e
 #line 46
     i = sjt_forEnd5 - 1;
     while (i >= sjt_forStart5) {
-        if (sjv_shouldcontinue) {
+        if (shouldcontinue) {
+            sji_element child = { 0 };
             bool sjt_funcold3;
             int32_t sjt_functionParam25;
             sjs_mouseevent* sjt_interfaceParam9 = 0;
             sjs_array_heap_iface_element* sjt_parent21 = 0;
             sji_element sjt_parent22 = { 0 };
-            sji_element sjv_child = { 0 };
 
 #line 44 "lib/ui/mouse.sj"
             sjt_parent21 = children;
 #line 46
             sjt_functionParam25 = i;
 #line 46
-            sjf_array_heap_iface_element_getat_heap(sjt_parent21, sjt_functionParam25, &sjv_child);
+            sjf_array_heap_iface_element_getat_heap(sjt_parent21, sjt_functionParam25, &child);
 #line 6 "lib/ui/element.sj"
-            sjt_parent22 = sjv_child;
+            sjt_parent22 = child;
 #line 6
-            sjt_funcold3 = sjv_shouldcontinue;
+            sjt_funcold3 = shouldcontinue;
 #line 49 "lib/ui/mouse.sj"
             sjt_interfaceParam9 = _parent;
 #line 49
             sjt_parent22._vtbl->firemouseevent(sjt_parent22._parent, sjt_interfaceParam9, &sjt_funcold3);
 #line 6 "lib/ui/element.sj"
-            sjv_shouldcontinue = sjt_funcold3;
+            shouldcontinue = sjt_funcold3;
 
-            if (sjv_child._parent != 0) {
-                sjv_child._parent->_refCount--;
-                if (sjv_child._parent->_refCount <= 0) {
-                    sjv_child._vtbl->destroy(sjv_child._parent);
-                    free(sjv_child._parent);
+            if (child._parent != 0) {
+                child._parent->_refCount--;
+                if (child._parent->_refCount <= 0) {
+                    child._vtbl->destroy(child._parent);
+                    free(child._parent);
                 }
             }
         }
@@ -28495,7 +28494,7 @@ void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_e
     }
 
 #line 44
-    (*_return) = sjv_shouldcontinue;
+    (*_return) = shouldcontinue;
 }
 
 void sjf_mouseevent_heap(sjs_mouseevent* _this) {
@@ -28508,17 +28507,17 @@ void sjf_nauscene3delement_animatecameradistance(sjs_nauscene3delement* _parent,
     sjs_list_heap_iface_animation* sjt_parent520 = 0;
 
 #line 44 "lib/common/list.sj"
-    sjt_parent520 = &(&sjv_animator)->animations;
+    sjt_parent520 = &(&g_animator)->animations;
 #line 44
     sjt_call398 = (sjs_animation_f32*)malloc(sizeof(sjs_animation_f32));
 #line 44
     sjt_call398->_refCount = 1;
 #line 45 "nau/nauScene3dElement.sj"
-    sjt_call398->start = (&sjv_animator)->current;
+    sjt_call398->start = (&g_animator)->current;
 #line 45
     sjt_call398->startvalue = _parent->cameradistance;
 #line 49
-    sjt_call398->end = (&sjv_animator)->current + duration;
+    sjt_call398->end = (&g_animator)->current + duration;
 #line 43
     sjt_call398->endvalue = v;
 #line 50
@@ -28564,19 +28563,19 @@ void sjf_nauscene3delement_animatelookat(sjs_nauscene3delement* _parent, sjs_vec
     sjs_list_heap_iface_animation* sjt_parent406 = 0;
 
 #line 44 "lib/common/list.sj"
-    sjt_parent406 = &(&sjv_animator)->animations;
+    sjt_parent406 = &(&g_animator)->animations;
 #line 44
     sjt_call274 = (sjs_animation_vec3*)malloc(sizeof(sjs_animation_vec3));
 #line 44
     sjt_call274->_refCount = 1;
 #line 32 "nau/nauScene3dElement.sj"
-    sjt_call274->start = (&sjv_animator)->current;
+    sjt_call274->start = (&g_animator)->current;
 #line 32
     sjt_call274->startvalue._refCount = 1;
 #line 32
     sjf_vec3_copy(&sjt_call274->startvalue, &_parent->_lookat);
 #line 36
-    sjt_call274->end = (&sjv_animator)->current + duration;
+    sjt_call274->end = (&g_animator)->current + duration;
 #line 36
     sjt_call274->endvalue._refCount = 1;
 #line 30
@@ -28726,7 +28725,7 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 
 #line 99 "nau/nauScene3dElement.sj"
     underscore1 = mouseevent->eventtype;
-    if (underscore1 == sjv_mouseeventtype_down) {
+    if (underscore1 == g_mouseeventtype_down) {
         sjs_nauscene3delement* sjt_cast5 = 0;
         sji_element sjt_functionParam84 = { 0 };
 
@@ -28758,7 +28757,8 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
             }
         }
     } else {
-        if (underscore1 == sjv_mouseeventtype_move) {
+        if (underscore1 == g_mouseeventtype_move) {
+            sjs_vec3 camera = { -1 };
             sjs_vec3 sjt_call10 = { -1 };
             sjs_vec3 sjt_call11 = { -1 };
             sjs_vec3 sjt_call12 = { -1 };
@@ -28769,7 +28769,6 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
             sjs_vec3 sjt_funcold6 = { -1 };
             sjs_mat4 sjt_funcold7 = { -1 };
             sji_element sjt_functionParam85 = { 0 };
-            sjs_vec3 sjv_camera = { -1 };
 
 #line 107 "nau/nauScene3dElement.sj"
             sjt_cast6 = _parent;
@@ -28857,13 +28856,13 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 #line 113
                 sjt_functionParam115 = &sjt_call13;
 #line 113
-                sjf_vec3_subtract(sjt_parent55, sjt_functionParam115, &sjv_camera);
+                sjf_vec3_subtract(sjt_parent55, sjt_functionParam115, &camera);
 #line 113
                 sjt_funcold7._refCount = 1;
 #line 133 "lib/ui/mat4.sj"
                 sjf_mat4_copy(&sjt_funcold7, &_parent->view);
 #line 114 "nau/nauScene3dElement.sj"
-                sjt_functionParam116 = &sjv_camera;
+                sjt_functionParam116 = &camera;
 #line 114
                 sjt_functionParam117 = &_parent->_lookat;
 #line 114
@@ -28894,6 +28893,8 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
                     free(sjt_functionParam85._parent);
                 }
             }
+            if (camera._refCount == 1) { sjf_vec3_destroy(&camera); }
+;
             if (sjt_call10._refCount == 1) { sjf_vec3_destroy(&sjt_call10); }
 ;
             if (sjt_call11._refCount == 1) { sjf_vec3_destroy(&sjt_call11); }
@@ -28908,10 +28909,8 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 ;
             if (sjt_funcold7._refCount == 1) { sjf_mat4_destroy(&sjt_funcold7); }
 ;
-            if (sjv_camera._refCount == 1) { sjf_vec3_destroy(&sjv_camera); }
-;
         } else {
-            if (underscore1 == sjv_mouseeventtype_up) {
+            if (underscore1 == g_mouseeventtype_up) {
                 sjs_nauscene3delement* sjt_cast11 = 0;
                 sji_element sjt_functionParam124 = { 0 };
 
@@ -28961,20 +28960,20 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 #line 125
         i = sjt_forStart9;
         while (i < sjt_forEnd9) {
+            sji_model child = { 0 };
             int32_t sjt_functionParam126;
             sjs_mouseevent* sjt_interfaceParam16 = 0;
             sjs_array_heap_iface_model* sjt_parent59 = 0;
             sji_model sjt_parent60 = { 0 };
-            sji_model sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
             sjt_parent59 = &_parent->children;
 #line 125 "nau/nauScene3dElement.sj"
             sjt_functionParam126 = i;
 #line 125
-            sjf_array_heap_iface_model_getat_heap(sjt_parent59, sjt_functionParam126, &sjv_child);
+            sjf_array_heap_iface_model_getat_heap(sjt_parent59, sjt_functionParam126, &child);
 #line 8 "lib/ui/model.sj"
-            sjt_parent60 = sjv_child;
+            sjt_parent60 = child;
 #line 98 "nau/nauScene3dElement.sj"
             sjt_interfaceParam16 = mouseevent;
 #line 127
@@ -28982,11 +28981,11 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
 #line 125
             i++;
 
-            if (sjv_child._parent != 0) {
-                sjv_child._parent->_refCount--;
-                if (sjv_child._parent->_refCount <= 0) {
-                    sjv_child._vtbl->destroy(sjv_child._parent);
-                    free(sjv_child._parent);
+            if (child._parent != 0) {
+                child._parent->_refCount--;
+                if (child._parent->_refCount <= 0) {
+                    child._vtbl->destroy(child._parent);
+                    free(child._parent);
                 }
             }
         }
@@ -29046,6 +29045,8 @@ void sjf_nauscene3delement_heap(sjs_nauscene3delement* _this) {
 }
 
 void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* scene) {
+    sjs_list_heap_iface_model a = { -1 };
+    sjs_vec3 camera = { -1 };
     int32_t i;
     sjs_vec3 sjt_call6 = { -1 };
     sjs_vec3 sjt_call9 = { -1 };
@@ -29066,8 +29067,6 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
     sjs_vec3* sjt_parent25 = 0;
     sjs_list_heap_iface_model* sjt_parent47 = 0;
     sjs_list_heap_iface_model* sjt_parent50 = 0;
-    sjs_list_heap_iface_model sjv_a = { -1 };
-    sjs_vec3 sjv_camera = { -1 };
 
 #line 30 "lib/ui/vec3.sj"
     sjt_parent25 = &_parent->_lookat;
@@ -29084,13 +29083,13 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 #line 67
     sjt_functionParam34 = &sjt_call6;
 #line 67
-    sjf_vec3_subtract(sjt_parent25, sjt_functionParam34, &sjv_camera);
+    sjf_vec3_subtract(sjt_parent25, sjt_functionParam34, &camera);
 #line 67
     sjt_funcold5._refCount = 1;
 #line 133 "lib/ui/mat4.sj"
     sjf_mat4_copy(&sjt_funcold5, &_parent->view);
 #line 68 "nau/nauScene3dElement.sj"
-    sjt_functionParam49 = &sjv_camera;
+    sjt_functionParam49 = &camera;
 #line 68
     sjt_functionParam50 = &_parent->_lookat;
 #line 68
@@ -29119,6 +29118,7 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 #line 70
     i = sjt_forStart6;
     while (i < sjt_forEnd6) {
+        sji_model child = { 0 };
         int32_t sjt_functionParam52;
         sjs_rect* sjt_interfaceParam10 = 0;
         sjs_mat4* sjt_interfaceParam11 = 0;
@@ -29127,16 +29127,15 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
         sjs_light* sjt_interfaceParam14 = 0;
         sjs_array_heap_iface_model* sjt_parent42 = 0;
         sji_model sjt_parent43 = { 0 };
-        sji_model sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent42 = &_parent->children;
 #line 70 "nau/nauScene3dElement.sj"
         sjt_functionParam52 = i;
 #line 70
-        sjf_array_heap_iface_model_getat_heap(sjt_parent42, sjt_functionParam52, &sjv_child);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent42, sjt_functionParam52, &child);
 #line 2 "lib/ui/model.sj"
-        sjt_parent43 = sjv_child;
+        sjt_parent43 = child;
 #line 72 "nau/nauScene3dElement.sj"
         sjt_interfaceParam10 = &_parent->_rect;
 #line 72
@@ -29152,35 +29151,35 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 #line 70
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
 #line 75
-    sjt_functionParam53 = sjv_glfeature_gl_depth_test;
+    sjt_functionParam53 = g_glfeature_gl_depth_test;
 #line 75
     sjf_glenable(sjt_functionParam53);
 #line 75
-    sjv_a._refCount = 1;
+    a._refCount = 1;
 #line 75
-    sjv_a.array._refCount = 1;
+    a.array._refCount = 1;
 #line 2 "lib/common/list.sj"
-    sjv_a.array.datasize = 0;
+    a.array.datasize = 0;
 #line 3 "lib/common/array.sj"
-    sjv_a.array.data = 0;
+    a.array.data = 0;
 #line 4
-    sjv_a.array.isglobal = false;
+    a.array.isglobal = false;
 #line 5
-    sjv_a.array.count = 0;
+    a.array.count = 0;
 #line 5
-    sjf_array_heap_iface_model(&sjv_a.array);
+    sjf_array_heap_iface_model(&a.array);
 #line 5
-    sjf_list_heap_iface_model(&sjv_a);
+    sjf_list_heap_iface_model(&a);
 #line 79 "nau/nauScene3dElement.sj"
     sjt_forStart7 = 0;
 #line 79
@@ -29188,38 +29187,38 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 #line 79
     i = sjt_forStart7;
     while (i < sjt_forEnd7) {
+        sji_model child = { 0 };
         int32_t sjt_functionParam54;
         sjs_list_heap_iface_model* sjt_interfaceParam15 = 0;
         sjs_array_heap_iface_model* sjt_parent44 = 0;
         sji_model sjt_parent45 = { 0 };
-        sji_model sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent44 = &_parent->children;
 #line 79 "nau/nauScene3dElement.sj"
         sjt_functionParam54 = i;
 #line 79
-        sjf_array_heap_iface_model_getat_heap(sjt_parent44, sjt_functionParam54, &sjv_child);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent44, sjt_functionParam54, &child);
 #line 6 "lib/ui/model.sj"
-        sjt_parent45 = sjv_child;
+        sjt_parent45 = child;
 #line 81 "nau/nauScene3dElement.sj"
-        sjt_interfaceParam15 = &sjv_a;
+        sjt_interfaceParam15 = &a;
 #line 81
         sjt_parent45._vtbl->renderorqueue(sjt_parent45._parent, sjt_interfaceParam15);
 #line 79
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
 #line 28 "lib/common/list.sj"
-    sjt_parent47 = &sjv_a;
+    sjt_parent47 = &a;
 #line 84 "nau/nauScene3dElement.sj"
     sjt_functionParam78._parent = (sjs_object*)1;
 #line 84
@@ -29229,53 +29228,53 @@ void sjf_nauscene3delement_render(sjs_nauscene3delement* _parent, sjs_scene2d* s
 #line 85
     sjt_forStart8 = 0;
 #line 4 "lib/common/list.sj"
-    sjt_parent50 = &sjv_a;
+    sjt_parent50 = &a;
 #line 4
     sjf_list_heap_iface_model_getcount(sjt_parent50, &sjt_forEnd8);
 #line 85 "nau/nauScene3dElement.sj"
     i = sjt_forEnd8 - 1;
     while (i >= sjt_forStart8) {
+        sji_model child = { 0 };
         int32_t sjt_functionParam82;
         sjs_list_heap_iface_model* sjt_parent52 = 0;
         sji_model sjt_parent53 = { 0 };
-        sji_model sjv_child = { 0 };
 
 #line 8 "lib/common/list.sj"
-        sjt_parent52 = &sjv_a;
+        sjt_parent52 = &a;
 #line 85 "nau/nauScene3dElement.sj"
         sjt_functionParam82 = i;
 #line 85
-        sjf_list_heap_iface_model_getat_heap(sjt_parent52, sjt_functionParam82, &sjv_child);
+        sjf_list_heap_iface_model_getat_heap(sjt_parent52, sjt_functionParam82, &child);
 #line 7 "lib/ui/model.sj"
-        sjt_parent53 = sjv_child;
+        sjt_parent53 = child;
 #line 87 "nau/nauScene3dElement.sj"
         sjt_parent53._vtbl->render(sjt_parent53._parent);
 #line 85
         i--;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
 #line 90
-    sjt_functionParam83 = sjv_glfeature_gl_depth_test;
+    sjt_functionParam83 = g_glfeature_gl_depth_test;
 #line 90
     sjf_gldisable(sjt_functionParam83);
 
+    if (a._refCount == 1) { sjf_list_heap_iface_model_destroy(&a); }
+;
+    if (camera._refCount == 1) { sjf_vec3_destroy(&camera); }
+;
     if (sjt_call6._refCount == 1) { sjf_vec3_destroy(&sjt_call6); }
 ;
     if (sjt_call9._refCount == 1) { sjf_vec3_destroy(&sjt_call9); }
 ;
     if (sjt_funcold5._refCount == 1) { sjf_mat4_destroy(&sjt_funcold5); }
-;
-    if (sjv_a._refCount == 1) { sjf_list_heap_iface_model_destroy(&sjv_a); }
-;
-    if (sjv_camera._refCount == 1) { sjf_vec3_destroy(&sjv_camera); }
 ;
 }
 
@@ -29404,20 +29403,20 @@ void sjf_panel3d_firemouseevent(sjs_panel3d* _parent, sjs_mouseevent* mouseevent
 #line 32
     i = sjt_forStart33;
     while (i < sjt_forEnd33) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam1007;
         sjs_mouseevent* sjt_interfaceParam55 = 0;
         sjs_array_heap_iface_model* sjt_parent470 = 0;
         sji_model sjt_parent471 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent470 = &_parent->children;
 #line 32 "lib/ui/panel3d.sj"
         sjt_functionParam1007 = i;
 #line 32
-        sjf_array_heap_iface_model_getat_heap(sjt_parent470, sjt_functionParam1007, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent470, sjt_functionParam1007, &c);
 #line 8 "lib/ui/model.sj"
-        sjt_parent471 = sjv_c;
+        sjt_parent471 = c;
 #line 31 "lib/ui/panel3d.sj"
         sjt_interfaceParam55 = mouseevent;
 #line 34
@@ -29425,11 +29424,11 @@ void sjf_panel3d_firemouseevent(sjs_panel3d* _parent, sjs_mouseevent* mouseevent
 #line 32
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -29511,20 +29510,20 @@ void sjf_panel3d_renderorqueue(sjs_panel3d* _parent, sjs_list_heap_iface_model* 
 #line 21
     i = sjt_forStart32;
     while (i < sjt_forEnd32) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam1006;
         sjs_list_heap_iface_model* sjt_interfaceParam54 = 0;
         sjs_array_heap_iface_model* sjt_parent468 = 0;
         sji_model sjt_parent469 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent468 = &_parent->children;
 #line 21 "lib/ui/panel3d.sj"
         sjt_functionParam1006 = i;
 #line 21
-        sjf_array_heap_iface_model_getat_heap(sjt_parent468, sjt_functionParam1006, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent468, sjt_functionParam1006, &c);
 #line 6 "lib/ui/model.sj"
-        sjt_parent469 = sjv_c;
+        sjt_parent469 = c;
 #line 20 "lib/ui/panel3d.sj"
         sjt_interfaceParam54 = zqueue;
 #line 23
@@ -29532,23 +29531,23 @@ void sjf_panel3d_renderorqueue(sjs_panel3d* _parent, sjs_list_heap_iface_model* 
 #line 21
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
 }
 
 void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_light* light) {
+    sjs_mat4 childworld = { -1 };
     int32_t i;
     int32_t sjt_forEnd31;
     int32_t sjt_forStart31;
     sjs_mat4* sjt_functionParam1002 = 0;
     sjs_mat4* sjt_parent463 = 0;
-    sjs_mat4 sjv_childworld = { -1 };
 
     if (_parent->_world._refCount == 1) { sjf_mat4_destroy(&_parent->_world); }
 ;
@@ -29559,7 +29558,7 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 #line 8
     sjt_functionParam1002 = &_parent->model;
 #line 8
-    sjf_mat4_multiply(sjt_parent463, sjt_functionParam1002, &sjv_childworld);
+    sjf_mat4_multiply(sjt_parent463, sjt_functionParam1002, &childworld);
 #line 9
     sjt_forStart31 = 0;
 #line 9
@@ -29567,6 +29566,7 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 #line 9
     i = sjt_forStart31;
     while (i < sjt_forEnd31) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam1003;
         sjs_rect* sjt_interfaceParam49 = 0;
         sjs_mat4* sjt_interfaceParam50 = 0;
@@ -29575,16 +29575,15 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
         sjs_light* sjt_interfaceParam53 = 0;
         sjs_array_heap_iface_model* sjt_parent464 = 0;
         sji_model sjt_parent465 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent464 = &_parent->children;
 #line 9 "lib/ui/panel3d.sj"
         sjt_functionParam1003 = i;
 #line 9
-        sjf_array_heap_iface_model_getat_heap(sjt_parent464, sjt_functionParam1003, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent464, sjt_functionParam1003, &c);
 #line 2 "lib/ui/model.sj"
-        sjt_parent465 = sjv_c;
+        sjt_parent465 = c;
 #line 6 "lib/ui/panel3d.sj"
         sjt_interfaceParam49 = scenerect;
 #line 6
@@ -29592,7 +29591,7 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 #line 6
         sjt_interfaceParam51 = view;
 #line 11
-        sjt_interfaceParam52 = &sjv_childworld;
+        sjt_interfaceParam52 = &childworld;
 #line 6
         sjt_interfaceParam53 = light;
 #line 11
@@ -29600,16 +29599,16 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 #line 9
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
 
-    if (sjv_childworld._refCount == 1) { sjf_mat4_destroy(&sjv_childworld); }
+    if (childworld._refCount == 1) { sjf_mat4_destroy(&childworld); }
 ;
 }
 
@@ -29727,20 +29726,20 @@ void sjf_peoplepanel_firemouseevent(sjs_peoplepanel* _parent, sjs_mouseevent* mo
 #line 34
     i = sjt_forStart24;
     while (i < sjt_forEnd24) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam557;
         sjs_mouseevent* sjt_interfaceParam46 = 0;
         sjs_array_heap_iface_model* sjt_parent231 = 0;
         sji_model sjt_parent232 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent231 = &_parent->children;
 #line 34 "nau/peoplePanel.sj"
         sjt_functionParam557 = i;
 #line 34
-        sjf_array_heap_iface_model_getat_heap(sjt_parent231, sjt_functionParam557, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent231, sjt_functionParam557, &c);
 #line 8 "lib/ui/model.sj"
-        sjt_parent232 = sjv_c;
+        sjt_parent232 = c;
 #line 33 "nau/peoplePanel.sj"
         sjt_interfaceParam46 = mouseevent;
 #line 36
@@ -29748,11 +29747,11 @@ void sjf_peoplepanel_firemouseevent(sjs_peoplepanel* _parent, sjs_mouseevent* mo
 #line 34
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -29788,6 +29787,9 @@ void sjf_peoplepanel_getclasstype(sjs_object* _this, int* _return) {
 }
 
 void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, sjs_mat4* _return) {
+    int32_t col;
+    float noise;
+    float row;
     sjs_vec3 sjt_call118 = { -1 };
     float sjt_capture53;
     int32_t sjt_cast40;
@@ -29795,15 +29797,12 @@ void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, s
     int32_t sjt_cast42;
     float sjt_functionParam546;
     sjs_vec3* sjt_functionParam547 = 0;
-    int32_t sjv_col;
-    float sjv_noise;
-    float sjv_row;
-    float sjv_x;
-    float sjv_z;
+    float x;
+    float z;
 
     sjf_f32_random(&sjt_capture53);
 #line 47 "nau/peoplePanel.sj"
-    sjv_noise = sjt_capture53 - 0.5f;
+    noise = sjt_capture53 - 0.5f;
 #line 48
     sjt_cast40 = _parent->_index;
 #line 48
@@ -29811,30 +29810,30 @@ void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, s
 #line 48
     sjt_functionParam546 = (float)sjt_cast40 / (float)sjt_cast41;
 #line 48
-    sjf_f32_floor(sjt_functionParam546, &sjv_row);
+    sjf_f32_floor(sjt_functionParam546, &row);
 #line 49
-    sjv_col = _parent->_index % _parent->_depth;
+    col = _parent->_index % _parent->_depth;
 #line 50
-    sjv_x = ((sjv_row * _parent->_xincrement) + _parent->_xoffset) + sjv_noise;
-    if ((sjv_col % 2) == 1) {
+    x = ((row * _parent->_xincrement) + _parent->_xoffset) + noise;
+    if ((col % 2) == 1) {
 #line 52 "nau/peoplePanel.sj"
-        sjv_x = sjv_x + (_parent->_xincrement / 2.0f);
+        x = x + (_parent->_xincrement / 2.0f);
     }
 
 #line 55
-    sjt_cast42 = sjv_col;
+    sjt_cast42 = col;
 #line 55
-    sjv_z = ((float)sjt_cast42 * _parent->_zincrement) + (sjv_noise * 0.2f);
+    z = ((float)sjt_cast42 * _parent->_zincrement) + (noise * 0.2f);
 #line 57
     _parent->_index = _parent->_index + 1;
 #line 57
     sjt_call118._refCount = 1;
 #line 59
-    sjt_call118.x = sjv_x;
+    sjt_call118.x = x;
 #line 59
     sjt_call118.y = 0.0f;
 #line 59
-    sjt_call118.z = sjv_z;
+    sjt_call118.z = z;
 #line 59
     sjf_vec3(&sjt_call118);
 #line 59
@@ -29847,6 +29846,9 @@ void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, s
 }
 
 void sjf_peoplepanel_getmodelmatrix_heap(sjs_peoplepanel* _parent, sji_model model, sjs_mat4** _return) {
+    int32_t col;
+    float noise;
+    float row;
     sjs_vec3 sjt_call119 = { -1 };
     float sjt_capture54;
     int32_t sjt_cast43;
@@ -29854,15 +29856,12 @@ void sjf_peoplepanel_getmodelmatrix_heap(sjs_peoplepanel* _parent, sji_model mod
     int32_t sjt_cast45;
     float sjt_functionParam548;
     sjs_vec3* sjt_functionParam549 = 0;
-    int32_t sjv_col;
-    float sjv_noise;
-    float sjv_row;
-    float sjv_x;
-    float sjv_z;
+    float x;
+    float z;
 
     sjf_f32_random(&sjt_capture54);
 #line 47 "nau/peoplePanel.sj"
-    sjv_noise = sjt_capture54 - 0.5f;
+    noise = sjt_capture54 - 0.5f;
 #line 48
     sjt_cast43 = _parent->_index;
 #line 48
@@ -29870,30 +29869,30 @@ void sjf_peoplepanel_getmodelmatrix_heap(sjs_peoplepanel* _parent, sji_model mod
 #line 48
     sjt_functionParam548 = (float)sjt_cast43 / (float)sjt_cast44;
 #line 48
-    sjf_f32_floor(sjt_functionParam548, &sjv_row);
+    sjf_f32_floor(sjt_functionParam548, &row);
 #line 49
-    sjv_col = _parent->_index % _parent->_depth;
+    col = _parent->_index % _parent->_depth;
 #line 50
-    sjv_x = ((sjv_row * _parent->_xincrement) + _parent->_xoffset) + sjv_noise;
-    if ((sjv_col % 2) == 1) {
+    x = ((row * _parent->_xincrement) + _parent->_xoffset) + noise;
+    if ((col % 2) == 1) {
 #line 52 "nau/peoplePanel.sj"
-        sjv_x = sjv_x + (_parent->_xincrement / 2.0f);
+        x = x + (_parent->_xincrement / 2.0f);
     }
 
 #line 55
-    sjt_cast45 = sjv_col;
+    sjt_cast45 = col;
 #line 55
-    sjv_z = ((float)sjt_cast45 * _parent->_zincrement) + (sjv_noise * 0.2f);
+    z = ((float)sjt_cast45 * _parent->_zincrement) + (noise * 0.2f);
 #line 57
     _parent->_index = _parent->_index + 1;
 #line 57
     sjt_call119._refCount = 1;
 #line 59
-    sjt_call119.x = sjv_x;
+    sjt_call119.x = x;
 #line 59
     sjt_call119.y = 0.0f;
 #line 59
-    sjt_call119.z = sjv_z;
+    sjt_call119.z = z;
 #line 59
     sjf_vec3(&sjt_call119);
 #line 59
@@ -29993,20 +29992,20 @@ void sjf_peoplepanel_renderorqueue(sjs_peoplepanel* _parent, sjs_list_heap_iface
 #line 23
     i = sjt_forStart23;
     while (i < sjt_forEnd23) {
+        sji_model c = { 0 };
         int32_t sjt_functionParam556;
         sjs_list_heap_iface_model* sjt_interfaceParam45 = 0;
         sjs_array_heap_iface_model* sjt_parent229 = 0;
         sji_model sjt_parent230 = { 0 };
-        sji_model sjv_c = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent229 = &_parent->children;
 #line 23 "nau/peoplePanel.sj"
         sjt_functionParam556 = i;
 #line 23
-        sjf_array_heap_iface_model_getat_heap(sjt_parent229, sjt_functionParam556, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent229, sjt_functionParam556, &c);
 #line 6 "lib/ui/model.sj"
-        sjt_parent230 = sjv_c;
+        sjt_parent230 = c;
 #line 22 "nau/peoplePanel.sj"
         sjt_interfaceParam45 = zqueue;
 #line 25
@@ -30014,11 +30013,11 @@ void sjf_peoplepanel_renderorqueue(sjs_peoplepanel* _parent, sjs_list_heap_iface
 #line 23
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
     }
@@ -30040,6 +30039,9 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
 #line 9
     i = sjt_forStart22;
     while (i < sjt_forEnd22) {
+        sji_model c = { 0 };
+        sjs_mat4 childmodel = { -1 };
+        sjs_mat4 newworld = { -1 };
         sjs_mat4 sjt_call120 = { -1 };
         int32_t sjt_functionParam550;
         int32_t sjt_functionParam551;
@@ -30055,22 +30057,19 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
         sjs_mat4* sjt_parent224 = 0;
         sjs_mat4* sjt_parent225 = 0;
         sji_model sjt_parent226 = { 0 };
-        sji_model sjv_c = { 0 };
-        sjs_mat4 sjv_childmodel = { -1 };
-        sjs_mat4 sjv_newworld = { -1 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent222 = &_parent->children;
 #line 9 "nau/peoplePanel.sj"
         sjt_functionParam550 = i;
 #line 9
-        sjf_array_heap_iface_model_getat_heap(sjt_parent222, sjt_functionParam550, &sjv_c);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent222, sjt_functionParam550, &c);
 #line 7 "lib/common/array.sj"
         sjt_parent223 = &_parent->_childrenmodel;
 #line 9 "nau/peoplePanel.sj"
         sjt_functionParam551 = i;
 #line 9
-        sjf_array_mat4_getat(sjt_parent223, sjt_functionParam551, &sjv_childmodel);
+        sjf_array_mat4_getat(sjt_parent223, sjt_functionParam551, &childmodel);
 #line 7
         sjt_parent225 = world;
 #line 12
@@ -30080,11 +30079,11 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
 #line 12
         sjt_parent224 = &sjt_call120;
 #line 12
-        sjt_functionParam553 = &sjv_childmodel;
+        sjt_functionParam553 = &childmodel;
 #line 12
-        sjf_mat4_multiply(sjt_parent224, sjt_functionParam553, &sjv_newworld);
+        sjf_mat4_multiply(sjt_parent224, sjt_functionParam553, &newworld);
 #line 2 "lib/ui/model.sj"
-        sjt_parent226 = sjv_c;
+        sjt_parent226 = c;
 #line 7 "nau/peoplePanel.sj"
         sjt_interfaceParam40 = scenerect;
 #line 7
@@ -30092,7 +30091,7 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
 #line 7
         sjt_interfaceParam42 = view;
 #line 13
-        sjt_interfaceParam43 = &sjv_newworld;
+        sjt_interfaceParam43 = &newworld;
 #line 7
         sjt_interfaceParam44 = light;
 #line 13
@@ -30100,18 +30099,18 @@ void sjf_peoplepanel_update(sjs_peoplepanel* _parent, sjs_rect* scenerect, sjs_m
 #line 9
         i++;
 
-        if (sjv_c._parent != 0) {
-            sjv_c._parent->_refCount--;
-            if (sjv_c._parent->_refCount <= 0) {
-                sjv_c._vtbl->destroy(sjv_c._parent);
-                free(sjv_c._parent);
+        if (c._parent != 0) {
+            c._parent->_refCount--;
+            if (c._parent->_refCount <= 0) {
+                c._vtbl->destroy(c._parent);
+                free(c._parent);
             }
         }
+        if (childmodel._refCount == 1) { sjf_mat4_destroy(&childmodel); }
+;
+        if (newworld._refCount == 1) { sjf_mat4_destroy(&newworld); }
+;
         if (sjt_call120._refCount == 1) { sjf_mat4_destroy(&sjt_call120); }
-;
-        if (sjv_childmodel._refCount == 1) { sjf_mat4_destroy(&sjv_childmodel); }
-;
-        if (sjv_newworld._refCount == 1) { sjf_mat4_destroy(&sjv_newworld); }
 ;
     }
 }
@@ -30184,7 +30183,7 @@ void sjf_personelement_firemouseevent(sjs_personelement* _parent, sjs_mouseevent
     sjs_clickgesture* sjt_parent368 = 0;
 
 #line 22 "lib/common/log.sj"
-    sjt_parent365 = &sjv_log;
+    sjt_parent365 = &g_log;
 #line 35 "nau/personElement.sj"
     sjt_functionParam794 = 360;
 #line 35
@@ -30287,7 +30286,7 @@ void sjf_personelement_heap(sjs_personelement* _this) {
 #line 5
     sjf_rect(&sjt_funcold43.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_funcold43._state = sjv_clickstate_none;
+    sjt_funcold43._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_funcold43);
 #line 14
@@ -30307,7 +30306,7 @@ void sjf_personelement_onclickgestureclick(sjs_personelement* _parent, sji_eleme
     sjs_log* sjt_parent369 = 0;
 
 #line 22 "lib/common/log.sj"
-    sjt_parent369 = &sjv_log;
+    sjt_parent369 = &g_log;
 #line 26 "nau/personElement.sj"
     sjt_functionParam797 = 360;
 #line 26
@@ -30336,13 +30335,13 @@ void sjf_personelement_onclickgestureclick(sjs_personelement* _parent, sji_eleme
 #line 27 "nau/personElement.sj"
         ifValue37 = (_parent->id._refCount != -1 ? &_parent->id : 0);
 #line 2 "nau/fieldController.sj"
-        sjt_parent413 = sjv_fieldcontroller;
+        sjt_parent413 = g_fieldcontroller;
 #line 28 "nau/personElement.sj"
         sjt_functionParam863 = ifValue37;
 #line 28
         sjf_fieldcontroller_selectperson(sjt_parent413, sjt_functionParam863);
 #line 2 "nau/forestController.sj"
-        sjt_parent432 = sjv_forestcontroller;
+        sjt_parent432 = g_forestcontroller;
 #line 29 "nau/personElement.sj"
         sjt_functionParam880 = ifValue37;
 #line 29
@@ -30435,7 +30434,7 @@ void sjf_planevertexbuffer(float x0, float x1, float y0, float y1, float z0, flo
     _return->_refCount = 1;
     _return->format._refCount = 1;
 #line 87 "lib/ui/vertexBufferBuilders.sj"
-    sjf_string_copy(&_return->format, &sjv_vertex_location_texture_normal_format);
+    sjf_string_copy(&_return->format, &g_vertex_location_texture_normal_format);
 #line 87
     _return->indices._refCount = 1;
 #line 89
@@ -30741,7 +30740,7 @@ void sjf_planevertexbuffer_heap(float x0, float x1, float y0, float y1, float z0
     (*_return)->_refCount = 1;
     (*_return)->format._refCount = 1;
 #line 87 "lib/ui/vertexBufferBuilders.sj"
-    sjf_string_copy(&(*_return)->format, &sjv_vertex_location_texture_normal_format);
+    sjf_string_copy(&(*_return)->format, &g_vertex_location_texture_normal_format);
 #line 87
     (*_return)->indices._refCount = 1;
 #line 89
@@ -31306,7 +31305,7 @@ void sjf_runloop(void) {
 #line 108
     #else
 #line 109
-    while (sjv_mainloop_shouldcontinue) {
+    while (g_mainloop_shouldcontinue) {
 #line 110
         sjf_mainloop();
 #line 111
@@ -31660,7 +31659,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
     sjs_mat4* sjt_functionParam708 = 0;
     sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent309 = 0;
     sjs_mat4* sjt_parent310 = 0;
-    sjs_vec2 sjv_texture = { -1 };
+    sjs_vec2 texture = { -1 };
 
 #line 43 "lib/ui/vertexBuffer.sj"
     sjt_parent309 = &_parent->vertexbuffer;
@@ -31681,9 +31680,11 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 72
     sjt_functionParam707 = &sjt_call140;
 #line 72
-    sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sjt_parent309, sjt_functionParam703, sjt_functionParam704, sjt_functionParam705, sjt_functionParam706, sjt_functionParam707, &sjv_texture);
-    if (((sjv_texture._refCount != -1 ? &sjv_texture : 0) != 0)) {
+    sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sjt_parent309, sjt_functionParam703, sjt_functionParam704, sjt_functionParam705, sjt_functionParam706, sjt_functionParam707, &texture);
+    if (((texture._refCount != -1 ? &texture : 0) != 0)) {
         sjs_vec2* ifValue31 = 0;
+        sjs_mouseevent newmouseevent = { -1 };
+        sjs_point scenepoint = { -1 };
         sjs_lambda2 sjt_call168 = { -1 };
         float sjt_cast59;
         int32_t sjt_cast60;
@@ -31695,13 +31696,11 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
         sjs_log* sjt_parent328 = 0;
         sjs_mouseevent* sjt_parent357 = 0;
         bool sjt_void1;
-        sjs_mouseevent sjv_newmouseevent = { -1 };
-        sjs_point sjv_scenepoint = { -1 };
 
 #line 73 "lib/ui/scene2dModel.sj"
-        ifValue31 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
+        ifValue31 = (texture._refCount != -1 ? &texture : 0);
 #line 22 "lib/common/log.sj"
-        sjt_parent328 = &sjv_log;
+        sjt_parent328 = &g_log;
 #line 74 "lib/ui/scene2dModel.sj"
         sjt_functionParam737 = 329;
 #line 74
@@ -31727,47 +31726,47 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 74
         sjf_log_trace(sjt_parent328, sjt_functionParam737, sjt_functionParam738);
 #line 74
-        sjv_scenepoint._refCount = 1;
+        scenepoint._refCount = 1;
 #line 76
         sjt_cast60 = (&_parent->texturesize)->w;
 #line 76
         sjt_cast59 = ifValue31->x * (float)sjt_cast60;
 #line 76
-        sjv_scenepoint.x = (int32_t)sjt_cast59;
+        scenepoint.x = (int32_t)sjt_cast59;
 #line 77
         sjt_cast62 = (&_parent->texturesize)->h;
 #line 77
         sjt_cast61 = ifValue31->y * (float)sjt_cast62;
 #line 77
-        sjv_scenepoint.y = ((&_parent->texturesize)->h - 1) - (int32_t)sjt_cast61;
+        scenepoint.y = ((&_parent->texturesize)->h - 1) - (int32_t)sjt_cast61;
 #line 77
-        sjf_point(&sjv_scenepoint);
+        sjf_point(&scenepoint);
 #line 77
-        sjv_newmouseevent._refCount = 1;
+        newmouseevent._refCount = 1;
 #line 79
-        sjv_newmouseevent.eventtype = mouseevent->eventtype;
+        newmouseevent.eventtype = mouseevent->eventtype;
 #line 79
-        sjv_newmouseevent.point._refCount = 1;
+        newmouseevent.point._refCount = 1;
 #line 79
-        sjf_point_copy(&sjv_newmouseevent.point, &sjv_scenepoint);
+        sjf_point_copy(&newmouseevent.point, &scenepoint);
 #line 79
-        sjv_newmouseevent.iscaptured = mouseevent->iscaptured;
+        newmouseevent.iscaptured = mouseevent->iscaptured;
 #line 79
-        sjv_newmouseevent.isleftdown = mouseevent->isleftdown;
+        newmouseevent.isleftdown = mouseevent->isleftdown;
 #line 79
-        sjf_mouseevent(&sjv_newmouseevent);
+        sjf_mouseevent(&newmouseevent);
 #line 44 "lib/ui/mouse.sj"
-        sjt_parent357 = &sjv_newmouseevent;
+        sjt_parent357 = &newmouseevent;
 #line 86 "lib/ui/scene2dModel.sj"
         sjt_functionParam777 = &_parent->children;
 #line 86
         sjf_mouseevent_firechildren(sjt_parent357, sjt_functionParam777, &sjt_void1);
 
+        if (newmouseevent._refCount == 1) { sjf_mouseevent_destroy(&newmouseevent); }
+;
+        if (scenepoint._refCount == 1) { sjf_point_destroy(&scenepoint); }
+;
         if (sjt_call168._refCount == 1) { sjf_lambda2_destroy(&sjt_call168); }
-;
-        if (sjv_newmouseevent._refCount == 1) { sjf_mouseevent_destroy(&sjv_newmouseevent); }
-;
-        if (sjv_scenepoint._refCount == 1) { sjf_point_destroy(&sjv_scenepoint); }
 ;
     } else {
         sjs_lambda1 sjt_call213 = { -1 };
@@ -31776,7 +31775,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
         sjs_log* sjt_parent358 = 0;
 
 #line 22 "lib/common/log.sj"
-        sjt_parent358 = &sjv_log;
+        sjt_parent358 = &g_log;
 #line 88 "lib/ui/scene2dModel.sj"
         sjt_functionParam778 = 329;
 #line 88
@@ -31806,7 +31805,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 
     if (sjt_call140._refCount == 1) { sjf_mat4_destroy(&sjt_call140); }
 ;
-    if (sjv_texture._refCount == 1) { sjf_vec2_destroy(&sjv_texture); }
+    if (texture._refCount == 1) { sjf_vec2_destroy(&texture); }
 ;
 }
 
@@ -31858,6 +31857,7 @@ void sjf_scene2dmodel_getz(sjs_scene2dmodel* _parent, float* _return) {
 
 void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
     int32_t i;
+    sjs_rect rect = { -1 };
     sjs_string sjt_call123 = { -1 };
     int32_t sjt_forEnd25;
     int32_t sjt_forStart25;
@@ -31900,8 +31900,7 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
     sjs_framebuffer* sjt_functionParam599 = 0;
     sjs_size* sjt_functionParam600 = 0;
     sjs_scene2d* sjt_parent236 = 0;
-    sjs_rect sjv_rect = { -1 };
-    int32_t sjv_status;
+    int32_t status;
 
     if (((_this->id._refCount != -1 ? &_this->id : 0) != 0)) {
         sjs_string* ifValue36 = 0;
@@ -31913,7 +31912,7 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 92 "lib/ui/scene2dModel.sj"
         ifValue36 = (_this->id._refCount != -1 ? &_this->id : 0);
 #line 38 "lib/common/hash.sj"
-        sjt_parent235 = &sjv_modelsbyid;
+        sjt_parent235 = &g_modelsbyid;
 #line 93 "lib/ui/scene2dModel.sj"
         sjt_functionParam563 = ifValue36;
 #line 1
@@ -31974,61 +31973,61 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 100
     sjf_glpushframebuffer(sjt_functionParam568);
 #line 101
-    sjt_functionParam569 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam569 = g_gltexture_gl_texture_2d;
 #line 101
     sjt_functionParam570 = &_this->_texture;
 #line 101
     sjf_glbindtexture(sjt_functionParam569, sjt_functionParam570);
 #line 102
-    sjt_functionParam571 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam571 = g_gltexture_gl_texture_2d;
 #line 102
-    sjt_functionParam572 = sjv_gltextureattribute_gl_texture_wrap_s;
+    sjt_functionParam572 = g_gltextureattribute_gl_texture_wrap_s;
 #line 102
-    sjt_functionParam573 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam573 = g_gltexturevalue_gl_clamp_to_edge;
 #line 102
     sjf_gltexparameteri(sjt_functionParam571, sjt_functionParam572, sjt_functionParam573);
 #line 103
-    sjt_functionParam574 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam574 = g_gltexture_gl_texture_2d;
 #line 103
-    sjt_functionParam575 = sjv_gltextureattribute_gl_texture_wrap_t;
+    sjt_functionParam575 = g_gltextureattribute_gl_texture_wrap_t;
 #line 103
-    sjt_functionParam576 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam576 = g_gltexturevalue_gl_clamp_to_edge;
 #line 103
     sjf_gltexparameteri(sjt_functionParam574, sjt_functionParam575, sjt_functionParam576);
 #line 104
-    sjt_functionParam577 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam577 = g_gltexture_gl_texture_2d;
 #line 104
-    sjt_functionParam578 = sjv_gltextureattribute_gl_texture_min_filter;
+    sjt_functionParam578 = g_gltextureattribute_gl_texture_min_filter;
 #line 104
-    sjt_functionParam579 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam579 = g_gltexturevalue_gl_linear;
 #line 104
     sjf_gltexparameteri(sjt_functionParam577, sjt_functionParam578, sjt_functionParam579);
 #line 105
-    sjt_functionParam580 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam580 = g_gltexture_gl_texture_2d;
 #line 105
-    sjt_functionParam581 = sjv_gltextureattribute_gl_texture_mag_filter;
+    sjt_functionParam581 = g_gltextureattribute_gl_texture_mag_filter;
 #line 105
-    sjt_functionParam582 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam582 = g_gltexturevalue_gl_linear;
 #line 105
     sjf_gltexparameteri(sjt_functionParam580, sjt_functionParam581, sjt_functionParam582);
 #line 106
-    sjt_functionParam583 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam583 = g_gltexture_gl_texture_2d;
 #line 106
     sjt_functionParam584 = 0;
 #line 106
-    sjt_functionParam585 = sjv_gltextureformat_gl_rgba;
+    sjt_functionParam585 = g_gltextureformat_gl_rgba;
 #line 106
     sjt_functionParam586 = &_this->texturesize;
 #line 106
-    sjt_functionParam587 = sjv_gltexturetype_gl_unsigned_byte;
+    sjt_functionParam587 = g_gltexturetype_gl_unsigned_byte;
 #line 230 "lib/ui/gl.sj"
     sjt_functionParam588 = 0;
 #line 230
     sjf_glteximage2d(sjt_functionParam583, sjt_functionParam584, sjt_functionParam585, sjt_functionParam586, sjt_functionParam587, sjt_functionParam588);
 #line 107 "lib/ui/scene2dModel.sj"
-    sjt_functionParam589 = sjv_glframebufferattachment_gl_color_attachment0;
+    sjt_functionParam589 = g_glframebufferattachment_gl_color_attachment0;
 #line 107
-    sjt_functionParam590 = sjv_glframebuffertexture_gl_texture_2d;
+    sjt_functionParam590 = g_glframebuffertexture_gl_texture_2d;
 #line 107
     sjt_functionParam591 = &_this->_texture;
 #line 107
@@ -32040,20 +32039,20 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 109
     sjf_glbindrenderbuffer(sjt_functionParam593);
 #line 110
-    sjt_functionParam594 = sjv_glrenderbufferformat_gl_depth_component16;
+    sjt_functionParam594 = g_glrenderbufferformat_gl_depth_component16;
 #line 110
     sjt_functionParam595 = &_this->texturesize;
 #line 110
     sjf_glrenderbufferstorage(sjt_functionParam594, sjt_functionParam595);
 #line 111
-    sjt_functionParam596 = sjv_glframebufferattachment_gl_depth_attachment;
+    sjt_functionParam596 = g_glframebufferattachment_gl_depth_attachment;
 #line 111
     sjt_functionParam597 = &_this->_renderbuffer;
 #line 111
     sjf_glframebufferrenderbuffer(sjt_functionParam596, sjt_functionParam597);
 #line 111
-    sjf_glcheckframebufferstatus(&sjv_status);
-    if (sjv_status != sjv_glframebufferstatus_gl_framebuffer_complete) {
+    sjf_glcheckframebufferstatus(&status);
+    if (status != g_glframebufferstatus_gl_framebuffer_complete) {
         sjs_string* sjt_functionParam598 = 0;
 
         sjt_call123._refCount = 1;
@@ -32092,17 +32091,17 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 119
     sjf_scene2d_setsize(sjt_parent236, sjt_functionParam600);
 #line 119
-    sjv_rect._refCount = 1;
+    rect._refCount = 1;
 #line 120
-    sjv_rect.x = 0;
+    rect.x = 0;
 #line 120
-    sjv_rect.y = 0;
+    rect.y = 0;
 #line 120
-    sjv_rect.w = (&_this->texturesize)->w;
+    rect.w = (&_this->texturesize)->w;
 #line 120
-    sjv_rect.h = (&_this->texturesize)->h;
+    rect.h = (&_this->texturesize)->h;
 #line 120
-    sjf_rect(&sjv_rect);
+    sjf_rect(&rect);
 #line 121
     sjt_forStart25 = 0;
 #line 121
@@ -32110,36 +32109,38 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 121
     i = sjt_forStart25;
     while (i < sjt_forEnd25) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam601;
         sjs_rect* sjt_interfaceParam47 = 0;
         sjs_array_heap_iface_element* sjt_parent237 = 0;
         sji_element sjt_parent238 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent237 = &_this->children;
 #line 121 "lib/ui/scene2dModel.sj"
         sjt_functionParam601 = i;
 #line 121
-        sjf_array_heap_iface_element_getat_heap(sjt_parent237, sjt_functionParam601, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent237, sjt_functionParam601, &child);
 #line 4 "lib/ui/element.sj"
-        sjt_parent238 = sjv_child;
+        sjt_parent238 = child;
 #line 123 "lib/ui/scene2dModel.sj"
-        sjt_interfaceParam47 = &sjv_rect;
+        sjt_interfaceParam47 = &rect;
 #line 123
         sjt_parent238._vtbl->setrect(sjt_parent238._parent, sjt_interfaceParam47);
 #line 121
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
 
+    if (rect._refCount == 1) { sjf_rect_destroy(&rect); }
+;
     if (sjt_call123._refCount == 1) { sjf_string_destroy(&sjt_call123); }
 ;
     if (sjt_funcold39._refCount == 1) { sjf_framebuffer_destroy(&sjt_funcold39); }
@@ -32148,12 +32149,11 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 ;
     if (sjt_funcold41._refCount == 1) { sjf_renderbuffer_destroy(&sjt_funcold41); }
 ;
-    if (sjv_rect._refCount == 1) { sjf_rect_destroy(&sjv_rect); }
-;
 }
 
 void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     int32_t i;
+    sjs_mat4 normalmat = { -1 };
     sjs_mat4 sjt_call128 = { -1 };
     sjs_mat4 sjt_call129 = { -1 };
     sjs_string sjt_call130 = { -1 };
@@ -32210,8 +32210,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjs_color* sjt_parent254 = 0;
     sjs_color* sjt_parent255 = 0;
     sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent256 = 0;
-    sjs_mat4 sjv_normalmat = { -1 };
-    sjs_mat4 sjv_viewworld = { -1 };
+    sjs_mat4 viewworld = { -1 };
 
 #line 45 "lib/ui/scene2dModel.sj"
     sjt_functionParam609 = &_parent->_framebuffer;
@@ -32228,20 +32227,20 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 48
     i = sjt_forStart26;
     while (i < sjt_forEnd26) {
+        sji_element child = { 0 };
         int32_t sjt_functionParam610;
         sjs_scene2d* sjt_interfaceParam48 = 0;
         sjs_array_heap_iface_element* sjt_parent247 = 0;
         sji_element sjt_parent248 = { 0 };
-        sji_element sjv_child = { 0 };
 
 #line 7 "lib/common/array.sj"
         sjt_parent247 = &_parent->children;
 #line 48 "lib/ui/scene2dModel.sj"
         sjt_functionParam610 = i;
 #line 48
-        sjf_array_heap_iface_element_getat_heap(sjt_parent247, sjt_functionParam610, &sjv_child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent247, sjt_functionParam610, &child);
 #line 5 "lib/ui/element.sj"
-        sjt_parent248 = sjv_child;
+        sjt_parent248 = child;
 #line 50 "lib/ui/scene2dModel.sj"
         sjt_interfaceParam48 = &_parent->_innerscene;
 #line 50
@@ -32249,11 +32248,11 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 48
         i++;
 
-        if (sjv_child._parent != 0) {
-            sjv_child._parent->_refCount--;
-            if (sjv_child._parent->_refCount <= 0) {
-                sjv_child._vtbl->destroy(sjv_child._parent);
-                free(sjv_child._parent);
+        if (child._parent != 0) {
+            child._parent->_refCount--;
+            if (child._parent->_refCount <= 0) {
+                child._vtbl->destroy(child._parent);
+                free(child._parent);
             }
         }
     }
@@ -32267,7 +32266,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 54
     sjf_glpopframebuffer(sjt_functionParam611);
 #line 56
-    sjt_functionParam612 = sjv_glfeature_gl_depth_test;
+    sjt_functionParam612 = g_glfeature_gl_depth_test;
 #line 56
     sjf_glenable(sjt_functionParam612);
 #line 19 "lib/ui/mat4.sj"
@@ -32281,27 +32280,27 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 57
     sjt_functionParam614 = &_parent->model;
 #line 57
-    sjf_mat4_multiply(sjt_parent250, sjt_functionParam614, &sjv_viewworld);
+    sjf_mat4_multiply(sjt_parent250, sjt_functionParam614, &viewworld);
 #line 71 "lib/ui/mat4.sj"
-    sjt_parent253 = &sjv_viewworld;
+    sjt_parent253 = &viewworld;
 #line 71
     sjf_mat4_invert(sjt_parent253, &sjt_call129);
 #line 58 "lib/ui/scene2dModel.sj"
     sjt_parent252 = &sjt_call129;
 #line 58
-    sjf_mat4_transpose(sjt_parent252, &sjv_normalmat);
+    sjf_mat4_transpose(sjt_parent252, &normalmat);
 #line 59
     sjt_functionParam615 = &_parent->shader;
 #line 59
     sjf_gluseprogram(sjt_functionParam615);
 #line 60
-    sjt_functionParam616 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam616 = g_glblendfunctype_gl_src_alpha;
 #line 60
-    sjt_functionParam617 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam617 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 60
     sjf_glblendfunc(sjt_functionParam616, sjt_functionParam617);
 #line 61
-    sjt_functionParam618 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam618 = g_gltexture_gl_texture_2d;
 #line 61
     sjt_functionParam619 = &_parent->_texture;
 #line 61
@@ -32333,7 +32332,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 62
     sjf_glgetuniformlocation(sjt_functionParam621, sjt_functionParam622, &sjt_functionParam620);
 #line 62
-    sjt_functionParam623 = &sjv_viewworld;
+    sjt_functionParam623 = &viewworld;
 #line 62
     sjf_gluniformmat4(sjt_functionParam620, sjt_functionParam623);
 #line 63
@@ -32363,7 +32362,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 63
     sjf_glgetuniformlocation(sjt_functionParam625, sjt_functionParam626, &sjt_functionParam624);
 #line 63
-    sjt_functionParam627 = &sjv_normalmat;
+    sjt_functionParam627 = &normalmat;
 #line 63
     sjf_gluniformmat4(sjt_functionParam624, sjt_functionParam627);
 #line 64
@@ -32497,10 +32496,12 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 94 "lib/ui/vertexBuffer.sj"
     sjt_parent256 = &_parent->vertexbuffer;
 #line 68 "lib/ui/scene2dModel.sj"
-    sjt_functionParam644 = sjv_gldrawmode_gl_triangles;
+    sjt_functionParam644 = g_gldrawmode_gl_triangles;
 #line 68
     sjf_vertexbuffer_vertex_location_texture_normal_render(sjt_parent256, sjt_functionParam644);
 
+    if (normalmat._refCount == 1) { sjf_mat4_destroy(&normalmat); }
+;
     if (sjt_call128._refCount == 1) { sjf_mat4_destroy(&sjt_call128); }
 ;
     if (sjt_call129._refCount == 1) { sjf_mat4_destroy(&sjt_call129); }
@@ -32521,9 +32522,7 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 ;
     if (sjt_call137._refCount == 1) { sjf_vec3_destroy(&sjt_call137); }
 ;
-    if (sjv_normalmat._refCount == 1) { sjf_mat4_destroy(&sjv_normalmat); }
-;
-    if (sjv_viewworld._refCount == 1) { sjf_mat4_destroy(&sjv_viewworld); }
+    if (viewworld._refCount == 1) { sjf_mat4_destroy(&viewworld); }
 ;
 }
 
@@ -32694,7 +32693,7 @@ void sjf_scenebuffer(sjs_scenebuffer* _this) {
     int32_t sjt_functionParam267;
     sjs_renderbuffer* sjt_functionParam268 = 0;
     sjs_framebuffer* sjt_functionParam275 = 0;
-    int32_t sjv_status;
+    int32_t status;
 
     sjt_funcold17._refCount = 1;
 #line 208 "lib/ui/gl.sj"
@@ -32739,61 +32738,61 @@ void sjf_scenebuffer(sjs_scenebuffer* _this) {
 #line 1
     sjf_glpushframebuffer(sjt_functionParam239);
 #line 12
-    sjt_functionParam240 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam240 = g_gltexture_gl_texture_2d;
 #line 1
     sjt_functionParam241 = &_this->texture;
 #line 1
     sjf_glbindtexture(sjt_functionParam240, sjt_functionParam241);
 #line 13
-    sjt_functionParam242 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam242 = g_gltexture_gl_texture_2d;
 #line 13
-    sjt_functionParam243 = sjv_gltextureattribute_gl_texture_wrap_s;
+    sjt_functionParam243 = g_gltextureattribute_gl_texture_wrap_s;
 #line 13
-    sjt_functionParam244 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam244 = g_gltexturevalue_gl_clamp_to_edge;
 #line 13
     sjf_gltexparameteri(sjt_functionParam242, sjt_functionParam243, sjt_functionParam244);
 #line 14
-    sjt_functionParam245 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam245 = g_gltexture_gl_texture_2d;
 #line 14
-    sjt_functionParam246 = sjv_gltextureattribute_gl_texture_wrap_t;
+    sjt_functionParam246 = g_gltextureattribute_gl_texture_wrap_t;
 #line 14
-    sjt_functionParam247 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam247 = g_gltexturevalue_gl_clamp_to_edge;
 #line 14
     sjf_gltexparameteri(sjt_functionParam245, sjt_functionParam246, sjt_functionParam247);
 #line 15
-    sjt_functionParam248 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam248 = g_gltexture_gl_texture_2d;
 #line 15
-    sjt_functionParam249 = sjv_gltextureattribute_gl_texture_min_filter;
+    sjt_functionParam249 = g_gltextureattribute_gl_texture_min_filter;
 #line 15
-    sjt_functionParam250 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam250 = g_gltexturevalue_gl_linear;
 #line 15
     sjf_gltexparameteri(sjt_functionParam248, sjt_functionParam249, sjt_functionParam250);
 #line 16
-    sjt_functionParam251 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam251 = g_gltexture_gl_texture_2d;
 #line 16
-    sjt_functionParam252 = sjv_gltextureattribute_gl_texture_mag_filter;
+    sjt_functionParam252 = g_gltextureattribute_gl_texture_mag_filter;
 #line 16
-    sjt_functionParam253 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam253 = g_gltexturevalue_gl_linear;
 #line 16
     sjf_gltexparameteri(sjt_functionParam251, sjt_functionParam252, sjt_functionParam253);
 #line 17
-    sjt_functionParam254 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam254 = g_gltexture_gl_texture_2d;
 #line 17
     sjt_functionParam255 = 0;
 #line 17
-    sjt_functionParam256 = sjv_gltextureformat_gl_rgba;
+    sjt_functionParam256 = g_gltextureformat_gl_rgba;
 #line 1
     sjt_functionParam257 = &_this->size;
 #line 17
-    sjt_functionParam258 = sjv_gltexturetype_gl_unsigned_byte;
+    sjt_functionParam258 = g_gltexturetype_gl_unsigned_byte;
 #line 230 "lib/ui/gl.sj"
     sjt_functionParam259 = 0;
 #line 230
     sjf_glteximage2d(sjt_functionParam254, sjt_functionParam255, sjt_functionParam256, sjt_functionParam257, sjt_functionParam258, sjt_functionParam259);
 #line 18 "lib/ui/scenebuffer.sj"
-    sjt_functionParam260 = sjv_glframebufferattachment_gl_color_attachment0;
+    sjt_functionParam260 = g_glframebufferattachment_gl_color_attachment0;
 #line 18
-    sjt_functionParam261 = sjv_glframebuffertexture_gl_texture_2d;
+    sjt_functionParam261 = g_glframebuffertexture_gl_texture_2d;
 #line 1
     sjt_functionParam262 = &_this->texture;
 #line 18
@@ -32805,20 +32804,20 @@ void sjf_scenebuffer(sjs_scenebuffer* _this) {
 #line 1
     sjf_glbindrenderbuffer(sjt_functionParam264);
 #line 21
-    sjt_functionParam265 = sjv_glrenderbufferformat_gl_depth_component16;
+    sjt_functionParam265 = g_glrenderbufferformat_gl_depth_component16;
 #line 1
     sjt_functionParam266 = &_this->size;
 #line 1
     sjf_glrenderbufferstorage(sjt_functionParam265, sjt_functionParam266);
 #line 22
-    sjt_functionParam267 = sjv_glframebufferattachment_gl_depth_attachment;
+    sjt_functionParam267 = g_glframebufferattachment_gl_depth_attachment;
 #line 1
     sjt_functionParam268 = &_this->renderbuffer;
 #line 1
     sjf_glframebufferrenderbuffer(sjt_functionParam267, sjt_functionParam268);
 #line 1
-    sjf_glcheckframebufferstatus(&sjv_status);
-    if (sjv_status != sjv_glframebufferstatus_gl_framebuffer_complete) {
+    sjf_glcheckframebufferstatus(&status);
+    if (status != g_glframebufferstatus_gl_framebuffer_complete) {
         sjs_string* sjt_functionParam269 = 0;
 
         sjt_call57._refCount = 1;
@@ -32929,7 +32928,7 @@ void sjf_scenebuffer_heap(sjs_scenebuffer* _this) {
     int32_t sjt_functionParam307;
     sjs_renderbuffer* sjt_functionParam308 = 0;
     sjs_framebuffer* sjt_functionParam310 = 0;
-    int32_t sjv_status;
+    int32_t status;
 
     sjt_funcold21._refCount = 1;
 #line 208 "lib/ui/gl.sj"
@@ -32974,61 +32973,61 @@ void sjf_scenebuffer_heap(sjs_scenebuffer* _this) {
 #line 11
     sjf_glpushframebuffer(sjt_functionParam279);
 #line 12
-    sjt_functionParam280 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam280 = g_gltexture_gl_texture_2d;
 #line 12
     sjt_functionParam281 = &_this->texture;
 #line 12
     sjf_glbindtexture(sjt_functionParam280, sjt_functionParam281);
 #line 13
-    sjt_functionParam282 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam282 = g_gltexture_gl_texture_2d;
 #line 13
-    sjt_functionParam283 = sjv_gltextureattribute_gl_texture_wrap_s;
+    sjt_functionParam283 = g_gltextureattribute_gl_texture_wrap_s;
 #line 13
-    sjt_functionParam284 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam284 = g_gltexturevalue_gl_clamp_to_edge;
 #line 13
     sjf_gltexparameteri(sjt_functionParam282, sjt_functionParam283, sjt_functionParam284);
 #line 14
-    sjt_functionParam285 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam285 = g_gltexture_gl_texture_2d;
 #line 14
-    sjt_functionParam286 = sjv_gltextureattribute_gl_texture_wrap_t;
+    sjt_functionParam286 = g_gltextureattribute_gl_texture_wrap_t;
 #line 14
-    sjt_functionParam287 = sjv_gltexturevalue_gl_clamp_to_edge;
+    sjt_functionParam287 = g_gltexturevalue_gl_clamp_to_edge;
 #line 14
     sjf_gltexparameteri(sjt_functionParam285, sjt_functionParam286, sjt_functionParam287);
 #line 15
-    sjt_functionParam288 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam288 = g_gltexture_gl_texture_2d;
 #line 15
-    sjt_functionParam289 = sjv_gltextureattribute_gl_texture_min_filter;
+    sjt_functionParam289 = g_gltextureattribute_gl_texture_min_filter;
 #line 15
-    sjt_functionParam290 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam290 = g_gltexturevalue_gl_linear;
 #line 15
     sjf_gltexparameteri(sjt_functionParam288, sjt_functionParam289, sjt_functionParam290);
 #line 16
-    sjt_functionParam291 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam291 = g_gltexture_gl_texture_2d;
 #line 16
-    sjt_functionParam292 = sjv_gltextureattribute_gl_texture_mag_filter;
+    sjt_functionParam292 = g_gltextureattribute_gl_texture_mag_filter;
 #line 16
-    sjt_functionParam293 = sjv_gltexturevalue_gl_linear;
+    sjt_functionParam293 = g_gltexturevalue_gl_linear;
 #line 16
     sjf_gltexparameteri(sjt_functionParam291, sjt_functionParam292, sjt_functionParam293);
 #line 17
-    sjt_functionParam294 = sjv_gltexture_gl_texture_2d;
+    sjt_functionParam294 = g_gltexture_gl_texture_2d;
 #line 17
     sjt_functionParam295 = 0;
 #line 17
-    sjt_functionParam296 = sjv_gltextureformat_gl_rgba;
+    sjt_functionParam296 = g_gltextureformat_gl_rgba;
 #line 17
     sjt_functionParam297 = &_this->size;
 #line 17
-    sjt_functionParam298 = sjv_gltexturetype_gl_unsigned_byte;
+    sjt_functionParam298 = g_gltexturetype_gl_unsigned_byte;
 #line 230 "lib/ui/gl.sj"
     sjt_functionParam299 = 0;
 #line 230
     sjf_glteximage2d(sjt_functionParam294, sjt_functionParam295, sjt_functionParam296, sjt_functionParam297, sjt_functionParam298, sjt_functionParam299);
 #line 18 "lib/ui/scenebuffer.sj"
-    sjt_functionParam300 = sjv_glframebufferattachment_gl_color_attachment0;
+    sjt_functionParam300 = g_glframebufferattachment_gl_color_attachment0;
 #line 18
-    sjt_functionParam301 = sjv_glframebuffertexture_gl_texture_2d;
+    sjt_functionParam301 = g_glframebuffertexture_gl_texture_2d;
 #line 18
     sjt_functionParam302 = &_this->texture;
 #line 18
@@ -33040,20 +33039,20 @@ void sjf_scenebuffer_heap(sjs_scenebuffer* _this) {
 #line 20
     sjf_glbindrenderbuffer(sjt_functionParam304);
 #line 21
-    sjt_functionParam305 = sjv_glrenderbufferformat_gl_depth_component16;
+    sjt_functionParam305 = g_glrenderbufferformat_gl_depth_component16;
 #line 21
     sjt_functionParam306 = &_this->size;
 #line 21
     sjf_glrenderbufferstorage(sjt_functionParam305, sjt_functionParam306);
 #line 22
-    sjt_functionParam307 = sjv_glframebufferattachment_gl_depth_attachment;
+    sjt_functionParam307 = g_glframebufferattachment_gl_depth_attachment;
 #line 22
     sjt_functionParam308 = &_this->renderbuffer;
 #line 22
     sjf_glframebufferrenderbuffer(sjt_functionParam307, sjt_functionParam308);
 #line 22
-    sjf_glcheckframebufferstatus(&sjv_status);
-    if (sjv_status != sjv_glframebufferstatus_gl_framebuffer_complete) {
+    sjf_glcheckframebufferstatus(&status);
+    if (status != g_glframebufferstatus_gl_framebuffer_complete) {
         sjs_string* sjt_functionParam309 = 0;
 
         sjt_call59._refCount = 1;
@@ -33293,7 +33292,7 @@ void sjf_string(sjs_string* _this) {
 }
 
 void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) {
-    sjs_array_char sjv_newdata = { -1 };
+    sjs_array_char newdata = { -1 };
 
     if (item->count == 0) {
         _return->_refCount = 1;
@@ -33309,9 +33308,9 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
         sjf_string(_return);
     } else {
         int32_t i;
+        int32_t newcount;
         int32_t sjt_forEnd15;
         int32_t sjt_forStart15;
-        int32_t sjv_newcount;
 
         if ((_parent->count + item->count) > (&_parent->data)->datasize) {
             int32_t sjt_functionParam499;
@@ -33322,15 +33321,15 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 21 "lib/common/string.sj"
             sjt_functionParam499 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 21
-            sjf_array_char_grow(sjt_parent197, sjt_functionParam499, &sjv_newdata);
+            sjf_array_char_grow(sjt_parent197, sjt_functionParam499, &newdata);
         } else {
-            sjv_newdata._refCount = 1;
+            newdata._refCount = 1;
 #line 20 "lib/common/string.sj"
-            sjf_array_char_copy(&sjv_newdata, &_parent->data);
+            sjf_array_char_copy(&newdata, &_parent->data);
         }
 
 #line 25 "lib/common/string.sj"
-        sjv_newcount = _parent->count;
+        newcount = _parent->count;
 #line 27
         sjt_forStart15 = 0;
 #line 27
@@ -33345,9 +33344,9 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             sjs_string* sjt_parent200 = 0;
 
 #line 34 "lib/common/array.sj"
-            sjt_parent198 = &sjv_newdata;
+            sjt_parent198 = &newdata;
 #line 28 "lib/common/string.sj"
-            sjt_functionParam500 = sjv_newcount;
+            sjt_functionParam500 = newcount;
 #line 16
             sjt_parent200 = item;
 #line 27
@@ -33357,7 +33356,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 27
             sjf_array_char_initat(sjt_parent198, sjt_functionParam500, sjt_functionParam501);
 #line 29
-            sjv_newcount = sjv_newcount + 1;
+            newcount = newcount + 1;
 #line 27
             i++;
         }
@@ -33365,23 +33364,23 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 27
         _return->_refCount = 1;
 #line 32
-        _return->count = sjv_newcount;
+        _return->count = newcount;
 #line 32
         _return->data._refCount = 1;
 #line 32
-        sjf_array_char_copy(&_return->data, &sjv_newdata);
+        sjf_array_char_copy(&_return->data, &newdata);
 #line 14
         _return->_isnullterminated = false;
 #line 14
         sjf_string(_return);
     }
 
-    if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+    if (newdata._refCount == 1) { sjf_array_char_destroy(&newdata); }
 ;
 }
 
 void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _return) {
-    sjs_array_char sjv_newdata = { -1 };
+    sjs_array_char newdata = { -1 };
 
     if (item->count == 0) {
         (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
@@ -33398,9 +33397,9 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
         sjf_string_heap((*_return));
     } else {
         int32_t i;
+        int32_t newcount;
         int32_t sjt_forEnd16;
         int32_t sjt_forStart16;
-        int32_t sjv_newcount;
 
         if ((_parent->count + item->count) > (&_parent->data)->datasize) {
             int32_t sjt_functionParam504;
@@ -33411,15 +33410,15 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 21 "lib/common/string.sj"
             sjt_functionParam504 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 21
-            sjf_array_char_grow(sjt_parent201, sjt_functionParam504, &sjv_newdata);
+            sjf_array_char_grow(sjt_parent201, sjt_functionParam504, &newdata);
         } else {
-            sjv_newdata._refCount = 1;
+            newdata._refCount = 1;
 #line 20 "lib/common/string.sj"
-            sjf_array_char_copy(&sjv_newdata, &_parent->data);
+            sjf_array_char_copy(&newdata, &_parent->data);
         }
 
 #line 25 "lib/common/string.sj"
-        sjv_newcount = _parent->count;
+        newcount = _parent->count;
 #line 27
         sjt_forStart16 = 0;
 #line 27
@@ -33434,9 +33433,9 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             sjs_string* sjt_parent203 = 0;
 
 #line 34 "lib/common/array.sj"
-            sjt_parent202 = &sjv_newdata;
+            sjt_parent202 = &newdata;
 #line 28 "lib/common/string.sj"
-            sjt_functionParam505 = sjv_newcount;
+            sjt_functionParam505 = newcount;
 #line 16
             sjt_parent203 = item;
 #line 27
@@ -33446,7 +33445,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 27
             sjf_array_char_initat(sjt_parent202, sjt_functionParam505, sjt_functionParam506);
 #line 29
-            sjv_newcount = sjv_newcount + 1;
+            newcount = newcount + 1;
 #line 27
             i++;
         }
@@ -33456,18 +33455,18 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 27
         (*_return)->_refCount = 1;
 #line 32
-        (*_return)->count = sjv_newcount;
+        (*_return)->count = newcount;
 #line 32
         (*_return)->data._refCount = 1;
 #line 32
-        sjf_array_char_copy(&(*_return)->data, &sjv_newdata);
+        sjf_array_char_copy(&(*_return)->data, &newdata);
 #line 14
         (*_return)->_isnullterminated = false;
 #line 14
         sjf_string_heap((*_return));
     }
 
-    if (sjv_newdata._refCount == 1) { sjf_array_char_destroy(&sjv_newdata); }
+    if (newdata._refCount == 1) { sjf_array_char_destroy(&newdata); }
 ;
 }
 
@@ -33572,22 +33571,22 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 }
 
 void sjf_string_touppercase(sjs_string* _parent, sjs_string* _return) {
+    sjs_array_char a = { -1 };
     int32_t i;
     int32_t sjt_forEnd29;
     int32_t sjt_forStart29;
-    sjs_array_char sjv_a = { -1 };
 
-    sjv_a._refCount = 1;
+    a._refCount = 1;
 #line 65 "lib/common/string.sj"
-    sjv_a.datasize = (((_parent->count - 1) / 256) + 1) * 256;
+    a.datasize = (((_parent->count - 1) / 256) + 1) * 256;
 #line 3 "lib/common/array.sj"
-    sjv_a.data = 0;
+    a.data = 0;
 #line 4
-    sjv_a.isglobal = false;
+    a.isglobal = false;
 #line 5
-    sjv_a.count = 0;
+    a.count = 0;
 #line 5
-    sjf_array_char(&sjv_a);
+    sjf_array_char(&a);
 #line 66 "lib/common/string.sj"
     sjt_forStart29 = 0;
 #line 66
@@ -33603,7 +33602,7 @@ void sjf_string_touppercase(sjs_string* _parent, sjs_string* _return) {
         sjs_array_char* sjt_parent319 = 0;
 
 #line 34 "lib/common/array.sj"
-        sjt_parent318 = &sjv_a;
+        sjt_parent318 = &a;
 #line 66 "lib/common/string.sj"
         sjt_functionParam712 = i;
 #line 7 "lib/common/array.sj"
@@ -33627,33 +33626,33 @@ void sjf_string_touppercase(sjs_string* _parent, sjs_string* _return) {
 #line 69
     _return->data._refCount = 1;
 #line 69
-    sjf_array_char_copy(&_return->data, &sjv_a);
+    sjf_array_char_copy(&_return->data, &a);
 #line 14
     _return->_isnullterminated = false;
 #line 14
     sjf_string(_return);
 
-    if (sjv_a._refCount == 1) { sjf_array_char_destroy(&sjv_a); }
+    if (a._refCount == 1) { sjf_array_char_destroy(&a); }
 ;
 }
 
 void sjf_string_touppercase_heap(sjs_string* _parent, sjs_string** _return) {
+    sjs_array_char a = { -1 };
     int32_t i;
     int32_t sjt_forEnd30;
     int32_t sjt_forStart30;
-    sjs_array_char sjv_a = { -1 };
 
-    sjv_a._refCount = 1;
+    a._refCount = 1;
 #line 65 "lib/common/string.sj"
-    sjv_a.datasize = (((_parent->count - 1) / 256) + 1) * 256;
+    a.datasize = (((_parent->count - 1) / 256) + 1) * 256;
 #line 3 "lib/common/array.sj"
-    sjv_a.data = 0;
+    a.data = 0;
 #line 4
-    sjv_a.isglobal = false;
+    a.isglobal = false;
 #line 5
-    sjv_a.count = 0;
+    a.count = 0;
 #line 5
-    sjf_array_char(&sjv_a);
+    sjf_array_char(&a);
 #line 66 "lib/common/string.sj"
     sjt_forStart30 = 0;
 #line 66
@@ -33669,7 +33668,7 @@ void sjf_string_touppercase_heap(sjs_string* _parent, sjs_string** _return) {
         sjs_array_char* sjt_parent321 = 0;
 
 #line 34 "lib/common/array.sj"
-        sjt_parent320 = &sjv_a;
+        sjt_parent320 = &a;
 #line 66 "lib/common/string.sj"
         sjt_functionParam716 = i;
 #line 7 "lib/common/array.sj"
@@ -33695,13 +33694,13 @@ void sjf_string_touppercase_heap(sjs_string* _parent, sjs_string** _return) {
 #line 69
     (*_return)->data._refCount = 1;
 #line 69
-    sjf_array_char_copy(&(*_return)->data, &sjv_a);
+    sjf_array_char_copy(&(*_return)->data, &a);
 #line 14
     (*_return)->_isnullterminated = false;
 #line 14
     sjf_string_heap((*_return));
 
-    if (sjv_a._refCount == 1) { sjf_array_char_destroy(&sjv_a); }
+    if (a._refCount == 1) { sjf_array_char_destroy(&a); }
 ;
 }
 
@@ -33905,7 +33904,7 @@ void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_si
         sjs_size* sjt_parent111 = 0;
         sjs_font* sjt_parent112 = 0;
         sjs_size* sjt_parent113 = 0;
-        sjs_size sjv_textsize = { -1 };
+        sjs_size textsize = { -1 };
 
 #line 53 "lib/ui/font.sj"
         sjt_parent112 = _parent->font;
@@ -33918,9 +33917,9 @@ void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_si
 #line 35
         sjt_functionParam220 = &_parent->margin;
 #line 35
-        sjf_size_addmargin(sjt_parent111, sjt_functionParam220, &sjv_textsize);
+        sjf_size_addmargin(sjt_parent111, sjt_functionParam220, &textsize);
 #line 5 "lib/ui/size.sj"
-        sjt_parent113 = &sjv_textsize;
+        sjt_parent113 = &textsize;
 #line 31 "lib/ui/textElement.sj"
         sjt_functionParam221 = maxsize;
 #line 31
@@ -33928,7 +33927,7 @@ void sjf_textelement_getsize(sjs_textelement* _parent, sjs_size* maxsize, sjs_si
 
         if (sjt_call54._refCount == 1) { sjf_size_destroy(&sjt_call54); }
 ;
-        if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+        if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
     }
 }
@@ -33955,7 +33954,7 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
         sjs_size* sjt_parent115 = 0;
         sjs_font* sjt_parent116 = 0;
         sjs_size* sjt_parent117 = 0;
-        sjs_size sjv_textsize = { -1 };
+        sjs_size textsize = { -1 };
 
 #line 53 "lib/ui/font.sj"
         sjt_parent116 = _parent->font;
@@ -33968,9 +33967,9 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
 #line 35
         sjt_functionParam224 = &_parent->margin;
 #line 35
-        sjf_size_addmargin(sjt_parent115, sjt_functionParam224, &sjv_textsize);
+        sjf_size_addmargin(sjt_parent115, sjt_functionParam224, &textsize);
 #line 5 "lib/ui/size.sj"
-        sjt_parent117 = &sjv_textsize;
+        sjt_parent117 = &textsize;
 #line 31 "lib/ui/textElement.sj"
         sjt_functionParam225 = maxsize;
 #line 31
@@ -33978,7 +33977,7 @@ void sjf_textelement_getsize_heap(sjs_textelement* _parent, sjs_size* maxsize, s
 
         if (sjt_call55._refCount == 1) { sjf_size_destroy(&sjt_call55); }
 ;
-        if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+        if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
     }
 }
@@ -34007,7 +34006,7 @@ void sjf_textelement_heap(sjs_textelement* _this) {
 #line 90 "lib/ui/textElement.sj"
         ifValue26 = (_this->id._refCount != -1 ? &_this->id : 0);
 #line 38 "lib/common/hash.sj"
-        sjt_parent109 = &sjv_elementsbyid;
+        sjt_parent109 = &g_elementsbyid;
 #line 91 "lib/ui/textElement.sj"
         sjt_functionParam216 = ifValue26;
 #line 18
@@ -34027,68 +34026,68 @@ void sjf_textelement_heap(sjs_textelement* _this) {
 }
 
 void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
+    sjs_rect innerrect = { -1 };
     sjs_textrenderer sjt_value12 = { -1 };
-    sjs_rect sjv_innerrect = { -1 };
-    sjs_size sjv_textsize = { -1 };
+    sjs_size textsize = { -1 };
 
     if ((_parent->_textrenderer._refCount != -1 ? &_parent->_textrenderer : 0) == 0) {
         sjs_string* sjt_functionParam227 = 0;
         sjs_margin* sjt_functionParam228 = 0;
         sjs_font* sjt_parent119 = 0;
         sjs_rect* sjt_parent120 = 0;
-        int32_t sjv_x;
-        int32_t sjv_y;
         int32_t underscore7;
         int32_t underscore8;
+        int32_t x;
+        int32_t y;
 
 #line 53 "lib/ui/font.sj"
         sjt_parent119 = _parent->font;
 #line 58 "lib/ui/textElement.sj"
         sjt_functionParam227 = &_parent->text;
 #line 58
-        sjf_font_gettextsize(sjt_parent119, sjt_functionParam227, &sjv_textsize);
+        sjf_font_gettextsize(sjt_parent119, sjt_functionParam227, &textsize);
 #line 7 "lib/ui/rect.sj"
         sjt_parent120 = &_parent->_rect;
 #line 59 "lib/ui/textElement.sj"
         sjt_functionParam228 = &_parent->margin;
 #line 59
-        sjf_rect_subtractmargin(sjt_parent120, sjt_functionParam228, &sjv_innerrect);
+        sjf_rect_subtractmargin(sjt_parent120, sjt_functionParam228, &innerrect);
 #line 60
         underscore7 = _parent->halign;
-        if (underscore7 == sjv_texthorizontal_left) {
+        if (underscore7 == g_texthorizontal_left) {
 #line 60 "lib/ui/textElement.sj"
-            sjv_x = (&sjv_innerrect)->x;
+            x = (&innerrect)->x;
         } else {
-            if (underscore7 == sjv_texthorizontal_right) {
+            if (underscore7 == g_texthorizontal_right) {
 #line 62 "lib/ui/textElement.sj"
-                sjv_x = ((&sjv_innerrect)->x + (&sjv_innerrect)->w) - (&sjv_textsize)->w;
+                x = ((&innerrect)->x + (&innerrect)->w) - (&textsize)->w;
             } else {
-                if (underscore7 == sjv_texthorizontal_center) {
+                if (underscore7 == g_texthorizontal_center) {
 #line 63 "lib/ui/textElement.sj"
-                    sjv_x = (&sjv_innerrect)->x + (((&sjv_innerrect)->w - (&sjv_textsize)->w) / 2);
+                    x = (&innerrect)->x + (((&innerrect)->w - (&textsize)->w) / 2);
                 } else {
 #line 64 "lib/ui/textElement.sj"
-                    sjv_x = 0;
+                    x = 0;
                 }
             }
         }
 
 #line 67
         underscore8 = _parent->valign;
-        if (underscore8 == sjv_textvertical_top) {
+        if (underscore8 == g_textvertical_top) {
 #line 67 "lib/ui/textElement.sj"
-            sjv_y = (&sjv_innerrect)->y;
+            y = (&innerrect)->y;
         } else {
-            if (underscore8 == sjv_textvertical_bottom) {
+            if (underscore8 == g_textvertical_bottom) {
 #line 69 "lib/ui/textElement.sj"
-                sjv_y = ((&sjv_innerrect)->y + (&sjv_innerrect)->h) - (&sjv_textsize)->h;
+                y = ((&innerrect)->y + (&innerrect)->h) - (&textsize)->h;
             } else {
-                if (underscore8 == sjv_textvertical_center) {
+                if (underscore8 == g_textvertical_center) {
 #line 70 "lib/ui/textElement.sj"
-                    sjv_y = (&sjv_innerrect)->y + (((&sjv_innerrect)->h - (&sjv_textsize)->h) / 2);
+                    y = (&innerrect)->y + (((&innerrect)->h - (&textsize)->h) / 2);
                 } else {
 #line 71 "lib/ui/textElement.sj"
-                    sjv_y = 0;
+                    y = 0;
                 }
             }
         }
@@ -34102,9 +34101,9 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
 #line 74
         sjt_value12.point._refCount = 1;
 #line 76
-        sjt_value12.point.x = sjv_x;
+        sjt_value12.point.x = x;
 #line 76
-        sjt_value12.point.y = sjv_y;
+        sjt_value12.point.y = y;
 #line 76
         sjf_point(&sjt_value12.point);
 #line 76
@@ -34143,11 +34142,11 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
         sjf_textrenderer_render(sjt_parent121, sjt_functionParam229);
     }
 
+    if (innerrect._refCount == 1) { sjf_rect_destroy(&innerrect); }
+;
     if (sjt_value12._refCount == 1) { sjf_textrenderer_destroy(&sjt_value12); }
 ;
-    if (sjv_innerrect._refCount == 1) { sjf_rect_destroy(&sjv_innerrect); }
-;
-    if (sjv_textsize._refCount == 1) { sjf_size_destroy(&sjv_textsize); }
+    if (textsize._refCount == 1) { sjf_size_destroy(&textsize); }
 ;
 }
 
@@ -34296,17 +34295,17 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
 #line 12 "lib/ui/textRenderer.sj"
     glBindTexture(GL_TEXTURE_2D, _parent->font->atlas->id);
 #line 14
-    sjt_functionParam176 = &sjv_textshader;
+    sjt_functionParam176 = &g_textshader;
 #line 14
     sjf_gluseprogram(sjt_functionParam176);
 #line 15
-    sjt_functionParam177 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam177 = g_glblendfunctype_gl_src_alpha;
 #line 15
-    sjt_functionParam178 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam178 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 15
     sjf_glblendfunc(sjt_functionParam177, sjt_functionParam178);
 #line 16
-    sjt_functionParam180 = &sjv_textshader;
+    sjt_functionParam180 = &g_textshader;
 #line 16
     sjt_call43._refCount = 1;
 #line 16
@@ -34336,7 +34335,7 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
 #line 16
     sjf_gluniformi32(sjt_functionParam179, sjt_functionParam182);
 #line 17
-    sjt_functionParam184 = &sjv_textshader;
+    sjt_functionParam184 = &g_textshader;
 #line 17
     sjt_call44._refCount = 1;
 #line 17
@@ -34366,7 +34365,7 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
 #line 17
     sjf_gluniformmat4(sjt_functionParam183, sjt_functionParam186);
 #line 18
-    sjt_functionParam188 = &sjv_textshader;
+    sjt_functionParam188 = &g_textshader;
 #line 18
     sjt_call45._refCount = 1;
 #line 18
@@ -34396,7 +34395,7 @@ void sjf_textrenderer_render(sjs_textrenderer* _parent, sjs_scene2d* scene) {
 #line 18
     sjf_gluniformmat4(sjt_functionParam187, sjt_functionParam190);
 #line 19
-    sjt_functionParam192 = &sjv_textshader;
+    sjt_functionParam192 = &g_textshader;
 #line 19
     sjt_call46._refCount = 1;
 #line 19
@@ -34464,6 +34463,8 @@ void sjf_texture_destroy(sjs_texture* _this) {
 }
 
 void sjf_texture_fromelement(sji_element element, sjs_size* size, sjs_texture* _return) {
+    sjs_scene2d scene = { -1 };
+    sjs_scenebuffer scenebuffer = { -1 };
     sjs_rect sjt_call400 = { -1 };
     sjs_size* sjt_functionParam1218 = 0;
     sjs_framebuffer* sjt_functionParam1219 = 0;
@@ -34475,57 +34476,55 @@ void sjf_texture_fromelement(sji_element element, sjs_size* size, sjs_texture* _
     sjs_scene2d* sjt_parent527 = 0;
     sji_element sjt_parent528 = { 0 };
     sjs_scene2d* sjt_parent529 = 0;
-    sjs_scene2d sjv_scene = { -1 };
-    sjs_scenebuffer sjv_scenebuffer = { -1 };
 
-    sjv_scenebuffer._refCount = 1;
-    sjv_scenebuffer.size._refCount = 1;
+    scenebuffer._refCount = 1;
+    scenebuffer.size._refCount = 1;
 #line 20 "lib/ui/texture.sj"
-    sjf_size_copy(&sjv_scenebuffer.size, size);
+    sjf_size_copy(&scenebuffer.size, size);
 #line 20
-    sjv_scenebuffer.framebuffer._refCount = 1;
+    scenebuffer.framebuffer._refCount = 1;
 #line 20
-    sjv_scenebuffer.framebuffer.size._refCount = 1;
+    scenebuffer.framebuffer.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.framebuffer.size.w = 0;
+    scenebuffer.framebuffer.size.w = 0;
 #line 3
-    sjv_scenebuffer.framebuffer.size.h = 0;
+    scenebuffer.framebuffer.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.framebuffer.size);
+    sjf_size(&scenebuffer.framebuffer.size);
 #line 3 "lib/ui/framebuffer.sj"
-    sjv_scenebuffer.framebuffer.id = (uint32_t)0u;
+    scenebuffer.framebuffer.id = (uint32_t)0u;
 #line 3
-    sjf_framebuffer(&sjv_scenebuffer.framebuffer);
+    sjf_framebuffer(&scenebuffer.framebuffer);
 #line 3
-    sjv_scenebuffer.texture._refCount = 1;
+    scenebuffer.texture._refCount = 1;
 #line 3
-    sjv_scenebuffer.texture.size._refCount = 1;
+    scenebuffer.texture.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.texture.size.w = 0;
+    scenebuffer.texture.size.w = 0;
 #line 3
-    sjv_scenebuffer.texture.size.h = 0;
+    scenebuffer.texture.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.texture.size);
+    sjf_size(&scenebuffer.texture.size);
 #line 3 "lib/ui/texture.sj"
-    sjv_scenebuffer.texture.id = (uint32_t)0u;
+    scenebuffer.texture.id = (uint32_t)0u;
 #line 3
-    sjf_texture(&sjv_scenebuffer.texture);
+    sjf_texture(&scenebuffer.texture);
 #line 3
-    sjv_scenebuffer.renderbuffer._refCount = 1;
+    scenebuffer.renderbuffer._refCount = 1;
 #line 3
-    sjv_scenebuffer.renderbuffer.size._refCount = 1;
+    scenebuffer.renderbuffer.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.renderbuffer.size.w = 0;
+    scenebuffer.renderbuffer.size.w = 0;
 #line 3
-    sjv_scenebuffer.renderbuffer.size.h = 0;
+    scenebuffer.renderbuffer.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.renderbuffer.size);
+    sjf_size(&scenebuffer.renderbuffer.size);
 #line 3 "lib/ui/renderbuffer.sj"
-    sjv_scenebuffer.renderbuffer.id = (uint32_t)0u;
+    scenebuffer.renderbuffer.id = (uint32_t)0u;
 #line 3
-    sjf_renderbuffer(&sjv_scenebuffer.renderbuffer);
+    sjf_renderbuffer(&scenebuffer.renderbuffer);
 #line 3
-    sjf_scenebuffer(&sjv_scenebuffer);
+    sjf_scenebuffer(&scenebuffer);
 #line 20 "lib/ui/texture.sj"
     sjt_parent525 = element;
 #line 20
@@ -34545,179 +34544,181 @@ void sjf_texture_fromelement(sji_element element, sjs_size* size, sjs_texture* _
 #line 23
     sjt_parent525._vtbl->setrect(sjt_parent525._parent, sjt_interfaceParam71);
 #line 23
-    sjv_scene._refCount = 1;
+    scene._refCount = 1;
 #line 23
-    sjv_scene._size._refCount = 1;
+    scene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scene._size.w = 0;
+    scene._size.w = 0;
 #line 3
-    sjv_scene._size.h = 0;
+    scene._size.h = 0;
 #line 3
-    sjf_size(&sjv_scene._size);
+    sjf_size(&scene._size);
 #line 3
-    sjv_scene.model._refCount = 1;
+    scene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_scene.model.m00 = 0.0f;
+    scene.model.m00 = 0.0f;
 #line 3
-    sjv_scene.model.m01 = 0.0f;
+    scene.model.m01 = 0.0f;
 #line 4
-    sjv_scene.model.m02 = 0.0f;
+    scene.model.m02 = 0.0f;
 #line 5
-    sjv_scene.model.m03 = 0.0f;
+    scene.model.m03 = 0.0f;
 #line 6
-    sjv_scene.model.m10 = 0.0f;
+    scene.model.m10 = 0.0f;
 #line 7
-    sjv_scene.model.m11 = 0.0f;
+    scene.model.m11 = 0.0f;
 #line 8
-    sjv_scene.model.m12 = 0.0f;
+    scene.model.m12 = 0.0f;
 #line 9
-    sjv_scene.model.m13 = 0.0f;
+    scene.model.m13 = 0.0f;
 #line 10
-    sjv_scene.model.m20 = 0.0f;
+    scene.model.m20 = 0.0f;
 #line 11
-    sjv_scene.model.m21 = 0.0f;
+    scene.model.m21 = 0.0f;
 #line 12
-    sjv_scene.model.m22 = 0.0f;
+    scene.model.m22 = 0.0f;
 #line 13
-    sjv_scene.model.m23 = 0.0f;
+    scene.model.m23 = 0.0f;
 #line 14
-    sjv_scene.model.m30 = 0.0f;
+    scene.model.m30 = 0.0f;
 #line 15
-    sjv_scene.model.m31 = 0.0f;
+    scene.model.m31 = 0.0f;
 #line 16
-    sjv_scene.model.m32 = 0.0f;
+    scene.model.m32 = 0.0f;
 #line 17
-    sjv_scene.model.m33 = 0.0f;
+    scene.model.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.model);
+    sjf_mat4(&scene.model);
 #line 17
-    sjv_scene.view._refCount = 1;
+    scene.view._refCount = 1;
 #line 2
-    sjv_scene.view.m00 = 0.0f;
+    scene.view.m00 = 0.0f;
 #line 3
-    sjv_scene.view.m01 = 0.0f;
+    scene.view.m01 = 0.0f;
 #line 4
-    sjv_scene.view.m02 = 0.0f;
+    scene.view.m02 = 0.0f;
 #line 5
-    sjv_scene.view.m03 = 0.0f;
+    scene.view.m03 = 0.0f;
 #line 6
-    sjv_scene.view.m10 = 0.0f;
+    scene.view.m10 = 0.0f;
 #line 7
-    sjv_scene.view.m11 = 0.0f;
+    scene.view.m11 = 0.0f;
 #line 8
-    sjv_scene.view.m12 = 0.0f;
+    scene.view.m12 = 0.0f;
 #line 9
-    sjv_scene.view.m13 = 0.0f;
+    scene.view.m13 = 0.0f;
 #line 10
-    sjv_scene.view.m20 = 0.0f;
+    scene.view.m20 = 0.0f;
 #line 11
-    sjv_scene.view.m21 = 0.0f;
+    scene.view.m21 = 0.0f;
 #line 12
-    sjv_scene.view.m22 = 0.0f;
+    scene.view.m22 = 0.0f;
 #line 13
-    sjv_scene.view.m23 = 0.0f;
+    scene.view.m23 = 0.0f;
 #line 14
-    sjv_scene.view.m30 = 0.0f;
+    scene.view.m30 = 0.0f;
 #line 15
-    sjv_scene.view.m31 = 0.0f;
+    scene.view.m31 = 0.0f;
 #line 16
-    sjv_scene.view.m32 = 0.0f;
+    scene.view.m32 = 0.0f;
 #line 17
-    sjv_scene.view.m33 = 0.0f;
+    scene.view.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.view);
+    sjf_mat4(&scene.view);
 #line 17
-    sjv_scene.projection._refCount = 1;
+    scene.projection._refCount = 1;
 #line 2
-    sjv_scene.projection.m00 = 0.0f;
+    scene.projection.m00 = 0.0f;
 #line 3
-    sjv_scene.projection.m01 = 0.0f;
+    scene.projection.m01 = 0.0f;
 #line 4
-    sjv_scene.projection.m02 = 0.0f;
+    scene.projection.m02 = 0.0f;
 #line 5
-    sjv_scene.projection.m03 = 0.0f;
+    scene.projection.m03 = 0.0f;
 #line 6
-    sjv_scene.projection.m10 = 0.0f;
+    scene.projection.m10 = 0.0f;
 #line 7
-    sjv_scene.projection.m11 = 0.0f;
+    scene.projection.m11 = 0.0f;
 #line 8
-    sjv_scene.projection.m12 = 0.0f;
+    scene.projection.m12 = 0.0f;
 #line 9
-    sjv_scene.projection.m13 = 0.0f;
+    scene.projection.m13 = 0.0f;
 #line 10
-    sjv_scene.projection.m20 = 0.0f;
+    scene.projection.m20 = 0.0f;
 #line 11
-    sjv_scene.projection.m21 = 0.0f;
+    scene.projection.m21 = 0.0f;
 #line 12
-    sjv_scene.projection.m22 = 0.0f;
+    scene.projection.m22 = 0.0f;
 #line 13
-    sjv_scene.projection.m23 = 0.0f;
+    scene.projection.m23 = 0.0f;
 #line 14
-    sjv_scene.projection.m30 = 0.0f;
+    scene.projection.m30 = 0.0f;
 #line 15
-    sjv_scene.projection.m31 = 0.0f;
+    scene.projection.m31 = 0.0f;
 #line 16
-    sjv_scene.projection.m32 = 0.0f;
+    scene.projection.m32 = 0.0f;
 #line 17
-    sjv_scene.projection.m33 = 0.0f;
+    scene.projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.projection);
+    sjf_mat4(&scene.projection);
 #line 17
-    sjv_scene.windowrect._refCount = 1;
+    scene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_scene.windowrect.x = 0;
+    scene.windowrect.x = 0;
 #line 3
-    sjv_scene.windowrect.y = 0;
+    scene.windowrect.y = 0;
 #line 4
-    sjv_scene.windowrect.w = 0;
+    scene.windowrect.w = 0;
 #line 5
-    sjv_scene.windowrect.h = 0;
+    scene.windowrect.h = 0;
 #line 5
-    sjf_rect(&sjv_scene.windowrect);
+    sjf_rect(&scene.windowrect);
 #line 5
-    sjf_scene2d(&sjv_scene);
+    sjf_scene2d(&scene);
 #line 27 "lib/ui/scene2d.sj"
-    sjt_parent526 = &sjv_scene;
+    sjt_parent526 = &scene;
 #line 20 "lib/ui/texture.sj"
     sjt_functionParam1218 = size;
 #line 20
     sjf_scene2d_setsize(sjt_parent526, sjt_functionParam1218);
 #line 27
-    sjt_functionParam1219 = &(&sjv_scenebuffer)->framebuffer;
+    sjt_functionParam1219 = &(&scenebuffer)->framebuffer;
 #line 27
     sjf_glpushframebuffer(sjt_functionParam1219);
 #line 8 "lib/ui/scene2d.sj"
-    sjt_parent527 = &sjv_scene;
+    sjt_parent527 = &scene;
 #line 8
     sjf_scene2d_start(sjt_parent527);
 #line 20 "lib/ui/texture.sj"
     sjt_parent528 = element;
 #line 29
-    sjt_interfaceParam72 = &sjv_scene;
+    sjt_interfaceParam72 = &scene;
 #line 29
     sjt_parent528._vtbl->render(sjt_parent528._parent, sjt_interfaceParam72);
 #line 19 "lib/ui/scene2d.sj"
-    sjt_parent529 = &sjv_scene;
+    sjt_parent529 = &scene;
 #line 19
     sjf_scene2d_end(sjt_parent529);
 #line 31 "lib/ui/texture.sj"
-    sjt_functionParam1220 = &(&sjv_scenebuffer)->framebuffer;
+    sjt_functionParam1220 = &(&scenebuffer)->framebuffer;
 #line 31
     sjf_glpopframebuffer(sjt_functionParam1220);
 #line 31
     _return->_refCount = 1;
 #line 20
-    sjf_texture_copy(_return, &(&sjv_scenebuffer)->texture);
+    sjf_texture_copy(_return, &(&scenebuffer)->texture);
 
+    if (scene._refCount == 1) { sjf_scene2d_destroy(&scene); }
+;
+    if (scenebuffer._refCount == 1) { sjf_scenebuffer_destroy(&scenebuffer); }
+;
     if (sjt_call400._refCount == 1) { sjf_rect_destroy(&sjt_call400); }
-;
-    if (sjv_scene._refCount == 1) { sjf_scene2d_destroy(&sjv_scene); }
-;
-    if (sjv_scenebuffer._refCount == 1) { sjf_scenebuffer_destroy(&sjv_scenebuffer); }
 ;
 }
 
 void sjf_texture_fromelement_heap(sji_element element, sjs_size* size, sjs_texture** _return) {
+    sjs_scene2d scene = { -1 };
+    sjs_scenebuffer scenebuffer = { -1 };
     sjs_rect sjt_call401 = { -1 };
     sjs_size* sjt_functionParam1221 = 0;
     sjs_framebuffer* sjt_functionParam1222 = 0;
@@ -34729,57 +34730,55 @@ void sjf_texture_fromelement_heap(sji_element element, sjs_size* size, sjs_textu
     sjs_scene2d* sjt_parent532 = 0;
     sji_element sjt_parent533 = { 0 };
     sjs_scene2d* sjt_parent534 = 0;
-    sjs_scene2d sjv_scene = { -1 };
-    sjs_scenebuffer sjv_scenebuffer = { -1 };
 
-    sjv_scenebuffer._refCount = 1;
-    sjv_scenebuffer.size._refCount = 1;
+    scenebuffer._refCount = 1;
+    scenebuffer.size._refCount = 1;
 #line 20 "lib/ui/texture.sj"
-    sjf_size_copy(&sjv_scenebuffer.size, size);
+    sjf_size_copy(&scenebuffer.size, size);
 #line 20
-    sjv_scenebuffer.framebuffer._refCount = 1;
+    scenebuffer.framebuffer._refCount = 1;
 #line 20
-    sjv_scenebuffer.framebuffer.size._refCount = 1;
+    scenebuffer.framebuffer.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.framebuffer.size.w = 0;
+    scenebuffer.framebuffer.size.w = 0;
 #line 3
-    sjv_scenebuffer.framebuffer.size.h = 0;
+    scenebuffer.framebuffer.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.framebuffer.size);
+    sjf_size(&scenebuffer.framebuffer.size);
 #line 3 "lib/ui/framebuffer.sj"
-    sjv_scenebuffer.framebuffer.id = (uint32_t)0u;
+    scenebuffer.framebuffer.id = (uint32_t)0u;
 #line 3
-    sjf_framebuffer(&sjv_scenebuffer.framebuffer);
+    sjf_framebuffer(&scenebuffer.framebuffer);
 #line 3
-    sjv_scenebuffer.texture._refCount = 1;
+    scenebuffer.texture._refCount = 1;
 #line 3
-    sjv_scenebuffer.texture.size._refCount = 1;
+    scenebuffer.texture.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.texture.size.w = 0;
+    scenebuffer.texture.size.w = 0;
 #line 3
-    sjv_scenebuffer.texture.size.h = 0;
+    scenebuffer.texture.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.texture.size);
+    sjf_size(&scenebuffer.texture.size);
 #line 3 "lib/ui/texture.sj"
-    sjv_scenebuffer.texture.id = (uint32_t)0u;
+    scenebuffer.texture.id = (uint32_t)0u;
 #line 3
-    sjf_texture(&sjv_scenebuffer.texture);
+    sjf_texture(&scenebuffer.texture);
 #line 3
-    sjv_scenebuffer.renderbuffer._refCount = 1;
+    scenebuffer.renderbuffer._refCount = 1;
 #line 3
-    sjv_scenebuffer.renderbuffer.size._refCount = 1;
+    scenebuffer.renderbuffer.size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scenebuffer.renderbuffer.size.w = 0;
+    scenebuffer.renderbuffer.size.w = 0;
 #line 3
-    sjv_scenebuffer.renderbuffer.size.h = 0;
+    scenebuffer.renderbuffer.size.h = 0;
 #line 3
-    sjf_size(&sjv_scenebuffer.renderbuffer.size);
+    sjf_size(&scenebuffer.renderbuffer.size);
 #line 3 "lib/ui/renderbuffer.sj"
-    sjv_scenebuffer.renderbuffer.id = (uint32_t)0u;
+    scenebuffer.renderbuffer.id = (uint32_t)0u;
 #line 3
-    sjf_renderbuffer(&sjv_scenebuffer.renderbuffer);
+    sjf_renderbuffer(&scenebuffer.renderbuffer);
 #line 3
-    sjf_scenebuffer(&sjv_scenebuffer);
+    sjf_scenebuffer(&scenebuffer);
 #line 20 "lib/ui/texture.sj"
     sjt_parent530 = element;
 #line 20
@@ -34799,163 +34798,163 @@ void sjf_texture_fromelement_heap(sji_element element, sjs_size* size, sjs_textu
 #line 23
     sjt_parent530._vtbl->setrect(sjt_parent530._parent, sjt_interfaceParam73);
 #line 23
-    sjv_scene._refCount = 1;
+    scene._refCount = 1;
 #line 23
-    sjv_scene._size._refCount = 1;
+    scene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_scene._size.w = 0;
+    scene._size.w = 0;
 #line 3
-    sjv_scene._size.h = 0;
+    scene._size.h = 0;
 #line 3
-    sjf_size(&sjv_scene._size);
+    sjf_size(&scene._size);
 #line 3
-    sjv_scene.model._refCount = 1;
+    scene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_scene.model.m00 = 0.0f;
+    scene.model.m00 = 0.0f;
 #line 3
-    sjv_scene.model.m01 = 0.0f;
+    scene.model.m01 = 0.0f;
 #line 4
-    sjv_scene.model.m02 = 0.0f;
+    scene.model.m02 = 0.0f;
 #line 5
-    sjv_scene.model.m03 = 0.0f;
+    scene.model.m03 = 0.0f;
 #line 6
-    sjv_scene.model.m10 = 0.0f;
+    scene.model.m10 = 0.0f;
 #line 7
-    sjv_scene.model.m11 = 0.0f;
+    scene.model.m11 = 0.0f;
 #line 8
-    sjv_scene.model.m12 = 0.0f;
+    scene.model.m12 = 0.0f;
 #line 9
-    sjv_scene.model.m13 = 0.0f;
+    scene.model.m13 = 0.0f;
 #line 10
-    sjv_scene.model.m20 = 0.0f;
+    scene.model.m20 = 0.0f;
 #line 11
-    sjv_scene.model.m21 = 0.0f;
+    scene.model.m21 = 0.0f;
 #line 12
-    sjv_scene.model.m22 = 0.0f;
+    scene.model.m22 = 0.0f;
 #line 13
-    sjv_scene.model.m23 = 0.0f;
+    scene.model.m23 = 0.0f;
 #line 14
-    sjv_scene.model.m30 = 0.0f;
+    scene.model.m30 = 0.0f;
 #line 15
-    sjv_scene.model.m31 = 0.0f;
+    scene.model.m31 = 0.0f;
 #line 16
-    sjv_scene.model.m32 = 0.0f;
+    scene.model.m32 = 0.0f;
 #line 17
-    sjv_scene.model.m33 = 0.0f;
+    scene.model.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.model);
+    sjf_mat4(&scene.model);
 #line 17
-    sjv_scene.view._refCount = 1;
+    scene.view._refCount = 1;
 #line 2
-    sjv_scene.view.m00 = 0.0f;
+    scene.view.m00 = 0.0f;
 #line 3
-    sjv_scene.view.m01 = 0.0f;
+    scene.view.m01 = 0.0f;
 #line 4
-    sjv_scene.view.m02 = 0.0f;
+    scene.view.m02 = 0.0f;
 #line 5
-    sjv_scene.view.m03 = 0.0f;
+    scene.view.m03 = 0.0f;
 #line 6
-    sjv_scene.view.m10 = 0.0f;
+    scene.view.m10 = 0.0f;
 #line 7
-    sjv_scene.view.m11 = 0.0f;
+    scene.view.m11 = 0.0f;
 #line 8
-    sjv_scene.view.m12 = 0.0f;
+    scene.view.m12 = 0.0f;
 #line 9
-    sjv_scene.view.m13 = 0.0f;
+    scene.view.m13 = 0.0f;
 #line 10
-    sjv_scene.view.m20 = 0.0f;
+    scene.view.m20 = 0.0f;
 #line 11
-    sjv_scene.view.m21 = 0.0f;
+    scene.view.m21 = 0.0f;
 #line 12
-    sjv_scene.view.m22 = 0.0f;
+    scene.view.m22 = 0.0f;
 #line 13
-    sjv_scene.view.m23 = 0.0f;
+    scene.view.m23 = 0.0f;
 #line 14
-    sjv_scene.view.m30 = 0.0f;
+    scene.view.m30 = 0.0f;
 #line 15
-    sjv_scene.view.m31 = 0.0f;
+    scene.view.m31 = 0.0f;
 #line 16
-    sjv_scene.view.m32 = 0.0f;
+    scene.view.m32 = 0.0f;
 #line 17
-    sjv_scene.view.m33 = 0.0f;
+    scene.view.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.view);
+    sjf_mat4(&scene.view);
 #line 17
-    sjv_scene.projection._refCount = 1;
+    scene.projection._refCount = 1;
 #line 2
-    sjv_scene.projection.m00 = 0.0f;
+    scene.projection.m00 = 0.0f;
 #line 3
-    sjv_scene.projection.m01 = 0.0f;
+    scene.projection.m01 = 0.0f;
 #line 4
-    sjv_scene.projection.m02 = 0.0f;
+    scene.projection.m02 = 0.0f;
 #line 5
-    sjv_scene.projection.m03 = 0.0f;
+    scene.projection.m03 = 0.0f;
 #line 6
-    sjv_scene.projection.m10 = 0.0f;
+    scene.projection.m10 = 0.0f;
 #line 7
-    sjv_scene.projection.m11 = 0.0f;
+    scene.projection.m11 = 0.0f;
 #line 8
-    sjv_scene.projection.m12 = 0.0f;
+    scene.projection.m12 = 0.0f;
 #line 9
-    sjv_scene.projection.m13 = 0.0f;
+    scene.projection.m13 = 0.0f;
 #line 10
-    sjv_scene.projection.m20 = 0.0f;
+    scene.projection.m20 = 0.0f;
 #line 11
-    sjv_scene.projection.m21 = 0.0f;
+    scene.projection.m21 = 0.0f;
 #line 12
-    sjv_scene.projection.m22 = 0.0f;
+    scene.projection.m22 = 0.0f;
 #line 13
-    sjv_scene.projection.m23 = 0.0f;
+    scene.projection.m23 = 0.0f;
 #line 14
-    sjv_scene.projection.m30 = 0.0f;
+    scene.projection.m30 = 0.0f;
 #line 15
-    sjv_scene.projection.m31 = 0.0f;
+    scene.projection.m31 = 0.0f;
 #line 16
-    sjv_scene.projection.m32 = 0.0f;
+    scene.projection.m32 = 0.0f;
 #line 17
-    sjv_scene.projection.m33 = 0.0f;
+    scene.projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_scene.projection);
+    sjf_mat4(&scene.projection);
 #line 17
-    sjv_scene.windowrect._refCount = 1;
+    scene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_scene.windowrect.x = 0;
+    scene.windowrect.x = 0;
 #line 3
-    sjv_scene.windowrect.y = 0;
+    scene.windowrect.y = 0;
 #line 4
-    sjv_scene.windowrect.w = 0;
+    scene.windowrect.w = 0;
 #line 5
-    sjv_scene.windowrect.h = 0;
+    scene.windowrect.h = 0;
 #line 5
-    sjf_rect(&sjv_scene.windowrect);
+    sjf_rect(&scene.windowrect);
 #line 5
-    sjf_scene2d(&sjv_scene);
+    sjf_scene2d(&scene);
 #line 27 "lib/ui/scene2d.sj"
-    sjt_parent531 = &sjv_scene;
+    sjt_parent531 = &scene;
 #line 20 "lib/ui/texture.sj"
     sjt_functionParam1221 = size;
 #line 20
     sjf_scene2d_setsize(sjt_parent531, sjt_functionParam1221);
 #line 27
-    sjt_functionParam1222 = &(&sjv_scenebuffer)->framebuffer;
+    sjt_functionParam1222 = &(&scenebuffer)->framebuffer;
 #line 27
     sjf_glpushframebuffer(sjt_functionParam1222);
 #line 8 "lib/ui/scene2d.sj"
-    sjt_parent532 = &sjv_scene;
+    sjt_parent532 = &scene;
 #line 8
     sjf_scene2d_start(sjt_parent532);
 #line 20 "lib/ui/texture.sj"
     sjt_parent533 = element;
 #line 29
-    sjt_interfaceParam74 = &sjv_scene;
+    sjt_interfaceParam74 = &scene;
 #line 29
     sjt_parent533._vtbl->render(sjt_parent533._parent, sjt_interfaceParam74);
 #line 19 "lib/ui/scene2d.sj"
-    sjt_parent534 = &sjv_scene;
+    sjt_parent534 = &scene;
 #line 19
     sjf_scene2d_end(sjt_parent534);
 #line 31 "lib/ui/texture.sj"
-    sjt_functionParam1223 = &(&sjv_scenebuffer)->framebuffer;
+    sjt_functionParam1223 = &(&scenebuffer)->framebuffer;
 #line 31
     sjf_glpopframebuffer(sjt_functionParam1223);
 #line 31
@@ -34963,58 +34962,58 @@ void sjf_texture_fromelement_heap(sji_element element, sjs_size* size, sjs_textu
 #line 31
     (*_return)->_refCount = 1;
 #line 20
-    sjf_texture_copy((*_return), &(&sjv_scenebuffer)->texture);
+    sjf_texture_copy((*_return), &(&scenebuffer)->texture);
 
+    if (scene._refCount == 1) { sjf_scene2d_destroy(&scene); }
+;
+    if (scenebuffer._refCount == 1) { sjf_scenebuffer_destroy(&scenebuffer); }
+;
     if (sjt_call401._refCount == 1) { sjf_rect_destroy(&sjt_call401); }
-;
-    if (sjv_scene._refCount == 1) { sjf_scene2d_destroy(&sjv_scene); }
-;
-    if (sjv_scenebuffer._refCount == 1) { sjf_scenebuffer_destroy(&sjv_scenebuffer); }
 ;
 }
 
 void sjf_texture_frompng(sjs_string* filename, sjs_texture* _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
+    int32_t h;
+    uint32_t id;
+    int32_t w;
 
 #line 37 "lib/ui/texture.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 38
-    sjv_w = 0;
+    w = 0;
 #line 39
-    sjv_h = 0;
+    h = 0;
 #line 41
-    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
+    id = png_texture_load((char*)filename->data.data, &w, &h);
 #line 41
     _return->_refCount = 1;
 #line 41
     _return->size._refCount = 1;
 #line 43
-    _return->size.w = sjv_w;
+    _return->size.w = w;
 #line 43
-    _return->size.h = sjv_h;
+    _return->size.h = h;
 #line 43
     sjf_size(&_return->size);
 #line 43
-    _return->id = sjv_id;
+    _return->id = id;
 #line 43
     sjf_texture(_return);
 }
 
 void sjf_texture_frompng_heap(sjs_string* filename, sjs_texture** _return) {
-    int32_t sjv_h;
-    uint32_t sjv_id;
-    int32_t sjv_w;
+    int32_t h;
+    uint32_t id;
+    int32_t w;
 
 #line 37 "lib/ui/texture.sj"
-    sjv_id = (uint32_t)0u;
+    id = (uint32_t)0u;
 #line 38
-    sjv_w = 0;
+    w = 0;
 #line 39
-    sjv_h = 0;
+    h = 0;
 #line 41
-    sjv_id = png_texture_load((char*)filename->data.data, &sjv_w, &sjv_h);
+    id = png_texture_load((char*)filename->data.data, &w, &h);
 #line 41
     (*_return) = (sjs_texture*)malloc(sizeof(sjs_texture));
 #line 41
@@ -35022,13 +35021,13 @@ void sjf_texture_frompng_heap(sjs_string* filename, sjs_texture** _return) {
 #line 41
     (*_return)->size._refCount = 1;
 #line 43
-    (*_return)->size.w = sjv_w;
+    (*_return)->size.w = w;
 #line 43
-    (*_return)->size.h = sjv_h;
+    (*_return)->size.h = h;
 #line 43
     sjf_size(&(*_return)->size);
 #line 43
-    (*_return)->id = sjv_id;
+    (*_return)->id = id;
 #line 43
     sjf_texture_heap((*_return));
 }
@@ -47227,42 +47226,42 @@ void sjf_vec3_min_heap(sjs_vec3* a, sjs_vec3* b, sjs_vec3** _return) {
 
 void sjf_vec3_normalize(sjs_vec3* _parent, sjs_vec3* _return) {
     float sjt_functionParam36;
-    float sjv_t;
+    float t;
 
 #line 39 "lib/ui/vec3.sj"
     sjt_functionParam36 = ((_parent->x * _parent->x) + (_parent->y * _parent->y)) + (_parent->z * _parent->z);
 #line 39
-    sjf_f32_sqrt(sjt_functionParam36, &sjv_t);
+    sjf_f32_sqrt(sjt_functionParam36, &t);
 #line 39
     _return->_refCount = 1;
 #line 41
-    _return->x = _parent->x / sjv_t;
+    _return->x = _parent->x / t;
 #line 42
-    _return->y = _parent->y / sjv_t;
+    _return->y = _parent->y / t;
 #line 43
-    _return->z = _parent->z / sjv_t;
+    _return->z = _parent->z / t;
 #line 43
     sjf_vec3(_return);
 }
 
 void sjf_vec3_normalize_heap(sjs_vec3* _parent, sjs_vec3** _return) {
     float sjt_functionParam37;
-    float sjv_t;
+    float t;
 
 #line 39 "lib/ui/vec3.sj"
     sjt_functionParam37 = ((_parent->x * _parent->x) + (_parent->y * _parent->y)) + (_parent->z * _parent->z);
 #line 39
-    sjf_f32_sqrt(sjt_functionParam37, &sjv_t);
+    sjf_f32_sqrt(sjt_functionParam37, &t);
 #line 39
     (*_return) = (sjs_vec3*)malloc(sizeof(sjs_vec3));
 #line 39
     (*_return)->_refCount = 1;
 #line 41
-    (*_return)->x = _parent->x / sjv_t;
+    (*_return)->x = _parent->x / t;
 #line 42
-    (*_return)->y = _parent->y / sjv_t;
+    (*_return)->y = _parent->y / t;
 #line 43
-    (*_return)->z = _parent->z / sjv_t;
+    (*_return)->z = _parent->z / t;
 #line 43
     sjf_vec3_heap((*_return));
 }
@@ -47808,7 +47807,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal(sjs_vertexbuffer_vertex_loc
 #line 114
         for (int i = 0; i < _this->vertices.count; i++) {
 #line 115
-            sjf_vertex_location_texture_normal_rawcopy(&p[i], buffer, &buffer);
+            sjf_vertex_location_texture_normal_rawcopy(&p[i], buffer, (void*)&buffer);
 #line 116
         }
 #line 117
@@ -47881,7 +47880,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_heap(sjs_vertexbuffer_verte
 #line 114
         for (int i = 0; i < _this->vertices.count; i++) {
 #line 115
-            sjf_vertex_location_texture_normal_rawcopy(&p[i], buffer, &buffer);
+            sjf_vertex_location_texture_normal_rawcopy(&p[i], buffer, (void*)&buffer);
 #line 116
         }
 #line 117
@@ -47898,7 +47897,11 @@ void sjf_vertexbuffer_vertex_location_texture_normal_render(sjs_vertexbuffer_ver
 }
 
 void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sjs_vertexbuffer_vertex_location_texture_normal* _parent, sjs_point* screen, sjs_rect* viewport, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_vec2* _return) {
+    sjs_mat4 all = { -1 };
+    sjs_mat4 allinverse = { -1 };
+    int32_t ctriangles;
     int32_t i;
+    sjs_vec3 intersection = { -1 };
     sjs_mat4 sjt_call138 = { -1 };
     int32_t sjt_cast51;
     int32_t sjt_cast52;
@@ -47918,66 +47921,62 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
     sjs_mat4* sjt_parent261 = 0;
     sjs_vec3* sjt_parent262 = 0;
     sjs_vec3* sjt_parent263 = 0;
-    sjs_mat4 sjv_all = { -1 };
-    sjs_mat4 sjv_allinverse = { -1 };
-    int32_t sjv_ctriangles;
-    sjs_vec3 sjv_intersection = { -1 };
-    sjs_vec2 sjv_start = { -1 };
-    sjs_vec2 sjv_texture = { -1 };
-    sjs_vec3 sjv_vflatteneddir = { -1 };
-    sjs_vec3 sjv_vflattenedorigin1 = { -1 };
-    sjs_vec3 sjv_vflattenedorigin2 = { -1 };
-    sjs_vec3 sjv_vpickraydir = { -1 };
-    sjs_vec3 sjv_vpickrayorig = { -1 };
-    sjs_vec4 sjv_vprojectedorigin1 = { -1 };
-    sjs_vec4 sjv_vprojectedorigin2 = { -1 };
-    sjs_vec4 sjv_vscreenorigin1 = { -1 };
-    sjs_vec4 sjv_vscreenorigin2 = { -1 };
+    sjs_vec2 start = { -1 };
+    sjs_vec2 texture = { -1 };
+    sjs_vec3 vflatteneddir = { -1 };
+    sjs_vec3 vflattenedorigin1 = { -1 };
+    sjs_vec3 vflattenedorigin2 = { -1 };
+    sjs_vec3 vpickraydir = { -1 };
+    sjs_vec3 vpickrayorig = { -1 };
+    sjs_vec4 vprojectedorigin1 = { -1 };
+    sjs_vec4 vprojectedorigin2 = { -1 };
+    sjs_vec4 vscreenorigin1 = { -1 };
+    sjs_vec4 vscreenorigin2 = { -1 };
 
 #line 44 "lib/ui/vertexBuffer.sj"
-    sjv_intersection._refCount = -1;
+    intersection._refCount = -1;
 #line 45
-    sjv_texture._refCount = -1;
+    texture._refCount = -1;
 #line 45
-    sjv_start._refCount = 1;
+    start._refCount = 1;
 #line 49
     sjt_cast51 = screen->x - viewport->x;
 #line 49
     sjt_cast52 = viewport->w;
 #line 49
-    sjv_start.x = (((float)sjt_cast51 / (float)sjt_cast52) * 2.0f) - 1.0f;
+    start.x = (((float)sjt_cast51 / (float)sjt_cast52) * 2.0f) - 1.0f;
 #line 50
     sjt_cast53 = screen->y - viewport->y;
 #line 50
     sjt_cast54 = viewport->h;
 #line 50
-    sjv_start.y = 1.0f - (((float)sjt_cast53 / (float)sjt_cast54) * 2.0f);
+    start.y = 1.0f - (((float)sjt_cast53 / (float)sjt_cast54) * 2.0f);
 #line 50
-    sjf_vec2(&sjv_start);
+    sjf_vec2(&start);
 #line 50
-    sjv_vscreenorigin1._refCount = 1;
+    vscreenorigin1._refCount = 1;
 #line 52
-    sjv_vscreenorigin1.x = (&sjv_start)->x;
+    vscreenorigin1.x = (&start)->x;
 #line 52
-    sjv_vscreenorigin1.y = (&sjv_start)->y;
+    vscreenorigin1.y = (&start)->y;
 #line 52
-    sjv_vscreenorigin1.z = 0.0f;
+    vscreenorigin1.z = 0.0f;
 #line 52
-    sjv_vscreenorigin1.w = 1.0f;
+    vscreenorigin1.w = 1.0f;
 #line 52
-    sjf_vec4(&sjv_vscreenorigin1);
+    sjf_vec4(&vscreenorigin1);
 #line 52
-    sjv_vscreenorigin2._refCount = 1;
+    vscreenorigin2._refCount = 1;
 #line 53
-    sjv_vscreenorigin2.x = (&sjv_start)->x;
+    vscreenorigin2.x = (&start)->x;
 #line 53
-    sjv_vscreenorigin2.y = (&sjv_start)->y;
+    vscreenorigin2.y = (&start)->y;
 #line 53
-    sjv_vscreenorigin2.z = 1.0f;
+    vscreenorigin2.z = 1.0f;
 #line 53
-    sjv_vscreenorigin2.w = 1.0f;
+    vscreenorigin2.w = 1.0f;
 #line 53
-    sjf_vec4(&sjv_vscreenorigin2);
+    sjf_vec4(&vscreenorigin2);
 #line 43
     sjt_parent258 = projection;
 #line 43
@@ -47989,81 +47988,81 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 43
     sjt_functionParam646 = world;
 #line 43
-    sjf_mat4_multiply(sjt_parent257, sjt_functionParam646, &sjv_all);
+    sjf_mat4_multiply(sjt_parent257, sjt_functionParam646, &all);
 #line 71 "lib/ui/mat4.sj"
-    sjt_parent259 = &sjv_all;
+    sjt_parent259 = &all;
 #line 71
-    sjf_mat4_invert(sjt_parent259, &sjv_allinverse);
+    sjf_mat4_invert(sjt_parent259, &allinverse);
 #line 62
-    sjt_parent260 = &sjv_allinverse;
+    sjt_parent260 = &allinverse;
 #line 56 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam647 = &sjv_vscreenorigin1;
+    sjt_functionParam647 = &vscreenorigin1;
 #line 56
-    sjf_mat4_multiplyvec4(sjt_parent260, sjt_functionParam647, &sjv_vprojectedorigin1);
+    sjf_mat4_multiplyvec4(sjt_parent260, sjt_functionParam647, &vprojectedorigin1);
 #line 62 "lib/ui/mat4.sj"
-    sjt_parent261 = &sjv_allinverse;
+    sjt_parent261 = &allinverse;
 #line 57 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam648 = &sjv_vscreenorigin2;
+    sjt_functionParam648 = &vscreenorigin2;
 #line 57
-    sjf_mat4_multiplyvec4(sjt_parent261, sjt_functionParam648, &sjv_vprojectedorigin2);
+    sjf_mat4_multiplyvec4(sjt_parent261, sjt_functionParam648, &vprojectedorigin2);
 #line 57
-    sjv_vflattenedorigin1._refCount = 1;
+    vflattenedorigin1._refCount = 1;
 #line 58
-    sjv_vflattenedorigin1.x = (&sjv_vprojectedorigin1)->x / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.x = (&vprojectedorigin1)->x / (&vprojectedorigin1)->w;
 #line 58
-    sjv_vflattenedorigin1.y = (&sjv_vprojectedorigin1)->y / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.y = (&vprojectedorigin1)->y / (&vprojectedorigin1)->w;
 #line 58
-    sjv_vflattenedorigin1.z = (&sjv_vprojectedorigin1)->z / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.z = (&vprojectedorigin1)->z / (&vprojectedorigin1)->w;
 #line 58
-    sjf_vec3(&sjv_vflattenedorigin1);
+    sjf_vec3(&vflattenedorigin1);
 #line 58
-    sjv_vflattenedorigin2._refCount = 1;
+    vflattenedorigin2._refCount = 1;
 #line 59
-    sjv_vflattenedorigin2.x = (&sjv_vprojectedorigin2)->x / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.x = (&vprojectedorigin2)->x / (&vprojectedorigin2)->w;
 #line 59
-    sjv_vflattenedorigin2.y = (&sjv_vprojectedorigin2)->y / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.y = (&vprojectedorigin2)->y / (&vprojectedorigin2)->w;
 #line 59
-    sjv_vflattenedorigin2.z = (&sjv_vprojectedorigin2)->z / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.z = (&vprojectedorigin2)->z / (&vprojectedorigin2)->w;
 #line 59
-    sjf_vec3(&sjv_vflattenedorigin2);
+    sjf_vec3(&vflattenedorigin2);
 #line 30 "lib/ui/vec3.sj"
-    sjt_parent262 = &sjv_vflattenedorigin2;
+    sjt_parent262 = &vflattenedorigin2;
 #line 60 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam649 = &sjv_vflattenedorigin1;
+    sjt_functionParam649 = &vflattenedorigin1;
 #line 60
-    sjf_vec3_subtract(sjt_parent262, sjt_functionParam649, &sjv_vflatteneddir);
+    sjf_vec3_subtract(sjt_parent262, sjt_functionParam649, &vflatteneddir);
 #line 60
-    sjv_vpickrayorig._refCount = 1;
+    vpickrayorig._refCount = 1;
 #line 62
-    sjf_vec3_copy(&sjv_vpickrayorig, &sjv_vflattenedorigin1);
+    sjf_vec3_copy(&vpickrayorig, &vflattenedorigin1);
 #line 38 "lib/ui/vec3.sj"
-    sjt_parent263 = &sjv_vflatteneddir;
+    sjt_parent263 = &vflatteneddir;
 #line 38
-    sjf_vec3_normalize(sjt_parent263, &sjv_vpickraydir);
+    sjf_vec3_normalize(sjt_parent263, &vpickraydir);
     if ((&_parent->indices)->count > 0) {
 #line 65 "lib/ui/vertexBuffer.sj"
-        sjv_ctriangles = (&_parent->indices)->count / 3;
+        ctriangles = (&_parent->indices)->count / 3;
     } else {
 #line 65 "lib/ui/vertexBuffer.sj"
-        sjv_ctriangles = (&_parent->vertices)->count / 3;
+        ctriangles = (&_parent->vertices)->count / 3;
     }
 
 #line 66 "lib/ui/vertexBuffer.sj"
     sjt_forStart27 = 0;
 #line 66
-    sjt_forEnd27 = sjv_ctriangles;
+    sjt_forEnd27 = ctriangles;
 #line 66
     i = sjt_forStart27;
     while (i < sjt_forEnd27) {
+        sjs_vec3 result = { -1 };
         sjs_vec3* sjt_functionParam679 = 0;
         sjs_vec3* sjt_functionParam680 = 0;
         sjs_vec3* sjt_functionParam681 = 0;
         sjs_vec3* sjt_functionParam682 = 0;
         sjs_vec3* sjt_functionParam683 = 0;
-        sjs_vec3 sjv_result = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex0 = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex1 = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex2 = { -1 };
+        sjs_vertex_location_texture_normal vertex0 = { -1 };
+        sjs_vertex_location_texture_normal vertex1 = { -1 };
+        sjs_vertex_location_texture_normal vertex2 = { -1 };
 
         if ((&_parent->indices)->count > 0) {
             int32_t sjt_functionParam650;
@@ -48080,7 +48079,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 67
             sjf_array_i32_getat(sjt_parent265, sjt_functionParam651, &sjt_functionParam650);
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent264, sjt_functionParam650, &sjv_vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent264, sjt_functionParam650, &vertex0);
         } else {
             int32_t sjt_functionParam652;
             sjs_array_vertex_location_texture_normal* sjt_parent266 = 0;
@@ -48090,7 +48089,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 67 "lib/ui/vertexBuffer.sj"
             sjt_functionParam652 = (i * 3) + 0;
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent266, sjt_functionParam652, &sjv_vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent266, sjt_functionParam652, &vertex0);
         }
 
         if ((&_parent->indices)->count > 0) {
@@ -48108,7 +48107,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 68
             sjf_array_i32_getat(sjt_parent268, sjt_functionParam654, &sjt_functionParam653);
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent267, sjt_functionParam653, &sjv_vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent267, sjt_functionParam653, &vertex1);
         } else {
             int32_t sjt_functionParam655;
             sjs_array_vertex_location_texture_normal* sjt_parent269 = 0;
@@ -48118,7 +48117,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 68 "lib/ui/vertexBuffer.sj"
             sjt_functionParam655 = (i * 3) + 1;
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent269, sjt_functionParam655, &sjv_vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent269, sjt_functionParam655, &vertex1);
         }
 
         if ((&_parent->indices)->count > 0) {
@@ -48136,7 +48135,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 69
             sjf_array_i32_getat(sjt_parent271, sjt_functionParam657, &sjt_functionParam656);
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent270, sjt_functionParam656, &sjv_vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent270, sjt_functionParam656, &vertex2);
         } else {
             int32_t sjt_functionParam658;
             sjs_array_vertex_location_texture_normal* sjt_parent272 = 0;
@@ -48146,22 +48145,22 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 69 "lib/ui/vertexBuffer.sj"
             sjt_functionParam658 = (i * 3) + 2;
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent272, sjt_functionParam658, &sjv_vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent272, sjt_functionParam658, &vertex2);
         }
 
 #line 72 "lib/ui/vertexBuffer.sj"
-        sjt_functionParam679 = &sjv_vpickrayorig;
+        sjt_functionParam679 = &vpickrayorig;
 #line 72
-        sjt_functionParam680 = &sjv_vpickraydir;
+        sjt_functionParam680 = &vpickraydir;
 #line 72
-        sjt_functionParam681 = &(&sjv_vertex0)->location;
+        sjt_functionParam681 = &(&vertex0)->location;
 #line 72
-        sjt_functionParam682 = &(&sjv_vertex1)->location;
+        sjt_functionParam682 = &(&vertex1)->location;
 #line 72
-        sjt_functionParam683 = &(&sjv_vertex2)->location;
+        sjt_functionParam683 = &(&vertex2)->location;
 #line 72
-        sjf_intersecttriangle(sjt_functionParam679, sjt_functionParam680, sjt_functionParam681, sjt_functionParam682, sjt_functionParam683, &sjv_result);
-        if (((sjv_result._refCount != -1 ? &sjv_result : 0) != 0)) {
+        sjf_intersecttriangle(sjt_functionParam679, sjt_functionParam680, sjt_functionParam681, sjt_functionParam682, sjt_functionParam683, &result);
+        if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue29 = 0;
             float sjt_capture56;
             float_option sjt_capture57;
@@ -48169,13 +48168,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
             sjs_vec2 sjt_value23 = { -1 };
 
 #line 73 "lib/ui/vertexBuffer.sj"
-            ifValue29 = (sjv_result._refCount != -1 ? &sjv_result : 0);
-            if ((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) != 0) {
+            ifValue29 = (result._refCount != -1 ? &result : 0);
+            if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
                 sjs_vec3* sjt_capture58 = 0;
                 float sjt_value20;
 
 #line 1 "lib/ui/vec3.sj"
-                sjt_capture58 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
+                sjt_capture58 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/ui/vertexBuffer.sj"
                 sjt_value20 = sjt_capture58->z;
 #line 74
@@ -48190,12 +48189,12 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
             if (sjt_capture57.isvalid) {
                 float_option sjt_getValue4;
 
-                if ((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) != 0) {
+                if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
                     sjs_vec3* sjt_capture59 = 0;
                     float sjt_value21;
 
 #line 1 "lib/ui/vec3.sj"
-                    sjt_capture59 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
+                    sjt_capture59 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/ui/vertexBuffer.sj"
                     sjt_value21 = sjt_capture59->z;
 #line 74
@@ -48214,55 +48213,55 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 sjt_capture56 = 0.0f;
             }
 
-            if (((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) == 0) || (ifValue29->z < sjt_capture56)) {
-                float sjv_dtu1;
-                float sjv_dtu2;
-                float sjv_dtv1;
-                float sjv_dtv2;
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue29->z < sjt_capture56)) {
+                float dtu1;
+                float dtu2;
+                float dtv1;
+                float dtv2;
 
                 sjt_value22._refCount = 1;
 #line 75 "lib/ui/vertexBuffer.sj"
                 sjf_vec3_copy(&sjt_value22, ifValue29);
 #line 75
-                if (sjv_intersection._refCount == 1) { sjf_vec3_destroy(&sjv_intersection); }
+                if (intersection._refCount == 1) { sjf_vec3_destroy(&intersection); }
 ;
 #line 75
                 sjs_vec3* copyoption40 = &sjt_value22;
                 if (copyoption40 != 0) {
-                    sjv_intersection._refCount = 1;
+                    intersection._refCount = 1;
 #line 75 "lib/ui/vertexBuffer.sj"
-                    sjf_vec3_copy(&sjv_intersection, copyoption40);
+                    sjf_vec3_copy(&intersection, copyoption40);
                 } else {
-                    sjv_intersection._refCount = -1;
+                    intersection._refCount = -1;
                 }
 
 #line 80
-                sjv_dtu1 = (&(&sjv_vertex1)->texture)->x - (&(&sjv_vertex0)->texture)->x;
+                dtu1 = (&(&vertex1)->texture)->x - (&(&vertex0)->texture)->x;
 #line 81
-                sjv_dtu2 = (&(&sjv_vertex2)->texture)->x - (&(&sjv_vertex0)->texture)->x;
+                dtu2 = (&(&vertex2)->texture)->x - (&(&vertex0)->texture)->x;
 #line 82
-                sjv_dtv1 = (&(&sjv_vertex1)->texture)->y - (&(&sjv_vertex0)->texture)->y;
+                dtv1 = (&(&vertex1)->texture)->y - (&(&vertex0)->texture)->y;
 #line 83
-                sjv_dtv2 = (&(&sjv_vertex2)->texture)->y - (&(&sjv_vertex0)->texture)->y;
+                dtv2 = (&(&vertex2)->texture)->y - (&(&vertex0)->texture)->y;
 #line 83
                 sjt_value23._refCount = 1;
 #line 85
-                sjt_value23.x = ((&(&sjv_vertex0)->texture)->x + (ifValue29->x * sjv_dtu1)) + (ifValue29->y * sjv_dtu2);
+                sjt_value23.x = ((&(&vertex0)->texture)->x + (ifValue29->x * dtu1)) + (ifValue29->y * dtu2);
 #line 86
-                sjt_value23.y = ((&(&sjv_vertex0)->texture)->y + (ifValue29->x * sjv_dtv1)) + (ifValue29->y * sjv_dtv2);
+                sjt_value23.y = ((&(&vertex0)->texture)->y + (ifValue29->x * dtv1)) + (ifValue29->y * dtv2);
 #line 86
                 sjf_vec2(&sjt_value23);
 #line 86
-                if (sjv_texture._refCount == 1) { sjf_vec2_destroy(&sjv_texture); }
+                if (texture._refCount == 1) { sjf_vec2_destroy(&texture); }
 ;
 #line 84
                 sjs_vec2* copyoption41 = &sjt_value23;
                 if (copyoption41 != 0) {
-                    sjv_texture._refCount = 1;
+                    texture._refCount = 1;
 #line 84 "lib/ui/vertexBuffer.sj"
-                    sjf_vec2_copy(&sjv_texture, copyoption41);
+                    sjf_vec2_copy(&texture, copyoption41);
                 } else {
-                    sjv_texture._refCount = -1;
+                    texture._refCount = -1;
                 }
             }
 
@@ -48275,18 +48274,18 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 66
         i++;
 
-        if (sjv_result._refCount == 1) { sjf_vec3_destroy(&sjv_result); }
+        if (result._refCount == 1) { sjf_vec3_destroy(&result); }
 ;
-        if (sjv_vertex0._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex0); }
+        if (vertex0._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex0); }
 ;
-        if (sjv_vertex1._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex1); }
+        if (vertex1._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex1); }
 ;
-        if (sjv_vertex2._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex2); }
+        if (vertex2._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex2); }
 ;
     }
 
 #line 43
-    sjs_vec2* copyoption42 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
+    sjs_vec2* copyoption42 = (texture._refCount != -1 ? &texture : 0);
     if (copyoption42 != 0) {
         _return->_refCount = 1;
 #line 43 "lib/ui/vertexBuffer.sj"
@@ -48295,40 +48294,44 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
         _return->_refCount = -1;
     }
 
+    if (all._refCount == 1) { sjf_mat4_destroy(&all); }
+;
+    if (allinverse._refCount == 1) { sjf_mat4_destroy(&allinverse); }
+;
+    if (intersection._refCount == 1) { sjf_vec3_destroy(&intersection); }
+;
     if (sjt_call138._refCount == 1) { sjf_mat4_destroy(&sjt_call138); }
 ;
-    if (sjv_all._refCount == 1) { sjf_mat4_destroy(&sjv_all); }
+    if (start._refCount == 1) { sjf_vec2_destroy(&start); }
 ;
-    if (sjv_allinverse._refCount == 1) { sjf_mat4_destroy(&sjv_allinverse); }
+    if (texture._refCount == 1) { sjf_vec2_destroy(&texture); }
 ;
-    if (sjv_intersection._refCount == 1) { sjf_vec3_destroy(&sjv_intersection); }
+    if (vflatteneddir._refCount == 1) { sjf_vec3_destroy(&vflatteneddir); }
 ;
-    if (sjv_start._refCount == 1) { sjf_vec2_destroy(&sjv_start); }
+    if (vflattenedorigin1._refCount == 1) { sjf_vec3_destroy(&vflattenedorigin1); }
 ;
-    if (sjv_texture._refCount == 1) { sjf_vec2_destroy(&sjv_texture); }
+    if (vflattenedorigin2._refCount == 1) { sjf_vec3_destroy(&vflattenedorigin2); }
 ;
-    if (sjv_vflatteneddir._refCount == 1) { sjf_vec3_destroy(&sjv_vflatteneddir); }
+    if (vpickraydir._refCount == 1) { sjf_vec3_destroy(&vpickraydir); }
 ;
-    if (sjv_vflattenedorigin1._refCount == 1) { sjf_vec3_destroy(&sjv_vflattenedorigin1); }
+    if (vpickrayorig._refCount == 1) { sjf_vec3_destroy(&vpickrayorig); }
 ;
-    if (sjv_vflattenedorigin2._refCount == 1) { sjf_vec3_destroy(&sjv_vflattenedorigin2); }
+    if (vprojectedorigin1._refCount == 1) { sjf_vec4_destroy(&vprojectedorigin1); }
 ;
-    if (sjv_vpickraydir._refCount == 1) { sjf_vec3_destroy(&sjv_vpickraydir); }
+    if (vprojectedorigin2._refCount == 1) { sjf_vec4_destroy(&vprojectedorigin2); }
 ;
-    if (sjv_vpickrayorig._refCount == 1) { sjf_vec3_destroy(&sjv_vpickrayorig); }
+    if (vscreenorigin1._refCount == 1) { sjf_vec4_destroy(&vscreenorigin1); }
 ;
-    if (sjv_vprojectedorigin1._refCount == 1) { sjf_vec4_destroy(&sjv_vprojectedorigin1); }
-;
-    if (sjv_vprojectedorigin2._refCount == 1) { sjf_vec4_destroy(&sjv_vprojectedorigin2); }
-;
-    if (sjv_vscreenorigin1._refCount == 1) { sjf_vec4_destroy(&sjv_vscreenorigin1); }
-;
-    if (sjv_vscreenorigin2._refCount == 1) { sjf_vec4_destroy(&sjv_vscreenorigin2); }
+    if (vscreenorigin2._refCount == 1) { sjf_vec4_destroy(&vscreenorigin2); }
 ;
 }
 
 void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_heap(sjs_vertexbuffer_vertex_location_texture_normal* _parent, sjs_point* screen, sjs_rect* viewport, sjs_mat4* projection, sjs_mat4* view, sjs_mat4* world, sjs_vec2** _return) {
+    sjs_mat4 all = { -1 };
+    sjs_mat4 allinverse = { -1 };
+    int32_t ctriangles;
     int32_t i;
+    sjs_vec3 intersection = { -1 };
     sjs_mat4 sjt_call139 = { -1 };
     int32_t sjt_cast55;
     int32_t sjt_cast56;
@@ -48348,66 +48351,62 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
     sjs_mat4* sjt_parent297 = 0;
     sjs_vec3* sjt_parent298 = 0;
     sjs_vec3* sjt_parent299 = 0;
-    sjs_mat4 sjv_all = { -1 };
-    sjs_mat4 sjv_allinverse = { -1 };
-    int32_t sjv_ctriangles;
-    sjs_vec3 sjv_intersection = { -1 };
-    sjs_vec2 sjv_start = { -1 };
-    sjs_vec2 sjv_texture = { -1 };
-    sjs_vec3 sjv_vflatteneddir = { -1 };
-    sjs_vec3 sjv_vflattenedorigin1 = { -1 };
-    sjs_vec3 sjv_vflattenedorigin2 = { -1 };
-    sjs_vec3 sjv_vpickraydir = { -1 };
-    sjs_vec3 sjv_vpickrayorig = { -1 };
-    sjs_vec4 sjv_vprojectedorigin1 = { -1 };
-    sjs_vec4 sjv_vprojectedorigin2 = { -1 };
-    sjs_vec4 sjv_vscreenorigin1 = { -1 };
-    sjs_vec4 sjv_vscreenorigin2 = { -1 };
+    sjs_vec2 start = { -1 };
+    sjs_vec2 texture = { -1 };
+    sjs_vec3 vflatteneddir = { -1 };
+    sjs_vec3 vflattenedorigin1 = { -1 };
+    sjs_vec3 vflattenedorigin2 = { -1 };
+    sjs_vec3 vpickraydir = { -1 };
+    sjs_vec3 vpickrayorig = { -1 };
+    sjs_vec4 vprojectedorigin1 = { -1 };
+    sjs_vec4 vprojectedorigin2 = { -1 };
+    sjs_vec4 vscreenorigin1 = { -1 };
+    sjs_vec4 vscreenorigin2 = { -1 };
 
 #line 44 "lib/ui/vertexBuffer.sj"
-    sjv_intersection._refCount = -1;
+    intersection._refCount = -1;
 #line 45
-    sjv_texture._refCount = -1;
+    texture._refCount = -1;
 #line 45
-    sjv_start._refCount = 1;
+    start._refCount = 1;
 #line 49
     sjt_cast55 = screen->x - viewport->x;
 #line 49
     sjt_cast56 = viewport->w;
 #line 49
-    sjv_start.x = (((float)sjt_cast55 / (float)sjt_cast56) * 2.0f) - 1.0f;
+    start.x = (((float)sjt_cast55 / (float)sjt_cast56) * 2.0f) - 1.0f;
 #line 50
     sjt_cast57 = screen->y - viewport->y;
 #line 50
     sjt_cast58 = viewport->h;
 #line 50
-    sjv_start.y = 1.0f - (((float)sjt_cast57 / (float)sjt_cast58) * 2.0f);
+    start.y = 1.0f - (((float)sjt_cast57 / (float)sjt_cast58) * 2.0f);
 #line 50
-    sjf_vec2(&sjv_start);
+    sjf_vec2(&start);
 #line 50
-    sjv_vscreenorigin1._refCount = 1;
+    vscreenorigin1._refCount = 1;
 #line 52
-    sjv_vscreenorigin1.x = (&sjv_start)->x;
+    vscreenorigin1.x = (&start)->x;
 #line 52
-    sjv_vscreenorigin1.y = (&sjv_start)->y;
+    vscreenorigin1.y = (&start)->y;
 #line 52
-    sjv_vscreenorigin1.z = 0.0f;
+    vscreenorigin1.z = 0.0f;
 #line 52
-    sjv_vscreenorigin1.w = 1.0f;
+    vscreenorigin1.w = 1.0f;
 #line 52
-    sjf_vec4(&sjv_vscreenorigin1);
+    sjf_vec4(&vscreenorigin1);
 #line 52
-    sjv_vscreenorigin2._refCount = 1;
+    vscreenorigin2._refCount = 1;
 #line 53
-    sjv_vscreenorigin2.x = (&sjv_start)->x;
+    vscreenorigin2.x = (&start)->x;
 #line 53
-    sjv_vscreenorigin2.y = (&sjv_start)->y;
+    vscreenorigin2.y = (&start)->y;
 #line 53
-    sjv_vscreenorigin2.z = 1.0f;
+    vscreenorigin2.z = 1.0f;
 #line 53
-    sjv_vscreenorigin2.w = 1.0f;
+    vscreenorigin2.w = 1.0f;
 #line 53
-    sjf_vec4(&sjv_vscreenorigin2);
+    sjf_vec4(&vscreenorigin2);
 #line 43
     sjt_parent294 = projection;
 #line 43
@@ -48419,81 +48418,81 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 43
     sjt_functionParam685 = world;
 #line 43
-    sjf_mat4_multiply(sjt_parent293, sjt_functionParam685, &sjv_all);
+    sjf_mat4_multiply(sjt_parent293, sjt_functionParam685, &all);
 #line 71 "lib/ui/mat4.sj"
-    sjt_parent295 = &sjv_all;
+    sjt_parent295 = &all;
 #line 71
-    sjf_mat4_invert(sjt_parent295, &sjv_allinverse);
+    sjf_mat4_invert(sjt_parent295, &allinverse);
 #line 62
-    sjt_parent296 = &sjv_allinverse;
+    sjt_parent296 = &allinverse;
 #line 56 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam686 = &sjv_vscreenorigin1;
+    sjt_functionParam686 = &vscreenorigin1;
 #line 56
-    sjf_mat4_multiplyvec4(sjt_parent296, sjt_functionParam686, &sjv_vprojectedorigin1);
+    sjf_mat4_multiplyvec4(sjt_parent296, sjt_functionParam686, &vprojectedorigin1);
 #line 62 "lib/ui/mat4.sj"
-    sjt_parent297 = &sjv_allinverse;
+    sjt_parent297 = &allinverse;
 #line 57 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam687 = &sjv_vscreenorigin2;
+    sjt_functionParam687 = &vscreenorigin2;
 #line 57
-    sjf_mat4_multiplyvec4(sjt_parent297, sjt_functionParam687, &sjv_vprojectedorigin2);
+    sjf_mat4_multiplyvec4(sjt_parent297, sjt_functionParam687, &vprojectedorigin2);
 #line 57
-    sjv_vflattenedorigin1._refCount = 1;
+    vflattenedorigin1._refCount = 1;
 #line 58
-    sjv_vflattenedorigin1.x = (&sjv_vprojectedorigin1)->x / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.x = (&vprojectedorigin1)->x / (&vprojectedorigin1)->w;
 #line 58
-    sjv_vflattenedorigin1.y = (&sjv_vprojectedorigin1)->y / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.y = (&vprojectedorigin1)->y / (&vprojectedorigin1)->w;
 #line 58
-    sjv_vflattenedorigin1.z = (&sjv_vprojectedorigin1)->z / (&sjv_vprojectedorigin1)->w;
+    vflattenedorigin1.z = (&vprojectedorigin1)->z / (&vprojectedorigin1)->w;
 #line 58
-    sjf_vec3(&sjv_vflattenedorigin1);
+    sjf_vec3(&vflattenedorigin1);
 #line 58
-    sjv_vflattenedorigin2._refCount = 1;
+    vflattenedorigin2._refCount = 1;
 #line 59
-    sjv_vflattenedorigin2.x = (&sjv_vprojectedorigin2)->x / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.x = (&vprojectedorigin2)->x / (&vprojectedorigin2)->w;
 #line 59
-    sjv_vflattenedorigin2.y = (&sjv_vprojectedorigin2)->y / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.y = (&vprojectedorigin2)->y / (&vprojectedorigin2)->w;
 #line 59
-    sjv_vflattenedorigin2.z = (&sjv_vprojectedorigin2)->z / (&sjv_vprojectedorigin2)->w;
+    vflattenedorigin2.z = (&vprojectedorigin2)->z / (&vprojectedorigin2)->w;
 #line 59
-    sjf_vec3(&sjv_vflattenedorigin2);
+    sjf_vec3(&vflattenedorigin2);
 #line 30 "lib/ui/vec3.sj"
-    sjt_parent298 = &sjv_vflattenedorigin2;
+    sjt_parent298 = &vflattenedorigin2;
 #line 60 "lib/ui/vertexBuffer.sj"
-    sjt_functionParam688 = &sjv_vflattenedorigin1;
+    sjt_functionParam688 = &vflattenedorigin1;
 #line 60
-    sjf_vec3_subtract(sjt_parent298, sjt_functionParam688, &sjv_vflatteneddir);
+    sjf_vec3_subtract(sjt_parent298, sjt_functionParam688, &vflatteneddir);
 #line 60
-    sjv_vpickrayorig._refCount = 1;
+    vpickrayorig._refCount = 1;
 #line 62
-    sjf_vec3_copy(&sjv_vpickrayorig, &sjv_vflattenedorigin1);
+    sjf_vec3_copy(&vpickrayorig, &vflattenedorigin1);
 #line 38 "lib/ui/vec3.sj"
-    sjt_parent299 = &sjv_vflatteneddir;
+    sjt_parent299 = &vflatteneddir;
 #line 38
-    sjf_vec3_normalize(sjt_parent299, &sjv_vpickraydir);
+    sjf_vec3_normalize(sjt_parent299, &vpickraydir);
     if ((&_parent->indices)->count > 0) {
 #line 65 "lib/ui/vertexBuffer.sj"
-        sjv_ctriangles = (&_parent->indices)->count / 3;
+        ctriangles = (&_parent->indices)->count / 3;
     } else {
 #line 65 "lib/ui/vertexBuffer.sj"
-        sjv_ctriangles = (&_parent->vertices)->count / 3;
+        ctriangles = (&_parent->vertices)->count / 3;
     }
 
 #line 66 "lib/ui/vertexBuffer.sj"
     sjt_forStart28 = 0;
 #line 66
-    sjt_forEnd28 = sjv_ctriangles;
+    sjt_forEnd28 = ctriangles;
 #line 66
     i = sjt_forStart28;
     while (i < sjt_forEnd28) {
+        sjs_vec3 result = { -1 };
         sjs_vec3* sjt_functionParam698 = 0;
         sjs_vec3* sjt_functionParam699 = 0;
         sjs_vec3* sjt_functionParam700 = 0;
         sjs_vec3* sjt_functionParam701 = 0;
         sjs_vec3* sjt_functionParam702 = 0;
-        sjs_vec3 sjv_result = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex0 = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex1 = { -1 };
-        sjs_vertex_location_texture_normal sjv_vertex2 = { -1 };
+        sjs_vertex_location_texture_normal vertex0 = { -1 };
+        sjs_vertex_location_texture_normal vertex1 = { -1 };
+        sjs_vertex_location_texture_normal vertex2 = { -1 };
 
         if ((&_parent->indices)->count > 0) {
             int32_t sjt_functionParam689;
@@ -48510,7 +48509,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 67
             sjf_array_i32_getat(sjt_parent301, sjt_functionParam690, &sjt_functionParam689);
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent300, sjt_functionParam689, &sjv_vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent300, sjt_functionParam689, &vertex0);
         } else {
             int32_t sjt_functionParam691;
             sjs_array_vertex_location_texture_normal* sjt_parent302 = 0;
@@ -48520,7 +48519,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 67 "lib/ui/vertexBuffer.sj"
             sjt_functionParam691 = (i * 3) + 0;
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent302, sjt_functionParam691, &sjv_vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent302, sjt_functionParam691, &vertex0);
         }
 
         if ((&_parent->indices)->count > 0) {
@@ -48538,7 +48537,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 68
             sjf_array_i32_getat(sjt_parent304, sjt_functionParam693, &sjt_functionParam692);
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent303, sjt_functionParam692, &sjv_vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent303, sjt_functionParam692, &vertex1);
         } else {
             int32_t sjt_functionParam694;
             sjs_array_vertex_location_texture_normal* sjt_parent305 = 0;
@@ -48548,7 +48547,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 68 "lib/ui/vertexBuffer.sj"
             sjt_functionParam694 = (i * 3) + 1;
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent305, sjt_functionParam694, &sjv_vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent305, sjt_functionParam694, &vertex1);
         }
 
         if ((&_parent->indices)->count > 0) {
@@ -48566,7 +48565,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 69
             sjf_array_i32_getat(sjt_parent307, sjt_functionParam696, &sjt_functionParam695);
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent306, sjt_functionParam695, &sjv_vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent306, sjt_functionParam695, &vertex2);
         } else {
             int32_t sjt_functionParam697;
             sjs_array_vertex_location_texture_normal* sjt_parent308 = 0;
@@ -48576,22 +48575,22 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 69 "lib/ui/vertexBuffer.sj"
             sjt_functionParam697 = (i * 3) + 2;
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent308, sjt_functionParam697, &sjv_vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent308, sjt_functionParam697, &vertex2);
         }
 
 #line 72 "lib/ui/vertexBuffer.sj"
-        sjt_functionParam698 = &sjv_vpickrayorig;
+        sjt_functionParam698 = &vpickrayorig;
 #line 72
-        sjt_functionParam699 = &sjv_vpickraydir;
+        sjt_functionParam699 = &vpickraydir;
 #line 72
-        sjt_functionParam700 = &(&sjv_vertex0)->location;
+        sjt_functionParam700 = &(&vertex0)->location;
 #line 72
-        sjt_functionParam701 = &(&sjv_vertex1)->location;
+        sjt_functionParam701 = &(&vertex1)->location;
 #line 72
-        sjt_functionParam702 = &(&sjv_vertex2)->location;
+        sjt_functionParam702 = &(&vertex2)->location;
 #line 72
-        sjf_intersecttriangle(sjt_functionParam698, sjt_functionParam699, sjt_functionParam700, sjt_functionParam701, sjt_functionParam702, &sjv_result);
-        if (((sjv_result._refCount != -1 ? &sjv_result : 0) != 0)) {
+        sjf_intersecttriangle(sjt_functionParam698, sjt_functionParam699, sjt_functionParam700, sjt_functionParam701, sjt_functionParam702, &result);
+        if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue30 = 0;
             float sjt_capture60;
             float_option sjt_capture61;
@@ -48599,13 +48598,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
             sjs_vec2 sjt_value27 = { -1 };
 
 #line 73 "lib/ui/vertexBuffer.sj"
-            ifValue30 = (sjv_result._refCount != -1 ? &sjv_result : 0);
-            if ((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) != 0) {
+            ifValue30 = (result._refCount != -1 ? &result : 0);
+            if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
                 sjs_vec3* sjt_capture62 = 0;
                 float sjt_value24;
 
 #line 1 "lib/ui/vec3.sj"
-                sjt_capture62 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
+                sjt_capture62 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/ui/vertexBuffer.sj"
                 sjt_value24 = sjt_capture62->z;
 #line 74
@@ -48620,12 +48619,12 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
             if (sjt_capture61.isvalid) {
                 float_option sjt_getValue5;
 
-                if ((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) != 0) {
+                if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
                     sjs_vec3* sjt_capture63 = 0;
                     float sjt_value25;
 
 #line 1 "lib/ui/vec3.sj"
-                    sjt_capture63 = (sjv_intersection._refCount != -1 ? &sjv_intersection : 0);
+                    sjt_capture63 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/ui/vertexBuffer.sj"
                     sjt_value25 = sjt_capture63->z;
 #line 74
@@ -48644,55 +48643,55 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
                 sjt_capture60 = 0.0f;
             }
 
-            if (((sjv_intersection._refCount != -1 ? &sjv_intersection : 0) == 0) || (ifValue30->z < sjt_capture60)) {
-                float sjv_dtu1;
-                float sjv_dtu2;
-                float sjv_dtv1;
-                float sjv_dtv2;
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue30->z < sjt_capture60)) {
+                float dtu1;
+                float dtu2;
+                float dtv1;
+                float dtv2;
 
                 sjt_value26._refCount = 1;
 #line 75 "lib/ui/vertexBuffer.sj"
                 sjf_vec3_copy(&sjt_value26, ifValue30);
 #line 75
-                if (sjv_intersection._refCount == 1) { sjf_vec3_destroy(&sjv_intersection); }
+                if (intersection._refCount == 1) { sjf_vec3_destroy(&intersection); }
 ;
 #line 75
                 sjs_vec3* copyoption43 = &sjt_value26;
                 if (copyoption43 != 0) {
-                    sjv_intersection._refCount = 1;
+                    intersection._refCount = 1;
 #line 75 "lib/ui/vertexBuffer.sj"
-                    sjf_vec3_copy(&sjv_intersection, copyoption43);
+                    sjf_vec3_copy(&intersection, copyoption43);
                 } else {
-                    sjv_intersection._refCount = -1;
+                    intersection._refCount = -1;
                 }
 
 #line 80
-                sjv_dtu1 = (&(&sjv_vertex1)->texture)->x - (&(&sjv_vertex0)->texture)->x;
+                dtu1 = (&(&vertex1)->texture)->x - (&(&vertex0)->texture)->x;
 #line 81
-                sjv_dtu2 = (&(&sjv_vertex2)->texture)->x - (&(&sjv_vertex0)->texture)->x;
+                dtu2 = (&(&vertex2)->texture)->x - (&(&vertex0)->texture)->x;
 #line 82
-                sjv_dtv1 = (&(&sjv_vertex1)->texture)->y - (&(&sjv_vertex0)->texture)->y;
+                dtv1 = (&(&vertex1)->texture)->y - (&(&vertex0)->texture)->y;
 #line 83
-                sjv_dtv2 = (&(&sjv_vertex2)->texture)->y - (&(&sjv_vertex0)->texture)->y;
+                dtv2 = (&(&vertex2)->texture)->y - (&(&vertex0)->texture)->y;
 #line 83
                 sjt_value27._refCount = 1;
 #line 85
-                sjt_value27.x = ((&(&sjv_vertex0)->texture)->x + (ifValue30->x * sjv_dtu1)) + (ifValue30->y * sjv_dtu2);
+                sjt_value27.x = ((&(&vertex0)->texture)->x + (ifValue30->x * dtu1)) + (ifValue30->y * dtu2);
 #line 86
-                sjt_value27.y = ((&(&sjv_vertex0)->texture)->y + (ifValue30->x * sjv_dtv1)) + (ifValue30->y * sjv_dtv2);
+                sjt_value27.y = ((&(&vertex0)->texture)->y + (ifValue30->x * dtv1)) + (ifValue30->y * dtv2);
 #line 86
                 sjf_vec2(&sjt_value27);
 #line 86
-                if (sjv_texture._refCount == 1) { sjf_vec2_destroy(&sjv_texture); }
+                if (texture._refCount == 1) { sjf_vec2_destroy(&texture); }
 ;
 #line 84
                 sjs_vec2* copyoption44 = &sjt_value27;
                 if (copyoption44 != 0) {
-                    sjv_texture._refCount = 1;
+                    texture._refCount = 1;
 #line 84 "lib/ui/vertexBuffer.sj"
-                    sjf_vec2_copy(&sjv_texture, copyoption44);
+                    sjf_vec2_copy(&texture, copyoption44);
                 } else {
-                    sjv_texture._refCount = -1;
+                    texture._refCount = -1;
                 }
             }
 
@@ -48705,18 +48704,18 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 66
         i++;
 
-        if (sjv_result._refCount == 1) { sjf_vec3_destroy(&sjv_result); }
+        if (result._refCount == 1) { sjf_vec3_destroy(&result); }
 ;
-        if (sjv_vertex0._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex0); }
+        if (vertex0._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex0); }
 ;
-        if (sjv_vertex1._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex1); }
+        if (vertex1._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex1); }
 ;
-        if (sjv_vertex2._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&sjv_vertex2); }
+        if (vertex2._refCount == 1) { sjf_vertex_location_texture_normal_destroy(&vertex2); }
 ;
     }
 
 #line 43
-    sjs_vec2* copyoption45 = (sjv_texture._refCount != -1 ? &sjv_texture : 0);
+    sjs_vec2* copyoption45 = (texture._refCount != -1 ? &texture : 0);
     if (copyoption45 != 0) {
         (*_return) = 0;
 #line 43 "lib/ui/vertexBuffer.sj"
@@ -48725,35 +48724,35 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
         (*_return) = 0;
     }
 
+    if (all._refCount == 1) { sjf_mat4_destroy(&all); }
+;
+    if (allinverse._refCount == 1) { sjf_mat4_destroy(&allinverse); }
+;
+    if (intersection._refCount == 1) { sjf_vec3_destroy(&intersection); }
+;
     if (sjt_call139._refCount == 1) { sjf_mat4_destroy(&sjt_call139); }
 ;
-    if (sjv_all._refCount == 1) { sjf_mat4_destroy(&sjv_all); }
+    if (start._refCount == 1) { sjf_vec2_destroy(&start); }
 ;
-    if (sjv_allinverse._refCount == 1) { sjf_mat4_destroy(&sjv_allinverse); }
+    if (texture._refCount == 1) { sjf_vec2_destroy(&texture); }
 ;
-    if (sjv_intersection._refCount == 1) { sjf_vec3_destroy(&sjv_intersection); }
+    if (vflatteneddir._refCount == 1) { sjf_vec3_destroy(&vflatteneddir); }
 ;
-    if (sjv_start._refCount == 1) { sjf_vec2_destroy(&sjv_start); }
+    if (vflattenedorigin1._refCount == 1) { sjf_vec3_destroy(&vflattenedorigin1); }
 ;
-    if (sjv_texture._refCount == 1) { sjf_vec2_destroy(&sjv_texture); }
+    if (vflattenedorigin2._refCount == 1) { sjf_vec3_destroy(&vflattenedorigin2); }
 ;
-    if (sjv_vflatteneddir._refCount == 1) { sjf_vec3_destroy(&sjv_vflatteneddir); }
+    if (vpickraydir._refCount == 1) { sjf_vec3_destroy(&vpickraydir); }
 ;
-    if (sjv_vflattenedorigin1._refCount == 1) { sjf_vec3_destroy(&sjv_vflattenedorigin1); }
+    if (vpickrayorig._refCount == 1) { sjf_vec3_destroy(&vpickrayorig); }
 ;
-    if (sjv_vflattenedorigin2._refCount == 1) { sjf_vec3_destroy(&sjv_vflattenedorigin2); }
+    if (vprojectedorigin1._refCount == 1) { sjf_vec4_destroy(&vprojectedorigin1); }
 ;
-    if (sjv_vpickraydir._refCount == 1) { sjf_vec3_destroy(&sjv_vpickraydir); }
+    if (vprojectedorigin2._refCount == 1) { sjf_vec4_destroy(&vprojectedorigin2); }
 ;
-    if (sjv_vpickrayorig._refCount == 1) { sjf_vec3_destroy(&sjv_vpickrayorig); }
+    if (vscreenorigin1._refCount == 1) { sjf_vec4_destroy(&vscreenorigin1); }
 ;
-    if (sjv_vprojectedorigin1._refCount == 1) { sjf_vec4_destroy(&sjv_vprojectedorigin1); }
-;
-    if (sjv_vprojectedorigin2._refCount == 1) { sjf_vec4_destroy(&sjv_vprojectedorigin2); }
-;
-    if (sjv_vscreenorigin1._refCount == 1) { sjf_vec4_destroy(&sjv_vscreenorigin1); }
-;
-    if (sjv_vscreenorigin2._refCount == 1) { sjf_vec4_destroy(&sjv_vscreenorigin2); }
+    if (vscreenorigin2._refCount == 1) { sjf_vec4_destroy(&vscreenorigin2); }
 ;
 }
 
@@ -48839,13 +48838,13 @@ void sjf_windowrenderer(sjs_windowrenderer* _this) {
 #line 65
     sjf_glclearcolor(sjt_functionParam1);
 #line 66
-    sjt_functionParam2 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam2 = g_glblendfunctype_gl_src_alpha;
 #line 66
-    sjt_functionParam3 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam3 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 66
     sjf_glblendfunc(sjt_functionParam2, sjt_functionParam3);
 #line 67
-    sjt_functionParam4 = sjv_glfeature_gl_blend;
+    sjt_functionParam4 = g_glfeature_gl_blend;
 #line 67
     sjf_glenable(sjt_functionParam4);
 
@@ -48880,43 +48879,43 @@ void sjf_windowrenderer_destroy(sjs_windowrenderer* _this) {
 }
 
 void sjf_windowrenderer_getsize(sjs_windowrenderer* _parent, sjs_size* _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
+    int32_t h;
+    int32_t w;
 
 #line 8 "lib/ui/windowRenderer.sj"
-    sjv_w = 0;
+    w = 0;
 #line 9
-    sjv_h = 0;
+    h = 0;
 #line 11
-    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
+    SDL_GetRendererOutputSize(_parent->ren, &w, &h);
 #line 11
     _return->_refCount = 1;
 #line 13
-    _return->w = sjv_w;
+    _return->w = w;
 #line 13
-    _return->h = sjv_h;
+    _return->h = h;
 #line 13
     sjf_size(_return);
 }
 
 void sjf_windowrenderer_getsize_heap(sjs_windowrenderer* _parent, sjs_size** _return) {
-    int32_t sjv_h;
-    int32_t sjv_w;
+    int32_t h;
+    int32_t w;
 
 #line 8 "lib/ui/windowRenderer.sj"
-    sjv_w = 0;
+    w = 0;
 #line 9
-    sjv_h = 0;
+    h = 0;
 #line 11
-    SDL_GetRendererOutputSize(_parent->ren, &sjv_w, &sjv_h);
+    SDL_GetRendererOutputSize(_parent->ren, &w, &h);
 #line 11
     (*_return) = (sjs_size*)malloc(sizeof(sjs_size));
 #line 11
     (*_return)->_refCount = 1;
 #line 13
-    (*_return)->w = sjv_w;
+    (*_return)->w = w;
 #line 13
-    (*_return)->h = sjv_h;
+    (*_return)->h = h;
 #line 13
     sjf_size_heap((*_return));
 }
@@ -49003,13 +49002,13 @@ void sjf_windowrenderer_heap(sjs_windowrenderer* _this) {
 #line 65
     sjf_glclearcolor(sjt_functionParam5);
 #line 66
-    sjt_functionParam6 = sjv_glblendfunctype_gl_src_alpha;
+    sjt_functionParam6 = g_glblendfunctype_gl_src_alpha;
 #line 66
-    sjt_functionParam7 = sjv_glblendfunctype_gl_one_minus_src_alpha;
+    sjt_functionParam7 = g_glblendfunctype_gl_one_minus_src_alpha;
 #line 66
     sjf_glblendfunc(sjt_functionParam6, sjt_functionParam7);
 #line 67
-    sjt_functionParam8 = sjv_glfeature_gl_blend;
+    sjt_functionParam8 = g_glfeature_gl_blend;
 #line 67
     sjf_glenable(sjt_functionParam8);
 
@@ -49265,237 +49264,237 @@ int main(int argc, char** argv) {
     sjs_textelement_textelement_vtbl.gettext_heap = (void(*)(sjs_object*, sjs_string**))sjf_textelement_gettext_heap;
     sjs_textelement_textelement_vtbl.settext = (void(*)(sjs_object*,sjs_string*))sjf_textelement_settext;
 #line 1 "lib/common/log.sj"
-    sjv_loglevel_trace = 0;
+    g_loglevel_trace = 0;
 #line 1
-    sjv_loglevel_debug = 1;
+    g_loglevel_debug = 1;
 #line 1
-    sjv_loglevel_info = 2;
+    g_loglevel_info = 2;
 #line 1
-    sjv_loglevel_warn = 3;
+    g_loglevel_warn = 3;
 #line 1
-    sjv_loglevel_error = 4;
+    g_loglevel_error = 4;
 #line 1
-    sjv_loglevel_fatal = 5;
+    g_loglevel_fatal = 5;
 #line 1 "lib/ui/borderLayout.sj"
-    sjv_borderposition_fill = 0;
+    g_borderposition_fill = 0;
 #line 1
-    sjv_borderposition_left = 1;
+    g_borderposition_left = 1;
 #line 1
-    sjv_borderposition_right = 2;
+    g_borderposition_right = 2;
 #line 1
-    sjv_borderposition_top = 3;
+    g_borderposition_top = 3;
 #line 1
-    sjv_borderposition_bottom = 4;
+    g_borderposition_bottom = 4;
 #line 1 "lib/ui/clickGesture.sj"
-    sjv_clickstate_none = 0;
+    g_clickstate_none = 0;
 #line 1
-    sjv_clickstate_entered = 1;
+    g_clickstate_entered = 1;
 #line 1
-    sjv_clickstate_pressed = 2;
+    g_clickstate_pressed = 2;
 #line 1 "lib/ui/flowLayout.sj"
-    sjv_flowlayoutorientation_topbottom = 0;
+    g_flowlayoutorientation_topbottom = 0;
 #line 1
-    sjv_flowlayoutorientation_leftright = 1;
+    g_flowlayoutorientation_leftright = 1;
 #line 1
-    sjv_flowlayoutorientation_bottomtop = 2;
+    g_flowlayoutorientation_bottomtop = 2;
 #line 1
-    sjv_flowlayoutorientation_rightleft = 3;
+    g_flowlayoutorientation_rightleft = 3;
 #line 1 "lib/ui/gl.sj"
-    sjv_glfeature_gl_blend = 0x0BE2;
+    g_glfeature_gl_blend = 0x0BE2;
 #line 1
-    sjv_glfeature_gl_cull_face = 0x0B44;
+    g_glfeature_gl_cull_face = 0x0B44;
 #line 1
-    sjv_glfeature_gl_depth_test = 0x0B71;
+    g_glfeature_gl_depth_test = 0x0B71;
 #line 1
-    sjv_glfeature_gl_dither = 0x0BD0;
+    g_glfeature_gl_dither = 0x0BD0;
 #line 1
-    sjv_glfeature_gl_polygon_offset_fill = 0x8037;
+    g_glfeature_gl_polygon_offset_fill = 0x8037;
 #line 1
-    sjv_glfeature_gl_sample_alpha_to_coverage = 0x809E;
+    g_glfeature_gl_sample_alpha_to_coverage = 0x809E;
 #line 1
-    sjv_glfeature_gl_sample_coverage = 0x80A0;
+    g_glfeature_gl_sample_coverage = 0x80A0;
 #line 1
-    sjv_glfeature_gl_scissor_test = 0x0C11;
+    g_glfeature_gl_scissor_test = 0x0C11;
 #line 1
-    sjv_glfeature_gl_stencil_test = 0x0B90;
+    g_glfeature_gl_stencil_test = 0x0B90;
 #line 13
-    sjv_gltexture_gl_texture_2d = 0x0DE1;
+    g_gltexture_gl_texture_2d = 0x0DE1;
 #line 13
-    sjv_gltexture_gl_texture_cube_map = 0x8513;
+    g_gltexture_gl_texture_cube_map = 0x8513;
 #line 18
-    sjv_gltextureattribute_gl_texture_min_filter = 0x2801;
+    g_gltextureattribute_gl_texture_min_filter = 0x2801;
 #line 18
-    sjv_gltextureattribute_gl_texture_mag_filter = 0x2800;
+    g_gltextureattribute_gl_texture_mag_filter = 0x2800;
 #line 18
-    sjv_gltextureattribute_gl_texture_wrap_s = 0x2802;
+    g_gltextureattribute_gl_texture_wrap_s = 0x2802;
 #line 18
-    sjv_gltextureattribute_gl_texture_wrap_t = 0x2803;
+    g_gltextureattribute_gl_texture_wrap_t = 0x2803;
 #line 25
-    sjv_gltexturevalue_gl_clamp_to_edge = 0x812F;
+    g_gltexturevalue_gl_clamp_to_edge = 0x812F;
 #line 25
-    sjv_gltexturevalue_gl_mirrored_repeat = 0x8370;
+    g_gltexturevalue_gl_mirrored_repeat = 0x8370;
 #line 25
-    sjv_gltexturevalue_gl_repeat = 0x2901;
+    g_gltexturevalue_gl_repeat = 0x2901;
 #line 25
-    sjv_gltexturevalue_gl_nearest = 0x2600;
+    g_gltexturevalue_gl_nearest = 0x2600;
 #line 25
-    sjv_gltexturevalue_gl_linear = 0x2601;
+    g_gltexturevalue_gl_linear = 0x2601;
 #line 25
-    sjv_gltexturevalue_gl_nearest_mipmap_nearest = 0x2700;
+    g_gltexturevalue_gl_nearest_mipmap_nearest = 0x2700;
 #line 25
-    sjv_gltexturevalue_gl_linear_mipmap_nearest = 0x2701;
+    g_gltexturevalue_gl_linear_mipmap_nearest = 0x2701;
 #line 25
-    sjv_gltexturevalue_gl_nearest_mipmap_linear = 0x2702;
+    g_gltexturevalue_gl_nearest_mipmap_linear = 0x2702;
 #line 25
-    sjv_gltexturevalue_gl_linear_mipmap_linear = 0x2703;
+    g_gltexturevalue_gl_linear_mipmap_linear = 0x2703;
 #line 37
-    sjv_gltextureformat_gl_alpha = 0x1906;
+    g_gltextureformat_gl_alpha = 0x1906;
 #line 37
-    sjv_gltextureformat_gl_luminance = 0x1909;
+    g_gltextureformat_gl_luminance = 0x1909;
 #line 37
-    sjv_gltextureformat_gl_luminance_alpha = 0x190A;
+    g_gltextureformat_gl_luminance_alpha = 0x190A;
 #line 37
-    sjv_gltextureformat_gl_rgb = 0x1907;
+    g_gltextureformat_gl_rgb = 0x1907;
 #line 37
-    sjv_gltextureformat_gl_rgba = 0x1908;
+    g_gltextureformat_gl_rgba = 0x1908;
 #line 45
-    sjv_gltexturetype_gl_unsigned_byte = 0x1401;
+    g_gltexturetype_gl_unsigned_byte = 0x1401;
 #line 45
-    sjv_gltexturetype_gl_unsigned_short_5_6_5 = 0x8363;
+    g_gltexturetype_gl_unsigned_short_5_6_5 = 0x8363;
 #line 45
-    sjv_gltexturetype_gl_unsigned_short_4_4_4_4 = 0x8033;
+    g_gltexturetype_gl_unsigned_short_4_4_4_4 = 0x8033;
 #line 45
-    sjv_gltexturetype_gl_unsigned_short_5_5_5_1 = 0x8034;
+    g_gltexturetype_gl_unsigned_short_5_5_5_1 = 0x8034;
 #line 52
-    sjv_glframebufferattachment_gl_color_attachment0 = 0x8CE0;
+    g_glframebufferattachment_gl_color_attachment0 = 0x8CE0;
 #line 52
-    sjv_glframebufferattachment_gl_depth_attachment = 0x8D00;
+    g_glframebufferattachment_gl_depth_attachment = 0x8D00;
 #line 52
-    sjv_glframebufferattachment_gl_stencil_attachment = 0x8D20;
+    g_glframebufferattachment_gl_stencil_attachment = 0x8D20;
 #line 58
-    sjv_glframebuffertexture_gl_texture_2d = 0x0DE1;
+    g_glframebuffertexture_gl_texture_2d = 0x0DE1;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_positive_x = 0x8515;
+    g_glframebuffertexture_gl_texture_cube_map_positive_x = 0x8515;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_negative_x = 0x8516;
+    g_glframebuffertexture_gl_texture_cube_map_negative_x = 0x8516;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_positive_y = 0x8517;
+    g_glframebuffertexture_gl_texture_cube_map_positive_y = 0x8517;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_negative_y = 0x8518;
+    g_glframebuffertexture_gl_texture_cube_map_negative_y = 0x8518;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_positive_z = 0x8519;
+    g_glframebuffertexture_gl_texture_cube_map_positive_z = 0x8519;
 #line 58
-    sjv_glframebuffertexture_gl_texture_cube_map_negative_z = 0x851A;
+    g_glframebuffertexture_gl_texture_cube_map_negative_z = 0x851A;
 #line 68
-    sjv_glrenderbufferformat_gl_rgba4 = 0x8056;
+    g_glrenderbufferformat_gl_rgba4 = 0x8056;
 #line 68
-    sjv_glrenderbufferformat_gl_rgb565 = 0x8D62;
+    g_glrenderbufferformat_gl_rgb565 = 0x8D62;
 #line 68
-    sjv_glrenderbufferformat_gl_rgb5_a1 = 0x8057;
+    g_glrenderbufferformat_gl_rgb5_a1 = 0x8057;
 #line 68
-    sjv_glrenderbufferformat_gl_depth_component16 = 0x81A5;
+    g_glrenderbufferformat_gl_depth_component16 = 0x81A5;
 #line 68
-    sjv_glrenderbufferformat_gl_stencil_index8 = 0x8D48;
+    g_glrenderbufferformat_gl_stencil_index8 = 0x8D48;
 #line 76
-    sjv_glframebufferstatus_gl_framebuffer_complete = 0x8CD5;
+    g_glframebufferstatus_gl_framebuffer_complete = 0x8CD5;
 #line 76
-    sjv_glframebufferstatus_gl_framebuffer_incomplete_attachment = 0x8CD6;
+    g_glframebufferstatus_gl_framebuffer_incomplete_attachment = 0x8CD6;
 #line 76
-    sjv_glframebufferstatus_gl_framebuffer_incomplete_missing_attachment = 0x8CD7;
+    g_glframebufferstatus_gl_framebuffer_incomplete_missing_attachment = 0x8CD7;
 #line 76
-    sjv_glframebufferstatus_gl_framebuffer_unsupported = 0x8CDD;
+    g_glframebufferstatus_gl_framebuffer_unsupported = 0x8CDD;
 #line 83
-    sjv_glblendfunctype_gl_zero = 0;
+    g_glblendfunctype_gl_zero = 0;
 #line 83
-    sjv_glblendfunctype_gl_one = 1;
+    g_glblendfunctype_gl_one = 1;
 #line 83
-    sjv_glblendfunctype_gl_src_color = 0x0300;
+    g_glblendfunctype_gl_src_color = 0x0300;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_src_color = 0x0301;
+    g_glblendfunctype_gl_one_minus_src_color = 0x0301;
 #line 83
-    sjv_glblendfunctype_gl_dst_color = 0x0306;
+    g_glblendfunctype_gl_dst_color = 0x0306;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_dst_color = 0x0307;
+    g_glblendfunctype_gl_one_minus_dst_color = 0x0307;
 #line 83
-    sjv_glblendfunctype_gl_src_alpha = 0x0302;
+    g_glblendfunctype_gl_src_alpha = 0x0302;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_src_alpha = 0x0303;
+    g_glblendfunctype_gl_one_minus_src_alpha = 0x0303;
 #line 83
-    sjv_glblendfunctype_gl_dst_alpha = 0x0304;
+    g_glblendfunctype_gl_dst_alpha = 0x0304;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_dst_alpha = 0x0305;
+    g_glblendfunctype_gl_one_minus_dst_alpha = 0x0305;
 #line 83
-    sjv_glblendfunctype_gl_constant_color = 0x8001;
+    g_glblendfunctype_gl_constant_color = 0x8001;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_constant_color = 0x8002;
+    g_glblendfunctype_gl_one_minus_constant_color = 0x8002;
 #line 83
-    sjv_glblendfunctype_gl_constant_alpha = 0x8003;
+    g_glblendfunctype_gl_constant_alpha = 0x8003;
 #line 83
-    sjv_glblendfunctype_gl_one_minus_constant_alpha = 0x8004;
+    g_glblendfunctype_gl_one_minus_constant_alpha = 0x8004;
 #line 83
-    sjv_glblendfunctype_gl_src_alpha_saturate = 0x0308;
+    g_glblendfunctype_gl_src_alpha_saturate = 0x0308;
 #line 101
-    sjv_gldrawmode_gl_points = 0x0000;
+    g_gldrawmode_gl_points = 0x0000;
 #line 101
-    sjv_gldrawmode_gl_line_strip = 0x0003;
+    g_gldrawmode_gl_line_strip = 0x0003;
 #line 101
-    sjv_gldrawmode_gl_line_loop = 0x0002;
+    g_gldrawmode_gl_line_loop = 0x0002;
 #line 101
-    sjv_gldrawmode_gl_lines = 0x0001;
+    g_gldrawmode_gl_lines = 0x0001;
 #line 101
-    sjv_gldrawmode_gl_triangle_strip = 0x0005;
+    g_gldrawmode_gl_triangle_strip = 0x0005;
 #line 101
-    sjv_gldrawmode_gl_triangle_fan = 0x0006;
+    g_gldrawmode_gl_triangle_fan = 0x0006;
 #line 101
-    sjv_gldrawmode_gl_triangles = 0x0004;
+    g_gldrawmode_gl_triangles = 0x0004;
 #line 36 "lib/ui/gridLayout.sj"
-    sjv_gridunittype_fixed = 0;
+    g_gridunittype_fixed = 0;
 #line 36
-    sjv_gridunittype_star = 1;
+    g_gridunittype_star = 1;
 #line 1 "lib/ui/imageElement.sj"
-    sjv_imagestretch_fill = 0;
+    g_imagestretch_fill = 0;
 #line 1
-    sjv_imagestretch_center = 1;
+    g_imagestretch_center = 1;
 #line 1
-    sjv_imagestretch_aspectratio = 2;
+    g_imagestretch_aspectratio = 2;
 #line 1 "lib/ui/listLayout.sj"
-    sjv_listlayoutorientation_topbottom = 0;
+    g_listlayoutorientation_topbottom = 0;
 #line 1
-    sjv_listlayoutorientation_leftright = 1;
+    g_listlayoutorientation_leftright = 1;
 #line 1
-    sjv_listlayoutorientation_bottomtop = 2;
+    g_listlayoutorientation_bottomtop = 2;
 #line 1
-    sjv_listlayoutorientation_rightleft = 3;
+    g_listlayoutorientation_rightleft = 3;
 #line 32 "lib/ui/mouse.sj"
-    sjv_mouseeventtype_move = 0;
+    g_mouseeventtype_move = 0;
 #line 32
-    sjv_mouseeventtype_up = 1;
+    g_mouseeventtype_up = 1;
 #line 32
-    sjv_mouseeventtype_down = 2;
+    g_mouseeventtype_down = 2;
 #line 1 "lib/ui/textElement.sj"
-    sjv_texthorizontal_left = 0;
+    g_texthorizontal_left = 0;
 #line 1
-    sjv_texthorizontal_right = 1;
+    g_texthorizontal_right = 1;
 #line 1
-    sjv_texthorizontal_center = 2;
+    g_texthorizontal_center = 2;
 #line 7
-    sjv_textvertical_top = 0;
+    g_textvertical_top = 0;
 #line 7
-    sjv_textvertical_bottom = 1;
+    g_textvertical_bottom = 1;
 #line 7
-    sjv_textvertical_center = 2;
+    g_textvertical_center = 2;
 #line 1 "lib/common/f32.sj"
-    sjv_f32_pi = 3.14159265358979323846f;
+    g_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxvalue = (uint32_t)4294967295u;
+    g_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     result1 = -1;
 #line 3
-    sjv_i32_maxvalue = result1 - 2147483647;
+    g_i32_maxvalue = result1 - 2147483647;
 #line 4
-    sjv_i32_minvalue = 2147483647;
+    g_i32_minvalue = 2147483647;
 #line 10 "lib/common/log.sj"
-    sjv_log_includeall._refCount = -1;
+    g_log_includeall._refCount = -1;
 #line 10
     sjt_value1._refCount = 1;
 #line 10
@@ -49503,809 +49502,809 @@ int main(int argc, char** argv) {
 #line 11
     sjs_hash_type_bool* copyoption1 = &sjt_value1;
     if (copyoption1 != 0) {
-        sjv_log_excludeall._refCount = 1;
+        g_log_excludeall._refCount = 1;
 #line 11 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log_excludeall, copyoption1);
+        sjf_hash_type_bool_copy(&g_log_excludeall, copyoption1);
     } else {
-        sjv_log_excludeall._refCount = -1;
+        g_log_excludeall._refCount = -1;
     }
 
 #line 11
-    sjv_log._refCount = 1;
+    g_log._refCount = 1;
 #line 13
-    sjv_log.minlevel = sjv_loglevel_warn;
+    g_log.minlevel = g_loglevel_warn;
 #line 13
-    sjs_hash_type_bool* copyoption8 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption8 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption8 != 0) {
-        sjv_log.traceincludes._refCount = 1;
+        g_log.traceincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.traceincludes, copyoption8);
+        sjf_hash_type_bool_copy(&g_log.traceincludes, copyoption8);
     } else {
-        sjv_log.traceincludes._refCount = -1;
+        g_log.traceincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption9 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption9 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption9 != 0) {
-        sjv_log.debugincludes._refCount = 1;
+        g_log.debugincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.debugincludes, copyoption9);
+        sjf_hash_type_bool_copy(&g_log.debugincludes, copyoption9);
     } else {
-        sjv_log.debugincludes._refCount = -1;
+        g_log.debugincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption10 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption10 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption10 != 0) {
-        sjv_log.infoincludes._refCount = 1;
+        g_log.infoincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.infoincludes, copyoption10);
+        sjf_hash_type_bool_copy(&g_log.infoincludes, copyoption10);
     } else {
-        sjv_log.infoincludes._refCount = -1;
+        g_log.infoincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption11 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption11 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption11 != 0) {
-        sjv_log.warnincludes._refCount = 1;
+        g_log.warnincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.warnincludes, copyoption11);
+        sjf_hash_type_bool_copy(&g_log.warnincludes, copyoption11);
     } else {
-        sjv_log.warnincludes._refCount = -1;
+        g_log.warnincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption12 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption12 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption12 != 0) {
-        sjv_log.errorincludes._refCount = 1;
+        g_log.errorincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.errorincludes, copyoption12);
+        sjf_hash_type_bool_copy(&g_log.errorincludes, copyoption12);
     } else {
-        sjv_log.errorincludes._refCount = -1;
+        g_log.errorincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption13 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption13 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption13 != 0) {
-        sjv_log.fatalincludes._refCount = 1;
+        g_log.fatalincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.fatalincludes, copyoption13);
+        sjf_hash_type_bool_copy(&g_log.fatalincludes, copyoption13);
     } else {
-        sjv_log.fatalincludes._refCount = -1;
+        g_log.fatalincludes._refCount = -1;
     }
 
 #line 13
-    sjf_log(&sjv_log);
+    sjf_log(&g_log);
 #line 1 "lib/common/string.sj"
-    sjv_emptystringdata = 0;
+    g_emptystringdata = 0;
 #line 3
-    sjv_emptystringdata = "";
+    g_emptystringdata = "";
 #line 2 "lib/common/weakptr.sj"
     ptr_init();
 #line 3
     weakptr_init();
 #line 7 "lib/common/clock.sj"
-    sjv_clocks_per_sec = 0;
+    g_clocks_per_sec = 0;
 #line 9
-    sjv_clocks_per_sec = CLOCKS_PER_SEC;
+    g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 9
-    sjv_rootwindowrenderer._refCount = 1;
+    g_rootwindowrenderer._refCount = 1;
 #line 9
-    sjf_windowrenderer(&sjv_rootwindowrenderer);
+    sjf_windowrenderer(&g_rootwindowrenderer);
 #line 9
-    sjv_rootscene._refCount = 1;
+    g_rootscene._refCount = 1;
 #line 9
-    sjv_rootscene._size._refCount = 1;
+    g_rootscene._size._refCount = 1;
 #line 2 "lib/ui/size.sj"
-    sjv_rootscene._size.w = 0;
+    g_rootscene._size.w = 0;
 #line 3
-    sjv_rootscene._size.h = 0;
+    g_rootscene._size.h = 0;
 #line 3
-    sjf_size(&sjv_rootscene._size);
+    sjf_size(&g_rootscene._size);
 #line 3
-    sjv_rootscene.model._refCount = 1;
+    g_rootscene.model._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_rootscene.model.m00 = 0.0f;
+    g_rootscene.model.m00 = 0.0f;
 #line 3
-    sjv_rootscene.model.m01 = 0.0f;
+    g_rootscene.model.m01 = 0.0f;
 #line 4
-    sjv_rootscene.model.m02 = 0.0f;
+    g_rootscene.model.m02 = 0.0f;
 #line 5
-    sjv_rootscene.model.m03 = 0.0f;
+    g_rootscene.model.m03 = 0.0f;
 #line 6
-    sjv_rootscene.model.m10 = 0.0f;
+    g_rootscene.model.m10 = 0.0f;
 #line 7
-    sjv_rootscene.model.m11 = 0.0f;
+    g_rootscene.model.m11 = 0.0f;
 #line 8
-    sjv_rootscene.model.m12 = 0.0f;
+    g_rootscene.model.m12 = 0.0f;
 #line 9
-    sjv_rootscene.model.m13 = 0.0f;
+    g_rootscene.model.m13 = 0.0f;
 #line 10
-    sjv_rootscene.model.m20 = 0.0f;
+    g_rootscene.model.m20 = 0.0f;
 #line 11
-    sjv_rootscene.model.m21 = 0.0f;
+    g_rootscene.model.m21 = 0.0f;
 #line 12
-    sjv_rootscene.model.m22 = 0.0f;
+    g_rootscene.model.m22 = 0.0f;
 #line 13
-    sjv_rootscene.model.m23 = 0.0f;
+    g_rootscene.model.m23 = 0.0f;
 #line 14
-    sjv_rootscene.model.m30 = 0.0f;
+    g_rootscene.model.m30 = 0.0f;
 #line 15
-    sjv_rootscene.model.m31 = 0.0f;
+    g_rootscene.model.m31 = 0.0f;
 #line 16
-    sjv_rootscene.model.m32 = 0.0f;
+    g_rootscene.model.m32 = 0.0f;
 #line 17
-    sjv_rootscene.model.m33 = 0.0f;
+    g_rootscene.model.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_rootscene.model);
+    sjf_mat4(&g_rootscene.model);
 #line 17
-    sjv_rootscene.view._refCount = 1;
+    g_rootscene.view._refCount = 1;
 #line 2
-    sjv_rootscene.view.m00 = 0.0f;
+    g_rootscene.view.m00 = 0.0f;
 #line 3
-    sjv_rootscene.view.m01 = 0.0f;
+    g_rootscene.view.m01 = 0.0f;
 #line 4
-    sjv_rootscene.view.m02 = 0.0f;
+    g_rootscene.view.m02 = 0.0f;
 #line 5
-    sjv_rootscene.view.m03 = 0.0f;
+    g_rootscene.view.m03 = 0.0f;
 #line 6
-    sjv_rootscene.view.m10 = 0.0f;
+    g_rootscene.view.m10 = 0.0f;
 #line 7
-    sjv_rootscene.view.m11 = 0.0f;
+    g_rootscene.view.m11 = 0.0f;
 #line 8
-    sjv_rootscene.view.m12 = 0.0f;
+    g_rootscene.view.m12 = 0.0f;
 #line 9
-    sjv_rootscene.view.m13 = 0.0f;
+    g_rootscene.view.m13 = 0.0f;
 #line 10
-    sjv_rootscene.view.m20 = 0.0f;
+    g_rootscene.view.m20 = 0.0f;
 #line 11
-    sjv_rootscene.view.m21 = 0.0f;
+    g_rootscene.view.m21 = 0.0f;
 #line 12
-    sjv_rootscene.view.m22 = 0.0f;
+    g_rootscene.view.m22 = 0.0f;
 #line 13
-    sjv_rootscene.view.m23 = 0.0f;
+    g_rootscene.view.m23 = 0.0f;
 #line 14
-    sjv_rootscene.view.m30 = 0.0f;
+    g_rootscene.view.m30 = 0.0f;
 #line 15
-    sjv_rootscene.view.m31 = 0.0f;
+    g_rootscene.view.m31 = 0.0f;
 #line 16
-    sjv_rootscene.view.m32 = 0.0f;
+    g_rootscene.view.m32 = 0.0f;
 #line 17
-    sjv_rootscene.view.m33 = 0.0f;
+    g_rootscene.view.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_rootscene.view);
+    sjf_mat4(&g_rootscene.view);
 #line 17
-    sjv_rootscene.projection._refCount = 1;
+    g_rootscene.projection._refCount = 1;
 #line 2
-    sjv_rootscene.projection.m00 = 0.0f;
+    g_rootscene.projection.m00 = 0.0f;
 #line 3
-    sjv_rootscene.projection.m01 = 0.0f;
+    g_rootscene.projection.m01 = 0.0f;
 #line 4
-    sjv_rootscene.projection.m02 = 0.0f;
+    g_rootscene.projection.m02 = 0.0f;
 #line 5
-    sjv_rootscene.projection.m03 = 0.0f;
+    g_rootscene.projection.m03 = 0.0f;
 #line 6
-    sjv_rootscene.projection.m10 = 0.0f;
+    g_rootscene.projection.m10 = 0.0f;
 #line 7
-    sjv_rootscene.projection.m11 = 0.0f;
+    g_rootscene.projection.m11 = 0.0f;
 #line 8
-    sjv_rootscene.projection.m12 = 0.0f;
+    g_rootscene.projection.m12 = 0.0f;
 #line 9
-    sjv_rootscene.projection.m13 = 0.0f;
+    g_rootscene.projection.m13 = 0.0f;
 #line 10
-    sjv_rootscene.projection.m20 = 0.0f;
+    g_rootscene.projection.m20 = 0.0f;
 #line 11
-    sjv_rootscene.projection.m21 = 0.0f;
+    g_rootscene.projection.m21 = 0.0f;
 #line 12
-    sjv_rootscene.projection.m22 = 0.0f;
+    g_rootscene.projection.m22 = 0.0f;
 #line 13
-    sjv_rootscene.projection.m23 = 0.0f;
+    g_rootscene.projection.m23 = 0.0f;
 #line 14
-    sjv_rootscene.projection.m30 = 0.0f;
+    g_rootscene.projection.m30 = 0.0f;
 #line 15
-    sjv_rootscene.projection.m31 = 0.0f;
+    g_rootscene.projection.m31 = 0.0f;
 #line 16
-    sjv_rootscene.projection.m32 = 0.0f;
+    g_rootscene.projection.m32 = 0.0f;
 #line 17
-    sjv_rootscene.projection.m33 = 0.0f;
+    g_rootscene.projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_rootscene.projection);
+    sjf_mat4(&g_rootscene.projection);
 #line 17
-    sjv_rootscene.windowrect._refCount = 1;
+    g_rootscene.windowrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_rootscene.windowrect.x = 0;
+    g_rootscene.windowrect.x = 0;
 #line 3
-    sjv_rootscene.windowrect.y = 0;
+    g_rootscene.windowrect.y = 0;
 #line 4
-    sjv_rootscene.windowrect.w = 0;
+    g_rootscene.windowrect.w = 0;
 #line 5
-    sjv_rootscene.windowrect.h = 0;
+    g_rootscene.windowrect.h = 0;
 #line 5
-    sjf_rect(&sjv_rootscene.windowrect);
+    sjf_rect(&g_rootscene.windowrect);
 #line 5
-    sjf_scene2d(&sjv_rootscene);
+    sjf_scene2d(&g_rootscene);
 #line 5
-    sjv_modelsbyid._refCount = 1;
+    g_modelsbyid._refCount = 1;
 #line 5
-    sjf_hash_string_weak_iface_model(&sjv_modelsbyid);
+    sjf_hash_string_weak_iface_model(&g_modelsbyid);
 #line 5
-    sjv_elementsbyid._refCount = 1;
+    g_elementsbyid._refCount = 1;
 #line 5
-    sjf_hash_string_weak_iface_element(&sjv_elementsbyid);
+    sjf_hash_string_weak_iface_element(&g_elementsbyid);
 #line 5
-    sjv_animator._refCount = 1;
+    g_animator._refCount = 1;
 #line 5
-    sjv_animator.animations._refCount = 1;
+    g_animator.animations._refCount = 1;
 #line 5
-    sjv_animator.animations.array._refCount = 1;
+    g_animator.animations.array._refCount = 1;
 #line 2 "lib/common/list.sj"
-    sjv_animator.animations.array.datasize = 0;
+    g_animator.animations.array.datasize = 0;
 #line 3 "lib/common/array.sj"
-    sjv_animator.animations.array.data = 0;
+    g_animator.animations.array.data = 0;
 #line 4
-    sjv_animator.animations.array.isglobal = false;
+    g_animator.animations.array.isglobal = false;
 #line 5
-    sjv_animator.animations.array.count = 0;
+    g_animator.animations.array.count = 0;
 #line 5
-    sjf_array_heap_iface_animation(&sjv_animator.animations.array);
+    sjf_array_heap_iface_animation(&g_animator.animations.array);
 #line 5
-    sjf_list_heap_iface_animation(&sjv_animator.animations);
+    sjf_list_heap_iface_animation(&g_animator.animations);
 #line 29 "lib/ui/animation.sj"
-    sjv_animator.current = 0;
+    g_animator.current = 0;
 #line 29
-    sjf_animator(&sjv_animator);
+    sjf_animator(&g_animator);
 #line 29
-    sjv_blurhorizontalshader._refCount = 1;
+    g_blurhorizontalshader._refCount = 1;
 #line 29
-    sjv_blurhorizontalshader.vertex._refCount = 1;
+    g_blurhorizontalshader.vertex._refCount = 1;
 #line 1 "lib/ui/blurEffect.sj"
-    sjv_blurhorizontalshader.vertex.count = 20;
+    g_blurhorizontalshader.vertex.count = 20;
 #line 1
-    sjv_blurhorizontalshader.vertex.data._refCount = 1;
+    g_blurhorizontalshader.vertex.data._refCount = 1;
 #line 1
-    sjv_blurhorizontalshader.vertex.data.datasize = 20;
+    g_blurhorizontalshader.vertex.data.datasize = 20;
 #line 1
-    sjv_blurhorizontalshader.vertex.data.data = (void*)sjg_string1;
+    g_blurhorizontalshader.vertex.data.data = (void*)sjg_string1;
 #line 1
-    sjv_blurhorizontalshader.vertex.data.isglobal = true;
+    g_blurhorizontalshader.vertex.data.isglobal = true;
 #line 1
-    sjv_blurhorizontalshader.vertex.data.count = 20;
+    g_blurhorizontalshader.vertex.data.count = 20;
 #line 1
-    sjf_array_char(&sjv_blurhorizontalshader.vertex.data);
+    sjf_array_char(&g_blurhorizontalshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_blurhorizontalshader.vertex._isnullterminated = false;
+    g_blurhorizontalshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_blurhorizontalshader.vertex);
+    sjf_string(&g_blurhorizontalshader.vertex);
 #line 14
-    sjv_blurhorizontalshader.pixel._refCount = 1;
+    g_blurhorizontalshader.pixel._refCount = 1;
 #line 1 "lib/ui/blurEffect.sj"
-    sjv_blurhorizontalshader.pixel.count = 28;
+    g_blurhorizontalshader.pixel.count = 28;
 #line 1
-    sjv_blurhorizontalshader.pixel.data._refCount = 1;
+    g_blurhorizontalshader.pixel.data._refCount = 1;
 #line 1
-    sjv_blurhorizontalshader.pixel.data.datasize = 28;
+    g_blurhorizontalshader.pixel.data.datasize = 28;
 #line 1
-    sjv_blurhorizontalshader.pixel.data.data = (void*)sjg_string2;
+    g_blurhorizontalshader.pixel.data.data = (void*)sjg_string2;
 #line 1
-    sjv_blurhorizontalshader.pixel.data.isglobal = true;
+    g_blurhorizontalshader.pixel.data.isglobal = true;
 #line 1
-    sjv_blurhorizontalshader.pixel.data.count = 28;
+    g_blurhorizontalshader.pixel.data.count = 28;
 #line 1
-    sjf_array_char(&sjv_blurhorizontalshader.pixel.data);
+    sjf_array_char(&g_blurhorizontalshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_blurhorizontalshader.pixel._isnullterminated = false;
+    g_blurhorizontalshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_blurhorizontalshader.pixel);
+    sjf_string(&g_blurhorizontalshader.pixel);
 #line 14
-    sjf_shader(&sjv_blurhorizontalshader);
+    sjf_shader(&g_blurhorizontalshader);
 #line 14
-    sjv_blurverticalshader._refCount = 1;
+    g_blurverticalshader._refCount = 1;
 #line 14
-    sjv_blurverticalshader.vertex._refCount = 1;
+    g_blurverticalshader.vertex._refCount = 1;
 #line 2 "lib/ui/blurEffect.sj"
-    sjv_blurverticalshader.vertex.count = 20;
+    g_blurverticalshader.vertex.count = 20;
 #line 2
-    sjv_blurverticalshader.vertex.data._refCount = 1;
+    g_blurverticalshader.vertex.data._refCount = 1;
 #line 2
-    sjv_blurverticalshader.vertex.data.datasize = 20;
+    g_blurverticalshader.vertex.data.datasize = 20;
 #line 2
-    sjv_blurverticalshader.vertex.data.data = (void*)sjg_string1;
+    g_blurverticalshader.vertex.data.data = (void*)sjg_string1;
 #line 2
-    sjv_blurverticalshader.vertex.data.isglobal = true;
+    g_blurverticalshader.vertex.data.isglobal = true;
 #line 2
-    sjv_blurverticalshader.vertex.data.count = 20;
+    g_blurverticalshader.vertex.data.count = 20;
 #line 2
-    sjf_array_char(&sjv_blurverticalshader.vertex.data);
+    sjf_array_char(&g_blurverticalshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_blurverticalshader.vertex._isnullterminated = false;
+    g_blurverticalshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_blurverticalshader.vertex);
+    sjf_string(&g_blurverticalshader.vertex);
 #line 14
-    sjv_blurverticalshader.pixel._refCount = 1;
+    g_blurverticalshader.pixel._refCount = 1;
 #line 2 "lib/ui/blurEffect.sj"
-    sjv_blurverticalshader.pixel.count = 26;
+    g_blurverticalshader.pixel.count = 26;
 #line 2
-    sjv_blurverticalshader.pixel.data._refCount = 1;
+    g_blurverticalshader.pixel.data._refCount = 1;
 #line 2
-    sjv_blurverticalshader.pixel.data.datasize = 26;
+    g_blurverticalshader.pixel.data.datasize = 26;
 #line 2
-    sjv_blurverticalshader.pixel.data.data = (void*)sjg_string3;
+    g_blurverticalshader.pixel.data.data = (void*)sjg_string3;
 #line 2
-    sjv_blurverticalshader.pixel.data.isglobal = true;
+    g_blurverticalshader.pixel.data.isglobal = true;
 #line 2
-    sjv_blurverticalshader.pixel.data.count = 26;
+    g_blurverticalshader.pixel.data.count = 26;
 #line 2
-    sjf_array_char(&sjv_blurverticalshader.pixel.data);
+    sjf_array_char(&g_blurverticalshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_blurverticalshader.pixel._isnullterminated = false;
+    g_blurverticalshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_blurverticalshader.pixel);
+    sjf_string(&g_blurverticalshader.pixel);
 #line 14
-    sjf_shader(&sjv_blurverticalshader);
+    sjf_shader(&g_blurverticalshader);
 #line 14
-    sjv_colors_red._refCount = 1;
+    g_colors_red._refCount = 1;
 #line 2 "lib/ui/color.sj"
-    sjv_colors_red.r = 1.0f;
+    g_colors_red.r = 1.0f;
 #line 2
-    sjv_colors_red.g = 0.0f;
+    g_colors_red.g = 0.0f;
 #line 2
-    sjv_colors_red.b = 0.0f;
+    g_colors_red.b = 0.0f;
 #line 14
-    sjv_colors_red.a = 1.0f;
+    g_colors_red.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_red);
+    sjf_color(&g_colors_red);
 #line 14
-    sjv_colors_green._refCount = 1;
+    g_colors_green._refCount = 1;
 #line 3
-    sjv_colors_green.r = 0.0f;
+    g_colors_green.r = 0.0f;
 #line 3
-    sjv_colors_green.g = 1.0f;
+    g_colors_green.g = 1.0f;
 #line 3
-    sjv_colors_green.b = 0.0f;
+    g_colors_green.b = 0.0f;
 #line 14
-    sjv_colors_green.a = 1.0f;
+    g_colors_green.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_green);
+    sjf_color(&g_colors_green);
 #line 14
-    sjv_colors_blue._refCount = 1;
+    g_colors_blue._refCount = 1;
 #line 4
-    sjv_colors_blue.r = 0.0f;
+    g_colors_blue.r = 0.0f;
 #line 4
-    sjv_colors_blue.g = 0.0f;
+    g_colors_blue.g = 0.0f;
 #line 4
-    sjv_colors_blue.b = 1.0f;
+    g_colors_blue.b = 1.0f;
 #line 14
-    sjv_colors_blue.a = 1.0f;
+    g_colors_blue.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_blue);
+    sjf_color(&g_colors_blue);
 #line 14
-    sjv_colors_black._refCount = 1;
+    g_colors_black._refCount = 1;
 #line 5
-    sjv_colors_black.r = 0.0f;
+    g_colors_black.r = 0.0f;
 #line 5
-    sjv_colors_black.g = 0.0f;
+    g_colors_black.g = 0.0f;
 #line 5
-    sjv_colors_black.b = 0.0f;
+    g_colors_black.b = 0.0f;
 #line 14
-    sjv_colors_black.a = 1.0f;
+    g_colors_black.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_black);
+    sjf_color(&g_colors_black);
 #line 14
-    sjv_colors_white._refCount = 1;
+    g_colors_white._refCount = 1;
 #line 6
-    sjv_colors_white.r = 1.0f;
+    g_colors_white.r = 1.0f;
 #line 6
-    sjv_colors_white.g = 1.0f;
+    g_colors_white.g = 1.0f;
 #line 6
-    sjv_colors_white.b = 1.0f;
+    g_colors_white.b = 1.0f;
 #line 14
-    sjv_colors_white.a = 1.0f;
+    g_colors_white.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_white);
+    sjf_color(&g_colors_white);
 #line 14
-    sjv_colors_gray._refCount = 1;
+    g_colors_gray._refCount = 1;
 #line 7
-    sjv_colors_gray.r = 0.5f;
+    g_colors_gray.r = 0.5f;
 #line 7
-    sjv_colors_gray.g = 0.5f;
+    g_colors_gray.g = 0.5f;
 #line 7
-    sjv_colors_gray.b = 0.5f;
+    g_colors_gray.b = 0.5f;
 #line 14
-    sjv_colors_gray.a = 1.0f;
+    g_colors_gray.a = 1.0f;
 #line 14
-    sjf_color(&sjv_colors_gray);
+    sjf_color(&g_colors_gray);
 #line 14
-    sjv_fadeshader._refCount = 1;
+    g_fadeshader._refCount = 1;
 #line 14
-    sjv_fadeshader.vertex._refCount = 1;
+    g_fadeshader.vertex._refCount = 1;
 #line 1 "lib/ui/fadeEffect.sj"
-    sjv_fadeshader.vertex.count = 20;
+    g_fadeshader.vertex.count = 20;
 #line 1
-    sjv_fadeshader.vertex.data._refCount = 1;
+    g_fadeshader.vertex.data._refCount = 1;
 #line 1
-    sjv_fadeshader.vertex.data.datasize = 20;
+    g_fadeshader.vertex.data.datasize = 20;
 #line 1
-    sjv_fadeshader.vertex.data.data = (void*)sjg_string1;
+    g_fadeshader.vertex.data.data = (void*)sjg_string1;
 #line 1
-    sjv_fadeshader.vertex.data.isglobal = true;
+    g_fadeshader.vertex.data.isglobal = true;
 #line 1
-    sjv_fadeshader.vertex.data.count = 20;
+    g_fadeshader.vertex.data.count = 20;
 #line 1
-    sjf_array_char(&sjv_fadeshader.vertex.data);
+    sjf_array_char(&g_fadeshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_fadeshader.vertex._isnullterminated = false;
+    g_fadeshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_fadeshader.vertex);
+    sjf_string(&g_fadeshader.vertex);
 #line 14
-    sjv_fadeshader.pixel._refCount = 1;
+    g_fadeshader.pixel._refCount = 1;
 #line 1 "lib/ui/fadeEffect.sj"
-    sjv_fadeshader.pixel.count = 17;
+    g_fadeshader.pixel.count = 17;
 #line 1
-    sjv_fadeshader.pixel.data._refCount = 1;
+    g_fadeshader.pixel.data._refCount = 1;
 #line 1
-    sjv_fadeshader.pixel.data.datasize = 17;
+    g_fadeshader.pixel.data.datasize = 17;
 #line 1
-    sjv_fadeshader.pixel.data.data = (void*)sjg_string4;
+    g_fadeshader.pixel.data.data = (void*)sjg_string4;
 #line 1
-    sjv_fadeshader.pixel.data.isglobal = true;
+    g_fadeshader.pixel.data.isglobal = true;
 #line 1
-    sjv_fadeshader.pixel.data.count = 17;
+    g_fadeshader.pixel.data.count = 17;
 #line 1
-    sjf_array_char(&sjv_fadeshader.pixel.data);
+    sjf_array_char(&g_fadeshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_fadeshader.pixel._isnullterminated = false;
+    g_fadeshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_fadeshader.pixel);
+    sjf_string(&g_fadeshader.pixel);
 #line 14
-    sjf_shader(&sjv_fadeshader);
+    sjf_shader(&g_fadeshader);
 #line 14
-    sjv_fonthash._refCount = 1;
+    g_fonthash._refCount = 1;
 #line 14
-    sjf_hash_fontkey_weak_font(&sjv_fonthash);
+    sjf_hash_fontkey_weak_font(&g_fonthash);
 #line 14
-    sjv_glviewports._refCount = 1;
+    g_glviewports._refCount = 1;
 #line 14
-    sjv_glviewports.array._refCount = 1;
+    g_glviewports.array._refCount = 1;
 #line 2 "lib/common/list.sj"
-    sjv_glviewports.array.datasize = 0;
+    g_glviewports.array.datasize = 0;
 #line 3 "lib/common/array.sj"
-    sjv_glviewports.array.data = 0;
+    g_glviewports.array.data = 0;
 #line 4
-    sjv_glviewports.array.isglobal = false;
+    g_glviewports.array.isglobal = false;
 #line 5
-    sjv_glviewports.array.count = 0;
+    g_glviewports.array.count = 0;
 #line 5
-    sjf_array_rect(&sjv_glviewports.array);
+    sjf_array_rect(&g_glviewports.array);
 #line 5
-    sjf_list_rect(&sjv_glviewports);
+    sjf_list_rect(&g_glviewports);
 #line 5
-    sjv_glframebuffers._refCount = 1;
+    g_glframebuffers._refCount = 1;
 #line 5
-    sjv_glframebuffers.array._refCount = 1;
+    g_glframebuffers.array._refCount = 1;
 #line 2 "lib/common/list.sj"
-    sjv_glframebuffers.array.datasize = 0;
+    g_glframebuffers.array.datasize = 0;
 #line 3 "lib/common/array.sj"
-    sjv_glframebuffers.array.data = 0;
+    g_glframebuffers.array.data = 0;
 #line 4
-    sjv_glframebuffers.array.isglobal = false;
+    g_glframebuffers.array.isglobal = false;
 #line 5
-    sjv_glframebuffers.array.count = 0;
+    g_glframebuffers.array.count = 0;
 #line 5
-    sjf_array_u32(&sjv_glframebuffers.array);
+    sjf_array_u32(&g_glframebuffers.array);
 #line 5
-    sjf_list_u32(&sjv_glframebuffers);
+    sjf_list_u32(&g_glframebuffers);
 #line 340 "lib/ui/gl.sj"
     glid_init();
 #line 340
-    sjv_looplastrect._refCount = 1;
+    g_looplastrect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_looplastrect.x = 0;
+    g_looplastrect.x = 0;
 #line 3
-    sjv_looplastrect.y = 0;
+    g_looplastrect.y = 0;
 #line 4
-    sjv_looplastrect.w = 0;
+    g_looplastrect.w = 0;
 #line 5
-    sjv_looplastrect.h = 0;
+    g_looplastrect.h = 0;
 #line 5
-    sjf_rect(&sjv_looplastrect);
+    sjf_rect(&g_looplastrect);
 #line 3 "lib/ui/loop.sj"
-    sjv_mainloop_lasttick = 0;
+    g_mainloop_lasttick = 0;
 #line 4
-    sjv_mainloop_frames = 0;
+    g_mainloop_frames = 0;
 #line 5
-    sjv_mainloop_showfps = false;
+    g_mainloop_showfps = false;
 #line 6
-    sjv_mainloop_shouldcontinue = true;
+    g_mainloop_shouldcontinue = true;
 #line 1 "lib/ui/mouse.sj"
-    sjv_mouse_captureelement._parent = 0;
+    g_mouse_captureelement._parent = 0;
 #line 1
-    sjv_boxshader._refCount = 1;
+    g_boxshader._refCount = 1;
 #line 1
-    sjv_boxshader.vertex._refCount = 1;
+    g_boxshader.vertex._refCount = 1;
 #line 1 "lib/ui/shader.sj"
-    sjv_boxshader.vertex.count = 20;
+    g_boxshader.vertex.count = 20;
 #line 1
-    sjv_boxshader.vertex.data._refCount = 1;
+    g_boxshader.vertex.data._refCount = 1;
 #line 1
-    sjv_boxshader.vertex.data.datasize = 20;
+    g_boxshader.vertex.data.datasize = 20;
 #line 1
-    sjv_boxshader.vertex.data.data = (void*)sjg_string5;
+    g_boxshader.vertex.data.data = (void*)sjg_string5;
 #line 1
-    sjv_boxshader.vertex.data.isglobal = true;
+    g_boxshader.vertex.data.isglobal = true;
 #line 1
-    sjv_boxshader.vertex.data.count = 20;
+    g_boxshader.vertex.data.count = 20;
 #line 1
-    sjf_array_char(&sjv_boxshader.vertex.data);
+    sjf_array_char(&g_boxshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_boxshader.vertex._isnullterminated = false;
+    g_boxshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_boxshader.vertex);
+    sjf_string(&g_boxshader.vertex);
 #line 14
-    sjv_boxshader.pixel._refCount = 1;
+    g_boxshader.pixel._refCount = 1;
 #line 1 "lib/ui/shader.sj"
-    sjv_boxshader.pixel.count = 20;
+    g_boxshader.pixel.count = 20;
 #line 1
-    sjv_boxshader.pixel.data._refCount = 1;
+    g_boxshader.pixel.data._refCount = 1;
 #line 1
-    sjv_boxshader.pixel.data.datasize = 20;
+    g_boxshader.pixel.data.datasize = 20;
 #line 1
-    sjv_boxshader.pixel.data.data = (void*)sjg_string6;
+    g_boxshader.pixel.data.data = (void*)sjg_string6;
 #line 1
-    sjv_boxshader.pixel.data.isglobal = true;
+    g_boxshader.pixel.data.isglobal = true;
 #line 1
-    sjv_boxshader.pixel.data.count = 20;
+    g_boxshader.pixel.data.count = 20;
 #line 1
-    sjf_array_char(&sjv_boxshader.pixel.data);
+    sjf_array_char(&g_boxshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_boxshader.pixel._isnullterminated = false;
+    g_boxshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_boxshader.pixel);
+    sjf_string(&g_boxshader.pixel);
 #line 14
-    sjf_shader(&sjv_boxshader);
+    sjf_shader(&g_boxshader);
 #line 14
-    sjv_imageshader._refCount = 1;
+    g_imageshader._refCount = 1;
 #line 14
-    sjv_imageshader.vertex._refCount = 1;
+    g_imageshader.vertex._refCount = 1;
 #line 2 "lib/ui/shader.sj"
-    sjv_imageshader.vertex.count = 20;
+    g_imageshader.vertex.count = 20;
 #line 2
-    sjv_imageshader.vertex.data._refCount = 1;
+    g_imageshader.vertex.data._refCount = 1;
 #line 2
-    sjv_imageshader.vertex.data.datasize = 20;
+    g_imageshader.vertex.data.datasize = 20;
 #line 2
-    sjv_imageshader.vertex.data.data = (void*)sjg_string1;
+    g_imageshader.vertex.data.data = (void*)sjg_string1;
 #line 2
-    sjv_imageshader.vertex.data.isglobal = true;
+    g_imageshader.vertex.data.isglobal = true;
 #line 2
-    sjv_imageshader.vertex.data.count = 20;
+    g_imageshader.vertex.data.count = 20;
 #line 2
-    sjf_array_char(&sjv_imageshader.vertex.data);
+    sjf_array_char(&g_imageshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_imageshader.vertex._isnullterminated = false;
+    g_imageshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_imageshader.vertex);
+    sjf_string(&g_imageshader.vertex);
 #line 14
-    sjv_imageshader.pixel._refCount = 1;
+    g_imageshader.pixel._refCount = 1;
 #line 2 "lib/ui/shader.sj"
-    sjv_imageshader.pixel.count = 20;
+    g_imageshader.pixel.count = 20;
 #line 2
-    sjv_imageshader.pixel.data._refCount = 1;
+    g_imageshader.pixel.data._refCount = 1;
 #line 2
-    sjv_imageshader.pixel.data.datasize = 20;
+    g_imageshader.pixel.data.datasize = 20;
 #line 2
-    sjv_imageshader.pixel.data.data = (void*)sjg_string7;
+    g_imageshader.pixel.data.data = (void*)sjg_string7;
 #line 2
-    sjv_imageshader.pixel.data.isglobal = true;
+    g_imageshader.pixel.data.isglobal = true;
 #line 2
-    sjv_imageshader.pixel.data.count = 20;
+    g_imageshader.pixel.data.count = 20;
 #line 2
-    sjf_array_char(&sjv_imageshader.pixel.data);
+    sjf_array_char(&g_imageshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_imageshader.pixel._isnullterminated = false;
+    g_imageshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_imageshader.pixel);
+    sjf_string(&g_imageshader.pixel);
 #line 14
-    sjf_shader(&sjv_imageshader);
+    sjf_shader(&g_imageshader);
 #line 14
-    sjv_phongcolorshader._refCount = 1;
+    g_phongcolorshader._refCount = 1;
 #line 14
-    sjv_phongcolorshader.vertex._refCount = 1;
+    g_phongcolorshader.vertex._refCount = 1;
 #line 3 "lib/ui/shader.sj"
-    sjv_phongcolorshader.vertex.count = 26;
+    g_phongcolorshader.vertex.count = 26;
 #line 3
-    sjv_phongcolorshader.vertex.data._refCount = 1;
+    g_phongcolorshader.vertex.data._refCount = 1;
 #line 3
-    sjv_phongcolorshader.vertex.data.datasize = 26;
+    g_phongcolorshader.vertex.data.datasize = 26;
 #line 3
-    sjv_phongcolorshader.vertex.data.data = (void*)sjg_string8;
+    g_phongcolorshader.vertex.data.data = (void*)sjg_string8;
 #line 3
-    sjv_phongcolorshader.vertex.data.isglobal = true;
+    g_phongcolorshader.vertex.data.isglobal = true;
 #line 3
-    sjv_phongcolorshader.vertex.data.count = 26;
+    g_phongcolorshader.vertex.data.count = 26;
 #line 3
-    sjf_array_char(&sjv_phongcolorshader.vertex.data);
+    sjf_array_char(&g_phongcolorshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_phongcolorshader.vertex._isnullterminated = false;
+    g_phongcolorshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_phongcolorshader.vertex);
+    sjf_string(&g_phongcolorshader.vertex);
 #line 14
-    sjv_phongcolorshader.pixel._refCount = 1;
+    g_phongcolorshader.pixel._refCount = 1;
 #line 3 "lib/ui/shader.sj"
-    sjv_phongcolorshader.pixel.count = 26;
+    g_phongcolorshader.pixel.count = 26;
 #line 3
-    sjv_phongcolorshader.pixel.data._refCount = 1;
+    g_phongcolorshader.pixel.data._refCount = 1;
 #line 3
-    sjv_phongcolorshader.pixel.data.datasize = 26;
+    g_phongcolorshader.pixel.data.datasize = 26;
 #line 3
-    sjv_phongcolorshader.pixel.data.data = (void*)sjg_string9;
+    g_phongcolorshader.pixel.data.data = (void*)sjg_string9;
 #line 3
-    sjv_phongcolorshader.pixel.data.isglobal = true;
+    g_phongcolorshader.pixel.data.isglobal = true;
 #line 3
-    sjv_phongcolorshader.pixel.data.count = 26;
+    g_phongcolorshader.pixel.data.count = 26;
 #line 3
-    sjf_array_char(&sjv_phongcolorshader.pixel.data);
+    sjf_array_char(&g_phongcolorshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_phongcolorshader.pixel._isnullterminated = false;
+    g_phongcolorshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_phongcolorshader.pixel);
+    sjf_string(&g_phongcolorshader.pixel);
 #line 14
-    sjf_shader(&sjv_phongcolorshader);
+    sjf_shader(&g_phongcolorshader);
 #line 14
-    sjv_phongtextureshader._refCount = 1;
+    g_phongtextureshader._refCount = 1;
 #line 14
-    sjv_phongtextureshader.vertex._refCount = 1;
+    g_phongtextureshader.vertex._refCount = 1;
 #line 4 "lib/ui/shader.sj"
-    sjv_phongtextureshader.vertex.count = 30;
+    g_phongtextureshader.vertex.count = 30;
 #line 4
-    sjv_phongtextureshader.vertex.data._refCount = 1;
+    g_phongtextureshader.vertex.data._refCount = 1;
 #line 4
-    sjv_phongtextureshader.vertex.data.datasize = 30;
+    g_phongtextureshader.vertex.data.datasize = 30;
 #line 4
-    sjv_phongtextureshader.vertex.data.data = (void*)sjg_string10;
+    g_phongtextureshader.vertex.data.data = (void*)sjg_string10;
 #line 4
-    sjv_phongtextureshader.vertex.data.isglobal = true;
+    g_phongtextureshader.vertex.data.isglobal = true;
 #line 4
-    sjv_phongtextureshader.vertex.data.count = 30;
+    g_phongtextureshader.vertex.data.count = 30;
 #line 4
-    sjf_array_char(&sjv_phongtextureshader.vertex.data);
+    sjf_array_char(&g_phongtextureshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_phongtextureshader.vertex._isnullterminated = false;
+    g_phongtextureshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_phongtextureshader.vertex);
+    sjf_string(&g_phongtextureshader.vertex);
 #line 14
-    sjv_phongtextureshader.pixel._refCount = 1;
+    g_phongtextureshader.pixel._refCount = 1;
 #line 4 "lib/ui/shader.sj"
-    sjv_phongtextureshader.pixel.count = 30;
+    g_phongtextureshader.pixel.count = 30;
 #line 4
-    sjv_phongtextureshader.pixel.data._refCount = 1;
+    g_phongtextureshader.pixel.data._refCount = 1;
 #line 4
-    sjv_phongtextureshader.pixel.data.datasize = 30;
+    g_phongtextureshader.pixel.data.datasize = 30;
 #line 4
-    sjv_phongtextureshader.pixel.data.data = (void*)sjg_string11;
+    g_phongtextureshader.pixel.data.data = (void*)sjg_string11;
 #line 4
-    sjv_phongtextureshader.pixel.data.isglobal = true;
+    g_phongtextureshader.pixel.data.isglobal = true;
 #line 4
-    sjv_phongtextureshader.pixel.data.count = 30;
+    g_phongtextureshader.pixel.data.count = 30;
 #line 4
-    sjf_array_char(&sjv_phongtextureshader.pixel.data);
+    sjf_array_char(&g_phongtextureshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_phongtextureshader.pixel._isnullterminated = false;
+    g_phongtextureshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_phongtextureshader.pixel);
+    sjf_string(&g_phongtextureshader.pixel);
 #line 14
-    sjf_shader(&sjv_phongtextureshader);
+    sjf_shader(&g_phongtextureshader);
 #line 14
-    sjv_textshader._refCount = 1;
+    g_textshader._refCount = 1;
 #line 14
-    sjv_textshader.vertex._refCount = 1;
+    g_textshader.vertex._refCount = 1;
 #line 5 "lib/ui/shader.sj"
-    sjv_textshader.vertex.count = 24;
+    g_textshader.vertex.count = 24;
 #line 5
-    sjv_textshader.vertex.data._refCount = 1;
+    g_textshader.vertex.data._refCount = 1;
 #line 5
-    sjv_textshader.vertex.data.datasize = 24;
+    g_textshader.vertex.data.datasize = 24;
 #line 5
-    sjv_textshader.vertex.data.data = (void*)sjg_string12;
+    g_textshader.vertex.data.data = (void*)sjg_string12;
 #line 5
-    sjv_textshader.vertex.data.isglobal = true;
+    g_textshader.vertex.data.isglobal = true;
 #line 5
-    sjv_textshader.vertex.data.count = 24;
+    g_textshader.vertex.data.count = 24;
 #line 5
-    sjf_array_char(&sjv_textshader.vertex.data);
+    sjf_array_char(&g_textshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_textshader.vertex._isnullterminated = false;
+    g_textshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_textshader.vertex);
+    sjf_string(&g_textshader.vertex);
 #line 14
-    sjv_textshader.pixel._refCount = 1;
+    g_textshader.pixel._refCount = 1;
 #line 5 "lib/ui/shader.sj"
-    sjv_textshader.pixel.count = 24;
+    g_textshader.pixel.count = 24;
 #line 5
-    sjv_textshader.pixel.data._refCount = 1;
+    g_textshader.pixel.data._refCount = 1;
 #line 5
-    sjv_textshader.pixel.data.datasize = 24;
+    g_textshader.pixel.data.datasize = 24;
 #line 5
-    sjv_textshader.pixel.data.data = (void*)sjg_string13;
+    g_textshader.pixel.data.data = (void*)sjg_string13;
 #line 5
-    sjv_textshader.pixel.data.isglobal = true;
+    g_textshader.pixel.data.isglobal = true;
 #line 5
-    sjv_textshader.pixel.data.count = 24;
+    g_textshader.pixel.data.count = 24;
 #line 5
-    sjf_array_char(&sjv_textshader.pixel.data);
+    sjf_array_char(&g_textshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_textshader.pixel._isnullterminated = false;
+    g_textshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_textshader.pixel);
+    sjf_string(&g_textshader.pixel);
 #line 14
-    sjf_shader(&sjv_textshader);
+    sjf_shader(&g_textshader);
 #line 14
-    sjv_style._refCount = 1;
+    g_style._refCount = 1;
 #line 14
-    sjf_style(&sjv_style);
+    sjf_style(&g_style);
 #line 14
-    sjv_vertex_location_texture_normal_format._refCount = 1;
+    g_vertex_location_texture_normal_format._refCount = 1;
 #line 1 "lib/ui/vertexBufferBuilders.sj"
-    sjv_vertex_location_texture_normal_format.count = 32;
+    g_vertex_location_texture_normal_format.count = 32;
 #line 1
-    sjv_vertex_location_texture_normal_format.data._refCount = 1;
+    g_vertex_location_texture_normal_format.data._refCount = 1;
 #line 1
-    sjv_vertex_location_texture_normal_format.data.datasize = 32;
+    g_vertex_location_texture_normal_format.data.datasize = 32;
 #line 1
-    sjv_vertex_location_texture_normal_format.data.data = (void*)sjg_string14;
+    g_vertex_location_texture_normal_format.data.data = (void*)sjg_string14;
 #line 1
-    sjv_vertex_location_texture_normal_format.data.isglobal = true;
+    g_vertex_location_texture_normal_format.data.isglobal = true;
 #line 1
-    sjv_vertex_location_texture_normal_format.data.count = 32;
+    g_vertex_location_texture_normal_format.data.count = 32;
 #line 1
-    sjf_array_char(&sjv_vertex_location_texture_normal_format.data);
+    sjf_array_char(&g_vertex_location_texture_normal_format.data);
 #line 14 "lib/common/string.sj"
-    sjv_vertex_location_texture_normal_format._isnullterminated = false;
+    g_vertex_location_texture_normal_format._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_vertex_location_texture_normal_format);
+    sjf_string(&g_vertex_location_texture_normal_format);
 #line 14
-    sjv_saturateshader._refCount = 1;
+    g_saturateshader._refCount = 1;
 #line 14
-    sjv_saturateshader.vertex._refCount = 1;
+    g_saturateshader.vertex._refCount = 1;
 #line 1 "lib/ui/saturateEffect.sj"
-    sjv_saturateshader.vertex.count = 20;
+    g_saturateshader.vertex.count = 20;
 #line 1
-    sjv_saturateshader.vertex.data._refCount = 1;
+    g_saturateshader.vertex.data._refCount = 1;
 #line 1
-    sjv_saturateshader.vertex.data.datasize = 20;
+    g_saturateshader.vertex.data.datasize = 20;
 #line 1
-    sjv_saturateshader.vertex.data.data = (void*)sjg_string1;
+    g_saturateshader.vertex.data.data = (void*)sjg_string1;
 #line 1
-    sjv_saturateshader.vertex.data.isglobal = true;
+    g_saturateshader.vertex.data.isglobal = true;
 #line 1
-    sjv_saturateshader.vertex.data.count = 20;
+    g_saturateshader.vertex.data.count = 20;
 #line 1
-    sjf_array_char(&sjv_saturateshader.vertex.data);
+    sjf_array_char(&g_saturateshader.vertex.data);
 #line 14 "lib/common/string.sj"
-    sjv_saturateshader.vertex._isnullterminated = false;
+    g_saturateshader.vertex._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_saturateshader.vertex);
+    sjf_string(&g_saturateshader.vertex);
 #line 14
-    sjv_saturateshader.pixel._refCount = 1;
+    g_saturateshader.pixel._refCount = 1;
 #line 1 "lib/ui/saturateEffect.sj"
-    sjv_saturateshader.pixel.count = 21;
+    g_saturateshader.pixel.count = 21;
 #line 1
-    sjv_saturateshader.pixel.data._refCount = 1;
+    g_saturateshader.pixel.data._refCount = 1;
 #line 1
-    sjv_saturateshader.pixel.data.datasize = 21;
+    g_saturateshader.pixel.data.datasize = 21;
 #line 1
-    sjv_saturateshader.pixel.data.data = (void*)sjg_string15;
+    g_saturateshader.pixel.data.data = (void*)sjg_string15;
 #line 1
-    sjv_saturateshader.pixel.data.isglobal = true;
+    g_saturateshader.pixel.data.isglobal = true;
 #line 1
-    sjv_saturateshader.pixel.data.count = 21;
+    g_saturateshader.pixel.data.count = 21;
 #line 1
-    sjf_array_char(&sjv_saturateshader.pixel.data);
+    sjf_array_char(&g_saturateshader.pixel.data);
 #line 14 "lib/common/string.sj"
-    sjv_saturateshader.pixel._isnullterminated = false;
+    g_saturateshader.pixel._isnullterminated = false;
 #line 14
-    sjf_string(&sjv_saturateshader.pixel);
+    sjf_string(&g_saturateshader.pixel);
 #line 14
-    sjf_shader(&sjv_saturateshader);
+    sjf_shader(&g_saturateshader);
 #line 14
     sjt_call3 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 14
@@ -50353,129 +50352,129 @@ int main(int argc, char** argv) {
 #line 1 "nau/init.sj"
     sjt_cast2 = sjt_call3;
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast2, &sjv_root);
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast2, &g_root);
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount++;
     }
 
 #line 1
-    sjv_menuscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
+    g_menuscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
 #line 1
-    sjv_menuscene->_refCount = 1;
+    g_menuscene->_refCount = 1;
 #line 1
-    sjv_menuscene->children._refCount = 1;
+    g_menuscene->children._refCount = 1;
 #line 2 "lib/common/array.sj"
-    sjv_menuscene->children.datasize = 0;
+    g_menuscene->children.datasize = 0;
 #line 3
-    sjv_menuscene->children.data = 0;
+    g_menuscene->children.data = 0;
 #line 4
-    sjv_menuscene->children.isglobal = false;
+    g_menuscene->children.isglobal = false;
 #line 5
-    sjv_menuscene->children.count = 0;
+    g_menuscene->children.count = 0;
 #line 5
-    sjf_array_heap_iface_model(&sjv_menuscene->children);
+    sjf_array_heap_iface_model(&g_menuscene->children);
 #line 5
-    sjv_menuscene->lookatmin._refCount = 1;
+    g_menuscene->lookatmin._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_menuscene->lookatmin.x = 0.0f;
+    g_menuscene->lookatmin.x = 0.0f;
 #line 3
-    sjv_menuscene->lookatmin.y = 0.0f;
+    g_menuscene->lookatmin.y = 0.0f;
 #line 4
-    sjv_menuscene->lookatmin.z = 0.0f;
+    g_menuscene->lookatmin.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_menuscene->lookatmin);
+    sjf_vec3(&g_menuscene->lookatmin);
 #line 4
-    sjv_menuscene->lookatmax._refCount = 1;
+    g_menuscene->lookatmax._refCount = 1;
 #line 2
-    sjv_menuscene->lookatmax.x = 0.0f;
+    g_menuscene->lookatmax.x = 0.0f;
 #line 3
-    sjv_menuscene->lookatmax.y = 0.0f;
+    g_menuscene->lookatmax.y = 0.0f;
 #line 4
-    sjv_menuscene->lookatmax.z = 0.0f;
+    g_menuscene->lookatmax.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_menuscene->lookatmax);
+    sjf_vec3(&g_menuscene->lookatmax);
 #line 6 "nau/nauScene3dElement.sj"
-    sjv_menuscene->cameradistance = 5.0f;
+    g_menuscene->cameradistance = 5.0f;
 #line 7
-    sjv_menuscene->fieldofview = 90.0f;
+    g_menuscene->fieldofview = 90.0f;
 #line 8
-    sjv_menuscene->znear = 1.0f;
+    g_menuscene->znear = 1.0f;
 #line 9
-    sjv_menuscene->zfar = 100.0f;
+    g_menuscene->zfar = 100.0f;
 #line 9
-    sjv_menuscene->light._refCount = 1;
+    g_menuscene->light._refCount = 1;
 #line 9
-    sjv_menuscene->light.pos._refCount = 1;
+    g_menuscene->light.pos._refCount = 1;
 #line 2 "lib/ui/scene3dElement.sj"
-    sjv_menuscene->light.pos.x = 1.0f;
+    g_menuscene->light.pos.x = 1.0f;
 #line 2
-    sjv_menuscene->light.pos.y = 1.0f;
+    g_menuscene->light.pos.y = 1.0f;
 #line 2
-    sjv_menuscene->light.pos.z = 1.0f;
+    g_menuscene->light.pos.z = 1.0f;
 #line 2
-    sjf_vec3(&sjv_menuscene->light.pos);
+    sjf_vec3(&g_menuscene->light.pos);
 #line 2
-    sjv_menuscene->light.diffusecolor._refCount = 1;
+    g_menuscene->light.diffusecolor._refCount = 1;
 #line 3
-    sjv_menuscene->light.diffusecolor.r = 0.5f;
+    g_menuscene->light.diffusecolor.r = 0.5f;
 #line 3
-    sjv_menuscene->light.diffusecolor.g = 0.5f;
+    g_menuscene->light.diffusecolor.g = 0.5f;
 #line 3
-    sjv_menuscene->light.diffusecolor.b = 0.0f;
+    g_menuscene->light.diffusecolor.b = 0.0f;
 #line 3
-    sjv_menuscene->light.diffusecolor.a = 1.0f;
+    g_menuscene->light.diffusecolor.a = 1.0f;
 #line 3
-    sjf_color(&sjv_menuscene->light.diffusecolor);
+    sjf_color(&g_menuscene->light.diffusecolor);
 #line 3
-    sjv_menuscene->light.speccolor._refCount = 1;
+    g_menuscene->light.speccolor._refCount = 1;
 #line 4
-    sjv_menuscene->light.speccolor.r = 1.0f;
+    g_menuscene->light.speccolor.r = 1.0f;
 #line 4
-    sjv_menuscene->light.speccolor.g = 1.0f;
+    g_menuscene->light.speccolor.g = 1.0f;
 #line 4
-    sjv_menuscene->light.speccolor.b = 1.0f;
+    g_menuscene->light.speccolor.b = 1.0f;
 #line 4
-    sjv_menuscene->light.speccolor.a = 1.0f;
+    g_menuscene->light.speccolor.a = 1.0f;
 #line 4
-    sjf_color(&sjv_menuscene->light.speccolor);
+    sjf_color(&g_menuscene->light.speccolor);
 #line 4
-    sjf_light(&sjv_menuscene->light);
+    sjf_light(&g_menuscene->light);
 #line 4
-    sjv_menuscene->projection._refCount = 1;
+    g_menuscene->projection._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_menuscene->projection.m00 = 0.0f;
+    g_menuscene->projection.m00 = 0.0f;
 #line 3
-    sjv_menuscene->projection.m01 = 0.0f;
+    g_menuscene->projection.m01 = 0.0f;
 #line 4
-    sjv_menuscene->projection.m02 = 0.0f;
+    g_menuscene->projection.m02 = 0.0f;
 #line 5
-    sjv_menuscene->projection.m03 = 0.0f;
+    g_menuscene->projection.m03 = 0.0f;
 #line 6
-    sjv_menuscene->projection.m10 = 0.0f;
+    g_menuscene->projection.m10 = 0.0f;
 #line 7
-    sjv_menuscene->projection.m11 = 0.0f;
+    g_menuscene->projection.m11 = 0.0f;
 #line 8
-    sjv_menuscene->projection.m12 = 0.0f;
+    g_menuscene->projection.m12 = 0.0f;
 #line 9
-    sjv_menuscene->projection.m13 = 0.0f;
+    g_menuscene->projection.m13 = 0.0f;
 #line 10
-    sjv_menuscene->projection.m20 = 0.0f;
+    g_menuscene->projection.m20 = 0.0f;
 #line 11
-    sjv_menuscene->projection.m21 = 0.0f;
+    g_menuscene->projection.m21 = 0.0f;
 #line 12
-    sjv_menuscene->projection.m22 = 0.0f;
+    g_menuscene->projection.m22 = 0.0f;
 #line 13
-    sjv_menuscene->projection.m23 = 0.0f;
+    g_menuscene->projection.m23 = 0.0f;
 #line 14
-    sjv_menuscene->projection.m30 = 0.0f;
+    g_menuscene->projection.m30 = 0.0f;
 #line 15
-    sjv_menuscene->projection.m31 = 0.0f;
+    g_menuscene->projection.m31 = 0.0f;
 #line 16
-    sjv_menuscene->projection.m32 = 0.0f;
+    g_menuscene->projection.m32 = 0.0f;
 #line 17
-    sjv_menuscene->projection.m33 = 0.0f;
+    g_menuscene->projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_menuscene->projection);
+    sjf_mat4(&g_menuscene->projection);
 #line 17
     sjt_call17._refCount = 1;
 #line 12 "nau/nauScene3dElement.sj"
@@ -50515,53 +50514,53 @@ int main(int argc, char** argv) {
 #line 12
     sjt_functionParam129 = &sjt_call19;
 #line 12
-    sjf_mat4_lookatlh(sjt_functionParam127, sjt_functionParam128, sjt_functionParam129, &sjv_menuscene->view);
+    sjf_mat4_lookatlh(sjt_functionParam127, sjt_functionParam128, sjt_functionParam129, &g_menuscene->view);
 #line 12
-    sjf_mat4_identity(&sjv_menuscene->world);
+    sjf_mat4_identity(&g_menuscene->world);
 #line 12
-    sjv_menuscene->_rect._refCount = 1;
+    g_menuscene->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_menuscene->_rect.x = 0;
+    g_menuscene->_rect.x = 0;
 #line 3
-    sjv_menuscene->_rect.y = 0;
+    g_menuscene->_rect.y = 0;
 #line 4
-    sjv_menuscene->_rect.w = 0;
+    g_menuscene->_rect.w = 0;
 #line 5
-    sjv_menuscene->_rect.h = 0;
+    g_menuscene->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_menuscene->_rect);
+    sjf_rect(&g_menuscene->_rect);
 #line 93 "nau/nauScene3dElement.sj"
-    sjv_menuscene->_isdragging = false;
+    g_menuscene->_isdragging = false;
 #line 93
-    sjv_menuscene->_startdrag._refCount = 1;
+    g_menuscene->_startdrag._refCount = 1;
 #line 2 "lib/ui/point.sj"
-    sjv_menuscene->_startdrag.x = 0;
+    g_menuscene->_startdrag.x = 0;
 #line 3
-    sjv_menuscene->_startdrag.y = 0;
+    g_menuscene->_startdrag.y = 0;
 #line 3
-    sjf_point(&sjv_menuscene->_startdrag);
+    sjf_point(&g_menuscene->_startdrag);
 #line 3
-    sjv_menuscene->_lookat._refCount = 1;
+    g_menuscene->_lookat._refCount = 1;
 #line 95 "nau/nauScene3dElement.sj"
-    sjv_menuscene->_lookat.x = 0.0f;
+    g_menuscene->_lookat.x = 0.0f;
 #line 95
-    sjv_menuscene->_lookat.y = 0.0f;
+    g_menuscene->_lookat.y = 0.0f;
 #line 95
-    sjv_menuscene->_lookat.z = 0.0f;
+    g_menuscene->_lookat.z = 0.0f;
 #line 95
-    sjf_vec3(&sjv_menuscene->_lookat);
+    sjf_vec3(&g_menuscene->_lookat);
 #line 95
-    sjv_menuscene->_lookatdrag._refCount = 1;
+    g_menuscene->_lookatdrag._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_menuscene->_lookatdrag.x = 0.0f;
+    g_menuscene->_lookatdrag.x = 0.0f;
 #line 3
-    sjv_menuscene->_lookatdrag.y = 0.0f;
+    g_menuscene->_lookatdrag.y = 0.0f;
 #line 4
-    sjv_menuscene->_lookatdrag.z = 0.0f;
+    g_menuscene->_lookatdrag.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_menuscene->_lookatdrag);
+    sjf_vec3(&g_menuscene->_lookatdrag);
 #line 4
-    sjf_nauscene3delement_heap(sjv_menuscene);
+    sjf_nauscene3delement_heap(g_menuscene);
 #line 4
     sjt_call20 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 4
@@ -50609,129 +50608,129 @@ int main(int argc, char** argv) {
 #line 3 "nau/init.sj"
     sjt_cast13 = sjt_call20;
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast13, &sjv_menuelement);
-    if (sjv_menuelement._parent != 0) {
-        sjv_menuelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast13, &g_menuelement);
+    if (g_menuelement._parent != 0) {
+        g_menuelement._parent->_refCount++;
     }
 
 #line 1
-    sjv_fieldscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
+    g_fieldscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
 #line 1
-    sjv_fieldscene->_refCount = 1;
+    g_fieldscene->_refCount = 1;
 #line 1
-    sjv_fieldscene->children._refCount = 1;
+    g_fieldscene->children._refCount = 1;
 #line 2 "lib/common/array.sj"
-    sjv_fieldscene->children.datasize = 0;
+    g_fieldscene->children.datasize = 0;
 #line 3
-    sjv_fieldscene->children.data = 0;
+    g_fieldscene->children.data = 0;
 #line 4
-    sjv_fieldscene->children.isglobal = false;
+    g_fieldscene->children.isglobal = false;
 #line 5
-    sjv_fieldscene->children.count = 0;
+    g_fieldscene->children.count = 0;
 #line 5
-    sjf_array_heap_iface_model(&sjv_fieldscene->children);
+    sjf_array_heap_iface_model(&g_fieldscene->children);
 #line 5
-    sjv_fieldscene->lookatmin._refCount = 1;
+    g_fieldscene->lookatmin._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_fieldscene->lookatmin.x = 0.0f;
+    g_fieldscene->lookatmin.x = 0.0f;
 #line 3
-    sjv_fieldscene->lookatmin.y = 0.0f;
+    g_fieldscene->lookatmin.y = 0.0f;
 #line 4
-    sjv_fieldscene->lookatmin.z = 0.0f;
+    g_fieldscene->lookatmin.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_fieldscene->lookatmin);
+    sjf_vec3(&g_fieldscene->lookatmin);
 #line 4
-    sjv_fieldscene->lookatmax._refCount = 1;
+    g_fieldscene->lookatmax._refCount = 1;
 #line 2
-    sjv_fieldscene->lookatmax.x = 0.0f;
+    g_fieldscene->lookatmax.x = 0.0f;
 #line 3
-    sjv_fieldscene->lookatmax.y = 0.0f;
+    g_fieldscene->lookatmax.y = 0.0f;
 #line 4
-    sjv_fieldscene->lookatmax.z = 0.0f;
+    g_fieldscene->lookatmax.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_fieldscene->lookatmax);
+    sjf_vec3(&g_fieldscene->lookatmax);
 #line 6 "nau/nauScene3dElement.sj"
-    sjv_fieldscene->cameradistance = 5.0f;
+    g_fieldscene->cameradistance = 5.0f;
 #line 7
-    sjv_fieldscene->fieldofview = 90.0f;
+    g_fieldscene->fieldofview = 90.0f;
 #line 8
-    sjv_fieldscene->znear = 1.0f;
+    g_fieldscene->znear = 1.0f;
 #line 9
-    sjv_fieldscene->zfar = 100.0f;
+    g_fieldscene->zfar = 100.0f;
 #line 9
-    sjv_fieldscene->light._refCount = 1;
+    g_fieldscene->light._refCount = 1;
 #line 9
-    sjv_fieldscene->light.pos._refCount = 1;
+    g_fieldscene->light.pos._refCount = 1;
 #line 2 "lib/ui/scene3dElement.sj"
-    sjv_fieldscene->light.pos.x = 1.0f;
+    g_fieldscene->light.pos.x = 1.0f;
 #line 2
-    sjv_fieldscene->light.pos.y = 1.0f;
+    g_fieldscene->light.pos.y = 1.0f;
 #line 2
-    sjv_fieldscene->light.pos.z = 1.0f;
+    g_fieldscene->light.pos.z = 1.0f;
 #line 2
-    sjf_vec3(&sjv_fieldscene->light.pos);
+    sjf_vec3(&g_fieldscene->light.pos);
 #line 2
-    sjv_fieldscene->light.diffusecolor._refCount = 1;
+    g_fieldscene->light.diffusecolor._refCount = 1;
 #line 3
-    sjv_fieldscene->light.diffusecolor.r = 0.5f;
+    g_fieldscene->light.diffusecolor.r = 0.5f;
 #line 3
-    sjv_fieldscene->light.diffusecolor.g = 0.5f;
+    g_fieldscene->light.diffusecolor.g = 0.5f;
 #line 3
-    sjv_fieldscene->light.diffusecolor.b = 0.0f;
+    g_fieldscene->light.diffusecolor.b = 0.0f;
 #line 3
-    sjv_fieldscene->light.diffusecolor.a = 1.0f;
+    g_fieldscene->light.diffusecolor.a = 1.0f;
 #line 3
-    sjf_color(&sjv_fieldscene->light.diffusecolor);
+    sjf_color(&g_fieldscene->light.diffusecolor);
 #line 3
-    sjv_fieldscene->light.speccolor._refCount = 1;
+    g_fieldscene->light.speccolor._refCount = 1;
 #line 4
-    sjv_fieldscene->light.speccolor.r = 1.0f;
+    g_fieldscene->light.speccolor.r = 1.0f;
 #line 4
-    sjv_fieldscene->light.speccolor.g = 1.0f;
+    g_fieldscene->light.speccolor.g = 1.0f;
 #line 4
-    sjv_fieldscene->light.speccolor.b = 1.0f;
+    g_fieldscene->light.speccolor.b = 1.0f;
 #line 4
-    sjv_fieldscene->light.speccolor.a = 1.0f;
+    g_fieldscene->light.speccolor.a = 1.0f;
 #line 4
-    sjf_color(&sjv_fieldscene->light.speccolor);
+    sjf_color(&g_fieldscene->light.speccolor);
 #line 4
-    sjf_light(&sjv_fieldscene->light);
+    sjf_light(&g_fieldscene->light);
 #line 4
-    sjv_fieldscene->projection._refCount = 1;
+    g_fieldscene->projection._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_fieldscene->projection.m00 = 0.0f;
+    g_fieldscene->projection.m00 = 0.0f;
 #line 3
-    sjv_fieldscene->projection.m01 = 0.0f;
+    g_fieldscene->projection.m01 = 0.0f;
 #line 4
-    sjv_fieldscene->projection.m02 = 0.0f;
+    g_fieldscene->projection.m02 = 0.0f;
 #line 5
-    sjv_fieldscene->projection.m03 = 0.0f;
+    g_fieldscene->projection.m03 = 0.0f;
 #line 6
-    sjv_fieldscene->projection.m10 = 0.0f;
+    g_fieldscene->projection.m10 = 0.0f;
 #line 7
-    sjv_fieldscene->projection.m11 = 0.0f;
+    g_fieldscene->projection.m11 = 0.0f;
 #line 8
-    sjv_fieldscene->projection.m12 = 0.0f;
+    g_fieldscene->projection.m12 = 0.0f;
 #line 9
-    sjv_fieldscene->projection.m13 = 0.0f;
+    g_fieldscene->projection.m13 = 0.0f;
 #line 10
-    sjv_fieldscene->projection.m20 = 0.0f;
+    g_fieldscene->projection.m20 = 0.0f;
 #line 11
-    sjv_fieldscene->projection.m21 = 0.0f;
+    g_fieldscene->projection.m21 = 0.0f;
 #line 12
-    sjv_fieldscene->projection.m22 = 0.0f;
+    g_fieldscene->projection.m22 = 0.0f;
 #line 13
-    sjv_fieldscene->projection.m23 = 0.0f;
+    g_fieldscene->projection.m23 = 0.0f;
 #line 14
-    sjv_fieldscene->projection.m30 = 0.0f;
+    g_fieldscene->projection.m30 = 0.0f;
 #line 15
-    sjv_fieldscene->projection.m31 = 0.0f;
+    g_fieldscene->projection.m31 = 0.0f;
 #line 16
-    sjv_fieldscene->projection.m32 = 0.0f;
+    g_fieldscene->projection.m32 = 0.0f;
 #line 17
-    sjv_fieldscene->projection.m33 = 0.0f;
+    g_fieldscene->projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_fieldscene->projection);
+    sjf_mat4(&g_fieldscene->projection);
 #line 17
     sjt_call21._refCount = 1;
 #line 12 "nau/nauScene3dElement.sj"
@@ -50771,53 +50770,53 @@ int main(int argc, char** argv) {
 #line 12
     sjt_functionParam132 = &sjt_call23;
 #line 12
-    sjf_mat4_lookatlh(sjt_functionParam130, sjt_functionParam131, sjt_functionParam132, &sjv_fieldscene->view);
+    sjf_mat4_lookatlh(sjt_functionParam130, sjt_functionParam131, sjt_functionParam132, &g_fieldscene->view);
 #line 12
-    sjf_mat4_identity(&sjv_fieldscene->world);
+    sjf_mat4_identity(&g_fieldscene->world);
 #line 12
-    sjv_fieldscene->_rect._refCount = 1;
+    g_fieldscene->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_fieldscene->_rect.x = 0;
+    g_fieldscene->_rect.x = 0;
 #line 3
-    sjv_fieldscene->_rect.y = 0;
+    g_fieldscene->_rect.y = 0;
 #line 4
-    sjv_fieldscene->_rect.w = 0;
+    g_fieldscene->_rect.w = 0;
 #line 5
-    sjv_fieldscene->_rect.h = 0;
+    g_fieldscene->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_fieldscene->_rect);
+    sjf_rect(&g_fieldscene->_rect);
 #line 93 "nau/nauScene3dElement.sj"
-    sjv_fieldscene->_isdragging = false;
+    g_fieldscene->_isdragging = false;
 #line 93
-    sjv_fieldscene->_startdrag._refCount = 1;
+    g_fieldscene->_startdrag._refCount = 1;
 #line 2 "lib/ui/point.sj"
-    sjv_fieldscene->_startdrag.x = 0;
+    g_fieldscene->_startdrag.x = 0;
 #line 3
-    sjv_fieldscene->_startdrag.y = 0;
+    g_fieldscene->_startdrag.y = 0;
 #line 3
-    sjf_point(&sjv_fieldscene->_startdrag);
+    sjf_point(&g_fieldscene->_startdrag);
 #line 3
-    sjv_fieldscene->_lookat._refCount = 1;
+    g_fieldscene->_lookat._refCount = 1;
 #line 95 "nau/nauScene3dElement.sj"
-    sjv_fieldscene->_lookat.x = 0.0f;
+    g_fieldscene->_lookat.x = 0.0f;
 #line 95
-    sjv_fieldscene->_lookat.y = 0.0f;
+    g_fieldscene->_lookat.y = 0.0f;
 #line 95
-    sjv_fieldscene->_lookat.z = 0.0f;
+    g_fieldscene->_lookat.z = 0.0f;
 #line 95
-    sjf_vec3(&sjv_fieldscene->_lookat);
+    sjf_vec3(&g_fieldscene->_lookat);
 #line 95
-    sjv_fieldscene->_lookatdrag._refCount = 1;
+    g_fieldscene->_lookatdrag._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_fieldscene->_lookatdrag.x = 0.0f;
+    g_fieldscene->_lookatdrag.x = 0.0f;
 #line 3
-    sjv_fieldscene->_lookatdrag.y = 0.0f;
+    g_fieldscene->_lookatdrag.y = 0.0f;
 #line 4
-    sjv_fieldscene->_lookatdrag.z = 0.0f;
+    g_fieldscene->_lookatdrag.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_fieldscene->_lookatdrag);
+    sjf_vec3(&g_fieldscene->_lookatdrag);
 #line 4
-    sjf_nauscene3delement_heap(sjv_fieldscene);
+    sjf_nauscene3delement_heap(g_fieldscene);
 #line 4
     sjt_call24 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 4
@@ -50865,173 +50864,173 @@ int main(int argc, char** argv) {
 #line 5 "nau/init.sj"
     sjt_cast14 = sjt_call24;
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast14, &sjv_fieldelement);
-    if (sjv_fieldelement._parent != 0) {
-        sjv_fieldelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast14, &g_fieldelement);
+    if (g_fieldelement._parent != 0) {
+        g_fieldelement._parent->_refCount++;
     }
 
 #line 1
-    sjv_fieldbuyelement = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
+    g_fieldbuyelement = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 1
-    sjv_fieldbuyelement->_refCount = 1;
+    g_fieldbuyelement->_refCount = 1;
 #line 1
-    sjv_fieldbuyelement->children._refCount = 1;
+    g_fieldbuyelement->children._refCount = 1;
 #line 2 "lib/common/array.sj"
-    sjv_fieldbuyelement->children.datasize = 0;
+    g_fieldbuyelement->children.datasize = 0;
 #line 3
-    sjv_fieldbuyelement->children.data = 0;
+    g_fieldbuyelement->children.data = 0;
 #line 4
-    sjv_fieldbuyelement->children.isglobal = false;
+    g_fieldbuyelement->children.isglobal = false;
 #line 5
-    sjv_fieldbuyelement->children.count = 0;
+    g_fieldbuyelement->children.count = 0;
 #line 5
-    sjf_array_heap_iface_element(&sjv_fieldbuyelement->children);
+    sjf_array_heap_iface_element(&g_fieldbuyelement->children);
 #line 5
-    sjv_fieldbuyelement->margin._refCount = 1;
+    g_fieldbuyelement->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
-    sjv_fieldbuyelement->margin.l = 0;
+    g_fieldbuyelement->margin.l = 0;
 #line 3
-    sjv_fieldbuyelement->margin.t = 0;
+    g_fieldbuyelement->margin.t = 0;
 #line 4
-    sjv_fieldbuyelement->margin.r = 0;
+    g_fieldbuyelement->margin.r = 0;
 #line 5
-    sjv_fieldbuyelement->margin.b = 0;
+    g_fieldbuyelement->margin.b = 0;
 #line 5
-    sjf_margin(&sjv_fieldbuyelement->margin);
+    sjf_margin(&g_fieldbuyelement->margin);
 #line 4 "lib/ui/fillLayout.sj"
-    sjv_fieldbuyelement->effect._parent = 0;
+    g_fieldbuyelement->effect._parent = 0;
 #line 4
-    sjv_fieldbuyelement->_rect._refCount = 1;
+    g_fieldbuyelement->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_fieldbuyelement->_rect.x = 0;
+    g_fieldbuyelement->_rect.x = 0;
 #line 3
-    sjv_fieldbuyelement->_rect.y = 0;
+    g_fieldbuyelement->_rect.y = 0;
 #line 4
-    sjv_fieldbuyelement->_rect.w = 0;
+    g_fieldbuyelement->_rect.w = 0;
 #line 5
-    sjv_fieldbuyelement->_rect.h = 0;
+    g_fieldbuyelement->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_fieldbuyelement->_rect);
+    sjf_rect(&g_fieldbuyelement->_rect);
 #line 5
-    sjf_filllayout_heap(sjv_fieldbuyelement);
+    sjf_filllayout_heap(g_fieldbuyelement);
 #line 5
-    sjv_forestscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
+    g_forestscene = (sjs_nauscene3delement*)malloc(sizeof(sjs_nauscene3delement));
 #line 5
-    sjv_forestscene->_refCount = 1;
+    g_forestscene->_refCount = 1;
 #line 5
-    sjv_forestscene->children._refCount = 1;
+    g_forestscene->children._refCount = 1;
 #line 2 "lib/common/array.sj"
-    sjv_forestscene->children.datasize = 0;
+    g_forestscene->children.datasize = 0;
 #line 3
-    sjv_forestscene->children.data = 0;
+    g_forestscene->children.data = 0;
 #line 4
-    sjv_forestscene->children.isglobal = false;
+    g_forestscene->children.isglobal = false;
 #line 5
-    sjv_forestscene->children.count = 0;
+    g_forestscene->children.count = 0;
 #line 5
-    sjf_array_heap_iface_model(&sjv_forestscene->children);
+    sjf_array_heap_iface_model(&g_forestscene->children);
 #line 5
-    sjv_forestscene->lookatmin._refCount = 1;
+    g_forestscene->lookatmin._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_forestscene->lookatmin.x = 0.0f;
+    g_forestscene->lookatmin.x = 0.0f;
 #line 3
-    sjv_forestscene->lookatmin.y = 0.0f;
+    g_forestscene->lookatmin.y = 0.0f;
 #line 4
-    sjv_forestscene->lookatmin.z = 0.0f;
+    g_forestscene->lookatmin.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_forestscene->lookatmin);
+    sjf_vec3(&g_forestscene->lookatmin);
 #line 4
-    sjv_forestscene->lookatmax._refCount = 1;
+    g_forestscene->lookatmax._refCount = 1;
 #line 2
-    sjv_forestscene->lookatmax.x = 0.0f;
+    g_forestscene->lookatmax.x = 0.0f;
 #line 3
-    sjv_forestscene->lookatmax.y = 0.0f;
+    g_forestscene->lookatmax.y = 0.0f;
 #line 4
-    sjv_forestscene->lookatmax.z = 0.0f;
+    g_forestscene->lookatmax.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_forestscene->lookatmax);
+    sjf_vec3(&g_forestscene->lookatmax);
 #line 6 "nau/nauScene3dElement.sj"
-    sjv_forestscene->cameradistance = 5.0f;
+    g_forestscene->cameradistance = 5.0f;
 #line 7
-    sjv_forestscene->fieldofview = 90.0f;
+    g_forestscene->fieldofview = 90.0f;
 #line 8
-    sjv_forestscene->znear = 1.0f;
+    g_forestscene->znear = 1.0f;
 #line 9
-    sjv_forestscene->zfar = 100.0f;
+    g_forestscene->zfar = 100.0f;
 #line 9
-    sjv_forestscene->light._refCount = 1;
+    g_forestscene->light._refCount = 1;
 #line 9
-    sjv_forestscene->light.pos._refCount = 1;
+    g_forestscene->light.pos._refCount = 1;
 #line 2 "lib/ui/scene3dElement.sj"
-    sjv_forestscene->light.pos.x = 1.0f;
+    g_forestscene->light.pos.x = 1.0f;
 #line 2
-    sjv_forestscene->light.pos.y = 1.0f;
+    g_forestscene->light.pos.y = 1.0f;
 #line 2
-    sjv_forestscene->light.pos.z = 1.0f;
+    g_forestscene->light.pos.z = 1.0f;
 #line 2
-    sjf_vec3(&sjv_forestscene->light.pos);
+    sjf_vec3(&g_forestscene->light.pos);
 #line 2
-    sjv_forestscene->light.diffusecolor._refCount = 1;
+    g_forestscene->light.diffusecolor._refCount = 1;
 #line 3
-    sjv_forestscene->light.diffusecolor.r = 0.5f;
+    g_forestscene->light.diffusecolor.r = 0.5f;
 #line 3
-    sjv_forestscene->light.diffusecolor.g = 0.5f;
+    g_forestscene->light.diffusecolor.g = 0.5f;
 #line 3
-    sjv_forestscene->light.diffusecolor.b = 0.0f;
+    g_forestscene->light.diffusecolor.b = 0.0f;
 #line 3
-    sjv_forestscene->light.diffusecolor.a = 1.0f;
+    g_forestscene->light.diffusecolor.a = 1.0f;
 #line 3
-    sjf_color(&sjv_forestscene->light.diffusecolor);
+    sjf_color(&g_forestscene->light.diffusecolor);
 #line 3
-    sjv_forestscene->light.speccolor._refCount = 1;
+    g_forestscene->light.speccolor._refCount = 1;
 #line 4
-    sjv_forestscene->light.speccolor.r = 1.0f;
+    g_forestscene->light.speccolor.r = 1.0f;
 #line 4
-    sjv_forestscene->light.speccolor.g = 1.0f;
+    g_forestscene->light.speccolor.g = 1.0f;
 #line 4
-    sjv_forestscene->light.speccolor.b = 1.0f;
+    g_forestscene->light.speccolor.b = 1.0f;
 #line 4
-    sjv_forestscene->light.speccolor.a = 1.0f;
+    g_forestscene->light.speccolor.a = 1.0f;
 #line 4
-    sjf_color(&sjv_forestscene->light.speccolor);
+    sjf_color(&g_forestscene->light.speccolor);
 #line 4
-    sjf_light(&sjv_forestscene->light);
+    sjf_light(&g_forestscene->light);
 #line 4
-    sjv_forestscene->projection._refCount = 1;
+    g_forestscene->projection._refCount = 1;
 #line 2 "lib/ui/mat4.sj"
-    sjv_forestscene->projection.m00 = 0.0f;
+    g_forestscene->projection.m00 = 0.0f;
 #line 3
-    sjv_forestscene->projection.m01 = 0.0f;
+    g_forestscene->projection.m01 = 0.0f;
 #line 4
-    sjv_forestscene->projection.m02 = 0.0f;
+    g_forestscene->projection.m02 = 0.0f;
 #line 5
-    sjv_forestscene->projection.m03 = 0.0f;
+    g_forestscene->projection.m03 = 0.0f;
 #line 6
-    sjv_forestscene->projection.m10 = 0.0f;
+    g_forestscene->projection.m10 = 0.0f;
 #line 7
-    sjv_forestscene->projection.m11 = 0.0f;
+    g_forestscene->projection.m11 = 0.0f;
 #line 8
-    sjv_forestscene->projection.m12 = 0.0f;
+    g_forestscene->projection.m12 = 0.0f;
 #line 9
-    sjv_forestscene->projection.m13 = 0.0f;
+    g_forestscene->projection.m13 = 0.0f;
 #line 10
-    sjv_forestscene->projection.m20 = 0.0f;
+    g_forestscene->projection.m20 = 0.0f;
 #line 11
-    sjv_forestscene->projection.m21 = 0.0f;
+    g_forestscene->projection.m21 = 0.0f;
 #line 12
-    sjv_forestscene->projection.m22 = 0.0f;
+    g_forestscene->projection.m22 = 0.0f;
 #line 13
-    sjv_forestscene->projection.m23 = 0.0f;
+    g_forestscene->projection.m23 = 0.0f;
 #line 14
-    sjv_forestscene->projection.m30 = 0.0f;
+    g_forestscene->projection.m30 = 0.0f;
 #line 15
-    sjv_forestscene->projection.m31 = 0.0f;
+    g_forestscene->projection.m31 = 0.0f;
 #line 16
-    sjv_forestscene->projection.m32 = 0.0f;
+    g_forestscene->projection.m32 = 0.0f;
 #line 17
-    sjv_forestscene->projection.m33 = 0.0f;
+    g_forestscene->projection.m33 = 0.0f;
 #line 17
-    sjf_mat4(&sjv_forestscene->projection);
+    sjf_mat4(&g_forestscene->projection);
 #line 17
     sjt_call25._refCount = 1;
 #line 12 "nau/nauScene3dElement.sj"
@@ -51071,53 +51070,53 @@ int main(int argc, char** argv) {
 #line 12
     sjt_functionParam135 = &sjt_call27;
 #line 12
-    sjf_mat4_lookatlh(sjt_functionParam133, sjt_functionParam134, sjt_functionParam135, &sjv_forestscene->view);
+    sjf_mat4_lookatlh(sjt_functionParam133, sjt_functionParam134, sjt_functionParam135, &g_forestscene->view);
 #line 12
-    sjf_mat4_identity(&sjv_forestscene->world);
+    sjf_mat4_identity(&g_forestscene->world);
 #line 12
-    sjv_forestscene->_rect._refCount = 1;
+    g_forestscene->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_forestscene->_rect.x = 0;
+    g_forestscene->_rect.x = 0;
 #line 3
-    sjv_forestscene->_rect.y = 0;
+    g_forestscene->_rect.y = 0;
 #line 4
-    sjv_forestscene->_rect.w = 0;
+    g_forestscene->_rect.w = 0;
 #line 5
-    sjv_forestscene->_rect.h = 0;
+    g_forestscene->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_forestscene->_rect);
+    sjf_rect(&g_forestscene->_rect);
 #line 93 "nau/nauScene3dElement.sj"
-    sjv_forestscene->_isdragging = false;
+    g_forestscene->_isdragging = false;
 #line 93
-    sjv_forestscene->_startdrag._refCount = 1;
+    g_forestscene->_startdrag._refCount = 1;
 #line 2 "lib/ui/point.sj"
-    sjv_forestscene->_startdrag.x = 0;
+    g_forestscene->_startdrag.x = 0;
 #line 3
-    sjv_forestscene->_startdrag.y = 0;
+    g_forestscene->_startdrag.y = 0;
 #line 3
-    sjf_point(&sjv_forestscene->_startdrag);
+    sjf_point(&g_forestscene->_startdrag);
 #line 3
-    sjv_forestscene->_lookat._refCount = 1;
+    g_forestscene->_lookat._refCount = 1;
 #line 95 "nau/nauScene3dElement.sj"
-    sjv_forestscene->_lookat.x = 0.0f;
+    g_forestscene->_lookat.x = 0.0f;
 #line 95
-    sjv_forestscene->_lookat.y = 0.0f;
+    g_forestscene->_lookat.y = 0.0f;
 #line 95
-    sjv_forestscene->_lookat.z = 0.0f;
+    g_forestscene->_lookat.z = 0.0f;
 #line 95
-    sjf_vec3(&sjv_forestscene->_lookat);
+    sjf_vec3(&g_forestscene->_lookat);
 #line 95
-    sjv_forestscene->_lookatdrag._refCount = 1;
+    g_forestscene->_lookatdrag._refCount = 1;
 #line 2 "lib/ui/vec3.sj"
-    sjv_forestscene->_lookatdrag.x = 0.0f;
+    g_forestscene->_lookatdrag.x = 0.0f;
 #line 3
-    sjv_forestscene->_lookatdrag.y = 0.0f;
+    g_forestscene->_lookatdrag.y = 0.0f;
 #line 4
-    sjv_forestscene->_lookatdrag.z = 0.0f;
+    g_forestscene->_lookatdrag.z = 0.0f;
 #line 4
-    sjf_vec3(&sjv_forestscene->_lookatdrag);
+    sjf_vec3(&g_forestscene->_lookatdrag);
 #line 4
-    sjf_nauscene3delement_heap(sjv_forestscene);
+    sjf_nauscene3delement_heap(g_forestscene);
 #line 4
     sjt_call28 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 4
@@ -51165,75 +51164,75 @@ int main(int argc, char** argv) {
 #line 8 "nau/init.sj"
     sjt_cast15 = sjt_call28;
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast15, &sjv_forestelement);
-    if (sjv_forestelement._parent != 0) {
-        sjv_forestelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast15, &g_forestelement);
+    if (g_forestelement._parent != 0) {
+        g_forestelement._parent->_refCount++;
     }
 
 #line 1
-    sjv_forestbuyelement = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
+    g_forestbuyelement = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 1
-    sjv_forestbuyelement->_refCount = 1;
+    g_forestbuyelement->_refCount = 1;
 #line 1
-    sjv_forestbuyelement->children._refCount = 1;
+    g_forestbuyelement->children._refCount = 1;
 #line 2 "lib/common/array.sj"
-    sjv_forestbuyelement->children.datasize = 0;
+    g_forestbuyelement->children.datasize = 0;
 #line 3
-    sjv_forestbuyelement->children.data = 0;
+    g_forestbuyelement->children.data = 0;
 #line 4
-    sjv_forestbuyelement->children.isglobal = false;
+    g_forestbuyelement->children.isglobal = false;
 #line 5
-    sjv_forestbuyelement->children.count = 0;
+    g_forestbuyelement->children.count = 0;
 #line 5
-    sjf_array_heap_iface_element(&sjv_forestbuyelement->children);
+    sjf_array_heap_iface_element(&g_forestbuyelement->children);
 #line 5
-    sjv_forestbuyelement->margin._refCount = 1;
+    g_forestbuyelement->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
-    sjv_forestbuyelement->margin.l = 0;
+    g_forestbuyelement->margin.l = 0;
 #line 3
-    sjv_forestbuyelement->margin.t = 0;
+    g_forestbuyelement->margin.t = 0;
 #line 4
-    sjv_forestbuyelement->margin.r = 0;
+    g_forestbuyelement->margin.r = 0;
 #line 5
-    sjv_forestbuyelement->margin.b = 0;
+    g_forestbuyelement->margin.b = 0;
 #line 5
-    sjf_margin(&sjv_forestbuyelement->margin);
+    sjf_margin(&g_forestbuyelement->margin);
 #line 4 "lib/ui/fillLayout.sj"
-    sjv_forestbuyelement->effect._parent = 0;
+    g_forestbuyelement->effect._parent = 0;
 #line 4
-    sjv_forestbuyelement->_rect._refCount = 1;
+    g_forestbuyelement->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
-    sjv_forestbuyelement->_rect.x = 0;
+    g_forestbuyelement->_rect.x = 0;
 #line 3
-    sjv_forestbuyelement->_rect.y = 0;
+    g_forestbuyelement->_rect.y = 0;
 #line 4
-    sjv_forestbuyelement->_rect.w = 0;
+    g_forestbuyelement->_rect.w = 0;
 #line 5
-    sjv_forestbuyelement->_rect.h = 0;
+    g_forestbuyelement->_rect.h = 0;
 #line 5
-    sjf_rect(&sjv_forestbuyelement->_rect);
+    sjf_rect(&g_forestbuyelement->_rect);
 #line 5
-    sjf_filllayout_heap(sjv_forestbuyelement);
+    sjf_filllayout_heap(g_forestbuyelement);
 #line 5
-    sjv_menucontroller = (sjs_menucontroller*)malloc(sizeof(sjs_menucontroller));
+    g_menucontroller = (sjs_menucontroller*)malloc(sizeof(sjs_menucontroller));
 #line 5
-    sjv_menucontroller->_refCount = 1;
+    g_menucontroller->_refCount = 1;
 #line 5
-    sjf_menucontroller_heap(sjv_menucontroller);
+    sjf_menucontroller_heap(g_menucontroller);
 #line 5
-    sjv_fieldcontroller = (sjs_fieldcontroller*)malloc(sizeof(sjs_fieldcontroller));
+    g_fieldcontroller = (sjs_fieldcontroller*)malloc(sizeof(sjs_fieldcontroller));
 #line 5
-    sjv_fieldcontroller->_refCount = 1;
+    g_fieldcontroller->_refCount = 1;
 #line 5
-    sjf_fieldcontroller_heap(sjv_fieldcontroller);
+    sjf_fieldcontroller_heap(g_fieldcontroller);
 #line 5
-    sjv_forestcontroller = (sjs_forestcontroller*)malloc(sizeof(sjs_forestcontroller));
+    g_forestcontroller = (sjs_forestcontroller*)malloc(sizeof(sjs_forestcontroller));
 #line 5
-    sjv_forestcontroller->_refCount = 1;
+    g_forestcontroller->_refCount = 1;
 #line 5
-    sjf_forestcontroller_heap(sjv_forestcontroller);
+    sjf_forestcontroller_heap(g_forestcontroller);
 #line 1 "lib/ui/fillLayout.sj"
-    sjt_funcold9 = sjv_fieldbuyelement;
+    sjt_funcold9 = g_fieldbuyelement;
 #line 1
     sjt_funcold9->_refCount++;
 #line 1
@@ -51315,9 +51314,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call36->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call36->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call36->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent106 = &sjv_style;
+    sjt_parent106 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent106, &sjt_call36->font);
 #line 2
@@ -51555,7 +51554,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call36->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call36->_clickgesture._state = sjv_clickstate_none;
+    sjt_call36->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call36->_clickgesture);
 #line 14
@@ -51569,7 +51568,7 @@ int main(int argc, char** argv) {
     }
 
 #line 7 "nau/fieldScene.sj"
-    sjt_call35->position = sjv_borderposition_bottom;
+    sjt_call35->position = g_borderposition_bottom;
 #line 7
     sjt_call35->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -51633,7 +51632,7 @@ int main(int argc, char** argv) {
 #line 20 "lib/ui/textElement.sj"
     sjt_call53->id._refCount = -1;
 #line 2 "lib/ui/style.sj"
-    sjt_parent122 = &sjv_style;
+    sjt_parent122 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent122, &sjt_call53->font);
 #line 2
@@ -51659,7 +51658,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call53->color._refCount = 1;
 #line 17 "nau/fieldScene.sj"
-    sjf_color_copy(&sjt_call53->color, &sjv_colors_black);
+    sjf_color_copy(&sjt_call53->color, &g_colors_black);
 #line 17
     sjt_call53->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -51673,9 +51672,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call53->margin);
 #line 18 "lib/ui/textElement.sj"
-    sjt_call53->halign = sjv_texthorizontal_left;
+    sjt_call53->halign = g_texthorizontal_left;
 #line 18
-    sjt_call53->valign = sjv_textvertical_top;
+    sjt_call53->valign = g_textvertical_top;
 #line 18
     sjt_value13._refCount = 1;
 #line 18 "nau/fieldScene.sj"
@@ -51757,7 +51756,7 @@ int main(int argc, char** argv) {
     }
 
 #line 13 "nau/fieldScene.sj"
-    sjt_call51->position = sjv_borderposition_right;
+    sjt_call51->position = g_borderposition_right;
 #line 13
     sjt_call51->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -52015,19 +52014,19 @@ int main(int argc, char** argv) {
 #line 5
     sjf_filllayout_heap(sjt_funcold9);
 #line 5
-    sjv_fieldbuyelement->_refCount--;
-    if (sjv_fieldbuyelement->_refCount <= 0) {
-        weakptr_release(sjv_fieldbuyelement);
-        sjf_filllayout_destroy(sjv_fieldbuyelement);
-        free(sjv_fieldbuyelement);
+    g_fieldbuyelement->_refCount--;
+    if (g_fieldbuyelement->_refCount <= 0) {
+        weakptr_release(g_fieldbuyelement);
+        sjf_filllayout_destroy(g_fieldbuyelement);
+        free(g_fieldbuyelement);
     }
 
 #line 1 "lib/ui/fillLayout.sj"
-    sjv_fieldbuyelement = sjt_funcold9;
+    g_fieldbuyelement = sjt_funcold9;
 #line 1
-    sjv_fieldbuyelement->_refCount++;
+    g_fieldbuyelement->_refCount++;
 #line 1 "nau/nauScene3dElement.sj"
-    sjt_funcold29 = sjv_fieldscene;
+    sjt_funcold29 = g_fieldscene;
 #line 1
     sjt_funcold29->_refCount++;
 #line 1
@@ -52085,7 +52084,7 @@ int main(int argc, char** argv) {
 #line 85
     object1->shader._refCount = 1;
 #line 34 "nau/fieldScene.sj"
-    sjf_shader_copy(&object1->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object1->shader, &g_phongtextureshader);
 #line 34
     sjt_call90._refCount = 1;
 #line 35
@@ -52731,7 +52730,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call122->shader._refCount = 1;
 #line 57 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call122->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call122->shader, &g_phongtextureshader);
 #line 57
     sjt_call122->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -52825,7 +52824,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call218->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call218->_clickgesture._state = sjv_clickstate_none;
+    sjt_call218->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call218->_clickgesture);
 #line 14
@@ -52913,7 +52912,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call294->margin);
 #line 66 "nau/fieldScene.sj"
-    sjt_call294->stretch = sjv_imagestretch_aspectratio;
+    sjt_call294->stretch = g_imagestretch_aspectratio;
 #line 66
     sjt_call294->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -53375,7 +53374,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call299->shader._refCount = 1;
 #line 73 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call299->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call299->shader, &g_phongtextureshader);
 #line 73
     sjt_call299->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -53469,7 +53468,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call300->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call300->_clickgesture._state = sjv_clickstate_none;
+    sjt_call300->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call300->_clickgesture);
 #line 14
@@ -53557,7 +53556,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call301->margin);
 #line 82 "nau/fieldScene.sj"
-    sjt_call301->stretch = sjv_imagestretch_aspectratio;
+    sjt_call301->stretch = g_imagestretch_aspectratio;
 #line 82
     sjt_call301->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -54019,7 +54018,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call303->shader._refCount = 1;
 #line 89 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call303->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call303->shader, &g_phongtextureshader);
 #line 89
     sjt_call303->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -54113,7 +54112,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call304->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call304->_clickgesture._state = sjv_clickstate_none;
+    sjt_call304->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call304->_clickgesture);
 #line 14
@@ -54201,7 +54200,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call305->margin);
 #line 98 "nau/fieldScene.sj"
-    sjt_call305->stretch = sjv_imagestretch_aspectratio;
+    sjt_call305->stretch = g_imagestretch_aspectratio;
 #line 98
     sjt_call305->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -54663,7 +54662,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call307->shader._refCount = 1;
 #line 105 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call307->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call307->shader, &g_phongtextureshader);
 #line 105
     sjt_call307->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -54757,7 +54756,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call308->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call308->_clickgesture._state = sjv_clickstate_none;
+    sjt_call308->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call308->_clickgesture);
 #line 14
@@ -54845,7 +54844,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call309->margin);
 #line 114 "nau/fieldScene.sj"
-    sjt_call309->stretch = sjv_imagestretch_aspectratio;
+    sjt_call309->stretch = g_imagestretch_aspectratio;
 #line 114
     sjt_call309->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -55307,7 +55306,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call311->shader._refCount = 1;
 #line 121 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call311->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call311->shader, &g_phongtextureshader);
 #line 121
     sjt_call311->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -55401,7 +55400,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call312->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call312->_clickgesture._state = sjv_clickstate_none;
+    sjt_call312->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call312->_clickgesture);
 #line 14
@@ -55489,7 +55488,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call313->margin);
 #line 130 "nau/fieldScene.sj"
-    sjt_call313->stretch = sjv_imagestretch_aspectratio;
+    sjt_call313->stretch = g_imagestretch_aspectratio;
 #line 130
     sjt_call313->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -55951,7 +55950,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call315->shader._refCount = 1;
 #line 137 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call315->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call315->shader, &g_phongtextureshader);
 #line 137
     sjt_call315->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -56045,7 +56044,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call316->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call316->_clickgesture._state = sjv_clickstate_none;
+    sjt_call316->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call316->_clickgesture);
 #line 14
@@ -56133,7 +56132,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call317->margin);
 #line 146 "nau/fieldScene.sj"
-    sjt_call317->stretch = sjv_imagestretch_aspectratio;
+    sjt_call317->stretch = g_imagestretch_aspectratio;
 #line 146
     sjt_call317->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -56595,7 +56594,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call319->shader._refCount = 1;
 #line 153 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call319->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call319->shader, &g_phongtextureshader);
 #line 153
     sjt_call319->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -56689,7 +56688,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call320->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call320->_clickgesture._state = sjv_clickstate_none;
+    sjt_call320->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call320->_clickgesture);
 #line 14
@@ -56777,7 +56776,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call321->margin);
 #line 162 "nau/fieldScene.sj"
-    sjt_call321->stretch = sjv_imagestretch_aspectratio;
+    sjt_call321->stretch = g_imagestretch_aspectratio;
 #line 162
     sjt_call321->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -57239,7 +57238,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call323->shader._refCount = 1;
 #line 169 "nau/fieldScene.sj"
-    sjf_shader_copy(&sjt_call323->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call323->shader, &g_phongtextureshader);
 #line 169
     sjt_call323->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -57333,7 +57332,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call324->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call324->_clickgesture._state = sjv_clickstate_none;
+    sjt_call324->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call324->_clickgesture);
 #line 14
@@ -57421,7 +57420,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call325->margin);
 #line 178 "nau/fieldScene.sj"
-    sjt_call325->stretch = sjv_imagestretch_aspectratio;
+    sjt_call325->stretch = g_imagestretch_aspectratio;
 #line 178
     sjt_call325->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -57929,7 +57928,7 @@ int main(int argc, char** argv) {
 #line 85
     object3->shader._refCount = 1;
 #line 190 "nau/fieldScene.sj"
-    sjf_shader_copy(&object3->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object3->shader, &g_phongtextureshader);
 #line 190
     sjt_call330._refCount = 1;
 #line 192
@@ -58229,7 +58228,7 @@ int main(int argc, char** argv) {
 #line 85
     object4->shader._refCount = 1;
 #line 200 "nau/fieldScene.sj"
-    sjf_shader_copy(&object4->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object4->shader, &g_phongtextureshader);
 #line 200
     sjt_call335._refCount = 1;
 #line 202
@@ -58527,7 +58526,7 @@ int main(int argc, char** argv) {
 #line 85
     object5->shader._refCount = 1;
 #line 209 "nau/fieldScene.sj"
-    sjf_shader_copy(&object5->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object5->shader, &g_phongtextureshader);
 #line 209
     sjt_call340._refCount = 1;
 #line 211
@@ -58827,7 +58826,7 @@ int main(int argc, char** argv) {
 #line 85
     object6->shader._refCount = 1;
 #line 218 "nau/fieldScene.sj"
-    sjf_shader_copy(&object6->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object6->shader, &g_phongtextureshader);
 #line 218
     sjt_call345._refCount = 1;
 #line 220
@@ -59125,7 +59124,7 @@ int main(int argc, char** argv) {
 #line 85
     object7->shader._refCount = 1;
 #line 227 "nau/fieldScene.sj"
-    sjf_shader_copy(&object7->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object7->shader, &g_phongtextureshader);
 #line 227
     sjt_call350._refCount = 1;
 #line 229
@@ -59425,7 +59424,7 @@ int main(int argc, char** argv) {
 #line 85
     object8->shader._refCount = 1;
 #line 236 "nau/fieldScene.sj"
-    sjf_shader_copy(&object8->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object8->shader, &g_phongtextureshader);
 #line 236
     sjt_call355._refCount = 1;
 #line 238
@@ -59723,7 +59722,7 @@ int main(int argc, char** argv) {
 #line 85
     object9->shader._refCount = 1;
 #line 245 "nau/fieldScene.sj"
-    sjf_shader_copy(&object9->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object9->shader, &g_phongtextureshader);
 #line 245
     sjt_call360._refCount = 1;
 #line 247
@@ -60023,7 +60022,7 @@ int main(int argc, char** argv) {
 #line 85
     object10->shader._refCount = 1;
 #line 254 "nau/fieldScene.sj"
-    sjf_shader_copy(&object10->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object10->shader, &g_phongtextureshader);
 #line 254
     sjt_call365._refCount = 1;
 #line 256
@@ -60321,7 +60320,7 @@ int main(int argc, char** argv) {
 #line 85
     object11->shader._refCount = 1;
 #line 263 "nau/fieldScene.sj"
-    sjf_shader_copy(&object11->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object11->shader, &g_phongtextureshader);
 #line 263
     sjt_call370._refCount = 1;
 #line 265
@@ -60623,7 +60622,7 @@ int main(int argc, char** argv) {
 #line 85
     object12->shader._refCount = 1;
 #line 272 "nau/fieldScene.sj"
-    sjf_shader_copy(&object12->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object12->shader, &g_phongtextureshader);
 #line 272
     sjt_call375._refCount = 1;
 #line 274
@@ -61095,17 +61094,17 @@ int main(int argc, char** argv) {
 #line 4
     sjf_nauscene3delement_heap(sjt_funcold29);
 #line 4
-    sjv_fieldscene->_refCount--;
-    if (sjv_fieldscene->_refCount <= 0) {
-        weakptr_release(sjv_fieldscene);
-        sjf_nauscene3delement_destroy(sjv_fieldscene);
-        free(sjv_fieldscene);
+    g_fieldscene->_refCount--;
+    if (g_fieldscene->_refCount <= 0) {
+        weakptr_release(g_fieldscene);
+        sjf_nauscene3delement_destroy(g_fieldscene);
+        free(g_fieldscene);
     }
 
 #line 1 "nau/nauScene3dElement.sj"
-    sjv_fieldscene = sjt_funcold29;
+    g_fieldscene = sjt_funcold29;
 #line 1
-    sjv_fieldscene->_refCount++;
+    g_fieldscene->_refCount++;
 #line 1
     sjt_call382 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 1
@@ -61131,7 +61130,7 @@ int main(int argc, char** argv) {
 #line 286
     sjt_functionParam1182 = 0;
 #line 287
-    sjt_cast116 = sjv_fieldscene;
+    sjt_cast116 = g_fieldscene;
 #line 1 "lib/ui/element.sj"
     sjf_nauscene3delement_as_sji_element(sjt_cast116, &sjt_functionParam1183);
     if (sjt_functionParam1183._parent != 0) {
@@ -61145,7 +61144,7 @@ int main(int argc, char** argv) {
 #line 286
     sjt_functionParam1184 = 1;
 #line 288
-    sjt_cast117 = sjv_fieldbuyelement;
+    sjt_cast117 = g_fieldbuyelement;
 #line 1 "lib/ui/element.sj"
     sjf_filllayout_as_sji_element(sjt_cast117, &sjt_functionParam1185);
     if (sjt_functionParam1185._parent != 0) {
@@ -61209,9 +61208,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call392->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call392->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call392->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent509 = &sjv_style;
+    sjt_parent509 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent509, &sjt_call392->font);
 #line 2
@@ -61413,7 +61412,7 @@ int main(int argc, char** argv) {
 #line 9
     sjf_margin(&sjt_call392->margin);
 #line 293 "nau/fieldScene.sj"
-    sjt_call392->onclick.inner._parent = (sjs_object*)sjv_fieldcontroller;
+    sjt_call392->onclick.inner._parent = (sjs_object*)g_fieldcontroller;
 #line 293
     sjt_call392->onclick.inner._parent->_refCount++;
 #line 293
@@ -61455,7 +61454,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call392->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call392->_clickgesture._state = sjv_clickstate_none;
+    sjt_call392->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call392->_clickgesture);
 #line 14
@@ -61483,7 +61482,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call383->margin);
 #line 8 "lib/ui/flowLayout.sj"
-    sjt_call383->orientation = sjv_flowlayoutorientation_leftright;
+    sjt_call383->orientation = g_flowlayoutorientation_leftright;
 #line 8
     sjt_call383->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -61538,22 +61537,22 @@ int main(int argc, char** argv) {
     sjf_filllayout_heap(sjt_call382);
 #line 285 "nau/fieldScene.sj"
     sjt_cast115 = sjt_call382;
-    if (sjv_fieldelement._parent != 0) {
-        sjv_fieldelement._parent->_refCount--;
-        if (sjv_fieldelement._parent->_refCount <= 0) {
-            sjv_fieldelement._vtbl->destroy(sjv_fieldelement._parent);
-            free(sjv_fieldelement._parent);
+    if (g_fieldelement._parent != 0) {
+        g_fieldelement._parent->_refCount--;
+        if (g_fieldelement._parent->_refCount <= 0) {
+            g_fieldelement._vtbl->destroy(g_fieldelement._parent);
+            free(g_fieldelement._parent);
         }
     }
 
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast115, &sjv_fieldelement);
-    if (sjv_fieldelement._parent != 0) {
-        sjv_fieldelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast115, &g_fieldelement);
+    if (g_fieldelement._parent != 0) {
+        g_fieldelement._parent->_refCount++;
     }
 
 #line 300 "nau/fieldScene.sj"
-    sjt_functionParam1224 = sjv_fieldelement;
+    sjt_functionParam1224 = g_fieldelement;
 #line 300
     sjt_call402._refCount = 1;
 #line 300
@@ -61565,9 +61564,9 @@ int main(int argc, char** argv) {
 #line 300
     sjt_functionParam1225 = &sjt_call402;
 #line 300
-    sjf_texture_fromelement(sjt_functionParam1224, sjt_functionParam1225, &sjv_fieldtexture);
+    sjf_texture_fromelement(sjt_functionParam1224, sjt_functionParam1225, &g_fieldtexture);
 #line 1 "lib/ui/fillLayout.sj"
-    sjt_funcold51 = sjv_forestbuyelement;
+    sjt_funcold51 = g_forestbuyelement;
 #line 1
     sjt_funcold51->_refCount++;
 #line 1
@@ -61649,9 +61648,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call405->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call405->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call405->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent537 = &sjv_style;
+    sjt_parent537 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent537, &sjt_call405->font);
 #line 2
@@ -61889,7 +61888,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call405->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call405->_clickgesture._state = sjv_clickstate_none;
+    sjt_call405->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call405->_clickgesture);
 #line 14
@@ -61903,7 +61902,7 @@ int main(int argc, char** argv) {
     }
 
 #line 7 "nau/forestScene.sj"
-    sjt_call404->position = sjv_borderposition_bottom;
+    sjt_call404->position = g_borderposition_bottom;
 #line 7
     sjt_call404->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -61967,7 +61966,7 @@ int main(int argc, char** argv) {
 #line 20 "lib/ui/textElement.sj"
     sjt_call411->id._refCount = -1;
 #line 2 "lib/ui/style.sj"
-    sjt_parent540 = &sjv_style;
+    sjt_parent540 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent540, &sjt_call411->font);
 #line 2
@@ -61993,7 +61992,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call411->color._refCount = 1;
 #line 17 "nau/forestScene.sj"
-    sjf_color_copy(&sjt_call411->color, &sjv_colors_black);
+    sjf_color_copy(&sjt_call411->color, &g_colors_black);
 #line 17
     sjt_call411->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -62007,9 +62006,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call411->margin);
 #line 18 "lib/ui/textElement.sj"
-    sjt_call411->halign = sjv_texthorizontal_left;
+    sjt_call411->halign = g_texthorizontal_left;
 #line 18
-    sjt_call411->valign = sjv_textvertical_top;
+    sjt_call411->valign = g_textvertical_top;
 #line 18
     sjt_value61._refCount = 1;
 #line 18 "nau/forestScene.sj"
@@ -62091,7 +62090,7 @@ int main(int argc, char** argv) {
     }
 
 #line 13 "nau/forestScene.sj"
-    sjt_call409->position = sjv_borderposition_right;
+    sjt_call409->position = g_borderposition_right;
 #line 13
     sjt_call409->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -62349,19 +62348,19 @@ int main(int argc, char** argv) {
 #line 5
     sjf_filllayout_heap(sjt_funcold51);
 #line 5
-    sjv_forestbuyelement->_refCount--;
-    if (sjv_forestbuyelement->_refCount <= 0) {
-        weakptr_release(sjv_forestbuyelement);
-        sjf_filllayout_destroy(sjv_forestbuyelement);
-        free(sjv_forestbuyelement);
+    g_forestbuyelement->_refCount--;
+    if (g_forestbuyelement->_refCount <= 0) {
+        weakptr_release(g_forestbuyelement);
+        sjf_filllayout_destroy(g_forestbuyelement);
+        free(g_forestbuyelement);
     }
 
 #line 1 "lib/ui/fillLayout.sj"
-    sjv_forestbuyelement = sjt_funcold51;
+    g_forestbuyelement = sjt_funcold51;
 #line 1
-    sjv_forestbuyelement->_refCount++;
+    g_forestbuyelement->_refCount++;
 #line 1 "nau/nauScene3dElement.sj"
-    sjt_funcold52 = sjv_forestscene;
+    sjt_funcold52 = g_forestscene;
 #line 1
     sjt_funcold52->_refCount++;
 #line 1
@@ -62419,7 +62418,7 @@ int main(int argc, char** argv) {
 #line 85
     object13->shader._refCount = 1;
 #line 34 "nau/forestScene.sj"
-    sjf_shader_copy(&object13->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object13->shader, &g_phongtextureshader);
 #line 34
     sjt_call414._refCount = 1;
 #line 35
@@ -63035,7 +63034,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call435->shader._refCount = 1;
 #line 56 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call435->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call435->shader, &g_phongtextureshader);
 #line 56
     sjt_call435->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -63129,7 +63128,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call436->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call436->_clickgesture._state = sjv_clickstate_none;
+    sjt_call436->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call436->_clickgesture);
 #line 14
@@ -63217,7 +63216,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call437->margin);
 #line 65 "nau/forestScene.sj"
-    sjt_call437->stretch = sjv_imagestretch_aspectratio;
+    sjt_call437->stretch = g_imagestretch_aspectratio;
 #line 65
     sjt_call437->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -63679,7 +63678,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call439->shader._refCount = 1;
 #line 72 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call439->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call439->shader, &g_phongtextureshader);
 #line 72
     sjt_call439->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -63773,7 +63772,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call440->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call440->_clickgesture._state = sjv_clickstate_none;
+    sjt_call440->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call440->_clickgesture);
 #line 14
@@ -63861,7 +63860,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call441->margin);
 #line 81 "nau/forestScene.sj"
-    sjt_call441->stretch = sjv_imagestretch_aspectratio;
+    sjt_call441->stretch = g_imagestretch_aspectratio;
 #line 81
     sjt_call441->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -64323,7 +64322,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call443->shader._refCount = 1;
 #line 88 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call443->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call443->shader, &g_phongtextureshader);
 #line 88
     sjt_call443->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -64417,7 +64416,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call444->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call444->_clickgesture._state = sjv_clickstate_none;
+    sjt_call444->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call444->_clickgesture);
 #line 14
@@ -64505,7 +64504,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call445->margin);
 #line 97 "nau/forestScene.sj"
-    sjt_call445->stretch = sjv_imagestretch_aspectratio;
+    sjt_call445->stretch = g_imagestretch_aspectratio;
 #line 97
     sjt_call445->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -64967,7 +64966,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call447->shader._refCount = 1;
 #line 104 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call447->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call447->shader, &g_phongtextureshader);
 #line 104
     sjt_call447->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -65061,7 +65060,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call448->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call448->_clickgesture._state = sjv_clickstate_none;
+    sjt_call448->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call448->_clickgesture);
 #line 14
@@ -65149,7 +65148,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call449->margin);
 #line 113 "nau/forestScene.sj"
-    sjt_call449->stretch = sjv_imagestretch_aspectratio;
+    sjt_call449->stretch = g_imagestretch_aspectratio;
 #line 113
     sjt_call449->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -65611,7 +65610,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call451->shader._refCount = 1;
 #line 120 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call451->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call451->shader, &g_phongtextureshader);
 #line 120
     sjt_call451->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -65705,7 +65704,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call452->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call452->_clickgesture._state = sjv_clickstate_none;
+    sjt_call452->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call452->_clickgesture);
 #line 14
@@ -65793,7 +65792,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call453->margin);
 #line 129 "nau/forestScene.sj"
-    sjt_call453->stretch = sjv_imagestretch_aspectratio;
+    sjt_call453->stretch = g_imagestretch_aspectratio;
 #line 129
     sjt_call453->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -66255,7 +66254,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call455->shader._refCount = 1;
 #line 136 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call455->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call455->shader, &g_phongtextureshader);
 #line 136
     sjt_call455->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -66349,7 +66348,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call456->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call456->_clickgesture._state = sjv_clickstate_none;
+    sjt_call456->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call456->_clickgesture);
 #line 14
@@ -66437,7 +66436,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call457->margin);
 #line 145 "nau/forestScene.sj"
-    sjt_call457->stretch = sjv_imagestretch_aspectratio;
+    sjt_call457->stretch = g_imagestretch_aspectratio;
 #line 145
     sjt_call457->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -66899,7 +66898,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call459->shader._refCount = 1;
 #line 152 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call459->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call459->shader, &g_phongtextureshader);
 #line 152
     sjt_call459->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -66993,7 +66992,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call460->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call460->_clickgesture._state = sjv_clickstate_none;
+    sjt_call460->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call460->_clickgesture);
 #line 14
@@ -67081,7 +67080,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call461->margin);
 #line 161 "nau/forestScene.sj"
-    sjt_call461->stretch = sjv_imagestretch_aspectratio;
+    sjt_call461->stretch = g_imagestretch_aspectratio;
 #line 161
     sjt_call461->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -67543,7 +67542,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call463->shader._refCount = 1;
 #line 168 "nau/forestScene.sj"
-    sjf_shader_copy(&sjt_call463->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call463->shader, &g_phongtextureshader);
 #line 168
     sjt_call463->texturesize._refCount = 1;
 #line 6 "lib/ui/scene2dModel.sj"
@@ -67637,7 +67636,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call464->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call464->_clickgesture._state = sjv_clickstate_none;
+    sjt_call464->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call464->_clickgesture);
 #line 14
@@ -67725,7 +67724,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call465->margin);
 #line 177 "nau/forestScene.sj"
-    sjt_call465->stretch = sjv_imagestretch_aspectratio;
+    sjt_call465->stretch = g_imagestretch_aspectratio;
 #line 177
     sjt_call465->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -68193,7 +68192,7 @@ int main(int argc, char** argv) {
 #line 85
     object14->shader._refCount = 1;
 #line 186 "nau/forestScene.sj"
-    sjf_shader_copy(&object14->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object14->shader, &g_phongtextureshader);
 #line 186
     sjt_call468._refCount = 1;
 #line 187
@@ -68527,7 +68526,7 @@ int main(int argc, char** argv) {
 #line 85
     object15->shader._refCount = 1;
 #line 196 "nau/forestScene.sj"
-    sjf_shader_copy(&object15->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object15->shader, &g_phongtextureshader);
 #line 196
     sjt_call478._refCount = 1;
 #line 197
@@ -68783,7 +68782,7 @@ int main(int argc, char** argv) {
 #line 85
     object16->shader._refCount = 1;
 #line 204 "nau/forestScene.sj"
-    sjf_shader_copy(&object16->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object16->shader, &g_phongtextureshader);
 #line 204
     sjt_call481._refCount = 1;
 #line 205
@@ -69041,7 +69040,7 @@ int main(int argc, char** argv) {
 #line 85
     object17->shader._refCount = 1;
 #line 212 "nau/forestScene.sj"
-    sjf_shader_copy(&object17->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object17->shader, &g_phongtextureshader);
 #line 212
     sjt_call484._refCount = 1;
 #line 213
@@ -69299,7 +69298,7 @@ int main(int argc, char** argv) {
 #line 85
     object18->shader._refCount = 1;
 #line 220 "nau/forestScene.sj"
-    sjf_shader_copy(&object18->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object18->shader, &g_phongtextureshader);
 #line 220
     sjt_call487._refCount = 1;
 #line 221
@@ -69555,7 +69554,7 @@ int main(int argc, char** argv) {
 #line 85
     object19->shader._refCount = 1;
 #line 228 "nau/forestScene.sj"
-    sjf_shader_copy(&object19->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object19->shader, &g_phongtextureshader);
 #line 228
     sjt_call490._refCount = 1;
 #line 229
@@ -69813,7 +69812,7 @@ int main(int argc, char** argv) {
 #line 85
     object20->shader._refCount = 1;
 #line 236 "nau/forestScene.sj"
-    sjf_shader_copy(&object20->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object20->shader, &g_phongtextureshader);
 #line 236
     sjt_call493._refCount = 1;
 #line 237
@@ -70071,7 +70070,7 @@ int main(int argc, char** argv) {
 #line 85
     object21->shader._refCount = 1;
 #line 244 "nau/forestScene.sj"
-    sjf_shader_copy(&object21->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object21->shader, &g_phongtextureshader);
 #line 244
     sjt_call496._refCount = 1;
 #line 245
@@ -70327,7 +70326,7 @@ int main(int argc, char** argv) {
 #line 85
     object22->shader._refCount = 1;
 #line 252 "nau/forestScene.sj"
-    sjf_shader_copy(&object22->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object22->shader, &g_phongtextureshader);
 #line 252
     sjt_call499._refCount = 1;
 #line 253
@@ -70585,7 +70584,7 @@ int main(int argc, char** argv) {
 #line 85
     object23->shader._refCount = 1;
 #line 260 "nau/forestScene.sj"
-    sjf_shader_copy(&object23->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object23->shader, &g_phongtextureshader);
 #line 260
     sjt_call502._refCount = 1;
 #line 261
@@ -71015,17 +71014,17 @@ int main(int argc, char** argv) {
 #line 4
     sjf_nauscene3delement_heap(sjt_funcold52);
 #line 4
-    sjv_forestscene->_refCount--;
-    if (sjv_forestscene->_refCount <= 0) {
-        weakptr_release(sjv_forestscene);
-        sjf_nauscene3delement_destroy(sjv_forestscene);
-        free(sjv_forestscene);
+    g_forestscene->_refCount--;
+    if (g_forestscene->_refCount <= 0) {
+        weakptr_release(g_forestscene);
+        sjf_nauscene3delement_destroy(g_forestscene);
+        free(g_forestscene);
     }
 
 #line 1 "nau/nauScene3dElement.sj"
-    sjv_forestscene = sjt_funcold52;
+    g_forestscene = sjt_funcold52;
 #line 1
-    sjv_forestscene->_refCount++;
+    g_forestscene->_refCount++;
 #line 1
     sjt_call507 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 1
@@ -71051,7 +71050,7 @@ int main(int argc, char** argv) {
 #line 273
     sjt_functionParam1555 = 0;
 #line 274
-    sjt_cast169 = sjv_forestscene;
+    sjt_cast169 = g_forestscene;
 #line 1 "lib/ui/element.sj"
     sjf_nauscene3delement_as_sji_element(sjt_cast169, &sjt_functionParam1556);
     if (sjt_functionParam1556._parent != 0) {
@@ -71065,7 +71064,7 @@ int main(int argc, char** argv) {
 #line 273
     sjt_functionParam1557 = 1;
 #line 275
-    sjt_cast170 = sjv_forestbuyelement;
+    sjt_cast170 = g_forestbuyelement;
 #line 1 "lib/ui/element.sj"
     sjf_filllayout_as_sji_element(sjt_cast170, &sjt_functionParam1558);
     if (sjt_functionParam1558._parent != 0) {
@@ -71129,9 +71128,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call509->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call509->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call509->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent595 = &sjv_style;
+    sjt_parent595 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent595, &sjt_call509->font);
 #line 2
@@ -71333,7 +71332,7 @@ int main(int argc, char** argv) {
 #line 9
     sjf_margin(&sjt_call509->margin);
 #line 280 "nau/forestScene.sj"
-    sjt_call509->onclick.inner._parent = (sjs_object*)sjv_forestcontroller;
+    sjt_call509->onclick.inner._parent = (sjs_object*)g_forestcontroller;
 #line 280
     sjt_call509->onclick.inner._parent->_refCount++;
 #line 280
@@ -71375,7 +71374,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call509->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call509->_clickgesture._state = sjv_clickstate_none;
+    sjt_call509->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call509->_clickgesture);
 #line 14
@@ -71403,7 +71402,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call508->margin);
 #line 8 "lib/ui/flowLayout.sj"
-    sjt_call508->orientation = sjv_flowlayoutorientation_leftright;
+    sjt_call508->orientation = g_flowlayoutorientation_leftright;
 #line 8
     sjt_call508->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -71458,22 +71457,22 @@ int main(int argc, char** argv) {
     sjf_filllayout_heap(sjt_call507);
 #line 272 "nau/forestScene.sj"
     sjt_cast168 = sjt_call507;
-    if (sjv_forestelement._parent != 0) {
-        sjv_forestelement._parent->_refCount--;
-        if (sjv_forestelement._parent->_refCount <= 0) {
-            sjv_forestelement._vtbl->destroy(sjv_forestelement._parent);
-            free(sjv_forestelement._parent);
+    if (g_forestelement._parent != 0) {
+        g_forestelement._parent->_refCount--;
+        if (g_forestelement._parent->_refCount <= 0) {
+            g_forestelement._vtbl->destroy(g_forestelement._parent);
+            free(g_forestelement._parent);
         }
     }
 
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast168, &sjv_forestelement);
-    if (sjv_forestelement._parent != 0) {
-        sjv_forestelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast168, &g_forestelement);
+    if (g_forestelement._parent != 0) {
+        g_forestelement._parent->_refCount++;
     }
 
 #line 287 "nau/forestScene.sj"
-    sjt_functionParam1573 = sjv_forestelement;
+    sjt_functionParam1573 = g_forestelement;
 #line 287
     sjt_call516._refCount = 1;
 #line 287
@@ -71485,9 +71484,9 @@ int main(int argc, char** argv) {
 #line 287
     sjt_functionParam1574 = &sjt_call516;
 #line 287
-    sjf_texture_fromelement(sjt_functionParam1573, sjt_functionParam1574, &sjv_foresttexture);
+    sjf_texture_fromelement(sjt_functionParam1573, sjt_functionParam1574, &g_foresttexture);
 #line 1 "nau/nauScene3dElement.sj"
-    sjt_funcold53 = sjv_menuscene;
+    sjt_funcold53 = g_menuscene;
 #line 1
     sjt_funcold53->_refCount++;
 #line 1
@@ -71595,7 +71594,7 @@ int main(int argc, char** argv) {
 #line 85
     object24->shader._refCount = 1;
 #line 11 "nau/menuScene.sj"
-    sjf_shader_copy(&object24->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object24->shader, &g_phongtextureshader);
 #line 11
     sjt_call531._refCount = 1;
 #line 12
@@ -71853,7 +71852,7 @@ int main(int argc, char** argv) {
 #line 85
     object25->shader._refCount = 1;
 #line 19 "nau/menuScene.sj"
-    sjf_shader_copy(&object25->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object25->shader, &g_phongtextureshader);
 #line 19
     sjt_call534._refCount = 1;
 #line 20
@@ -72109,7 +72108,7 @@ int main(int argc, char** argv) {
 #line 85
     object26->shader._refCount = 1;
 #line 27 "nau/menuScene.sj"
-    sjf_shader_copy(&object26->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object26->shader, &g_phongtextureshader);
 #line 27
     sjt_call537._refCount = 1;
 #line 28
@@ -72365,7 +72364,7 @@ int main(int argc, char** argv) {
 #line 85
     object27->shader._refCount = 1;
 #line 35 "nau/menuScene.sj"
-    sjf_shader_copy(&object27->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object27->shader, &g_phongtextureshader);
 #line 35
     sjt_call540._refCount = 1;
 #line 36
@@ -72621,7 +72620,7 @@ int main(int argc, char** argv) {
 #line 85
     object28->shader._refCount = 1;
 #line 43 "nau/menuScene.sj"
-    sjf_shader_copy(&object28->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object28->shader, &g_phongtextureshader);
 #line 43
     sjt_call543._refCount = 1;
 #line 44
@@ -72949,7 +72948,7 @@ int main(int argc, char** argv) {
 #line 85
     object29->shader._refCount = 1;
 #line 57 "nau/menuScene.sj"
-    sjf_shader_copy(&object29->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object29->shader, &g_phongtextureshader);
 #line 57
     sjt_call548._refCount = 1;
 #line 58
@@ -73205,7 +73204,7 @@ int main(int argc, char** argv) {
 #line 85
     object30->shader._refCount = 1;
 #line 65 "nau/menuScene.sj"
-    sjf_shader_copy(&object30->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object30->shader, &g_phongtextureshader);
 #line 65
     sjt_call551._refCount = 1;
 #line 66
@@ -73463,7 +73462,7 @@ int main(int argc, char** argv) {
 #line 85
     object31->shader._refCount = 1;
 #line 73 "nau/menuScene.sj"
-    sjf_shader_copy(&object31->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object31->shader, &g_phongtextureshader);
 #line 73
     sjt_call554._refCount = 1;
 #line 74
@@ -73721,7 +73720,7 @@ int main(int argc, char** argv) {
 #line 85
     object32->shader._refCount = 1;
 #line 81 "nau/menuScene.sj"
-    sjf_shader_copy(&object32->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object32->shader, &g_phongtextureshader);
 #line 81
     sjt_call557._refCount = 1;
 #line 82
@@ -73979,7 +73978,7 @@ int main(int argc, char** argv) {
 #line 85
     object33->shader._refCount = 1;
 #line 89 "nau/menuScene.sj"
-    sjf_shader_copy(&object33->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object33->shader, &g_phongtextureshader);
 #line 89
     sjt_call560._refCount = 1;
 #line 90
@@ -74307,7 +74306,7 @@ int main(int argc, char** argv) {
 #line 85
     object34->shader._refCount = 1;
 #line 103 "nau/menuScene.sj"
-    sjf_shader_copy(&object34->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object34->shader, &g_phongtextureshader);
 #line 103
     sjt_call565._refCount = 1;
 #line 104
@@ -74563,7 +74562,7 @@ int main(int argc, char** argv) {
 #line 85
     object35->shader._refCount = 1;
 #line 111 "nau/menuScene.sj"
-    sjf_shader_copy(&object35->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object35->shader, &g_phongtextureshader);
 #line 111
     sjt_call568._refCount = 1;
 #line 112
@@ -74819,7 +74818,7 @@ int main(int argc, char** argv) {
 #line 85
     object36->shader._refCount = 1;
 #line 119 "nau/menuScene.sj"
-    sjf_shader_copy(&object36->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object36->shader, &g_phongtextureshader);
 #line 119
     sjt_call571._refCount = 1;
 #line 120
@@ -75077,7 +75076,7 @@ int main(int argc, char** argv) {
 #line 85
     object37->shader._refCount = 1;
 #line 127 "nau/menuScene.sj"
-    sjf_shader_copy(&object37->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object37->shader, &g_phongtextureshader);
 #line 127
     sjt_call574._refCount = 1;
 #line 128
@@ -75335,7 +75334,7 @@ int main(int argc, char** argv) {
 #line 85
     object38->shader._refCount = 1;
 #line 135 "nau/menuScene.sj"
-    sjf_shader_copy(&object38->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object38->shader, &g_phongtextureshader);
 #line 135
     sjt_call577._refCount = 1;
 #line 136
@@ -75663,7 +75662,7 @@ int main(int argc, char** argv) {
 #line 85
     object39->shader._refCount = 1;
 #line 149 "nau/menuScene.sj"
-    sjf_shader_copy(&object39->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object39->shader, &g_phongtextureshader);
 #line 149
     sjt_call582._refCount = 1;
 #line 150
@@ -75921,7 +75920,7 @@ int main(int argc, char** argv) {
 #line 85
     object40->shader._refCount = 1;
 #line 157 "nau/menuScene.sj"
-    sjf_shader_copy(&object40->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object40->shader, &g_phongtextureshader);
 #line 157
     sjt_call585._refCount = 1;
 #line 158
@@ -76177,7 +76176,7 @@ int main(int argc, char** argv) {
 #line 85
     object41->shader._refCount = 1;
 #line 165 "nau/menuScene.sj"
-    sjf_shader_copy(&object41->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object41->shader, &g_phongtextureshader);
 #line 165
     sjt_call588._refCount = 1;
 #line 166
@@ -76433,7 +76432,7 @@ int main(int argc, char** argv) {
 #line 85
     object42->shader._refCount = 1;
 #line 173 "nau/menuScene.sj"
-    sjf_shader_copy(&object42->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&object42->shader, &g_phongtextureshader);
 #line 173
     sjt_call591._refCount = 1;
 #line 174
@@ -76761,7 +76760,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call595->shader._refCount = 1;
 #line 187 "nau/menuScene.sj"
-    sjf_shader_copy(&sjt_call595->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call595->shader, &g_phongtextureshader);
 #line 187
     sjt_call595->texturesize._refCount = 1;
 #line 189
@@ -76859,7 +76858,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call596->margin);
 #line 7 "lib/ui/imageElement.sj"
-    sjt_call596->stretch = sjv_imagestretch_fill;
+    sjt_call596->stretch = g_imagestretch_fill;
 #line 7
     sjt_call596->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -76993,7 +76992,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call612->color._refCount = 1;
 #line 206 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call612->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call612->color, &g_colors_white);
 #line 206
     sjt_call612->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -77007,9 +77006,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call612->margin);
 #line 206 "nau/menuScene.sj"
-    sjt_call612->halign = sjv_texthorizontal_right;
+    sjt_call612->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call612->valign = sjv_textvertical_top;
+    sjt_call612->valign = g_textvertical_top;
 #line 27
     sjt_call612->idealsize._refCount = -1;
 #line 27
@@ -77097,7 +77096,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call614->color._refCount = 1;
 #line 212 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call614->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call614->color, &g_colors_white);
 #line 212
     sjt_call614->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -77111,9 +77110,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call614->margin);
 #line 212 "nau/menuScene.sj"
-    sjt_call614->halign = sjv_texthorizontal_right;
+    sjt_call614->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call614->valign = sjv_textvertical_top;
+    sjt_call614->valign = g_textvertical_top;
 #line 27
     sjt_call614->idealsize._refCount = -1;
 #line 27
@@ -77155,7 +77154,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call603->margin);
 #line 203 "nau/menuScene.sj"
-    sjt_call603->orientation = sjv_listlayoutorientation_topbottom;
+    sjt_call603->orientation = g_listlayoutorientation_topbottom;
 #line 203
     sjt_call603->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -77675,7 +77674,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call617->shader._refCount = 1;
 #line 225 "nau/menuScene.sj"
-    sjf_shader_copy(&sjt_call617->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call617->shader, &g_phongtextureshader);
 #line 225
     sjt_call617->texturesize._refCount = 1;
 #line 228
@@ -77713,7 +77712,7 @@ int main(int argc, char** argv) {
 #line 231
     sjt_call618->image.texture._refCount = 1;
 #line 233
-    sjf_texture_copy(&sjt_call618->image.texture, &sjv_foresttexture);
+    sjf_texture_copy(&sjt_call618->image.texture, &g_foresttexture);
 #line 233
     sjt_call618->image.rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -77753,7 +77752,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call618->margin);
 #line 7 "lib/ui/imageElement.sj"
-    sjt_call618->stretch = sjv_imagestretch_fill;
+    sjt_call618->stretch = g_imagestretch_fill;
 #line 7
     sjt_call618->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -77811,9 +77810,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call619->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call619->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call619->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent684 = &sjv_style;
+    sjt_parent684 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent684, &sjt_call619->font);
 #line 237 "nau/menuScene.sj"
@@ -77835,7 +77834,7 @@ int main(int argc, char** argv) {
 #line 9
     sjf_margin(&sjt_call619->margin);
 #line 240 "nau/menuScene.sj"
-    sjt_value85.inner._parent = (sjs_object*)sjv_menucontroller;
+    sjt_value85.inner._parent = (sjs_object*)g_menucontroller;
 #line 240
     sjt_value85.inner._parent->_refCount++;
 #line 240
@@ -77883,7 +77882,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call619->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call619->_clickgesture._state = sjv_clickstate_none;
+    sjt_call619->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call619->_clickgesture);
 #line 14
@@ -78005,7 +78004,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call625->color._refCount = 1;
 #line 251 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call625->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call625->color, &g_colors_white);
 #line 251
     sjt_call625->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -78019,9 +78018,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call625->margin);
 #line 251 "nau/menuScene.sj"
-    sjt_call625->halign = sjv_texthorizontal_right;
+    sjt_call625->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call625->valign = sjv_textvertical_top;
+    sjt_call625->valign = g_textvertical_top;
 #line 27
     sjt_call625->idealsize._refCount = -1;
 #line 27
@@ -78109,7 +78108,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call627->color._refCount = 1;
 #line 257 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call627->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call627->color, &g_colors_white);
 #line 257
     sjt_call627->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -78123,9 +78122,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call627->margin);
 #line 257 "nau/menuScene.sj"
-    sjt_call627->halign = sjv_texthorizontal_right;
+    sjt_call627->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call627->valign = sjv_textvertical_top;
+    sjt_call627->valign = g_textvertical_top;
 #line 27
     sjt_call627->idealsize._refCount = -1;
 #line 27
@@ -78167,7 +78166,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call624->margin);
 #line 248 "nau/menuScene.sj"
-    sjt_call624->orientation = sjv_listlayoutorientation_topbottom;
+    sjt_call624->orientation = g_listlayoutorientation_topbottom;
 #line 248
     sjt_call624->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -78659,7 +78658,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call630->shader._refCount = 1;
 #line 270 "nau/menuScene.sj"
-    sjf_shader_copy(&sjt_call630->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call630->shader, &g_phongtextureshader);
 #line 270
     sjt_call630->texturesize._refCount = 1;
 #line 272
@@ -78757,7 +78756,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call631->margin);
 #line 7 "lib/ui/imageElement.sj"
-    sjt_call631->stretch = sjv_imagestretch_fill;
+    sjt_call631->stretch = g_imagestretch_fill;
 #line 7
     sjt_call631->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -78891,7 +78890,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call635->color._refCount = 1;
 #line 289 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call635->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call635->color, &g_colors_white);
 #line 289
     sjt_call635->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -78905,9 +78904,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call635->margin);
 #line 289 "nau/menuScene.sj"
-    sjt_call635->halign = sjv_texthorizontal_right;
+    sjt_call635->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call635->valign = sjv_textvertical_top;
+    sjt_call635->valign = g_textvertical_top;
 #line 27
     sjt_call635->idealsize._refCount = -1;
 #line 27
@@ -78995,7 +78994,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call637->color._refCount = 1;
 #line 295 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call637->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call637->color, &g_colors_white);
 #line 295
     sjt_call637->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -79009,9 +79008,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call637->margin);
 #line 295 "nau/menuScene.sj"
-    sjt_call637->halign = sjv_texthorizontal_right;
+    sjt_call637->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call637->valign = sjv_textvertical_top;
+    sjt_call637->valign = g_textvertical_top;
 #line 27
     sjt_call637->idealsize._refCount = -1;
 #line 27
@@ -79053,7 +79052,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call634->margin);
 #line 286 "nau/menuScene.sj"
-    sjt_call634->orientation = sjv_listlayoutorientation_topbottom;
+    sjt_call634->orientation = g_listlayoutorientation_topbottom;
 #line 286
     sjt_call634->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -79573,7 +79572,7 @@ int main(int argc, char** argv) {
 #line 85
     sjt_call640->shader._refCount = 1;
 #line 308 "nau/menuScene.sj"
-    sjf_shader_copy(&sjt_call640->shader, &sjv_phongtextureshader);
+    sjf_shader_copy(&sjt_call640->shader, &g_phongtextureshader);
 #line 308
     sjt_call640->texturesize._refCount = 1;
 #line 311
@@ -79611,7 +79610,7 @@ int main(int argc, char** argv) {
 #line 314
     sjt_call641->image.texture._refCount = 1;
 #line 316
-    sjf_texture_copy(&sjt_call641->image.texture, &sjv_fieldtexture);
+    sjf_texture_copy(&sjt_call641->image.texture, &g_fieldtexture);
 #line 316
     sjt_call641->image.rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -79651,7 +79650,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call641->margin);
 #line 7 "lib/ui/imageElement.sj"
-    sjt_call641->stretch = sjv_imagestretch_fill;
+    sjt_call641->stretch = g_imagestretch_fill;
 #line 7
     sjt_call641->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -79709,9 +79708,9 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call642->textcolor._refCount = 1;
 #line 1 "lib/ui/buttonElement.sj"
-    sjf_color_copy(&sjt_call642->textcolor, &sjv_colors_black);
+    sjf_color_copy(&sjt_call642->textcolor, &g_colors_black);
 #line 2 "lib/ui/style.sj"
-    sjt_parent707 = &sjv_style;
+    sjt_parent707 = &g_style;
 #line 2
     sjf_style_getfont_heap(sjt_parent707, &sjt_call642->font);
 #line 320 "nau/menuScene.sj"
@@ -79733,7 +79732,7 @@ int main(int argc, char** argv) {
 #line 9
     sjf_margin(&sjt_call642->margin);
 #line 323 "nau/menuScene.sj"
-    sjt_value91.inner._parent = (sjs_object*)sjv_menucontroller;
+    sjt_value91.inner._parent = (sjs_object*)g_menucontroller;
 #line 323
     sjt_value91.inner._parent->_refCount++;
 #line 323
@@ -79781,7 +79780,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_rect(&sjt_call642->_clickgesture.rect);
 #line 14 "lib/ui/clickGesture.sj"
-    sjt_call642->_clickgesture._state = sjv_clickstate_none;
+    sjt_call642->_clickgesture._state = g_clickstate_none;
 #line 14
     sjf_clickgesture(&sjt_call642->_clickgesture);
 #line 14
@@ -79903,7 +79902,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call648->color._refCount = 1;
 #line 334 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call648->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call648->color, &g_colors_white);
 #line 334
     sjt_call648->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -79917,9 +79916,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call648->margin);
 #line 334 "nau/menuScene.sj"
-    sjt_call648->halign = sjv_texthorizontal_right;
+    sjt_call648->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call648->valign = sjv_textvertical_top;
+    sjt_call648->valign = g_textvertical_top;
 #line 27
     sjt_call648->idealsize._refCount = -1;
 #line 27
@@ -80007,7 +80006,7 @@ int main(int argc, char** argv) {
 #line 14
     sjt_call650->color._refCount = 1;
 #line 340 "nau/menuScene.sj"
-    sjf_color_copy(&sjt_call650->color, &sjv_colors_white);
+    sjf_color_copy(&sjt_call650->color, &g_colors_white);
 #line 340
     sjt_call650->margin._refCount = 1;
 #line 2 "lib/ui/margin.sj"
@@ -80021,9 +80020,9 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call650->margin);
 #line 340 "nau/menuScene.sj"
-    sjt_call650->halign = sjv_texthorizontal_right;
+    sjt_call650->halign = g_texthorizontal_right;
 #line 18 "lib/ui/textElement.sj"
-    sjt_call650->valign = sjv_textvertical_top;
+    sjt_call650->valign = g_textvertical_top;
 #line 27
     sjt_call650->idealsize._refCount = -1;
 #line 27
@@ -80065,7 +80064,7 @@ int main(int argc, char** argv) {
 #line 5
     sjf_margin(&sjt_call647->margin);
 #line 331 "nau/menuScene.sj"
-    sjt_call647->orientation = sjv_listlayoutorientation_topbottom;
+    sjt_call647->orientation = g_listlayoutorientation_topbottom;
 #line 331
     sjt_call647->_rect._refCount = 1;
 #line 2 "lib/ui/rect.sj"
@@ -80775,17 +80774,17 @@ int main(int argc, char** argv) {
 #line 4
     sjf_nauscene3delement_heap(sjt_funcold53);
 #line 4
-    sjv_menuscene->_refCount--;
-    if (sjv_menuscene->_refCount <= 0) {
-        weakptr_release(sjv_menuscene);
-        sjf_nauscene3delement_destroy(sjv_menuscene);
-        free(sjv_menuscene);
+    g_menuscene->_refCount--;
+    if (g_menuscene->_refCount <= 0) {
+        weakptr_release(g_menuscene);
+        sjf_nauscene3delement_destroy(g_menuscene);
+        free(g_menuscene);
     }
 
 #line 1 "nau/nauScene3dElement.sj"
-    sjv_menuscene = sjt_funcold53;
+    g_menuscene = sjt_funcold53;
 #line 1
-    sjv_menuscene->_refCount++;
+    g_menuscene->_refCount++;
 #line 1
     sjt_call657 = (sjs_filllayout*)malloc(sizeof(sjs_filllayout));
 #line 1
@@ -80817,7 +80816,7 @@ int main(int argc, char** argv) {
 #line 360
     sjt_call658->color._refCount = 1;
 #line 361
-    sjf_color_copy(&sjt_call658->color, &sjv_colors_black);
+    sjf_color_copy(&sjt_call658->color, &g_colors_black);
 #line 361
     sjt_call658->idealsize._refCount = 1;
 #line 2 "lib/ui/size.sj"
@@ -80857,7 +80856,7 @@ int main(int argc, char** argv) {
 #line 360
     sjt_functionParam2017 = 1;
 #line 364
-    sjt_cast238 = sjv_menuscene;
+    sjt_cast238 = g_menuscene;
 #line 1 "lib/ui/element.sj"
     sjf_nauscene3delement_as_sji_element(sjt_cast238, &sjt_functionParam2018);
     if (sjt_functionParam2018._parent != 0) {
@@ -80896,40 +80895,40 @@ int main(int argc, char** argv) {
     sjf_filllayout_heap(sjt_call657);
 #line 359 "nau/menuScene.sj"
     sjt_cast236 = sjt_call657;
-    if (sjv_menuelement._parent != 0) {
-        sjv_menuelement._parent->_refCount--;
-        if (sjv_menuelement._parent->_refCount <= 0) {
-            sjv_menuelement._vtbl->destroy(sjv_menuelement._parent);
-            free(sjv_menuelement._parent);
+    if (g_menuelement._parent != 0) {
+        g_menuelement._parent->_refCount--;
+        if (g_menuelement._parent->_refCount <= 0) {
+            g_menuelement._vtbl->destroy(g_menuelement._parent);
+            free(g_menuelement._parent);
         }
     }
 
 #line 1 "lib/ui/element.sj"
-    sjf_filllayout_as_sji_element(sjt_cast236, &sjv_menuelement);
-    if (sjv_menuelement._parent != 0) {
-        sjv_menuelement._parent->_refCount++;
+    sjf_filllayout_as_sji_element(sjt_cast236, &g_menuelement);
+    if (g_menuelement._parent != 0) {
+        g_menuelement._parent->_refCount++;
     }
 
 #line 2 "nau/menuController.sj"
-    sjt_parent728 = sjv_menucontroller;
+    sjt_parent728 = g_menucontroller;
 #line 2
     sjf_menucontroller_start(sjt_parent728);
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount--;
-        if (sjv_root._parent->_refCount <= 0) {
-            sjv_root._vtbl->destroy(sjv_root._parent);
-            free(sjv_root._parent);
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount--;
+        if (g_root._parent->_refCount <= 0) {
+            g_root._vtbl->destroy(g_root._parent);
+            free(g_root._parent);
         }
     }
 
 #line 16 "nau.sj"
-    sjv_root = sjv_menuelement;
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount++;
+    g_root = g_menuelement;
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount++;
     }
 
 #line 18
-    (&sjv_log)->minlevel = sjv_loglevel_trace;
+    (&g_log)->minlevel = g_loglevel_trace;
 #line 18
     sjf_runloop();
     main_destroy();
@@ -80938,6 +80937,89 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    g_fieldbuyelement->_refCount--;
+    if (g_fieldbuyelement->_refCount <= 0) {
+        weakptr_release(g_fieldbuyelement);
+        sjf_filllayout_destroy(g_fieldbuyelement);
+        free(g_fieldbuyelement);
+    }
+    g_fieldcontroller->_refCount--;
+    if (g_fieldcontroller->_refCount <= 0) {
+        weakptr_release(g_fieldcontroller);
+        sjf_fieldcontroller_destroy(g_fieldcontroller);
+        free(g_fieldcontroller);
+    }
+    if (g_fieldelement._parent != 0) {
+        g_fieldelement._parent->_refCount--;
+        if (g_fieldelement._parent->_refCount <= 0) {
+            g_fieldelement._vtbl->destroy(g_fieldelement._parent);
+            free(g_fieldelement._parent);
+        }
+    }
+    g_fieldscene->_refCount--;
+    if (g_fieldscene->_refCount <= 0) {
+        weakptr_release(g_fieldscene);
+        sjf_nauscene3delement_destroy(g_fieldscene);
+        free(g_fieldscene);
+    }
+    g_forestbuyelement->_refCount--;
+    if (g_forestbuyelement->_refCount <= 0) {
+        weakptr_release(g_forestbuyelement);
+        sjf_filllayout_destroy(g_forestbuyelement);
+        free(g_forestbuyelement);
+    }
+    g_forestcontroller->_refCount--;
+    if (g_forestcontroller->_refCount <= 0) {
+        weakptr_release(g_forestcontroller);
+        sjf_forestcontroller_destroy(g_forestcontroller);
+        free(g_forestcontroller);
+    }
+    if (g_forestelement._parent != 0) {
+        g_forestelement._parent->_refCount--;
+        if (g_forestelement._parent->_refCount <= 0) {
+            g_forestelement._vtbl->destroy(g_forestelement._parent);
+            free(g_forestelement._parent);
+        }
+    }
+    g_forestscene->_refCount--;
+    if (g_forestscene->_refCount <= 0) {
+        weakptr_release(g_forestscene);
+        sjf_nauscene3delement_destroy(g_forestscene);
+        free(g_forestscene);
+    }
+    g_menucontroller->_refCount--;
+    if (g_menucontroller->_refCount <= 0) {
+        weakptr_release(g_menucontroller);
+        sjf_menucontroller_destroy(g_menucontroller);
+        free(g_menucontroller);
+    }
+    if (g_menuelement._parent != 0) {
+        g_menuelement._parent->_refCount--;
+        if (g_menuelement._parent->_refCount <= 0) {
+            g_menuelement._vtbl->destroy(g_menuelement._parent);
+            free(g_menuelement._parent);
+        }
+    }
+    g_menuscene->_refCount--;
+    if (g_menuscene->_refCount <= 0) {
+        weakptr_release(g_menuscene);
+        sjf_nauscene3delement_destroy(g_menuscene);
+        free(g_menuscene);
+    }
+    if (g_mouse_captureelement._parent != 0) {
+        g_mouse_captureelement._parent->_refCount--;
+        if (g_mouse_captureelement._parent->_refCount <= 0) {
+            g_mouse_captureelement._vtbl->destroy(g_mouse_captureelement._parent);
+            free(g_mouse_captureelement._parent);
+        }
+    }
+    if (g_root._parent != 0) {
+        g_root._parent->_refCount--;
+        if (g_root._parent->_refCount <= 0) {
+            g_root._vtbl->destroy(g_root._parent);
+            free(g_root._parent);
+        }
+    }
     object1->_refCount--;
     if (object1->_refCount <= 0) {
         weakptr_release(object1);
@@ -83175,89 +83257,68 @@ void main_destroy() {
             free(sjt_value91.inner._parent);
         }
     }
-    sjv_fieldbuyelement->_refCount--;
-    if (sjv_fieldbuyelement->_refCount <= 0) {
-        weakptr_release(sjv_fieldbuyelement);
-        sjf_filllayout_destroy(sjv_fieldbuyelement);
-        free(sjv_fieldbuyelement);
-    }
-    sjv_fieldcontroller->_refCount--;
-    if (sjv_fieldcontroller->_refCount <= 0) {
-        weakptr_release(sjv_fieldcontroller);
-        sjf_fieldcontroller_destroy(sjv_fieldcontroller);
-        free(sjv_fieldcontroller);
-    }
-    if (sjv_fieldelement._parent != 0) {
-        sjv_fieldelement._parent->_refCount--;
-        if (sjv_fieldelement._parent->_refCount <= 0) {
-            sjv_fieldelement._vtbl->destroy(sjv_fieldelement._parent);
-            free(sjv_fieldelement._parent);
-        }
-    }
-    sjv_fieldscene->_refCount--;
-    if (sjv_fieldscene->_refCount <= 0) {
-        weakptr_release(sjv_fieldscene);
-        sjf_nauscene3delement_destroy(sjv_fieldscene);
-        free(sjv_fieldscene);
-    }
-    sjv_forestbuyelement->_refCount--;
-    if (sjv_forestbuyelement->_refCount <= 0) {
-        weakptr_release(sjv_forestbuyelement);
-        sjf_filllayout_destroy(sjv_forestbuyelement);
-        free(sjv_forestbuyelement);
-    }
-    sjv_forestcontroller->_refCount--;
-    if (sjv_forestcontroller->_refCount <= 0) {
-        weakptr_release(sjv_forestcontroller);
-        sjf_forestcontroller_destroy(sjv_forestcontroller);
-        free(sjv_forestcontroller);
-    }
-    if (sjv_forestelement._parent != 0) {
-        sjv_forestelement._parent->_refCount--;
-        if (sjv_forestelement._parent->_refCount <= 0) {
-            sjv_forestelement._vtbl->destroy(sjv_forestelement._parent);
-            free(sjv_forestelement._parent);
-        }
-    }
-    sjv_forestscene->_refCount--;
-    if (sjv_forestscene->_refCount <= 0) {
-        weakptr_release(sjv_forestscene);
-        sjf_nauscene3delement_destroy(sjv_forestscene);
-        free(sjv_forestscene);
-    }
-    sjv_menucontroller->_refCount--;
-    if (sjv_menucontroller->_refCount <= 0) {
-        weakptr_release(sjv_menucontroller);
-        sjf_menucontroller_destroy(sjv_menucontroller);
-        free(sjv_menucontroller);
-    }
-    if (sjv_menuelement._parent != 0) {
-        sjv_menuelement._parent->_refCount--;
-        if (sjv_menuelement._parent->_refCount <= 0) {
-            sjv_menuelement._vtbl->destroy(sjv_menuelement._parent);
-            free(sjv_menuelement._parent);
-        }
-    }
-    sjv_menuscene->_refCount--;
-    if (sjv_menuscene->_refCount <= 0) {
-        weakptr_release(sjv_menuscene);
-        sjf_nauscene3delement_destroy(sjv_menuscene);
-        free(sjv_menuscene);
-    }
-    if (sjv_mouse_captureelement._parent != 0) {
-        sjv_mouse_captureelement._parent->_refCount--;
-        if (sjv_mouse_captureelement._parent->_refCount <= 0) {
-            sjv_mouse_captureelement._vtbl->destroy(sjv_mouse_captureelement._parent);
-            free(sjv_mouse_captureelement._parent);
-        }
-    }
-    if (sjv_root._parent != 0) {
-        sjv_root._parent->_refCount--;
-        if (sjv_root._parent->_refCount <= 0) {
-            sjv_root._vtbl->destroy(sjv_root._parent);
-            free(sjv_root._parent);
-        }
-    }
+    if (g_animator._refCount == 1) { sjf_animator_destroy(&g_animator); }
+;
+    if (g_blurhorizontalshader._refCount == 1) { sjf_shader_destroy(&g_blurhorizontalshader); }
+;
+    if (g_blurverticalshader._refCount == 1) { sjf_shader_destroy(&g_blurverticalshader); }
+;
+    if (g_boxshader._refCount == 1) { sjf_shader_destroy(&g_boxshader); }
+;
+    if (g_colors_black._refCount == 1) { sjf_color_destroy(&g_colors_black); }
+;
+    if (g_colors_blue._refCount == 1) { sjf_color_destroy(&g_colors_blue); }
+;
+    if (g_colors_gray._refCount == 1) { sjf_color_destroy(&g_colors_gray); }
+;
+    if (g_colors_green._refCount == 1) { sjf_color_destroy(&g_colors_green); }
+;
+    if (g_colors_red._refCount == 1) { sjf_color_destroy(&g_colors_red); }
+;
+    if (g_colors_white._refCount == 1) { sjf_color_destroy(&g_colors_white); }
+;
+    if (g_elementsbyid._refCount == 1) { sjf_hash_string_weak_iface_element_destroy(&g_elementsbyid); }
+;
+    if (g_fadeshader._refCount == 1) { sjf_shader_destroy(&g_fadeshader); }
+;
+    if (g_fieldtexture._refCount == 1) { sjf_texture_destroy(&g_fieldtexture); }
+;
+    if (g_fonthash._refCount == 1) { sjf_hash_fontkey_weak_font_destroy(&g_fonthash); }
+;
+    if (g_foresttexture._refCount == 1) { sjf_texture_destroy(&g_foresttexture); }
+;
+    if (g_glframebuffers._refCount == 1) { sjf_list_u32_destroy(&g_glframebuffers); }
+;
+    if (g_glviewports._refCount == 1) { sjf_list_rect_destroy(&g_glviewports); }
+;
+    if (g_imageshader._refCount == 1) { sjf_shader_destroy(&g_imageshader); }
+;
+    if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
+;
+    if (g_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_excludeall); }
+;
+    if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
+;
+    if (g_looplastrect._refCount == 1) { sjf_rect_destroy(&g_looplastrect); }
+;
+    if (g_modelsbyid._refCount == 1) { sjf_hash_string_weak_iface_model_destroy(&g_modelsbyid); }
+;
+    if (g_phongcolorshader._refCount == 1) { sjf_shader_destroy(&g_phongcolorshader); }
+;
+    if (g_phongtextureshader._refCount == 1) { sjf_shader_destroy(&g_phongtextureshader); }
+;
+    if (g_rootscene._refCount == 1) { sjf_scene2d_destroy(&g_rootscene); }
+;
+    if (g_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&g_rootwindowrenderer); }
+;
+    if (g_saturateshader._refCount == 1) { sjf_shader_destroy(&g_saturateshader); }
+;
+    if (g_style._refCount == 1) { sjf_style_destroy(&g_style); }
+;
+    if (g_textshader._refCount == 1) { sjf_shader_destroy(&g_textshader); }
+;
+    if (g_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&g_vertex_location_texture_normal_format); }
+;
     if (sjt_call101._refCount == 1) { sjf_texture_destroy(&sjt_call101); }
 ;
     if (sjt_call102._refCount == 1) { sjf_string_destroy(&sjt_call102); }
@@ -83799,67 +83860,5 @@ void main_destroy() {
     if (sjt_value9._refCount == 1) { sjf_image_destroy(&sjt_value9); }
 ;
     if (sjt_value90._refCount == 1) { sjf_string_destroy(&sjt_value90); }
-;
-    if (sjv_animator._refCount == 1) { sjf_animator_destroy(&sjv_animator); }
-;
-    if (sjv_blurhorizontalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurhorizontalshader); }
-;
-    if (sjv_blurverticalshader._refCount == 1) { sjf_shader_destroy(&sjv_blurverticalshader); }
-;
-    if (sjv_boxshader._refCount == 1) { sjf_shader_destroy(&sjv_boxshader); }
-;
-    if (sjv_colors_black._refCount == 1) { sjf_color_destroy(&sjv_colors_black); }
-;
-    if (sjv_colors_blue._refCount == 1) { sjf_color_destroy(&sjv_colors_blue); }
-;
-    if (sjv_colors_gray._refCount == 1) { sjf_color_destroy(&sjv_colors_gray); }
-;
-    if (sjv_colors_green._refCount == 1) { sjf_color_destroy(&sjv_colors_green); }
-;
-    if (sjv_colors_red._refCount == 1) { sjf_color_destroy(&sjv_colors_red); }
-;
-    if (sjv_colors_white._refCount == 1) { sjf_color_destroy(&sjv_colors_white); }
-;
-    if (sjv_elementsbyid._refCount == 1) { sjf_hash_string_weak_iface_element_destroy(&sjv_elementsbyid); }
-;
-    if (sjv_fadeshader._refCount == 1) { sjf_shader_destroy(&sjv_fadeshader); }
-;
-    if (sjv_fieldtexture._refCount == 1) { sjf_texture_destroy(&sjv_fieldtexture); }
-;
-    if (sjv_fonthash._refCount == 1) { sjf_hash_fontkey_weak_font_destroy(&sjv_fonthash); }
-;
-    if (sjv_foresttexture._refCount == 1) { sjf_texture_destroy(&sjv_foresttexture); }
-;
-    if (sjv_glframebuffers._refCount == 1) { sjf_list_u32_destroy(&sjv_glframebuffers); }
-;
-    if (sjv_glviewports._refCount == 1) { sjf_list_rect_destroy(&sjv_glviewports); }
-;
-    if (sjv_imageshader._refCount == 1) { sjf_shader_destroy(&sjv_imageshader); }
-;
-    if (sjv_log._refCount == 1) { sjf_log_destroy(&sjv_log); }
-;
-    if (sjv_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_excludeall); }
-;
-    if (sjv_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_includeall); }
-;
-    if (sjv_looplastrect._refCount == 1) { sjf_rect_destroy(&sjv_looplastrect); }
-;
-    if (sjv_modelsbyid._refCount == 1) { sjf_hash_string_weak_iface_model_destroy(&sjv_modelsbyid); }
-;
-    if (sjv_phongcolorshader._refCount == 1) { sjf_shader_destroy(&sjv_phongcolorshader); }
-;
-    if (sjv_phongtextureshader._refCount == 1) { sjf_shader_destroy(&sjv_phongtextureshader); }
-;
-    if (sjv_rootscene._refCount == 1) { sjf_scene2d_destroy(&sjv_rootscene); }
-;
-    if (sjv_rootwindowrenderer._refCount == 1) { sjf_windowrenderer_destroy(&sjv_rootwindowrenderer); }
-;
-    if (sjv_saturateshader._refCount == 1) { sjf_shader_destroy(&sjv_saturateshader); }
-;
-    if (sjv_style._refCount == 1) { sjf_style_destroy(&sjv_style); }
-;
-    if (sjv_textshader._refCount == 1) { sjf_shader_destroy(&sjv_textshader); }
-;
-    if (sjv_vertex_location_texture_normal_format._refCount == 1) { sjf_string_destroy(&sjv_vertex_location_texture_normal_format); }
 ;
 }

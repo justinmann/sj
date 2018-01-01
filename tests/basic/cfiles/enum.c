@@ -54,34 +54,34 @@ KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
 #define type_bool_hash_typedef
 KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
 #endif
-int32_t sjv_bar2_a;
-int32_t sjv_bar2_b;
-int32_t sjv_bar2_c;
-int32_t sjv_bar_a;
-int32_t sjv_bar_b;
-int32_t sjv_bar_c;
-int32_t sjv_loglevel_debug;
-int32_t sjv_loglevel_error;
-int32_t sjv_loglevel_fatal;
-int32_t sjv_loglevel_info;
-int32_t sjv_loglevel_trace;
-int32_t sjv_loglevel_warn;
+int32_t g_bar2_a;
+int32_t g_bar2_b;
+int32_t g_bar2_c;
+int32_t g_bar_a;
+int32_t g_bar_b;
+int32_t g_bar_c;
+int32_t g_loglevel_debug;
+int32_t g_loglevel_error;
+int32_t g_loglevel_fatal;
+int32_t g_loglevel_info;
+int32_t g_loglevel_trace;
+int32_t g_loglevel_warn;
 
+int32_option g_b;
+sjs_string g_c = { -1 };
+int32_t g_clocks_per_sec;
+void* g_emptystringdata;
+float g_f32_pi;
+int32_t g_i32_maxvalue;
+int32_t g_i32_minvalue;
+sjs_log g_log = { -1 };
+sjs_hash_type_bool g_log_excludeall = { -1 };
+sjs_hash_type_bool g_log_includeall = { -1 };
+uint32_t g_u32_maxvalue;
 int32_t result1;
 sjs_string* sjt_functionParam5 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 sjs_string sjt_value3 = { -1 };
-int32_option sjv_b;
-sjs_string sjv_c = { -1 };
-int32_t sjv_clocks_per_sec;
-void* sjv_emptystringdata;
-float sjv_f32_pi;
-int32_t sjv_i32_maxvalue;
-int32_t sjv_i32_minvalue;
-sjs_log sjv_log = { -1 };
-sjs_hash_type_bool sjv_log_excludeall = { -1 };
-sjs_hash_type_bool sjv_log_includeall = { -1 };
-uint32_t sjv_u32_maxvalue;
 
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
@@ -206,10 +206,10 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
 }
 
 void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_char* _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -219,9 +219,9 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -233,7 +233,7 @@ void sjf_array_char_grow(sjs_array_char* _parent, int32_t newsize, sjs_array_cha
 #line 150
         char* p = (char*)_parent->data;
 #line 151
-        char* newp = (char*)sjv_newdata;
+        char* newp = (char*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -259,7 +259,7 @@ newp[i] = p[i];
 #line 134
     _return->datasize = newsize;
 #line 164
-    _return->data = sjv_newdata;
+    _return->data = newdata;
 #line 4
     _return->isglobal = false;
 #line 164
@@ -269,10 +269,10 @@ newp[i] = p[i];
 }
 
 void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_array_char** _return) {
-    void* sjv_newdata;
+    void* newdata;
 
 #line 135 "lib/common/array.sj"
-    sjv_newdata = 0;
+    newdata = 0;
 #line 137
     if (_parent->datasize != newsize) {
 #line 138
@@ -282,9 +282,9 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
 #line 140
         }
 #line 142
-        sjv_newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
+        newdata = (int*)(malloc(sizeof(int) + newsize * sizeof(char))) + 1;
 #line 143
-        int* refcount = (int*)sjv_newdata - 1;
+        int* refcount = (int*)newdata - 1;
 #line 144
         *refcount = 1;
 #line 146
@@ -296,7 +296,7 @@ void sjf_array_char_grow_heap(sjs_array_char* _parent, int32_t newsize, sjs_arra
 #line 150
         char* p = (char*)_parent->data;
 #line 151
-        char* newp = (char*)sjv_newdata;
+        char* newp = (char*)newdata;
 #line 153
         int count = _parent->count;
 #line 155
@@ -324,7 +324,7 @@ newp[i] = p[i];
 #line 134
     (*_return)->datasize = newsize;
 #line 164
-    (*_return)->data = sjv_newdata;
+    (*_return)->data = newdata;
 #line 4
     (*_return)->isglobal = false;
 #line 164
@@ -624,7 +624,7 @@ void sjf_func(int32_option* _return) {
     int32_t sjt_value2;
 
 #line 16 "enum.sj"
-    sjt_value2 = sjv_bar_a;
+    sjt_value2 = g_bar_a;
 #line 16
     (*_return).isvalid = true;
 #line 16
@@ -910,41 +910,41 @@ void sjf_type_isequal(int32_t l, int32_t r, bool* _return) {
 
 int main(int argc, char** argv) {
 #line 1 "lib/common/log.sj"
-    sjv_loglevel_trace = 0;
+    g_loglevel_trace = 0;
 #line 1
-    sjv_loglevel_debug = 1;
+    g_loglevel_debug = 1;
 #line 1
-    sjv_loglevel_info = 2;
+    g_loglevel_info = 2;
 #line 1
-    sjv_loglevel_warn = 3;
+    g_loglevel_warn = 3;
 #line 1
-    sjv_loglevel_error = 4;
+    g_loglevel_error = 4;
 #line 1
-    sjv_loglevel_fatal = 5;
+    g_loglevel_fatal = 5;
 #line 2 "enum.sj"
-    sjv_bar_a = 0;
+    g_bar_a = 0;
 #line 2
-    sjv_bar_b = 1;
+    g_bar_b = 1;
 #line 2
-    sjv_bar_c = 2;
+    g_bar_c = 2;
 #line 9
-    sjv_bar2_a = 0;
+    g_bar2_a = 0;
 #line 9
-    sjv_bar2_b = 1;
+    g_bar2_b = 1;
 #line 9
-    sjv_bar2_c = 2;
+    g_bar2_c = 2;
 #line 1 "lib/common/f32.sj"
-    sjv_f32_pi = 3.14159265358979323846f;
+    g_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxvalue = (uint32_t)4294967295u;
+    g_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     result1 = -1;
 #line 3
-    sjv_i32_maxvalue = result1 - 2147483647;
+    g_i32_maxvalue = result1 - 2147483647;
 #line 4
-    sjv_i32_minvalue = 2147483647;
+    g_i32_minvalue = 2147483647;
 #line 10 "lib/common/log.sj"
-    sjv_log_includeall._refCount = -1;
+    g_log_includeall._refCount = -1;
 #line 10
     sjt_value1._refCount = 1;
 #line 10
@@ -952,99 +952,99 @@ int main(int argc, char** argv) {
 #line 11
     sjs_hash_type_bool* copyoption1 = &sjt_value1;
     if (copyoption1 != 0) {
-        sjv_log_excludeall._refCount = 1;
+        g_log_excludeall._refCount = 1;
 #line 11 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log_excludeall, copyoption1);
+        sjf_hash_type_bool_copy(&g_log_excludeall, copyoption1);
     } else {
-        sjv_log_excludeall._refCount = -1;
+        g_log_excludeall._refCount = -1;
     }
 
 #line 11
-    sjv_log._refCount = 1;
+    g_log._refCount = 1;
 #line 13
-    sjv_log.minlevel = sjv_loglevel_warn;
+    g_log.minlevel = g_loglevel_warn;
 #line 13
-    sjs_hash_type_bool* copyoption8 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption8 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption8 != 0) {
-        sjv_log.traceincludes._refCount = 1;
+        g_log.traceincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.traceincludes, copyoption8);
+        sjf_hash_type_bool_copy(&g_log.traceincludes, copyoption8);
     } else {
-        sjv_log.traceincludes._refCount = -1;
+        g_log.traceincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption9 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption9 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption9 != 0) {
-        sjv_log.debugincludes._refCount = 1;
+        g_log.debugincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.debugincludes, copyoption9);
+        sjf_hash_type_bool_copy(&g_log.debugincludes, copyoption9);
     } else {
-        sjv_log.debugincludes._refCount = -1;
+        g_log.debugincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption10 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption10 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption10 != 0) {
-        sjv_log.infoincludes._refCount = 1;
+        g_log.infoincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.infoincludes, copyoption10);
+        sjf_hash_type_bool_copy(&g_log.infoincludes, copyoption10);
     } else {
-        sjv_log.infoincludes._refCount = -1;
+        g_log.infoincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption11 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption11 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption11 != 0) {
-        sjv_log.warnincludes._refCount = 1;
+        g_log.warnincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.warnincludes, copyoption11);
+        sjf_hash_type_bool_copy(&g_log.warnincludes, copyoption11);
     } else {
-        sjv_log.warnincludes._refCount = -1;
+        g_log.warnincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption12 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption12 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption12 != 0) {
-        sjv_log.errorincludes._refCount = 1;
+        g_log.errorincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.errorincludes, copyoption12);
+        sjf_hash_type_bool_copy(&g_log.errorincludes, copyoption12);
     } else {
-        sjv_log.errorincludes._refCount = -1;
+        g_log.errorincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption13 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption13 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption13 != 0) {
-        sjv_log.fatalincludes._refCount = 1;
+        g_log.fatalincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.fatalincludes, copyoption13);
+        sjf_hash_type_bool_copy(&g_log.fatalincludes, copyoption13);
     } else {
-        sjv_log.fatalincludes._refCount = -1;
+        g_log.fatalincludes._refCount = -1;
     }
 
 #line 13
-    sjf_log(&sjv_log);
+    sjf_log(&g_log);
 #line 1 "lib/common/string.sj"
-    sjv_emptystringdata = 0;
+    g_emptystringdata = 0;
 #line 3
-    sjv_emptystringdata = "";
+    g_emptystringdata = "";
 #line 2 "lib/common/weakptr.sj"
     ptr_init();
 #line 3
     weakptr_init();
 #line 7 "lib/common/clock.sj"
-    sjv_clocks_per_sec = 0;
+    g_clocks_per_sec = 0;
 #line 9
-    sjv_clocks_per_sec = CLOCKS_PER_SEC;
+    g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 9
-    sjf_func(&sjv_b);
-    if (sjv_b.isvalid) {
+    sjf_func(&g_b);
+    if (g_b.isvalid) {
         int32_t sjt_functionParam1;
         int32_option sjt_getValue1;
 
 #line 20 "enum.sj"
-        sjt_getValue1 = sjv_b;
+        sjt_getValue1 = g_b;
 #line 20
         sjt_functionParam1 = sjt_getValue1.value;
 #line 20
@@ -1052,19 +1052,19 @@ int main(int argc, char** argv) {
 #line 20
         sjs_string* copyoption14 = &sjt_value3;
         if (copyoption14 != 0) {
-            sjv_c._refCount = 1;
+            g_c._refCount = 1;
 #line 20 "enum.sj"
-            sjf_string_copy(&sjv_c, copyoption14);
+            sjf_string_copy(&g_c, copyoption14);
         } else {
-            sjv_c._refCount = -1;
+            g_c._refCount = -1;
         }
     } else {
 #line 20 "enum.sj"
-        sjv_c._refCount = -1;
+        g_c._refCount = -1;
     }
 
 #line 22 "enum.sj"
-    sjt_functionParam5 = (sjv_c._refCount != -1 ? &sjv_c : 0);
+    sjt_functionParam5 = (g_c._refCount != -1 ? &g_c : 0);
 #line 22
     sjf_debug_writeline(sjt_functionParam5);
     main_destroy();
@@ -1073,16 +1073,16 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    if (g_c._refCount == 1) { sjf_string_destroy(&g_c); }
+;
+    if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
+;
+    if (g_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_excludeall); }
+;
+    if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
+;
     if (sjt_value1._refCount == 1) { sjf_hash_type_bool_destroy(&sjt_value1); }
 ;
     if (sjt_value3._refCount == 1) { sjf_string_destroy(&sjt_value3); }
-;
-    if (sjv_c._refCount == 1) { sjf_string_destroy(&sjv_c); }
-;
-    if (sjv_log._refCount == 1) { sjf_log_destroy(&sjv_log); }
-;
-    if (sjv_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_excludeall); }
-;
-    if (sjv_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_includeall); }
 ;
 }

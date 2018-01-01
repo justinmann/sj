@@ -66,46 +66,46 @@ KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
 #define type_bool_hash_typedef
 KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
 #endif
-int32_t sjv_loglevel_debug;
-int32_t sjv_loglevel_error;
-int32_t sjv_loglevel_fatal;
-int32_t sjv_loglevel_info;
-int32_t sjv_loglevel_trace;
-int32_t sjv_loglevel_warn;
+int32_t g_loglevel_debug;
+int32_t g_loglevel_error;
+int32_t g_loglevel_fatal;
+int32_t g_loglevel_info;
+int32_t g_loglevel_trace;
+int32_t g_loglevel_warn;
 
+int32_option g_a;
+int64_option g_b;
+uint32_option g_c;
+int32_t g_clocks_per_sec;
+uint64_option g_d;
+float_option g_e;
+void* g_emptystringdata;
+double_option g_f;
+float g_f32_pi;
+char_option g_g;
+void_option g_h;
+sjs_class g_i = { -1 };
+int32_t g_i32_maxvalue;
+int32_t g_i32_minvalue;
+bool g_j;
+bool g_k;
+sji_interface g_l = { 0 };
+sjs_log g_log = { -1 };
+sjs_hash_type_bool g_log_excludeall = { -1 };
+sjs_hash_type_bool g_log_includeall = { -1 };
+bool g_m;
+sjs_class* g_n = 0;
+sjs_class* g_o = 0;
+int32_option g_p;
+int32_t g_q;
+sji_interface g_r = { 0 };
+sji_interface2 g_s = { 0 };
+uint32_t g_u32_maxvalue;
 int32_t result1;
 sjs_class* sjt_cast2 = 0;
 sji_interface sjt_cast3 = { 0 };
 sjs_hash_type_bool sjt_value1 = { -1 };
 sjs_class* sjt_value2 = 0;
-int32_option sjv_a;
-int64_option sjv_b;
-uint32_option sjv_c;
-int32_t sjv_clocks_per_sec;
-uint64_option sjv_d;
-float_option sjv_e;
-void* sjv_emptystringdata;
-double_option sjv_f;
-float sjv_f32_pi;
-char_option sjv_g;
-void_option sjv_h;
-sjs_class sjv_i = { -1 };
-int32_t sjv_i32_maxvalue;
-int32_t sjv_i32_minvalue;
-bool sjv_j;
-bool sjv_k;
-sji_interface sjv_l = { 0 };
-sjs_log sjv_log = { -1 };
-sjs_hash_type_bool sjv_log_excludeall = { -1 };
-sjs_hash_type_bool sjv_log_includeall = { -1 };
-bool sjv_m;
-sjs_class* sjv_n = 0;
-sjs_class* sjv_o = 0;
-int32_option sjv_p;
-int32_t sjv_q;
-sji_interface sjv_r = { 0 };
-sji_interface2 sjv_s = { 0 };
-uint32_t sjv_u32_maxvalue;
 
 void sjf_class(sjs_class* _this);
 void sjf_class_as_sji_interface(sjs_class* _this, sji_interface* _return);
@@ -392,29 +392,29 @@ int main(int argc, char** argv) {
     sjs_class_interface_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
     sjs_class_interface_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
 #line 1 "lib/common/log.sj"
-    sjv_loglevel_trace = 0;
+    g_loglevel_trace = 0;
 #line 1
-    sjv_loglevel_debug = 1;
+    g_loglevel_debug = 1;
 #line 1
-    sjv_loglevel_info = 2;
+    g_loglevel_info = 2;
 #line 1
-    sjv_loglevel_warn = 3;
+    g_loglevel_warn = 3;
 #line 1
-    sjv_loglevel_error = 4;
+    g_loglevel_error = 4;
 #line 1
-    sjv_loglevel_fatal = 5;
+    g_loglevel_fatal = 5;
 #line 1 "lib/common/f32.sj"
-    sjv_f32_pi = 3.14159265358979323846f;
+    g_f32_pi = 3.14159265358979323846f;
 #line 1 "lib/common/i32.sj"
-    sjv_u32_maxvalue = (uint32_t)4294967295u;
+    g_u32_maxvalue = (uint32_t)4294967295u;
 #line 3
     result1 = -1;
 #line 3
-    sjv_i32_maxvalue = result1 - 2147483647;
+    g_i32_maxvalue = result1 - 2147483647;
 #line 4
-    sjv_i32_minvalue = 2147483647;
+    g_i32_minvalue = 2147483647;
 #line 10 "lib/common/log.sj"
-    sjv_log_includeall._refCount = -1;
+    g_log_includeall._refCount = -1;
 #line 10
     sjt_value1._refCount = 1;
 #line 10
@@ -422,117 +422,117 @@ int main(int argc, char** argv) {
 #line 11
     sjs_hash_type_bool* copyoption1 = &sjt_value1;
     if (copyoption1 != 0) {
-        sjv_log_excludeall._refCount = 1;
+        g_log_excludeall._refCount = 1;
 #line 11 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log_excludeall, copyoption1);
+        sjf_hash_type_bool_copy(&g_log_excludeall, copyoption1);
     } else {
-        sjv_log_excludeall._refCount = -1;
+        g_log_excludeall._refCount = -1;
     }
 
 #line 11
-    sjv_log._refCount = 1;
+    g_log._refCount = 1;
 #line 13
-    sjv_log.minlevel = sjv_loglevel_warn;
+    g_log.minlevel = g_loglevel_warn;
 #line 13
-    sjs_hash_type_bool* copyoption8 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption8 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption8 != 0) {
-        sjv_log.traceincludes._refCount = 1;
+        g_log.traceincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.traceincludes, copyoption8);
+        sjf_hash_type_bool_copy(&g_log.traceincludes, copyoption8);
     } else {
-        sjv_log.traceincludes._refCount = -1;
+        g_log.traceincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption9 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption9 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption9 != 0) {
-        sjv_log.debugincludes._refCount = 1;
+        g_log.debugincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.debugincludes, copyoption9);
+        sjf_hash_type_bool_copy(&g_log.debugincludes, copyoption9);
     } else {
-        sjv_log.debugincludes._refCount = -1;
+        g_log.debugincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption10 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption10 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption10 != 0) {
-        sjv_log.infoincludes._refCount = 1;
+        g_log.infoincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.infoincludes, copyoption10);
+        sjf_hash_type_bool_copy(&g_log.infoincludes, copyoption10);
     } else {
-        sjv_log.infoincludes._refCount = -1;
+        g_log.infoincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption11 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption11 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption11 != 0) {
-        sjv_log.warnincludes._refCount = 1;
+        g_log.warnincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.warnincludes, copyoption11);
+        sjf_hash_type_bool_copy(&g_log.warnincludes, copyoption11);
     } else {
-        sjv_log.warnincludes._refCount = -1;
+        g_log.warnincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption12 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption12 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption12 != 0) {
-        sjv_log.errorincludes._refCount = 1;
+        g_log.errorincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.errorincludes, copyoption12);
+        sjf_hash_type_bool_copy(&g_log.errorincludes, copyoption12);
     } else {
-        sjv_log.errorincludes._refCount = -1;
+        g_log.errorincludes._refCount = -1;
     }
 
 #line 13
-    sjs_hash_type_bool* copyoption13 = (sjv_log_includeall._refCount != -1 ? &sjv_log_includeall : 0);
+    sjs_hash_type_bool* copyoption13 = (g_log_includeall._refCount != -1 ? &g_log_includeall : 0);
     if (copyoption13 != 0) {
-        sjv_log.fatalincludes._refCount = 1;
+        g_log.fatalincludes._refCount = 1;
 #line 13 "lib/common/log.sj"
-        sjf_hash_type_bool_copy(&sjv_log.fatalincludes, copyoption13);
+        sjf_hash_type_bool_copy(&g_log.fatalincludes, copyoption13);
     } else {
-        sjv_log.fatalincludes._refCount = -1;
+        g_log.fatalincludes._refCount = -1;
     }
 
 #line 13
-    sjf_log(&sjv_log);
+    sjf_log(&g_log);
 #line 1 "lib/common/string.sj"
-    sjv_emptystringdata = 0;
+    g_emptystringdata = 0;
 #line 3
-    sjv_emptystringdata = "";
+    g_emptystringdata = "";
 #line 2 "lib/common/weakptr.sj"
     ptr_init();
 #line 3
     weakptr_init();
 #line 7 "lib/common/clock.sj"
-    sjv_clocks_per_sec = 0;
+    g_clocks_per_sec = 0;
 #line 9
-    sjv_clocks_per_sec = CLOCKS_PER_SEC;
+    g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 8 "option1.sj"
-    sjv_a = int32_empty;
+    g_a = int32_empty;
 #line 9
-    sjv_b = int64_empty;
+    g_b = int64_empty;
 #line 10
-    sjv_c = uint32_empty;
+    g_c = uint32_empty;
 #line 11
-    sjv_d = uint64_empty;
+    g_d = uint64_empty;
 #line 12
-    sjv_e = float_empty;
+    g_e = float_empty;
 #line 13
-    sjv_f = double_empty;
+    g_f = double_empty;
 #line 14
-    sjv_g = char_empty;
+    g_g = char_empty;
 #line 15
-    sjv_h = void_empty;
+    g_h = void_empty;
 #line 16
-    sjv_i._refCount = -1;
+    g_i._refCount = -1;
 #line 17
-    sjv_j = !sjv_a.isvalid;
+    g_j = !g_a.isvalid;
 #line 18
-    sjv_k = ((sjv_i._refCount != -1 ? &sjv_i : 0) == 0);
+    g_k = ((g_i._refCount != -1 ? &g_i : 0) == 0);
 #line 19
-    sjv_l._parent = 0;
+    g_l._parent = 0;
 #line 20
-    sjv_m = (sjv_l._parent == 0);
+    g_m = (g_l._parent == 0);
 #line 20
     sjt_value2 = (sjs_class*)malloc(sizeof(sjs_class));
 #line 20
@@ -542,76 +542,76 @@ int main(int argc, char** argv) {
 #line 5
     sjf_class_heap(sjt_value2);
 #line 22
-    sjv_n = sjt_value2;
-    if (sjv_n != 0) {
-        sjv_n->_refCount++;
+    g_n = sjt_value2;
+    if (g_n != 0) {
+        g_n->_refCount++;
     }
 
 #line 23
-    sjv_o = sjv_n;
-    if (sjv_o != 0) {
-        sjv_o->_refCount++;
+    g_o = g_n;
+    if (g_o != 0) {
+        g_o->_refCount++;
     }
 
 #line 23
-    if (sjv_o->_refCount == -1) { exit(-1); }
-    if (sjv_n != 0) {
+    if (g_o->_refCount == -1) { exit(-1); }
+    if (g_n != 0) {
         sjs_class* sjt_capture1 = 0;
         int32_t sjt_value3;
 
 #line 4 "option1.sj"
-        sjt_capture1 = sjv_n;
+        sjt_capture1 = g_n;
 #line 24
         sjt_value3 = sjt_capture1->bob;
 #line 24
-        sjv_p.isvalid = true;
+        g_p.isvalid = true;
 #line 24
-        sjv_p.value = sjt_value3;
+        g_p.value = sjt_value3;
     } else {
 #line 24 "option1.sj"
-        sjv_p = int32_empty;
+        g_p = int32_empty;
     }
 
-    if (sjv_a.isvalid) {
+    if (g_a.isvalid) {
         int32_option sjt_getValue1;
 
 #line 25 "option1.sj"
-        sjt_getValue1 = sjv_a;
+        sjt_getValue1 = g_a;
 #line 25
-        sjv_q = sjt_getValue1.value;
+        g_q = sjt_getValue1.value;
     } else {
         int32_t result2;
 
 #line 25 "option1.sj"
         result2 = -1;
 #line 25
-        sjv_q = result2;
+        g_q = result2;
     }
 
 #line 26
-    sjt_cast2 = sjv_n;
+    sjt_cast2 = g_n;
     if (sjt_cast2 != 0) {
 #line 2 "option1.sj"
-        sjf_class_as_sji_interface(sjt_cast2, &sjv_r);
-        if (sjv_r._parent != 0) {
-            sjv_r._parent->_refCount++;
+        sjf_class_as_sji_interface(sjt_cast2, &g_r);
+        if (g_r._parent != 0) {
+            g_r._parent->_refCount++;
         }
     } else {
 #line 26 "option1.sj"
-        sjv_r._parent = 0;
+        g_r._parent = 0;
     }
 
 #line 27
-    sjt_cast3 = sjv_r;
+    sjt_cast3 = g_r;
     if (sjt_cast3._parent != 0) {
 #line 3 "option1.sj"
-        sjt_cast3._vtbl->asinterface(sjt_cast3._parent, sji_interface2_typeId, (sjs_interface*)&sjv_s);
-        if (sjv_s._parent != 0) {
-            sjv_s._parent->_refCount++;
+        sjt_cast3._vtbl->asinterface(sjt_cast3._parent, sji_interface2_typeId, (sjs_interface*)&g_s);
+        if (g_s._parent != 0) {
+            g_s._parent->_refCount++;
         }
     } else {
 #line 27 "option1.sj"
-        sjv_s._parent = 0;
+        g_s._parent = 0;
     }
     main_destroy();
     return 0;
@@ -619,48 +619,48 @@ int main(int argc, char** argv) {
 
 void main_destroy() {
 
+    if (g_n != 0) {
+        g_n->_refCount--;
+        if (g_n->_refCount <= 0) {
+            weakptr_release(g_n);
+            sjf_class_destroy(g_n);
+            free(g_n);
+        }
+    }
+    g_o->_refCount--;
+    if (g_o->_refCount <= 0) {
+        weakptr_release(g_o);
+        sjf_class_destroy(g_o);
+        free(g_o);
+    }
+    if (g_r._parent != 0) {
+        g_r._parent->_refCount--;
+        if (g_r._parent->_refCount <= 0) {
+            g_r._vtbl->destroy(g_r._parent);
+            free(g_r._parent);
+        }
+    }
+    if (g_s._parent != 0) {
+        g_s._parent->_refCount--;
+        if (g_s._parent->_refCount <= 0) {
+            g_s._vtbl->destroy(g_s._parent);
+            free(g_s._parent);
+        }
+    }
     sjt_value2->_refCount--;
     if (sjt_value2->_refCount <= 0) {
         weakptr_release(sjt_value2);
         sjf_class_destroy(sjt_value2);
         free(sjt_value2);
     }
-    if (sjv_n != 0) {
-        sjv_n->_refCount--;
-        if (sjv_n->_refCount <= 0) {
-            weakptr_release(sjv_n);
-            sjf_class_destroy(sjv_n);
-            free(sjv_n);
-        }
-    }
-    sjv_o->_refCount--;
-    if (sjv_o->_refCount <= 0) {
-        weakptr_release(sjv_o);
-        sjf_class_destroy(sjv_o);
-        free(sjv_o);
-    }
-    if (sjv_r._parent != 0) {
-        sjv_r._parent->_refCount--;
-        if (sjv_r._parent->_refCount <= 0) {
-            sjv_r._vtbl->destroy(sjv_r._parent);
-            free(sjv_r._parent);
-        }
-    }
-    if (sjv_s._parent != 0) {
-        sjv_s._parent->_refCount--;
-        if (sjv_s._parent->_refCount <= 0) {
-            sjv_s._vtbl->destroy(sjv_s._parent);
-            free(sjv_s._parent);
-        }
-    }
+    if (g_i._refCount == 1) { sjf_class_destroy(&g_i); }
+;
+    if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
+;
+    if (g_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_excludeall); }
+;
+    if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
+;
     if (sjt_value1._refCount == 1) { sjf_hash_type_bool_destroy(&sjt_value1); }
-;
-    if (sjv_i._refCount == 1) { sjf_class_destroy(&sjv_i); }
-;
-    if (sjv_log._refCount == 1) { sjf_log_destroy(&sjv_log); }
-;
-    if (sjv_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_excludeall); }
-;
-    if (sjv_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&sjv_log_includeall); }
 ;
 }
