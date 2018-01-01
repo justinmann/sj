@@ -6,10 +6,8 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* if clause for logical and
-* make sure interface call uses copy
-* do not auto copy to heap it is a return value
 * remove sjv_ and add g_ only for global values
+* create new project command
 * heap local to stop most of intrafunction refcount'ing
 * property
 * clone operator to do full copy
