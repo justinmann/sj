@@ -52,8 +52,8 @@ class NFunction;
 
 class CNormalVar : public CStoreVar {
 public:
-    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isMutable, CVarType mode) : CStoreVar(loc, scope, name, mode == Var_Local ? "sjv_" + name : name, isMutable), mode(mode), type(type) {}
-    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, string cname, bool isMutable, CVarType mode, shared_ptr<CVar> dotVar) : CStoreVar(loc, scope, name, cname, isMutable), mode(mode), type(type), dotVar(dotVar) {}
+    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isMutable, CVarType mode);
+    CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, string cname, bool isMutable, CVarType mode, shared_ptr<CVar> dotVar);
     shared_ptr<CNormalVar> createForDot(shared_ptr<CVar> dotVar);
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);

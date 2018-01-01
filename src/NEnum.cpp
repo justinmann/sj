@@ -120,7 +120,7 @@ void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
         }
         nameNS += enumArg->name;
 
-        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, ctypes->stackValueType, enumArg->name, "sjv_" + nameNS, false, CVarType::Var_Local, nullptr);
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, ctypes->stackValueType, enumArg->name, "g_" + nameNS, false, CVarType::Var_Local, nullptr);
         scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
         enumVars.push_back(leftStoreVar);
     }

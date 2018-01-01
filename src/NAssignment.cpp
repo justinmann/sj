@@ -112,7 +112,7 @@ void NAssignment::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTy
             return;
         }
 
-        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+        auto leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, (scope->function->name == "global" ? "g_" : "") + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
         scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
     }
 }
@@ -235,7 +235,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                         return nullptr;
                     }
 
-                    leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, "sjv_" + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
+                    leftStoreVar = make_shared<CNormalVar>(loc, scope, leftType, name, (scope->function->name == "global" ? "g_" : "") + nameNS, op.isMutable, CVarType::Var_Local, nullptr);
 
                     scope->addOrUpdateLocalVar(compiler, packageNamespace, leftStoreVar);
                 }

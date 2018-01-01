@@ -8,6 +8,13 @@
 
 #include <sjc.h>
 
+CNormalVar::CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, bool isMutable, CVarType mode) : 
+CStoreVar(loc, scope, name, mode == Var_Local ? (scope->function->name == "global" ? "g_" : "") + name : name, isMutable), 
+mode(mode), type(type) {}
+
+CNormalVar::CNormalVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string name, string cname, bool isMutable, CVarType mode, shared_ptr<CVar> dotVar) : 
+CStoreVar(loc, scope, name, cname, isMutable), 
+mode(mode), type(type), dotVar(dotVar) {}
 
 shared_ptr<CType> CNormalVar::getType(Compiler* compiler) {
     if (dotVar && type->typeMode == CTM_ValuePtr) {
