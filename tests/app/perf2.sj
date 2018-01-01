@@ -92,9 +92,9 @@ test #element (
             --c--
             #include(<gl/glu.h>)
             glEnable(GL_LIGHTING);
-            // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &sjv_a_light.x);
-            // glLightfv(GL_LIGHT0, GL_DIFFUSE, &sjv_s_light.x);
-            // glLightfv(GL_LIGHT0, GL_POSITION, &sjv_l_pos.x);
+            // glLightModelfv(GL_LIGHT_MODEL_AMBIENT, &a_light.x);
+            // glLightfv(GL_LIGHT0, GL_DIFFUSE, &s_light.x);
+            // glLightfv(GL_LIGHT0, GL_POSITION, &l_pos.x);
             glEnable(GL_LIGHT0);
             
             glEnable(GL_COLOR_MATERIAL);
@@ -109,7 +109,7 @@ test #element (
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();        
 
-            gluPerspective(sjv_persp, (GLfloat) 1920 / (GLfloat) 1080, 0.1f, 100.0f);
+            gluPerspective(g_persp, (GLfloat) 1920 / (GLfloat) 1080, 0.1f, 100.0f);
             glMatrixMode(GL_MODELVIEW);
             --c--
         }
