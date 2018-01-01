@@ -307,6 +307,13 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
     parentVar->transpile(compiler, trOutput, trBlock, thisValue, parentStoreValue);
     auto parentValue = parentStoreValue->getValue();
 
+    shared_ptr<TrStoreValue> previousReturnValue;
+    if (!storeValue->op.isFirstAssignment) {
+        previousReturnValue = storeValue;
+        storeValue = trBlock->createTempStoreVariable(loc, callerScope, storeValue->type, "funcold");
+        storeValue->retainValue(compiler, loc, trBlock, previousReturnValue->getValue());
+    }
+    
     // Call function
     stringstream line;
     line << parentValue->name << "._vtbl->" << name;
@@ -354,6 +361,10 @@ void CInterfaceMethod::transpile(Compiler* compiler, shared_ptr<CScope> callerSc
     line << ")";
     trBlock->statements.push_back(TrStatement(calleeLoc, line.str())); 
     storeValue->hasSetValue = true;
+
+    if (previousReturnValue) {
+        previousReturnValue->retainValue(compiler, loc, trBlock, storeValue->getValue());
+    }
 }
 
 void CInterfaceMethod::dumpBody(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level, CTypeMode returnMode) {

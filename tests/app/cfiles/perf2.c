@@ -7997,6 +7997,7 @@ void sjf_mainloop(void) {
             if ((sjv_mouse_captureelement._parent != 0)) {
                 sji_element ifValue2 = { 0 };
                 sjs_mouseevent sjt_call32 = { -1 };
+                bool sjt_funcold7;
                 sjs_mouseevent* sjt_interfaceParam4 = 0;
                 sji_element sjt_parent227 = { 0 };
 
@@ -8008,6 +8009,8 @@ void sjf_mainloop(void) {
 
 #line 6 "lib/ui/element.sj"
                 sjt_parent227 = ifValue2;
+#line 6
+                sjt_funcold7 = sjv_shouldcontinue;
 #line 6
                 sjt_call32._refCount = 1;
 #line 78 "lib/ui/loop.sj"
@@ -8029,7 +8032,9 @@ void sjf_mainloop(void) {
 #line 78
                 sjt_interfaceParam4 = &sjt_call32;
 #line 78
-                sjt_parent227._vtbl->firemouseevent(sjt_parent227._parent, sjt_interfaceParam4, &sjv_shouldcontinue);
+                sjt_parent227._vtbl->firemouseevent(sjt_parent227._parent, sjt_interfaceParam4, &sjt_funcold7);
+#line 6 "lib/ui/element.sj"
+                sjv_shouldcontinue = sjt_funcold7;
 
                 if (ifValue2._parent != 0) {
                     ifValue2._parent->_refCount--;
@@ -8042,11 +8047,14 @@ void sjf_mainloop(void) {
 ;
             } else {
                 sjs_mouseevent sjt_call33 = { -1 };
+                bool sjt_funcold8;
                 sjs_mouseevent* sjt_interfaceParam5 = 0;
                 sji_element sjt_parent228 = { 0 };
 
 #line 6 "lib/ui/element.sj"
                 sjt_parent228 = sjv_root;
+#line 6
+                sjt_funcold8 = sjv_shouldcontinue;
 #line 6
                 sjt_call33._refCount = 1;
 #line 86 "lib/ui/loop.sj"
@@ -8068,7 +8076,9 @@ void sjf_mainloop(void) {
 #line 86
                 sjt_interfaceParam5 = &sjt_call33;
 #line 86
-                sjt_parent228._vtbl->firemouseevent(sjt_parent228._parent, sjt_interfaceParam5, &sjv_shouldcontinue);
+                sjt_parent228._vtbl->firemouseevent(sjt_parent228._parent, sjt_interfaceParam5, &sjt_funcold8);
+#line 6 "lib/ui/element.sj"
+                sjv_shouldcontinue = sjt_funcold8;
 
                 if (sjt_call33._refCount == 1) { sjf_mouseevent_destroy(&sjt_call33); }
 ;
