@@ -708,8 +708,14 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 
 #line 204 "lib/common/array.sj"
         sjv_continue = true;
-#line 205
-        sjt_while5 = (sjv_i < _parent->count) && sjv_continue;
+        if (sjv_i < _parent->count) {
+#line 205 "lib/common/array.sj"
+            sjt_while5 = sjv_continue;
+        } else {
+#line 205 "lib/common/array.sj"
+            sjt_while5 = false;
+        }
+
         while (sjt_while5) {
             sjs_class sjt_call24 = { -1 };
             int32_t sjt_capture1;
@@ -734,8 +740,13 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
                 sjv_i = sjv_i + 1;
             }
 
-#line 205
-            sjt_while5 = (sjv_i < _parent->count) && sjv_continue;
+            if (sjv_i < _parent->count) {
+#line 205 "lib/common/array.sj"
+                sjt_while5 = sjv_continue;
+            } else {
+#line 205 "lib/common/array.sj"
+                sjt_while5 = false;
+            }
 
             if (sjt_call24._refCount == 1) { sjf_class_destroy(&sjt_call24); }
 ;
@@ -743,8 +754,14 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 
 #line 212
         sjv_continue = true;
-#line 213
-        sjt_while6 = (sjv_j >= 0) && sjv_continue;
+        if (sjv_j >= 0) {
+#line 213 "lib/common/array.sj"
+            sjt_while6 = sjv_continue;
+        } else {
+#line 213 "lib/common/array.sj"
+            sjt_while6 = false;
+        }
+
         while (sjt_while6) {
             sjs_class sjt_call25 = { -1 };
             int32_t sjt_capture2;
@@ -769,8 +786,13 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
                 sjv_j = sjv_j - 1;
             }
 
-#line 213
-            sjt_while6 = (sjv_j >= 0) && sjv_continue;
+            if (sjv_j >= 0) {
+#line 213 "lib/common/array.sj"
+                sjt_while6 = sjv_continue;
+            } else {
+#line 213 "lib/common/array.sj"
+                sjt_while6 = false;
+            }
 
             if (sjt_call25._refCount == 1) { sjf_class_destroy(&sjt_call25); }
 ;

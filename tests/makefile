@@ -12,15 +12,13 @@ all: default
 
 default: app basic
 
-clean:
+clean: clean-app clean-basic
+
+clean-app:
 	-rm -f app/cfiles/*.c
 	-rm -f app/errors/*.error
 	-rm -f app/debug/*.debug
 	-rm -f app/binary/*
-	-rm -f basic/cfiles/*.c
-	-rm -f basic/errors/*.error
-	-rm -f basic/debug/*.debug
-	-rm -f basic/binary/*
 
 app: $(APP_OBJECTS)
 
@@ -30,6 +28,12 @@ app/cfiles/%.c: app/%.sj
 app/binary/%: app/cfiles/%.c
 	-$(CC) $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 $^ -o $@
 	
+clean-basic:
+	-rm -f basic/cfiles/*.c
+	-rm -f basic/errors/*.error
+	-rm -f basic/debug/*.debug
+	-rm -f basic/binary/*
+
 basic: $(BASIC_OBJECTS)
 
 basic/cfiles/%.c: basic/%.sj

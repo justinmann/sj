@@ -10,16 +10,38 @@ shared_ptr<CType> CAndVar::getType(Compiler* compiler) {
 }
 
 void CAndVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    auto leftValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
-    auto rightValue = trBlock->createCaptureStoreVariable(loc, nullptr, compiler->typeBool);
+    storeValue->getName(trBlock); // Force capture values to become named
+
+    auto leftValue = trBlock->createCaptureStoreVariable(loc, scope.lock(), compiler->typeBool);
     leftVar->transpile(compiler, trOutput, trBlock, thisValue, leftValue);
-    rightVar->transpile(compiler, trOutput, trBlock, thisValue, rightValue);
+    
+    auto condText = leftValue->getCaptureText();
+    auto condParensRequired = TrStoreValue::parensRequired(condText, true);
+    stringstream ifLine;
+    ifLine << "if ";
+    if (condParensRequired) {
+        ifLine << "(";
+    }
+    ifLine << condText;
+    if (condParensRequired) {
+        ifLine << ")";
+    }
+    auto trIfBlock = make_shared<TrBlock>(trBlock);
+    trIfBlock->hasThis = trBlock->hasThis;
+    trIfBlock->localVarParent = trBlock;
+    auto trStatement = TrStatement(loc, ifLine.str(), trIfBlock);
+    auto rightValue = trBlock->createCaptureStoreVariable(loc, scope.lock(), compiler->typeBool);
+    rightVar->transpile(compiler, trOutput, trIfBlock.get(), thisValue, rightValue);
+    trIfBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + " = " + rightValue->getCaptureText()));
 
-    stringstream line;
-    line << leftValue->getCaptureText() << " && " << rightValue->getCaptureText();
+    auto trElseBlock = make_shared<TrBlock>(trBlock);
+    trElseBlock->hasThis = trBlock->hasThis;
+    trElseBlock->localVarParent = trBlock;
+    trElseBlock->statements.push_back(TrStatement(loc, storeValue->getName(trBlock) + " = false"));
+    trStatement.elseBlock = trElseBlock;
 
-    auto resultValue = make_shared<TrValue>(nullptr, compiler->typeBool, line.str(), false);
-    storeValue->retainValue(compiler, loc, trBlock, resultValue);
+    trBlock->statements.push_back(trStatement);
+    storeValue->hasSetValue = true;
 }
 
 void CAndVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {

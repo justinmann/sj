@@ -5133,7 +5133,7 @@ void sjf_animator_heap(sjs_animator* _this) {
 }
 
 void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
-    int32_t sjt_capture128;
+    int32_t sjt_capture137;
     sjs_list_heap_iface_animation* sjt_parent186 = 0;
 
 #line 31 "lib/ui/animation.sj"
@@ -5141,8 +5141,8 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 4 "lib/common/list.sj"
     sjt_parent186 = &_parent->animations;
 #line 4
-    sjf_list_heap_iface_animation_getcount(sjt_parent186, &sjt_capture128);
-    if (sjt_capture128 > 0) {
+    sjf_list_heap_iface_animation_getcount(sjt_parent186, &sjt_capture137);
+    if (sjt_capture137 > 0) {
         int32_t i;
         int32_t sjt_forEnd21;
         int32_t sjt_forStart21;
@@ -5157,7 +5157,7 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 35 "lib/ui/animation.sj"
         i = sjt_forEnd21 - 1;
         while (i >= sjt_forStart21) {
-            bool sjt_capture129;
+            bool sjt_capture138;
             int32_t sjt_functionParam484;
             int32_t sjt_interfaceParam1;
             sjs_list_heap_iface_animation* sjt_parent189 = 0;
@@ -5175,8 +5175,8 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 31
             sjt_interfaceParam1 = time;
 #line 37
-            sjt_parent190._vtbl->nextframe(sjt_parent190._parent, sjt_interfaceParam1, &sjt_capture129);
-            if (sjt_capture129) {
+            sjt_parent190._vtbl->nextframe(sjt_parent190._parent, sjt_interfaceParam1, &sjt_capture138);
+            if (sjt_capture138) {
                 int32_t sjt_functionParam485;
                 sjs_list_heap_iface_animation* sjt_parent191 = 0;
 
@@ -6776,8 +6776,13 @@ void sjf_fontkey_isequal(sjs_fontkey* _parent, sjs_fontkey* x, bool* _return) {
     sjt_functionParam11 = &x->src;
 #line 29
     sjf_string_isequal(sjt_parent3, sjt_functionParam11, &sjt_capture3);
-#line 29
-    (*_return) = sjt_capture3 && (_parent->size == x->size);
+    if (sjt_capture3) {
+#line 29 "lib/ui/font.sj"
+        (*_return) = (_parent->size == x->size);
+    } else {
+#line 29 "lib/ui/font.sj"
+        (*_return) = false;
+    }
 }
 
 void sjf_glbeginpoints(void) {
@@ -6814,10 +6819,10 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     bool result40;
     sjs_rect sjt_call30 = { -1 };
     sjs_string sjt_call31 = { -1 };
-    int32_t sjt_capture132;
-    bool sjt_capture133;
-    int32_t sjt_capture134;
-    int32_t sjt_capture135;
+    int32_t sjt_capture141;
+    bool sjt_capture142;
+    int32_t sjt_capture143;
+    int32_t sjt_capture144;
     int32_t sjt_functionParam524;
     sjs_rect* sjt_functionParam525 = 0;
     int32_t sjt_functionParam527;
@@ -6846,9 +6851,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
     sjt_parent218 = &sjv_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent218, &sjt_capture132);
+    sjf_list_rect_getcount(sjt_parent218, &sjt_capture141);
 #line 135 "lib/ui/gl.sj"
-    sjt_functionParam524 = sjt_capture132 - 1;
+    sjt_functionParam524 = sjt_capture141 - 1;
 #line 135
     sjf_list_rect_getat(sjt_parent217, sjt_functionParam524, &sjt_call30);
 #line 135
@@ -6856,9 +6861,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 135
     sjt_functionParam525 = &sjv_oldrect;
 #line 135
-    sjf_rect_isequal(sjt_parent214, sjt_functionParam525, &sjt_capture133);
+    sjf_rect_isequal(sjt_parent214, sjt_functionParam525, &sjt_capture142);
 #line 135
-    result40 = !sjt_capture133;
+    result40 = !sjt_capture142;
     if (result40) {
         sjs_string* sjt_functionParam526 = 0;
 
@@ -6892,17 +6897,17 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
     sjt_parent221 = &sjv_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent221, &sjt_capture134);
+    sjf_list_rect_getcount(sjt_parent221, &sjt_capture143);
 #line 138 "lib/ui/gl.sj"
-    sjt_functionParam527 = sjt_capture134 - 1;
+    sjt_functionParam527 = sjt_capture143 - 1;
 #line 138
     sjf_list_rect_removeat(sjt_parent220, sjt_functionParam527);
 #line 4 "lib/common/list.sj"
     sjt_parent222 = &sjv_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent222, &sjt_capture135);
-    if (sjt_capture135 > 0) {
-        int32_t sjt_capture136;
+    sjf_list_rect_getcount(sjt_parent222, &sjt_capture144);
+    if (sjt_capture144 > 0) {
+        int32_t sjt_capture145;
         int32_t sjt_functionParam528;
         sjs_list_rect* sjt_parent223 = 0;
         sjs_list_rect* sjt_parent224 = 0;
@@ -6912,9 +6917,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
         sjt_parent224 = &sjv_glviewports;
 #line 4
-        sjf_list_rect_getcount(sjt_parent224, &sjt_capture136);
+        sjf_list_rect_getcount(sjt_parent224, &sjt_capture145);
 #line 139 "lib/ui/gl.sj"
-        sjt_functionParam528 = sjt_capture136 - 1;
+        sjt_functionParam528 = sjt_capture145 - 1;
 #line 139
         sjf_list_rect_getat(sjt_parent223, sjt_functionParam528, &sjv_newrect);
     } else {
@@ -7761,7 +7766,7 @@ void sjf_mainloop(void) {
     sjs_string sjt_call27 = { -1 };
     sjs_string sjt_call28 = { -1 };
     sjs_string sjt_call29 = { -1 };
-    bool sjt_capture131;
+    bool sjt_capture140;
     int32_t sjt_functionParam486;
     sjs_size* sjt_functionParam512 = 0;
     sjs_rect* sjt_functionParam521 = 0;
@@ -7886,9 +7891,9 @@ void sjf_mainloop(void) {
 #line 30 "lib/ui/loop.sj"
     sjt_functionParam521 = &sjv_rect;
 #line 30
-    sjf_rect_isequal(sjt_parent211, sjt_functionParam521, &sjt_capture131);
+    sjf_rect_isequal(sjt_parent211, sjt_functionParam521, &sjt_capture140);
 #line 30
-    result39 = !sjt_capture131;
+    result39 = !sjt_capture140;
     if (result39) {
         sjs_rect* sjt_interfaceParam2 = 0;
         sji_element sjt_parent212 = { 0 };
@@ -8431,8 +8436,33 @@ void sjf_rect_heap(sjs_rect* _this) {
 }
 
 void sjf_rect_isequal(sjs_rect* _parent, sjs_rect* rect, bool* _return) {
+    if (_parent->x == rect->x) {
+        bool sjt_capture4;
+
+        if (_parent->y == rect->y) {
+            bool sjt_capture5;
+
+            if (_parent->w == rect->w) {
 #line 16 "lib/ui/rect.sj"
-    (*_return) = (_parent->x == rect->x) && ((_parent->y == rect->y) && ((_parent->w == rect->w) && (_parent->h == rect->h)));
+                sjt_capture5 = (_parent->h == rect->h);
+            } else {
+#line 16 "lib/ui/rect.sj"
+                sjt_capture5 = false;
+            }
+
+#line 16 "lib/ui/rect.sj"
+            sjt_capture4 = sjt_capture5;
+        } else {
+#line 16 "lib/ui/rect.sj"
+            sjt_capture4 = false;
+        }
+
+#line 16 "lib/ui/rect.sj"
+        (*_return) = sjt_capture4;
+    } else {
+#line 16 "lib/ui/rect.sj"
+        (*_return) = false;
+    }
 }
 
 void sjf_runloop(void) {
@@ -8509,7 +8539,7 @@ void sjf_scene2d_heap(sjs_scene2d* _this) {
 
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
     bool result34;
-    bool sjt_capture130;
+    bool sjt_capture139;
     sjs_mat4 sjt_funcold2 = { -1 };
     sjs_mat4 sjt_funcold3 = { -1 };
     sjs_mat4 sjt_funcold4 = { -1 };
@@ -8521,9 +8551,9 @@ void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
 #line 27 "lib/ui/scene2d.sj"
     sjt_functionParam502 = size;
 #line 27
-    sjf_size_isequal(sjt_parent205, sjt_functionParam502, &sjt_capture130);
+    sjf_size_isequal(sjt_parent205, sjt_functionParam502, &sjt_capture139);
 #line 28
-    result34 = !sjt_capture130;
+    result34 = !sjt_capture139;
     if (result34) {
         float result37;
         float result38;
@@ -8710,8 +8740,13 @@ void sjf_size_heap(sjs_size* _this) {
 }
 
 void sjf_size_isequal(sjs_size* _parent, sjs_size* size, bool* _return) {
+    if (_parent->w == size->w) {
 #line 28 "lib/ui/size.sj"
-    (*_return) = (_parent->w == size->w) && (_parent->h == size->h);
+        (*_return) = (_parent->h == size->h);
+    } else {
+#line 28 "lib/ui/size.sj"
+        (*_return) = false;
+    }
 }
 
 void sjf_string(sjs_string* _this) {
@@ -9146,7 +9181,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 194
                 n = sjt_forStart3;
                 while (n < sjt_forEnd3) {
-                    float sjt_capture5;
+                    float sjt_capture7;
                     int32_t sjt_functionParam42;
                     int32_t sjt_functionParam43;
                     int32_t sjt_functionParam44;
@@ -9179,9 +9214,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 197
                     sjt_functionParam48 = sjv_t;
 #line 197
-                    sjf_f32_sin(sjt_functionParam48, &sjt_capture5);
+                    sjf_f32_sin(sjt_functionParam48, &sjt_capture7);
 #line 197
-                    sjt_functionParam47 = (6.0f * sjt_capture5) / 2.0f;
+                    sjt_functionParam47 = (6.0f * sjt_capture7) / 2.0f;
 #line 197
                     sjf_array_f32_setat(sjt_parent18, sjt_functionParam46, sjt_functionParam47);
 #line 194
@@ -9200,7 +9235,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 202
                     n = sjt_forStart4;
                     while (n < sjt_forEnd4) {
-                        float sjt_capture6;
+                        float sjt_capture8;
                         int32_t sjt_functionParam49;
                         int32_t sjt_functionParam50;
                         int32_t sjt_functionParam51;
@@ -9233,9 +9268,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 205
                         sjt_functionParam55 = sjv_t;
 #line 205
-                        sjf_f32_tan(sjt_functionParam55, &sjt_capture6);
+                        sjf_f32_tan(sjt_functionParam55, &sjt_capture8);
 #line 205
-                        sjt_functionParam54 = 1.0f / sjt_capture6;
+                        sjt_functionParam54 = 1.0f / sjt_capture8;
 #line 205
                         sjf_array_f32_setat(sjt_parent20, sjt_functionParam53, sjt_functionParam54);
 #line 202
@@ -9254,8 +9289,8 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 209
                         n = sjt_forStart5;
                         while (n < sjt_forEnd5) {
-                            float sjt_capture7;
-                            float sjt_capture8;
+                            float sjt_capture10;
+                            float sjt_capture9;
                             int32_t sjt_functionParam56;
                             int32_t sjt_functionParam57;
                             int32_t sjt_functionParam58;
@@ -9289,13 +9324,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 212
                             sjt_functionParam62 = sjv_t;
 #line 212
-                            sjf_f32_abs(sjt_functionParam62, &sjt_capture7);
+                            sjf_f32_abs(sjt_functionParam62, &sjt_capture9);
 #line 212
                             sjt_functionParam63 = sjv_t;
 #line 212
-                            sjf_f32_sin(sjt_functionParam63, &sjt_capture8);
+                            sjf_f32_sin(sjt_functionParam63, &sjt_capture10);
 #line 212
-                            sjt_functionParam61 = sjt_capture7 * sjt_capture8;
+                            sjt_functionParam61 = sjt_capture9 * sjt_capture10;
 #line 212
                             sjf_array_f32_setat(sjt_parent22, sjt_functionParam60, sjt_functionParam61);
 #line 209
@@ -9362,7 +9397,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 223
                                 n = sjt_forStart7;
                                 while (n < sjt_forEnd7) {
-                                    float sjt_capture9;
+                                    float sjt_capture11;
                                     int32_t sjt_functionParam70;
                                     int32_t sjt_functionParam71;
                                     int32_t sjt_functionParam72;
@@ -9395,9 +9430,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 226
                                     sjt_functionParam76 = sjv_t;
 #line 226
-                                    sjf_f32_sin(sjt_functionParam76, &sjt_capture9);
+                                    sjf_f32_sin(sjt_functionParam76, &sjt_capture11);
 #line 226
-                                    sjt_functionParam75 = sjv_t * sjt_capture9;
+                                    sjt_functionParam75 = sjv_t * sjt_capture11;
 #line 226
                                     sjf_array_f32_setat(sjt_parent26, sjt_functionParam74, sjt_functionParam75);
 #line 223
@@ -9416,10 +9451,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 230
                                     n = sjt_forStart8;
                                     while (n < sjt_forEnd8) {
-                                        float sjt_capture10;
-                                        float sjt_capture11;
                                         float sjt_capture12;
                                         float sjt_capture13;
+                                        float sjt_capture14;
+                                        float sjt_capture15;
                                         int32_t sjt_functionParam77;
                                         int32_t sjt_functionParam78;
                                         int32_t sjt_functionParam79;
@@ -9447,13 +9482,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 232
                                         sjt_functionParam81 = sjv_t;
 #line 232
-                                        sjf_f32_cos(sjt_functionParam81, &sjt_capture10);
+                                        sjf_f32_cos(sjt_functionParam81, &sjt_capture12);
 #line 232
                                         sjt_functionParam82 = 2.0f * sjv_t;
 #line 232
-                                        sjf_f32_cos(sjt_functionParam82, &sjt_capture11);
+                                        sjf_f32_cos(sjt_functionParam82, &sjt_capture13);
 #line 232
-                                        sjt_functionParam80 = (2.0f * sjt_capture10) + sjt_capture11;
+                                        sjt_functionParam80 = (2.0f * sjt_capture12) + sjt_capture13;
 #line 232
                                         sjf_array_f32_setat(sjt_parent27, sjt_functionParam79, sjt_functionParam80);
 #line 49 "lib/common/array.sj"
@@ -9463,13 +9498,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 233
                                         sjt_functionParam85 = sjv_t;
 #line 233
-                                        sjf_f32_sin(sjt_functionParam85, &sjt_capture12);
+                                        sjf_f32_sin(sjt_functionParam85, &sjt_capture14);
 #line 233
                                         sjt_functionParam86 = 2.0f * sjv_t;
 #line 233
-                                        sjf_f32_sin(sjt_functionParam86, &sjt_capture13);
+                                        sjf_f32_sin(sjt_functionParam86, &sjt_capture15);
 #line 233
-                                        sjt_functionParam84 = (2.0f * sjt_capture12) - sjt_capture13;
+                                        sjt_functionParam84 = (2.0f * sjt_capture14) - sjt_capture15;
 #line 233
                                         sjf_array_f32_setat(sjt_parent28, sjt_functionParam83, sjt_functionParam84);
 #line 230
@@ -9488,10 +9523,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 237
                                         n = sjt_forStart9;
                                         while (n < sjt_forEnd9) {
-                                            float sjt_capture14;
-                                            float sjt_capture15;
                                             float sjt_capture16;
                                             float sjt_capture17;
+                                            float sjt_capture18;
+                                            float sjt_capture19;
                                             int32_t sjt_functionParam87;
                                             int32_t sjt_functionParam88;
                                             int32_t sjt_functionParam89;
@@ -9519,13 +9554,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 239
                                             sjt_functionParam91 = sjv_t;
 #line 239
-                                            sjf_f32_cos(sjt_functionParam91, &sjt_capture14);
+                                            sjf_f32_cos(sjt_functionParam91, &sjt_capture16);
 #line 239
                                             sjt_functionParam92 = 5.0f * sjv_t;
 #line 239
-                                            sjf_f32_cos(sjt_functionParam92, &sjt_capture15);
+                                            sjf_f32_cos(sjt_functionParam92, &sjt_capture17);
 #line 239
-                                            sjt_functionParam90 = 4.0f * (sjt_capture14 + (sjt_capture15 / 5.0f));
+                                            sjt_functionParam90 = 4.0f * (sjt_capture16 + (sjt_capture17 / 5.0f));
 #line 239
                                             sjf_array_f32_setat(sjt_parent29, sjt_functionParam89, sjt_functionParam90);
 #line 49 "lib/common/array.sj"
@@ -9535,13 +9570,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 241
                                             sjt_functionParam95 = sjv_t;
 #line 241
-                                            sjf_f32_sin(sjt_functionParam95, &sjt_capture16);
+                                            sjf_f32_sin(sjt_functionParam95, &sjt_capture18);
 #line 241
                                             sjt_functionParam96 = 5.0f * sjv_t;
 #line 241
-                                            sjf_f32_sin(sjt_functionParam96, &sjt_capture17);
+                                            sjf_f32_sin(sjt_functionParam96, &sjt_capture19);
 #line 241
-                                            sjt_functionParam94 = 4.0f * (sjt_capture16 - (sjt_capture17 / 5.0f));
+                                            sjt_functionParam94 = 4.0f * (sjt_capture18 - (sjt_capture19 / 5.0f));
 #line 241
                                             sjf_array_f32_setat(sjt_parent30, sjt_functionParam93, sjt_functionParam94);
 #line 237
@@ -9560,10 +9595,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 246
                                             n = sjt_forStart10;
                                             while (n < sjt_forEnd10) {
-                                                float sjt_capture18;
-                                                float sjt_capture19;
                                                 float sjt_capture20;
                                                 float sjt_capture21;
+                                                float sjt_capture22;
+                                                float sjt_capture23;
                                                 float sjt_functionParam100;
                                                 float sjt_functionParam101;
                                                 float sjt_functionParam102;
@@ -9591,13 +9626,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 248
                                                 sjt_functionParam101 = sjv_t;
 #line 248
-                                                sjf_f32_cos(sjt_functionParam101, &sjt_capture18);
+                                                sjf_f32_cos(sjt_functionParam101, &sjt_capture20);
 #line 248
                                                 sjt_functionParam102 = 1.1f * sjv_t;
 #line 248
-                                                sjf_f32_cos(sjt_functionParam102, &sjt_capture19);
+                                                sjf_f32_cos(sjt_functionParam102, &sjt_capture21);
 #line 248
-                                                sjt_functionParam100 = 2.8f * (sjt_capture18 + (sjt_capture19 / 1.1f));
+                                                sjt_functionParam100 = 2.8f * (sjt_capture20 + (sjt_capture21 / 1.1f));
 #line 248
                                                 sjf_array_f32_setat(sjt_parent31, sjt_functionParam99, sjt_functionParam100);
 #line 49 "lib/common/array.sj"
@@ -9607,13 +9642,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 249
                                                 sjt_functionParam105 = sjv_t;
 #line 249
-                                                sjf_f32_sin(sjt_functionParam105, &sjt_capture20);
+                                                sjf_f32_sin(sjt_functionParam105, &sjt_capture22);
 #line 249
                                                 sjt_functionParam106 = 1.1f * sjv_t;
 #line 249
-                                                sjf_f32_sin(sjt_functionParam106, &sjt_capture21);
+                                                sjf_f32_sin(sjt_functionParam106, &sjt_capture23);
 #line 249
-                                                sjt_functionParam104 = 2.8f * (sjt_capture20 - (sjt_capture21 / 1.1f));
+                                                sjt_functionParam104 = 2.8f * (sjt_capture22 - (sjt_capture23 / 1.1f));
 #line 249
                                                 sjf_array_f32_setat(sjt_parent32, sjt_functionParam103, sjt_functionParam104);
 #line 246
@@ -9632,10 +9667,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 253
                                                 n = sjt_forStart11;
                                                 while (n < sjt_forEnd11) {
-                                                    float sjt_capture22;
-                                                    float sjt_capture23;
                                                     float sjt_capture24;
                                                     float sjt_capture25;
+                                                    float sjt_capture26;
+                                                    float sjt_capture27;
                                                     int32_t sjt_functionParam107;
                                                     int32_t sjt_functionParam108;
                                                     int32_t sjt_functionParam109;
@@ -9663,13 +9698,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 255
                                                     sjt_functionParam111 = sjv_t;
 #line 255
-                                                    sjf_f32_cos(sjt_functionParam111, &sjt_capture22);
+                                                    sjf_f32_cos(sjt_functionParam111, &sjt_capture24);
 #line 255
                                                     sjt_functionParam112 = sjv_t;
 #line 255
-                                                    sjf_f32_cos(sjt_functionParam112, &sjt_capture23);
+                                                    sjf_f32_cos(sjt_functionParam112, &sjt_capture25);
 #line 255
-                                                    sjt_functionParam110 = (3.0f * (1.0f + sjt_capture22)) * sjt_capture23;
+                                                    sjt_functionParam110 = (3.0f * (1.0f + sjt_capture24)) * sjt_capture25;
 #line 255
                                                     sjf_array_f32_setat(sjt_parent33, sjt_functionParam109, sjt_functionParam110);
 #line 49 "lib/common/array.sj"
@@ -9679,13 +9714,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 256
                                                     sjt_functionParam115 = sjv_t;
 #line 256
-                                                    sjf_f32_cos(sjt_functionParam115, &sjt_capture24);
+                                                    sjf_f32_cos(sjt_functionParam115, &sjt_capture26);
 #line 256
                                                     sjt_functionParam116 = sjv_t;
 #line 256
-                                                    sjf_f32_sin(sjt_functionParam116, &sjt_capture25);
+                                                    sjf_f32_sin(sjt_functionParam116, &sjt_capture27);
 #line 256
-                                                    sjt_functionParam114 = (3.0f * (1.0f + sjt_capture24)) * sjt_capture25;
+                                                    sjt_functionParam114 = (3.0f * (1.0f + sjt_capture26)) * sjt_capture27;
 #line 256
                                                     sjf_array_f32_setat(sjt_parent34, sjt_functionParam113, sjt_functionParam114);
 #line 253
@@ -9704,8 +9739,8 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 260
                                                     n = sjt_forStart12;
                                                     while (n < sjt_forEnd12) {
-                                                        float sjt_capture26;
-                                                        float sjt_capture27;
+                                                        float sjt_capture28;
+                                                        float sjt_capture29;
                                                         int32_t sjt_functionParam117;
                                                         int32_t sjt_functionParam118;
                                                         int32_t sjt_functionParam119;
@@ -9731,9 +9766,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 262
                                                         sjt_functionParam121 = sjv_t + (sjv_f32_pi / 2.0f);
 #line 262
-                                                        sjf_f32_sin(sjt_functionParam121, &sjt_capture26);
+                                                        sjf_f32_sin(sjt_functionParam121, &sjt_capture28);
 #line 262
-                                                        sjt_functionParam120 = 3.0f * sjt_capture26;
+                                                        sjt_functionParam120 = 3.0f * sjt_capture28;
 #line 262
                                                         sjf_array_f32_setat(sjt_parent35, sjt_functionParam119, sjt_functionParam120);
 #line 49 "lib/common/array.sj"
@@ -9743,9 +9778,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 263
                                                         sjt_functionParam124 = 2.0f * sjv_t;
 #line 263
-                                                        sjf_f32_sin(sjt_functionParam124, &sjt_capture27);
+                                                        sjf_f32_sin(sjt_functionParam124, &sjt_capture29);
 #line 263
-                                                        sjt_functionParam123 = 3.0f * sjt_capture27;
+                                                        sjt_functionParam123 = 3.0f * sjt_capture29;
 #line 263
                                                         sjf_array_f32_setat(sjt_parent36, sjt_functionParam122, sjt_functionParam123);
 #line 260
@@ -9764,14 +9799,14 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 268
                                                         n = sjt_forStart13;
                                                         while (n < sjt_forEnd13) {
-                                                            float sjt_capture28;
-                                                            float sjt_capture29;
                                                             float sjt_capture30;
                                                             float sjt_capture31;
                                                             float sjt_capture32;
                                                             float sjt_capture33;
                                                             float sjt_capture34;
                                                             float sjt_capture35;
+                                                            float sjt_capture36;
+                                                            float sjt_capture37;
                                                             int32_t sjt_functionParam125;
                                                             int32_t sjt_functionParam126;
                                                             int32_t sjt_functionParam127;
@@ -9809,17 +9844,17 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 270
                                                             sjt_functionParam129 = sjv_t;
 #line 270
-                                                            sjf_f32_sin(sjt_functionParam129, &sjt_capture28);
+                                                            sjf_f32_sin(sjt_functionParam129, &sjt_capture30);
 #line 270
                                                             sjt_functionParam131 = sjv_t;
 #line 270
                                                             sjf_f32_cos(sjt_functionParam131, &sjt_functionParam130);
 #line 270
-                                                            sjf_f32_exp(sjt_functionParam130, &sjt_capture29);
+                                                            sjf_f32_exp(sjt_functionParam130, &sjt_capture31);
 #line 270
                                                             sjt_functionParam132 = 4.0f * sjv_t;
 #line 270
-                                                            sjf_f32_cos(sjt_functionParam132, &sjt_capture30);
+                                                            sjf_f32_cos(sjt_functionParam132, &sjt_capture32);
 #line 270
                                                             sjt_functionParam134 = sjv_t / 12.0f;
 #line 270
@@ -9827,9 +9862,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 270
                                                             sjt_functionParam135 = 5.0f;
 #line 270
-                                                            sjf_f32_pow(sjt_functionParam133, sjt_functionParam135, &sjt_capture31);
+                                                            sjf_f32_pow(sjt_functionParam133, sjt_functionParam135, &sjt_capture33);
 #line 270
-                                                            sjt_functionParam128 = sjt_capture28 * ((sjt_capture29 - (2.0f * sjt_capture30)) + sjt_capture31);
+                                                            sjt_functionParam128 = sjt_capture30 * ((sjt_capture31 - (2.0f * sjt_capture32)) + sjt_capture33);
 #line 270
                                                             sjf_array_f32_setat(sjt_parent37, sjt_functionParam127, sjt_functionParam128);
 #line 49 "lib/common/array.sj"
@@ -9839,17 +9874,17 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 271
                                                             sjt_functionParam138 = sjv_t;
 #line 271
-                                                            sjf_f32_cos(sjt_functionParam138, &sjt_capture32);
+                                                            sjf_f32_cos(sjt_functionParam138, &sjt_capture34);
 #line 271
                                                             sjt_functionParam140 = sjv_t;
 #line 271
                                                             sjf_f32_cos(sjt_functionParam140, &sjt_functionParam139);
 #line 271
-                                                            sjf_f32_exp(sjt_functionParam139, &sjt_capture33);
+                                                            sjf_f32_exp(sjt_functionParam139, &sjt_capture35);
 #line 271
                                                             sjt_functionParam141 = 4.0f * sjv_t;
 #line 271
-                                                            sjf_f32_cos(sjt_functionParam141, &sjt_capture34);
+                                                            sjf_f32_cos(sjt_functionParam141, &sjt_capture36);
 #line 271
                                                             sjt_functionParam143 = sjv_t / 12.0f;
 #line 271
@@ -9857,9 +9892,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 271
                                                             sjt_functionParam144 = 5.0f;
 #line 271
-                                                            sjf_f32_pow(sjt_functionParam142, sjt_functionParam144, &sjt_capture35);
+                                                            sjf_f32_pow(sjt_functionParam142, sjt_functionParam144, &sjt_capture37);
 #line 271
-                                                            sjt_functionParam137 = sjt_capture32 * ((sjt_capture33 - (2.0f * sjt_capture34)) + sjt_capture35);
+                                                            sjt_functionParam137 = sjt_capture34 * ((sjt_capture35 - (2.0f * sjt_capture36)) + sjt_capture37);
 #line 271
                                                             sjf_array_f32_setat(sjt_parent38, sjt_functionParam136, sjt_functionParam137);
 #line 268
@@ -9878,11 +9913,11 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 276
                                                             n = sjt_forStart14;
                                                             while (n < sjt_forEnd14) {
-                                                                float sjt_capture36;
-                                                                float sjt_capture37;
                                                                 float sjt_capture38;
                                                                 float sjt_capture39;
                                                                 float sjt_capture40;
+                                                                float sjt_capture41;
+                                                                float sjt_capture42;
                                                                 int32_t sjt_functionParam145;
                                                                 int32_t sjt_functionParam146;
                                                                 int32_t sjt_functionParam147;
@@ -9917,9 +9952,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 278
                                                                 sjt_functionParam151 = 3.0f;
 #line 278
-                                                                sjf_f32_pow(sjt_functionParam149, sjt_functionParam151, &sjt_capture36);
+                                                                sjf_f32_pow(sjt_functionParam149, sjt_functionParam151, &sjt_capture38);
 #line 278
-                                                                sjt_functionParam148 = (16.0f * sjt_capture36) / 4.0f;
+                                                                sjt_functionParam148 = (16.0f * sjt_capture38) / 4.0f;
 #line 278
                                                                 sjf_array_f32_setat(sjt_parent39, sjt_functionParam147, sjt_functionParam148);
 #line 49 "lib/common/array.sj"
@@ -9929,21 +9964,21 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 279
                                                                 sjt_functionParam154 = sjv_t;
 #line 279
-                                                                sjf_f32_cos(sjt_functionParam154, &sjt_capture37);
+                                                                sjf_f32_cos(sjt_functionParam154, &sjt_capture39);
 #line 279
                                                                 sjt_functionParam155 = 2.0f * sjv_t;
 #line 279
-                                                                sjf_f32_cos(sjt_functionParam155, &sjt_capture38);
+                                                                sjf_f32_cos(sjt_functionParam155, &sjt_capture40);
 #line 279
                                                                 sjt_functionParam156 = 3.0f * sjv_t;
 #line 279
-                                                                sjf_f32_cos(sjt_functionParam156, &sjt_capture39);
+                                                                sjf_f32_cos(sjt_functionParam156, &sjt_capture41);
 #line 279
                                                                 sjt_functionParam157 = 4.0f * sjv_t;
 #line 279
-                                                                sjf_f32_cos(sjt_functionParam157, &sjt_capture40);
+                                                                sjf_f32_cos(sjt_functionParam157, &sjt_capture42);
 #line 279
-                                                                sjt_functionParam153 = ((((13.0f * sjt_capture37) - (5.0f * sjt_capture38)) - (2.0f * sjt_capture39)) - sjt_capture40) / 4.0f;
+                                                                sjt_functionParam153 = ((((13.0f * sjt_capture39) - (5.0f * sjt_capture40)) - (2.0f * sjt_capture41)) - sjt_capture42) / 4.0f;
 #line 279
                                                                 sjf_array_f32_setat(sjt_parent40, sjt_functionParam152, sjt_functionParam153);
 #line 276
@@ -9962,8 +9997,8 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 283
                                                                 n = sjt_forStart15;
                                                                 while (n < sjt_forEnd15) {
-                                                                    float sjt_capture41;
-                                                                    float sjt_capture42;
+                                                                    float sjt_capture43;
+                                                                    float sjt_capture44;
                                                                     int32_t sjt_functionParam158;
                                                                     int32_t sjt_functionParam159;
                                                                     int32_t sjt_functionParam160;
@@ -9989,9 +10024,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 285
                                                                     sjt_functionParam162 = sjv_t;
 #line 285
-                                                                    sjf_f32_sin(sjt_functionParam162, &sjt_capture41);
+                                                                    sjf_f32_sin(sjt_functionParam162, &sjt_capture43);
 #line 285
-                                                                    sjt_functionParam161 = 5.0f * sjt_capture41;
+                                                                    sjt_functionParam161 = 5.0f * sjt_capture43;
 #line 285
                                                                     sjf_array_f32_setat(sjt_parent41, sjt_functionParam160, sjt_functionParam161);
 #line 49 "lib/common/array.sj"
@@ -10001,9 +10036,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 286
                                                                     sjt_functionParam165 = sjv_t;
 #line 286
-                                                                    sjf_f32_cos(sjt_functionParam165, &sjt_capture42);
+                                                                    sjf_f32_cos(sjt_functionParam165, &sjt_capture44);
 #line 286
-                                                                    sjt_functionParam164 = 5.0f * sjt_capture42;
+                                                                    sjt_functionParam164 = 5.0f * sjt_capture44;
 #line 286
                                                                     sjf_array_f32_setat(sjt_parent42, sjt_functionParam163, sjt_functionParam164);
 #line 283
@@ -10022,10 +10057,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 290
                                                                     n = sjt_forStart16;
                                                                     while (n < sjt_forEnd16) {
-                                                                        float sjt_capture43;
-                                                                        float sjt_capture44;
                                                                         float sjt_capture45;
                                                                         float sjt_capture46;
+                                                                        float sjt_capture47;
+                                                                        float sjt_capture48;
                                                                         int32_t sjt_functionParam166;
                                                                         int32_t sjt_functionParam167;
                                                                         int32_t sjt_functionParam168;
@@ -10057,7 +10092,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 292
                                                                         sjt_functionParam170 = sjv_t;
 #line 292
-                                                                        sjf_f32_cos(sjt_functionParam170, &sjt_capture43);
+                                                                        sjf_f32_cos(sjt_functionParam170, &sjt_capture45);
 #line 292
                                                                         sjt_functionParam172 = 80.0f * sjv_t;
 #line 292
@@ -10065,9 +10100,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 292
                                                                         sjt_functionParam173 = 3.0f;
 #line 292
-                                                                        sjf_f32_pow(sjt_functionParam171, sjt_functionParam173, &sjt_capture44);
+                                                                        sjf_f32_pow(sjt_functionParam171, sjt_functionParam173, &sjt_capture46);
 #line 292
-                                                                        sjt_functionParam169 = (sjt_capture43 + sjt_capture44) * 3.0f;
+                                                                        sjt_functionParam169 = (sjt_capture45 + sjt_capture46) * 3.0f;
 #line 292
                                                                         sjf_array_f32_setat(sjt_parent43, sjt_functionParam168, sjt_functionParam169);
 #line 49 "lib/common/array.sj"
@@ -10077,7 +10112,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 293
                                                                         sjt_functionParam176 = 80.0f * sjv_t;
 #line 293
-                                                                        sjf_f32_sin(sjt_functionParam176, &sjt_capture45);
+                                                                        sjf_f32_sin(sjt_functionParam176, &sjt_capture47);
 #line 293
                                                                         sjt_functionParam178 = sjv_t;
 #line 293
@@ -10085,9 +10120,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 293
                                                                         sjt_functionParam179 = 4.0f;
 #line 293
-                                                                        sjf_f32_pow(sjt_functionParam177, sjt_functionParam179, &sjt_capture46);
+                                                                        sjf_f32_pow(sjt_functionParam177, sjt_functionParam179, &sjt_capture48);
 #line 293
-                                                                        sjt_functionParam175 = (sjt_capture45 + sjt_capture46) * 2.5f;
+                                                                        sjt_functionParam175 = (sjt_capture47 + sjt_capture48) * 2.5f;
 #line 293
                                                                         sjf_array_f32_setat(sjt_parent44, sjt_functionParam174, sjt_functionParam175);
 #line 290
@@ -10106,8 +10141,6 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 297
                                                                         n = sjt_forStart17;
                                                                         while (n < sjt_forEnd17) {
-                                                                            float sjt_capture47;
-                                                                            float sjt_capture48;
                                                                             float sjt_capture49;
                                                                             float sjt_capture50;
                                                                             float sjt_capture51;
@@ -10118,6 +10151,8 @@ void sjf_test_calculate(sjs_test* _parent) {
                                                                             float sjt_capture56;
                                                                             float sjt_capture57;
                                                                             float sjt_capture58;
+                                                                            float sjt_capture59;
+                                                                            float sjt_capture60;
                                                                             int32_t sjt_functionParam180;
                                                                             int32_t sjt_functionParam181;
                                                                             int32_t sjt_functionParam182;
@@ -10169,7 +10204,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 299
                                                                             sjt_functionParam184 = sjv_t;
 #line 299
-                                                                            sjf_f32_cos(sjt_functionParam184, &sjt_capture47);
+                                                                            sjf_f32_cos(sjt_functionParam184, &sjt_capture49);
 #line 299
                                                                             sjt_functionParam187 = sjv_t;
 #line 299
@@ -10177,7 +10212,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 299
                                                                             sjt_functionParam188 = 2.0f;
 #line 299
-                                                                            sjf_f32_pow(sjt_functionParam186, sjt_functionParam188, &sjt_capture48);
+                                                                            sjf_f32_pow(sjt_functionParam186, sjt_functionParam188, &sjt_capture50);
 #line 299
                                                                             sjt_functionParam190 = sjv_t;
 #line 299
@@ -10185,7 +10220,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 299
                                                                             sjt_functionParam191 = 2.0f;
 #line 299
-                                                                            sjf_f32_pow(sjt_functionParam189, sjt_functionParam191, &sjt_capture49);
+                                                                            sjf_f32_pow(sjt_functionParam189, sjt_functionParam191, &sjt_capture51);
 #line 299
                                                                             sjt_functionParam193 = sjv_t;
 #line 299
@@ -10193,7 +10228,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 299
                                                                             sjt_functionParam194 = 2.0f;
 #line 299
-                                                                            sjf_f32_pow(sjt_functionParam192, sjt_functionParam194, &sjt_capture50);
+                                                                            sjf_f32_pow(sjt_functionParam192, sjt_functionParam194, &sjt_capture52);
 #line 299
                                                                             sjt_functionParam196 = sjv_t;
 #line 299
@@ -10201,13 +10236,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 299
                                                                             sjt_functionParam197 = 2.0f;
 #line 299
-                                                                            sjf_f32_pow(sjt_functionParam195, sjt_functionParam197, &sjt_capture51);
+                                                                            sjf_f32_pow(sjt_functionParam195, sjt_functionParam197, &sjt_capture53);
 #line 299
-                                                                            sjt_functionParam185 = (((2.0f * 2.0f) * sjt_capture48) - ((5.0f * 5.0f) * sjt_capture49)) / (sjt_capture50 - sjt_capture51);
+                                                                            sjt_functionParam185 = (((2.0f * 2.0f) * sjt_capture50) - ((5.0f * 5.0f) * sjt_capture51)) / (sjt_capture52 - sjt_capture53);
 #line 299
-                                                                            sjf_f32_sqrt(sjt_functionParam185, &sjt_capture52);
+                                                                            sjf_f32_sqrt(sjt_functionParam185, &sjt_capture54);
 #line 299
-                                                                            sjt_functionParam183 = sjt_capture47 * sjt_capture52;
+                                                                            sjt_functionParam183 = sjt_capture49 * sjt_capture54;
 #line 299
                                                                             sjf_array_f32_setat(sjt_parent45, sjt_functionParam182, sjt_functionParam183);
 #line 49 "lib/common/array.sj"
@@ -10217,7 +10252,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 300
                                                                             sjt_functionParam200 = sjv_t;
 #line 300
-                                                                            sjf_f32_sin(sjt_functionParam200, &sjt_capture53);
+                                                                            sjf_f32_sin(sjt_functionParam200, &sjt_capture55);
 #line 300
                                                                             sjt_functionParam203 = sjv_t;
 #line 300
@@ -10225,7 +10260,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 300
                                                                             sjt_functionParam204 = 2.0f;
 #line 300
-                                                                            sjf_f32_pow(sjt_functionParam202, sjt_functionParam204, &sjt_capture54);
+                                                                            sjf_f32_pow(sjt_functionParam202, sjt_functionParam204, &sjt_capture56);
 #line 300
                                                                             sjt_functionParam206 = sjv_t;
 #line 300
@@ -10233,7 +10268,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 300
                                                                             sjt_functionParam207 = 2.0f;
 #line 300
-                                                                            sjf_f32_pow(sjt_functionParam205, sjt_functionParam207, &sjt_capture55);
+                                                                            sjf_f32_pow(sjt_functionParam205, sjt_functionParam207, &sjt_capture57);
 #line 300
                                                                             sjt_functionParam209 = sjv_t;
 #line 300
@@ -10241,7 +10276,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 300
                                                                             sjt_functionParam210 = 2.0f;
 #line 300
-                                                                            sjf_f32_pow(sjt_functionParam208, sjt_functionParam210, &sjt_capture56);
+                                                                            sjf_f32_pow(sjt_functionParam208, sjt_functionParam210, &sjt_capture58);
 #line 300
                                                                             sjt_functionParam212 = sjv_t;
 #line 300
@@ -10249,13 +10284,13 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 300
                                                                             sjt_functionParam213 = 2.0f;
 #line 300
-                                                                            sjf_f32_pow(sjt_functionParam211, sjt_functionParam213, &sjt_capture57);
+                                                                            sjf_f32_pow(sjt_functionParam211, sjt_functionParam213, &sjt_capture59);
 #line 300
-                                                                            sjt_functionParam201 = (((2.0f * 2.0f) * sjt_capture54) - ((5.0f * 5.0f) * sjt_capture55)) / (sjt_capture56 - sjt_capture57);
+                                                                            sjt_functionParam201 = (((2.0f * 2.0f) * sjt_capture56) - ((5.0f * 5.0f) * sjt_capture57)) / (sjt_capture58 - sjt_capture59);
 #line 300
-                                                                            sjf_f32_sqrt(sjt_functionParam201, &sjt_capture58);
+                                                                            sjf_f32_sqrt(sjt_functionParam201, &sjt_capture60);
 #line 300
-                                                                            sjt_functionParam199 = sjt_capture53 * sjt_capture58;
+                                                                            sjt_functionParam199 = sjt_capture55 * sjt_capture60;
 #line 300
                                                                             sjf_array_f32_setat(sjt_parent46, sjt_functionParam198, sjt_functionParam199);
 #line 297
@@ -10274,10 +10309,10 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 304
                                                                             n = sjt_forStart18;
                                                                             while (n < sjt_forEnd18) {
-                                                                                float sjt_capture59;
-                                                                                float sjt_capture60;
                                                                                 float sjt_capture61;
                                                                                 float sjt_capture62;
+                                                                                float sjt_capture63;
+                                                                                float sjt_capture64;
                                                                                 int32_t sjt_functionParam214;
                                                                                 int32_t sjt_functionParam215;
                                                                                 int32_t sjt_functionParam216;
@@ -10309,7 +10344,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 306
                                                                                 sjt_functionParam218 = sjv_t;
 #line 306
-                                                                                sjf_f32_cos(sjt_functionParam218, &sjt_capture59);
+                                                                                sjf_f32_cos(sjt_functionParam218, &sjt_capture61);
 #line 306
                                                                                 sjt_functionParam220 = sjv_t;
 #line 306
@@ -10317,9 +10352,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 306
                                                                                 sjt_functionParam221 = 2.0f;
 #line 306
-                                                                                sjf_f32_pow(sjt_functionParam219, sjt_functionParam221, &sjt_capture60);
+                                                                                sjf_f32_pow(sjt_functionParam219, sjt_functionParam221, &sjt_capture62);
 #line 306
-                                                                                sjt_functionParam217 = (3.0f * sjt_capture59) * (1.0f - (2.0f * sjt_capture60));
+                                                                                sjt_functionParam217 = (3.0f * sjt_capture61) * (1.0f - (2.0f * sjt_capture62));
 #line 306
                                                                                 sjf_array_f32_setat(sjt_parent47, sjt_functionParam216, sjt_functionParam217);
 #line 49 "lib/common/array.sj"
@@ -10329,7 +10364,7 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 307
                                                                                 sjt_functionParam224 = sjv_t;
 #line 307
-                                                                                sjf_f32_sin(sjt_functionParam224, &sjt_capture61);
+                                                                                sjf_f32_sin(sjt_functionParam224, &sjt_capture63);
 #line 307
                                                                                 sjt_functionParam226 = sjv_t;
 #line 307
@@ -10337,9 +10372,9 @@ void sjf_test_calculate(sjs_test* _parent) {
 #line 307
                                                                                 sjt_functionParam227 = 2.0f;
 #line 307
-                                                                                sjf_f32_pow(sjt_functionParam225, sjt_functionParam227, &sjt_capture62);
+                                                                                sjf_f32_pow(sjt_functionParam225, sjt_functionParam227, &sjt_capture64);
 #line 307
-                                                                                sjt_functionParam223 = (3.0f * sjt_capture61) * (1.0f - (2.0f * sjt_capture62));
+                                                                                sjt_functionParam223 = (3.0f * sjt_capture63) * (1.0f - (2.0f * sjt_capture64));
 #line 307
                                                                                 sjf_array_f32_setat(sjt_parent48, sjt_functionParam222, sjt_functionParam223);
 #line 304
@@ -10528,14 +10563,12 @@ void sjf_test_destroy(sjs_test* _this) {
 
 void sjf_test_findaxis(sjs_test* _parent) {
     bool result17;
-    bool sjt_capture63;
-    bool sjt_capture84;
-    bool sjt_capture85;
+    bool sjt_capture65;
+    bool sjt_capture92;
+    bool sjt_capture93;
     int32_t sjt_functionParam270;
     int32_t sjt_functionParam330;
-    int32_t sjt_functionParam331;
     sjs_array_bool* sjt_parent111 = 0;
-    sjs_array_bool* sjt_parent112 = 0;
     sjs_array_bool* sjt_parent69 = 0;
 
 #line 7 "lib/common/array.sj"
@@ -10543,51 +10576,65 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 320 "perf2.sj"
     sjt_functionParam270 = 0;
 #line 320
-    sjf_array_bool_getat(sjt_parent69, sjt_functionParam270, &sjt_capture63);
+    sjf_array_bool_getat(sjt_parent69, sjt_functionParam270, &sjt_capture65);
 #line 320
-    result17 = !sjt_capture63;
+    result17 = !sjt_capture65;
     if (result17) {
         bool result19;
-        bool result20;
-        bool sjt_capture64;
-        bool sjt_capture65;
         bool sjt_capture66;
-        bool sjt_capture72;
-        bool sjt_capture73;
-        bool sjt_capture74;
+        bool sjt_capture67;
+        bool sjt_capture78;
+        bool sjt_capture79;
         int32_t sjt_functionParam271;
-        int32_t sjt_functionParam272;
-        int32_t sjt_functionParam273;
         int32_t sjt_functionParam289;
-        int32_t sjt_functionParam290;
-        int32_t sjt_functionParam291;
         sjs_array_bool* sjt_parent70 = 0;
-        sjs_array_bool* sjt_parent71 = 0;
-        sjs_array_bool* sjt_parent72 = 0;
         sjs_array_bool* sjt_parent84 = 0;
-        sjs_array_bool* sjt_parent85 = 0;
-        sjs_array_bool* sjt_parent86 = 0;
 
 #line 7 "lib/common/array.sj"
         sjt_parent70 = &sjv_stateof;
 #line 321 "perf2.sj"
         sjt_functionParam271 = 0;
 #line 321
-        sjf_array_bool_getat(sjt_parent70, sjt_functionParam271, &sjt_capture64);
+        sjf_array_bool_getat(sjt_parent70, sjt_functionParam271, &sjt_capture67);
+        if (sjt_capture67) {
+            bool sjt_capture68;
+            bool sjt_capture69;
+            int32_t sjt_functionParam272;
+            sjs_array_bool* sjt_parent71 = 0;
+
 #line 7 "lib/common/array.sj"
-        sjt_parent71 = &sjv_stateof;
+            sjt_parent71 = &sjv_stateof;
 #line 321 "perf2.sj"
-        sjt_functionParam272 = 1;
+            sjt_functionParam272 = 1;
 #line 321
-        sjf_array_bool_getat(sjt_parent71, sjt_functionParam272, &sjt_capture65);
+            sjf_array_bool_getat(sjt_parent71, sjt_functionParam272, &sjt_capture69);
+            if (sjt_capture69) {
+                bool sjt_capture70;
+                int32_t sjt_functionParam273;
+                sjs_array_bool* sjt_parent72 = 0;
+
 #line 7 "lib/common/array.sj"
-        sjt_parent72 = &sjv_stateof;
+                sjt_parent72 = &sjv_stateof;
 #line 321 "perf2.sj"
-        sjt_functionParam273 = 2;
+                sjt_functionParam273 = 2;
 #line 321
-        sjf_array_bool_getat(sjt_parent72, sjt_functionParam273, &sjt_capture66);
-        if (sjt_capture64 && (sjt_capture65 && sjt_capture66)) {
-            bool sjt_capture67;
+                sjf_array_bool_getat(sjt_parent72, sjt_functionParam273, &sjt_capture70);
+#line 321
+                sjt_capture68 = sjt_capture70;
+            } else {
+#line 321 "perf2.sj"
+                sjt_capture68 = false;
+            }
+
+#line 321
+            sjt_capture66 = sjt_capture68;
+        } else {
+#line 321 "perf2.sj"
+            sjt_capture66 = false;
+        }
+
+        if (sjt_capture66) {
+            bool sjt_capture71;
             int32_t sjt_functionParam274;
             sjs_array_bool* sjt_parent73 = 0;
 
@@ -10596,8 +10643,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 322 "perf2.sj"
             sjt_functionParam274 = 0;
 #line 322
-            sjf_array_bool_getat(sjt_parent73, sjt_functionParam274, &sjt_capture67);
-            if (sjt_capture67) {
+            sjf_array_bool_getat(sjt_parent73, sjt_functionParam274, &sjt_capture71);
+            if (sjt_capture71) {
                 int32_t sjt_functionParam275;
                 bool sjt_functionParam276;
                 sjs_array_bool* sjt_parent74 = 0;
@@ -10633,39 +10680,59 @@ void sjf_test_findaxis(sjs_test* _parent) {
                 sjf_array_bool_setat(sjt_parent75, sjt_functionParam277, sjt_functionParam278);
             }
         } else {
-            bool result18;
-            bool sjt_capture68;
-            bool sjt_capture69;
-            bool sjt_capture70;
+            bool sjt_capture72;
+            bool sjt_capture73;
             int32_t sjt_functionParam280;
-            int32_t sjt_functionParam281;
-            int32_t sjt_functionParam282;
             sjs_array_bool* sjt_parent77 = 0;
-            sjs_array_bool* sjt_parent78 = 0;
-            sjs_array_bool* sjt_parent79 = 0;
 
 #line 7 "lib/common/array.sj"
             sjt_parent77 = &sjv_stateof;
 #line 328 "perf2.sj"
             sjt_functionParam280 = 1;
 #line 328
-            sjf_array_bool_getat(sjt_parent77, sjt_functionParam280, &sjt_capture68);
+            sjf_array_bool_getat(sjt_parent77, sjt_functionParam280, &sjt_capture73);
+            if (sjt_capture73) {
+                bool result18;
+                bool sjt_capture74;
+                bool sjt_capture75;
+                int32_t sjt_functionParam281;
+                sjs_array_bool* sjt_parent78 = 0;
+
 #line 7 "lib/common/array.sj"
-            sjt_parent78 = &sjv_stateof;
+                sjt_parent78 = &sjv_stateof;
 #line 328 "perf2.sj"
-            sjt_functionParam281 = 0;
+                sjt_functionParam281 = 0;
 #line 328
-            sjf_array_bool_getat(sjt_parent78, sjt_functionParam281, &sjt_capture69);
+                sjf_array_bool_getat(sjt_parent78, sjt_functionParam281, &sjt_capture75);
 #line 328
-            result18 = !sjt_capture69;
+                result18 = !sjt_capture75;
+                if (result18) {
+                    bool sjt_capture76;
+                    int32_t sjt_functionParam282;
+                    sjs_array_bool* sjt_parent79 = 0;
+
 #line 7 "lib/common/array.sj"
-            sjt_parent79 = &sjv_stateof;
+                    sjt_parent79 = &sjv_stateof;
 #line 328 "perf2.sj"
-            sjt_functionParam282 = 2;
+                    sjt_functionParam282 = 2;
 #line 328
-            sjf_array_bool_getat(sjt_parent79, sjt_functionParam282, &sjt_capture70);
-            if (sjt_capture68 && (result18 && sjt_capture70)) {
-                bool sjt_capture71;
+                    sjf_array_bool_getat(sjt_parent79, sjt_functionParam282, &sjt_capture76);
+#line 328
+                    sjt_capture74 = sjt_capture76;
+                } else {
+#line 328 "perf2.sj"
+                    sjt_capture74 = false;
+                }
+
+#line 328
+                sjt_capture72 = sjt_capture74;
+            } else {
+#line 328 "perf2.sj"
+                sjt_capture72 = false;
+            }
+
+            if (sjt_capture72) {
+                bool sjt_capture77;
                 int32_t sjt_functionParam283;
                 sjs_array_bool* sjt_parent80 = 0;
 
@@ -10679,8 +10746,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 330 "perf2.sj"
                 sjt_functionParam283 = 1;
 #line 330
-                sjf_array_bool_getat(sjt_parent80, sjt_functionParam283, &sjt_capture71);
-                if (sjt_capture71) {
+                sjf_array_bool_getat(sjt_parent80, sjt_functionParam283, &sjt_capture77);
+                if (sjt_capture77) {
                     int32_t sjt_functionParam284;
                     bool sjt_functionParam285;
                     sjs_array_bool* sjt_parent81 = 0;
@@ -10723,25 +10790,51 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 337 "perf2.sj"
         sjt_functionParam289 = 1;
 #line 337
-        sjf_array_bool_getat(sjt_parent84, sjt_functionParam289, &sjt_capture72);
+        sjf_array_bool_getat(sjt_parent84, sjt_functionParam289, &sjt_capture79);
 #line 337
-        result19 = !sjt_capture72;
+        result19 = !sjt_capture79;
+        if (result19) {
+            bool result20;
+            bool sjt_capture80;
+            bool sjt_capture81;
+            int32_t sjt_functionParam290;
+            sjs_array_bool* sjt_parent85 = 0;
+
 #line 7 "lib/common/array.sj"
-        sjt_parent85 = &sjv_stateof;
+            sjt_parent85 = &sjv_stateof;
 #line 337 "perf2.sj"
-        sjt_functionParam290 = 0;
+            sjt_functionParam290 = 0;
 #line 337
-        sjf_array_bool_getat(sjt_parent85, sjt_functionParam290, &sjt_capture73);
+            sjf_array_bool_getat(sjt_parent85, sjt_functionParam290, &sjt_capture81);
 #line 337
-        result20 = !sjt_capture73;
+            result20 = !sjt_capture81;
+            if (result20) {
+                bool sjt_capture82;
+                int32_t sjt_functionParam291;
+                sjs_array_bool* sjt_parent86 = 0;
+
 #line 7 "lib/common/array.sj"
-        sjt_parent86 = &sjv_stateof;
+                sjt_parent86 = &sjv_stateof;
 #line 337 "perf2.sj"
-        sjt_functionParam291 = 2;
+                sjt_functionParam291 = 2;
 #line 337
-        sjf_array_bool_getat(sjt_parent86, sjt_functionParam291, &sjt_capture74);
-        if (result19 && (result20 && sjt_capture74)) {
-            bool sjt_capture75;
+                sjf_array_bool_getat(sjt_parent86, sjt_functionParam291, &sjt_capture82);
+#line 337
+                sjt_capture80 = sjt_capture82;
+            } else {
+#line 337 "perf2.sj"
+                sjt_capture80 = false;
+            }
+
+#line 337
+            sjt_capture78 = sjt_capture80;
+        } else {
+#line 337 "perf2.sj"
+            sjt_capture78 = false;
+        }
+
+        if (sjt_capture78) {
+            bool sjt_capture83;
             int32_t sjt_functionParam292;
             sjs_array_bool* sjt_parent87 = 0;
 
@@ -10755,8 +10848,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 339 "perf2.sj"
             sjt_functionParam292 = 2;
 #line 339
-            sjf_array_bool_getat(sjt_parent87, sjt_functionParam292, &sjt_capture75);
-            if (sjt_capture75) {
+            sjf_array_bool_getat(sjt_parent87, sjt_functionParam292, &sjt_capture83);
+            if (sjt_capture83) {
                 int32_t sjt_functionParam293;
                 bool sjt_functionParam294;
                 sjs_array_bool* sjt_parent88 = 0;
@@ -10773,7 +10866,7 @@ void sjf_test_findaxis(sjs_test* _parent) {
                 sjf_array_bool_setat(sjt_parent88, sjt_functionParam293, sjt_functionParam294);
             } else {
                 bool result21;
-                bool sjt_capture76;
+                bool sjt_capture84;
                 int32_t sjt_functionParam295;
                 bool sjt_functionParam296;
                 int32_t sjt_functionParam297;
@@ -10806,9 +10899,9 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 344 "perf2.sj"
                 sjt_functionParam300 = 2;
 #line 344
-                sjf_array_bool_getat(sjt_parent92, sjt_functionParam300, &sjt_capture76);
+                sjf_array_bool_getat(sjt_parent92, sjt_functionParam300, &sjt_capture84);
 #line 344
-                result21 = !sjt_capture76;
+                result21 = !sjt_capture84;
 #line 344
                 sjt_functionParam299 = result21;
 #line 344
@@ -10817,7 +10910,7 @@ void sjf_test_findaxis(sjs_test* _parent) {
         }
     } else {
         bool result22;
-        bool sjt_capture77;
+        bool sjt_capture85;
         int32_t sjt_functionParam301;
         sjs_array_bool* sjt_parent93 = 0;
 
@@ -10826,11 +10919,11 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 348 "perf2.sj"
         sjt_functionParam301 = 1;
 #line 348
-        sjf_array_bool_getat(sjt_parent93, sjt_functionParam301, &sjt_capture77);
+        sjf_array_bool_getat(sjt_parent93, sjt_functionParam301, &sjt_capture85);
 #line 348
-        result22 = !sjt_capture77;
+        result22 = !sjt_capture85;
         if (result22) {
-            bool sjt_capture78;
+            bool sjt_capture86;
             int32_t sjt_functionParam302;
             sjs_array_bool* sjt_parent94 = 0;
 
@@ -10839,9 +10932,9 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 349 "perf2.sj"
             sjt_functionParam302 = 0;
 #line 349
-            sjf_array_bool_getat(sjt_parent94, sjt_functionParam302, &sjt_capture78);
-            if (sjt_capture78) {
-                bool sjt_capture79;
+            sjf_array_bool_getat(sjt_parent94, sjt_functionParam302, &sjt_capture86);
+            if (sjt_capture86) {
+                bool sjt_capture87;
                 int32_t sjt_functionParam303;
                 bool sjt_functionParam304;
                 int32_t sjt_functionParam305;
@@ -10863,8 +10956,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 353 "perf2.sj"
                 sjt_functionParam305 = 2;
 #line 353
-                sjf_array_bool_getat(sjt_parent96, sjt_functionParam305, &sjt_capture79);
-                if (sjt_capture79) {
+                sjf_array_bool_getat(sjt_parent96, sjt_functionParam305, &sjt_capture87);
+                if (sjt_capture87) {
                     int32_t sjt_functionParam306;
                     bool sjt_functionParam307;
                     sjs_array_bool* sjt_parent97 = 0;
@@ -10900,7 +10993,7 @@ void sjf_test_findaxis(sjs_test* _parent) {
                 }
             } else {
                 float result28;
-                bool sjt_capture80;
+                bool sjt_capture88;
                 int32_t sjt_functionParam310;
                 int32_t sjt_functionParam328;
                 bool sjt_functionParam329;
@@ -10912,9 +11005,9 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 361 "perf2.sj"
                 sjt_functionParam310 = 1;
 #line 361
-                sjf_array_bool_getat(sjt_parent99, sjt_functionParam310, &sjt_capture80);
-                if (sjt_capture80) {
-                    bool sjt_capture81;
+                sjf_array_bool_getat(sjt_parent99, sjt_functionParam310, &sjt_capture88);
+                if (sjt_capture88) {
+                    bool sjt_capture89;
                     int32_t sjt_functionParam311;
                     bool sjt_functionParam312;
                     int32_t sjt_functionParam313;
@@ -10936,8 +11029,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 364 "perf2.sj"
                     sjt_functionParam313 = 2;
 #line 364
-                    sjf_array_bool_getat(sjt_parent101, sjt_functionParam313, &sjt_capture81);
-                    if (sjt_capture81) {
+                    sjf_array_bool_getat(sjt_parent101, sjt_functionParam313, &sjt_capture89);
+                    if (sjt_capture89) {
                         int32_t sjt_functionParam314;
                         bool sjt_functionParam315;
                         sjs_array_bool* sjt_parent102 = 0;
@@ -10973,7 +11066,7 @@ void sjf_test_findaxis(sjs_test* _parent) {
                     }
                 } else {
                     float result25;
-                    bool sjt_capture82;
+                    bool sjt_capture90;
                     int32_t sjt_functionParam318;
                     bool sjt_functionParam319;
                     int32_t sjt_functionParam320;
@@ -10997,8 +11090,8 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 374 "perf2.sj"
                     sjt_functionParam320 = 2;
 #line 374
-                    sjf_array_bool_getat(sjt_parent105, sjt_functionParam320, &sjt_capture82);
-                    if (sjt_capture82) {
+                    sjf_array_bool_getat(sjt_parent105, sjt_functionParam320, &sjt_capture90);
+                    if (sjt_capture90) {
                         int32_t sjt_functionParam321;
                         bool sjt_functionParam322;
                         sjs_array_bool* sjt_parent106 = 0;
@@ -11015,7 +11108,7 @@ void sjf_test_findaxis(sjs_test* _parent) {
                         sjf_array_bool_setat(sjt_parent106, sjt_functionParam321, sjt_functionParam322);
                         if (_parent->funcid != 18) {
                             bool result26;
-                            bool sjt_capture83;
+                            bool sjt_capture91;
                             int32_t sjt_functionParam323;
                             bool sjt_functionParam324;
                             int32_t sjt_functionParam325;
@@ -11031,9 +11124,9 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 377 "perf2.sj"
                             sjt_functionParam325 = 2;
 #line 377
-                            sjf_array_bool_getat(sjt_parent108, sjt_functionParam325, &sjt_capture83);
+                            sjf_array_bool_getat(sjt_parent108, sjt_functionParam325, &sjt_capture91);
 #line 377
-                            result26 = !sjt_capture83;
+                            result26 = !sjt_capture91;
 #line 377
                             sjt_functionParam324 = result26;
 #line 377
@@ -11081,14 +11174,26 @@ void sjf_test_findaxis(sjs_test* _parent) {
 #line 388 "perf2.sj"
     sjt_functionParam330 = 0;
 #line 388
-    sjf_array_bool_getat(sjt_parent111, sjt_functionParam330, &sjt_capture84);
+    sjf_array_bool_getat(sjt_parent111, sjt_functionParam330, &sjt_capture93);
+    if (sjt_capture93) {
+        bool sjt_capture94;
+        int32_t sjt_functionParam331;
+        sjs_array_bool* sjt_parent112 = 0;
+
 #line 7 "lib/common/array.sj"
-    sjt_parent112 = &sjv_mainrot;
+        sjt_parent112 = &sjv_mainrot;
 #line 388 "perf2.sj"
-    sjt_functionParam331 = 1;
+        sjt_functionParam331 = 1;
 #line 388
-    sjf_array_bool_getat(sjt_parent112, sjt_functionParam331, &sjt_capture85);
-    if (sjt_capture84 && sjt_capture85) {
+        sjf_array_bool_getat(sjt_parent112, sjt_functionParam331, &sjt_capture94);
+#line 388
+        sjt_capture92 = sjt_capture94;
+    } else {
+#line 388 "perf2.sj"
+        sjt_capture92 = false;
+    }
+
+    if (sjt_capture92) {
         if (_parent->rotatez > 0.0f) {
 #line 390 "perf2.sj"
             _parent->rotatez = _parent->rotatez - 0.1f;
@@ -11687,15 +11792,15 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
                     float sjt_capture123;
                     float sjt_capture124;
                     float sjt_capture125;
-                    float sjt_capture86;
-                    float sjt_capture87;
-                    float sjt_capture88;
-                    float sjt_capture89;
-                    float sjt_capture90;
-                    float sjt_capture91;
-                    float sjt_capture92;
-                    float sjt_capture93;
-                    float sjt_capture94;
+                    float sjt_capture126;
+                    float sjt_capture127;
+                    float sjt_capture128;
+                    float sjt_capture129;
+                    float sjt_capture130;
+                    float sjt_capture131;
+                    float sjt_capture132;
+                    float sjt_capture133;
+                    float sjt_capture134;
                     float sjt_capture95;
                     float sjt_capture96;
                     float sjt_capture97;
@@ -11847,17 +11952,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam356 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent121, sjt_functionParam356, &sjt_capture86);
+                    sjf_array_f32_getat(sjt_parent121, sjt_functionParam356, &sjt_capture95);
 #line 143
-                    sjt_functionParam355 = sjt_capture86 * sjv_scale;
+                    sjt_functionParam355 = sjt_capture95 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent122 = &_parent->datahotizont1y;
 #line 140 "perf2.sj"
                     sjt_functionParam358 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent122, sjt_functionParam358, &sjt_capture87);
+                    sjf_array_f32_getat(sjt_parent122, sjt_functionParam358, &sjt_capture96);
 #line 143
-                    sjt_functionParam357 = sjt_capture87 * sjv_scale;
+                    sjt_functionParam357 = sjt_capture96 * sjv_scale;
 #line 143
                     sjt_functionParam359 = 0.0f;
 #line 143
@@ -11867,17 +11972,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam361 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent123, sjt_functionParam361, &sjt_capture88);
+                    sjf_array_f32_getat(sjt_parent123, sjt_functionParam361, &sjt_capture97);
 #line 144
-                    sjt_functionParam360 = sjt_capture88 * sjv_scale;
+                    sjt_functionParam360 = sjt_capture97 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent124 = &_parent->datahotizont2y;
 #line 140 "perf2.sj"
                     sjt_functionParam363 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent124, sjt_functionParam363, &sjt_capture89);
+                    sjf_array_f32_getat(sjt_parent124, sjt_functionParam363, &sjt_capture98);
 #line 144
-                    sjt_functionParam362 = sjt_capture89 * sjv_scale;
+                    sjt_functionParam362 = sjt_capture98 * sjv_scale;
 #line 144
                     sjt_functionParam364 = 0.0f;
 #line 144
@@ -11887,17 +11992,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam366 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent125, sjt_functionParam366, &sjt_capture90);
+                    sjf_array_f32_getat(sjt_parent125, sjt_functionParam366, &sjt_capture99);
 #line 145
-                    sjt_functionParam365 = sjt_capture90 * sjv_scale;
+                    sjt_functionParam365 = sjt_capture99 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent126 = &_parent->datahotizont3y;
 #line 140 "perf2.sj"
                     sjt_functionParam368 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent126, sjt_functionParam368, &sjt_capture91);
+                    sjf_array_f32_getat(sjt_parent126, sjt_functionParam368, &sjt_capture100);
 #line 145
-                    sjt_functionParam367 = sjt_capture91 * sjv_scale;
+                    sjt_functionParam367 = sjt_capture100 * sjv_scale;
 #line 145
                     sjt_functionParam369 = 0.0f;
 #line 145
@@ -11907,17 +12012,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam371 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent127, sjt_functionParam371, &sjt_capture92);
+                    sjf_array_f32_getat(sjt_parent127, sjt_functionParam371, &sjt_capture101);
 #line 146
-                    sjt_functionParam370 = sjt_capture92 * sjv_scale;
+                    sjt_functionParam370 = sjt_capture101 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent128 = &_parent->datahotizont4y;
 #line 140 "perf2.sj"
                     sjt_functionParam373 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent128, sjt_functionParam373, &sjt_capture93);
+                    sjf_array_f32_getat(sjt_parent128, sjt_functionParam373, &sjt_capture102);
 #line 146
-                    sjt_functionParam372 = sjt_capture93 * sjv_scale;
+                    sjt_functionParam372 = sjt_capture102 * sjv_scale;
 #line 146
                     sjt_functionParam374 = 0.0f;
 #line 146
@@ -11927,17 +12032,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam376 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent129, sjt_functionParam376, &sjt_capture94);
+                    sjf_array_f32_getat(sjt_parent129, sjt_functionParam376, &sjt_capture103);
 #line 147
-                    sjt_functionParam375 = sjt_capture94 * sjv_scale;
+                    sjt_functionParam375 = sjt_capture103 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent130 = &_parent->datahotizont5y;
 #line 140 "perf2.sj"
                     sjt_functionParam378 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent130, sjt_functionParam378, &sjt_capture95);
+                    sjf_array_f32_getat(sjt_parent130, sjt_functionParam378, &sjt_capture104);
 #line 147
-                    sjt_functionParam377 = sjt_capture95 * sjv_scale;
+                    sjt_functionParam377 = sjt_capture104 * sjv_scale;
 #line 147
                     sjt_functionParam379 = 0.0f;
 #line 147
@@ -11947,17 +12052,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam381 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent131, sjt_functionParam381, &sjt_capture96);
+                    sjf_array_f32_getat(sjt_parent131, sjt_functionParam381, &sjt_capture105);
 #line 149
-                    sjt_functionParam380 = sjt_capture96 * sjv_scale;
+                    sjt_functionParam380 = sjt_capture105 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent132 = &_parent->datavert1y;
 #line 140 "perf2.sj"
                     sjt_functionParam383 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent132, sjt_functionParam383, &sjt_capture97);
+                    sjf_array_f32_getat(sjt_parent132, sjt_functionParam383, &sjt_capture106);
 #line 149
-                    sjt_functionParam382 = sjt_capture97 * sjv_scale;
+                    sjt_functionParam382 = sjt_capture106 * sjv_scale;
 #line 149
                     sjt_functionParam384 = 0.0f;
 #line 149
@@ -11967,17 +12072,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam386 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent133, sjt_functionParam386, &sjt_capture98);
+                    sjf_array_f32_getat(sjt_parent133, sjt_functionParam386, &sjt_capture107);
 #line 150
-                    sjt_functionParam385 = sjt_capture98 * sjv_scale;
+                    sjt_functionParam385 = sjt_capture107 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent134 = &_parent->datavert2y;
 #line 140 "perf2.sj"
                     sjt_functionParam388 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent134, sjt_functionParam388, &sjt_capture99);
+                    sjf_array_f32_getat(sjt_parent134, sjt_functionParam388, &sjt_capture108);
 #line 150
-                    sjt_functionParam387 = sjt_capture99 * sjv_scale;
+                    sjt_functionParam387 = sjt_capture108 * sjv_scale;
 #line 150
                     sjt_functionParam389 = 0.0f;
 #line 150
@@ -11987,17 +12092,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam391 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent135, sjt_functionParam391, &sjt_capture100);
+                    sjf_array_f32_getat(sjt_parent135, sjt_functionParam391, &sjt_capture109);
 #line 151
-                    sjt_functionParam390 = sjt_capture100 * sjv_scale;
+                    sjt_functionParam390 = sjt_capture109 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent136 = &_parent->datavert3y;
 #line 140 "perf2.sj"
                     sjt_functionParam393 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent136, sjt_functionParam393, &sjt_capture101);
+                    sjf_array_f32_getat(sjt_parent136, sjt_functionParam393, &sjt_capture110);
 #line 151
-                    sjt_functionParam392 = sjt_capture101 * sjv_scale;
+                    sjt_functionParam392 = sjt_capture110 * sjv_scale;
 #line 151
                     sjt_functionParam394 = 0.0f;
 #line 151
@@ -12007,17 +12112,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam396 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent137, sjt_functionParam396, &sjt_capture102);
+                    sjf_array_f32_getat(sjt_parent137, sjt_functionParam396, &sjt_capture111);
 #line 152
-                    sjt_functionParam395 = sjt_capture102 * sjv_scale;
+                    sjt_functionParam395 = sjt_capture111 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent138 = &_parent->datavert4y;
 #line 140 "perf2.sj"
                     sjt_functionParam398 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent138, sjt_functionParam398, &sjt_capture103);
+                    sjf_array_f32_getat(sjt_parent138, sjt_functionParam398, &sjt_capture112);
 #line 152
-                    sjt_functionParam397 = sjt_capture103 * sjv_scale;
+                    sjt_functionParam397 = sjt_capture112 * sjv_scale;
 #line 152
                     sjt_functionParam399 = 0.0f;
 #line 152
@@ -12027,17 +12132,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam401 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent139, sjt_functionParam401, &sjt_capture104);
+                    sjf_array_f32_getat(sjt_parent139, sjt_functionParam401, &sjt_capture113);
 #line 153
-                    sjt_functionParam400 = sjt_capture104 * sjv_scale;
+                    sjt_functionParam400 = sjt_capture113 * sjv_scale;
 #line 7 "lib/common/array.sj"
                     sjt_parent140 = &_parent->datavert5y;
 #line 140 "perf2.sj"
                     sjt_functionParam403 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent140, sjt_functionParam403, &sjt_capture105);
+                    sjf_array_f32_getat(sjt_parent140, sjt_functionParam403, &sjt_capture114);
 #line 153
-                    sjt_functionParam402 = sjt_capture105 * sjv_scale;
+                    sjt_functionParam402 = sjt_capture114 * sjv_scale;
 #line 153
                     sjt_functionParam404 = 0.0f;
 #line 153
@@ -12047,17 +12152,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam406 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent141, sjt_functionParam406, &sjt_capture106);
+                    sjf_array_f32_getat(sjt_parent141, sjt_functionParam406, &sjt_capture115);
 #line 155
-                    sjt_functionParam405 = ((sjt_capture106 * sjv_scale) + 4.35f) + (1.0f / 3.0f);
+                    sjt_functionParam405 = ((sjt_capture115 * sjv_scale) + 4.35f) + (1.0f / 3.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent142 = &_parent->datahotizont1y;
 #line 140 "perf2.sj"
                     sjt_functionParam408 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent142, sjt_functionParam408, &sjt_capture107);
+                    sjf_array_f32_getat(sjt_parent142, sjt_functionParam408, &sjt_capture116);
 #line 155
-                    sjt_functionParam407 = (sjt_capture107 * sjv_scale) + 3.8f;
+                    sjt_functionParam407 = (sjt_capture116 * sjv_scale) + 3.8f;
 #line 155
                     sjt_functionParam409 = 0.0f;
 #line 155
@@ -12067,17 +12172,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam411 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent143, sjt_functionParam411, &sjt_capture108);
+                    sjf_array_f32_getat(sjt_parent143, sjt_functionParam411, &sjt_capture117);
 #line 156
-                    sjt_functionParam410 = ((sjt_capture108 * sjv_scale) + 2.18f) + (1.0f / 3.0f);
+                    sjt_functionParam410 = ((sjt_capture117 * sjv_scale) + 2.18f) + (1.0f / 3.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent144 = &_parent->datahotizont2y;
 #line 140 "perf2.sj"
                     sjt_functionParam413 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent144, sjt_functionParam413, &sjt_capture109);
+                    sjf_array_f32_getat(sjt_parent144, sjt_functionParam413, &sjt_capture118);
 #line 156
-                    sjt_functionParam412 = (sjt_capture109 * sjv_scale) + 1.8f;
+                    sjt_functionParam412 = (sjt_capture118 * sjv_scale) + 1.8f;
 #line 156
                     sjt_functionParam414 = 0.0f;
 #line 156
@@ -12087,17 +12192,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam416 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent145, sjt_functionParam416, &sjt_capture110);
+                    sjf_array_f32_getat(sjt_parent145, sjt_functionParam416, &sjt_capture119);
 #line 157
-                    sjt_functionParam415 = ((sjt_capture110 * sjv_scale) + 2.34f) + (1.0f / 3.0f);
+                    sjt_functionParam415 = ((sjt_capture119 * sjv_scale) + 2.34f) + (1.0f / 3.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent146 = &_parent->datahotizont3y;
 #line 140 "perf2.sj"
                     sjt_functionParam418 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent146, sjt_functionParam418, &sjt_capture111);
+                    sjf_array_f32_getat(sjt_parent146, sjt_functionParam418, &sjt_capture120);
 #line 157
-                    sjt_functionParam417 = (sjt_capture111 * sjv_scale) + 0.8f;
+                    sjt_functionParam417 = (sjt_capture120 * sjv_scale) + 0.8f;
 #line 157
                     sjt_functionParam419 = 0.0f;
 #line 157
@@ -12107,17 +12212,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam421 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent147, sjt_functionParam421, &sjt_capture112);
+                    sjf_array_f32_getat(sjt_parent147, sjt_functionParam421, &sjt_capture121);
 #line 158
-                    sjt_functionParam420 = ((sjt_capture112 * sjv_scale) + 1.65f) + (1.0f / 3.0f);
+                    sjt_functionParam420 = ((sjt_capture121 * sjv_scale) + 1.65f) + (1.0f / 3.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent148 = &_parent->datahotizont4y;
 #line 140 "perf2.sj"
                     sjt_functionParam423 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent148, sjt_functionParam423, &sjt_capture113);
+                    sjf_array_f32_getat(sjt_parent148, sjt_functionParam423, &sjt_capture122);
 #line 158
-                    sjt_functionParam422 = (sjt_capture113 * sjv_scale) - 1.2f;
+                    sjt_functionParam422 = (sjt_capture122 * sjv_scale) - 1.2f;
 #line 158
                     sjt_functionParam424 = 0.0f;
 #line 158
@@ -12127,17 +12232,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam426 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent149, sjt_functionParam426, &sjt_capture114);
+                    sjf_array_f32_getat(sjt_parent149, sjt_functionParam426, &sjt_capture123);
 #line 159
-                    sjt_functionParam425 = ((sjt_capture114 * sjv_scale) + 1.35f) + (1.0f / 3.0f);
+                    sjt_functionParam425 = ((sjt_capture123 * sjv_scale) + 1.35f) + (1.0f / 3.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent150 = &_parent->datahotizont5y;
 #line 140 "perf2.sj"
                     sjt_functionParam428 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent150, sjt_functionParam428, &sjt_capture115);
+                    sjf_array_f32_getat(sjt_parent150, sjt_functionParam428, &sjt_capture124);
 #line 159
-                    sjt_functionParam427 = (sjt_capture115 * sjv_scale) - 2.2f;
+                    sjt_functionParam427 = (sjt_capture124 * sjv_scale) - 2.2f;
 #line 159
                     sjt_functionParam429 = 0.0f;
 #line 159
@@ -12147,17 +12252,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam431 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent151, sjt_functionParam431, &sjt_capture116);
+                    sjf_array_f32_getat(sjt_parent151, sjt_functionParam431, &sjt_capture125);
 #line 161
-                    sjt_functionParam430 = ((sjt_capture116 * sjv_scale) + 4.005f) + (1.0f / 6.0f);
+                    sjt_functionParam430 = ((sjt_capture125 * sjv_scale) + 4.005f) + (1.0f / 6.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent152 = &_parent->datavert1y;
 #line 140 "perf2.sj"
                     sjt_functionParam433 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent152, sjt_functionParam433, &sjt_capture117);
+                    sjf_array_f32_getat(sjt_parent152, sjt_functionParam433, &sjt_capture126);
 #line 161
-                    sjt_functionParam432 = (sjt_capture117 * sjv_scale) + 0.8f;
+                    sjt_functionParam432 = (sjt_capture126 * sjv_scale) + 0.8f;
 #line 161
                     sjt_functionParam434 = 0.0f;
 #line 161
@@ -12167,17 +12272,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam436 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent153, sjt_functionParam436, &sjt_capture118);
+                    sjf_array_f32_getat(sjt_parent153, sjt_functionParam436, &sjt_capture127);
 #line 162
-                    sjt_functionParam435 = ((sjt_capture118 * sjv_scale) + 4.05f) - (1.0f / 6.0f);
+                    sjt_functionParam435 = ((sjt_capture127 * sjv_scale) + 4.05f) - (1.0f / 6.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent154 = &_parent->datavert2y;
 #line 140 "perf2.sj"
                     sjt_functionParam438 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent154, sjt_functionParam438, &sjt_capture119);
+                    sjf_array_f32_getat(sjt_parent154, sjt_functionParam438, &sjt_capture128);
 #line 162
-                    sjt_functionParam437 = (sjt_capture119 * sjv_scale) + 2.8f;
+                    sjt_functionParam437 = (sjt_capture128 * sjv_scale) + 2.8f;
 #line 162
                     sjt_functionParam439 = 0.0f;
 #line 162
@@ -12187,17 +12292,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam441 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent155, sjt_functionParam441, &sjt_capture120);
+                    sjf_array_f32_getat(sjt_parent155, sjt_functionParam441, &sjt_capture129);
 #line 163
-                    sjt_functionParam440 = ((sjt_capture120 * sjv_scale) + 3.0f) - (1.0f / 6.0f);
+                    sjt_functionParam440 = ((sjt_capture129 * sjv_scale) + 3.0f) - (1.0f / 6.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent156 = &_parent->datavert3y;
 #line 140 "perf2.sj"
                     sjt_functionParam443 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent156, sjt_functionParam443, &sjt_capture121);
+                    sjf_array_f32_getat(sjt_parent156, sjt_functionParam443, &sjt_capture130);
 #line 163
-                    sjt_functionParam442 = (sjt_capture121 * sjv_scale) - 0.2f;
+                    sjt_functionParam442 = (sjt_capture130 * sjv_scale) - 0.2f;
 #line 163
                     sjt_functionParam444 = 0.0f;
 #line 163
@@ -12207,17 +12312,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam446 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent157, sjt_functionParam446, &sjt_capture122);
+                    sjf_array_f32_getat(sjt_parent157, sjt_functionParam446, &sjt_capture131);
 #line 164
-                    sjt_functionParam445 = ((sjt_capture122 * sjv_scale) + 2.0f) - (1.0f / 6.0f);
+                    sjt_functionParam445 = ((sjt_capture131 * sjv_scale) + 2.0f) - (1.0f / 6.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent158 = &_parent->datavert4y;
 #line 140 "perf2.sj"
                     sjt_functionParam448 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent158, sjt_functionParam448, &sjt_capture123);
+                    sjf_array_f32_getat(sjt_parent158, sjt_functionParam448, &sjt_capture132);
 #line 164
-                    sjt_functionParam447 = (sjt_capture123 * sjv_scale) - 0.2f;
+                    sjt_functionParam447 = (sjt_capture132 * sjv_scale) - 0.2f;
 #line 164
                     sjt_functionParam449 = 0.0f;
 #line 164
@@ -12227,25 +12332,25 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                     sjt_functionParam451 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent159, sjt_functionParam451, &sjt_capture124);
+                    sjf_array_f32_getat(sjt_parent159, sjt_functionParam451, &sjt_capture133);
 #line 165
-                    sjt_functionParam450 = ((sjt_capture124 * sjv_scale) + 1.0f) - (1.0f / 6.0f);
+                    sjt_functionParam450 = ((sjt_capture133 * sjv_scale) + 1.0f) - (1.0f / 6.0f);
 #line 7 "lib/common/array.sj"
                     sjt_parent160 = &_parent->datavert5y;
 #line 140 "perf2.sj"
                     sjt_functionParam453 = n;
 #line 140
-                    sjf_array_f32_getat(sjt_parent160, sjt_functionParam453, &sjt_capture125);
+                    sjf_array_f32_getat(sjt_parent160, sjt_functionParam453, &sjt_capture134);
 #line 165
-                    sjt_functionParam452 = (sjt_capture125 * sjv_scale) - 0.2f;
+                    sjt_functionParam452 = (sjt_capture134 * sjv_scale) - 0.2f;
 #line 165
                     sjt_functionParam454 = 0.0f;
 #line 165
                     sjf_glvertex3f(sjt_functionParam450, sjt_functionParam452, sjt_functionParam454);
                 }
             } else {
-                float sjt_capture126;
-                float sjt_capture127;
+                float sjt_capture135;
+                float sjt_capture136;
                 float sjt_functionParam455;
                 int32_t sjt_functionParam456;
                 float sjt_functionParam457;
@@ -12259,17 +12364,17 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 #line 140 "perf2.sj"
                 sjt_functionParam456 = n;
 #line 140
-                sjf_array_f32_getat(sjt_parent161, sjt_functionParam456, &sjt_capture126);
+                sjf_array_f32_getat(sjt_parent161, sjt_functionParam456, &sjt_capture135);
 #line 168
-                sjt_functionParam455 = sjt_capture126 * sjv_scale;
+                sjt_functionParam455 = sjt_capture135 * sjv_scale;
 #line 7 "lib/common/array.sj"
                 sjt_parent162 = &_parent->datay;
 #line 140 "perf2.sj"
                 sjt_functionParam458 = n;
 #line 140
-                sjf_array_f32_getat(sjt_parent162, sjt_functionParam458, &sjt_capture127);
+                sjf_array_f32_getat(sjt_parent162, sjt_functionParam458, &sjt_capture136);
 #line 168
-                sjt_functionParam457 = sjt_capture127 * sjv_scale;
+                sjt_functionParam457 = sjt_capture136 * sjv_scale;
 #line 168
                 sjt_functionParam459 = 0.0f;
 #line 168
@@ -12291,7 +12396,7 @@ void sjf_test_render(sjs_test* _parent, sjs_scene2d* scene) {
 
 void sjf_test_setrect(sjs_test* _parent, sjs_rect* rect_) {
     bool result3;
-    bool sjt_capture4;
+    bool sjt_capture6;
     sjs_rect* sjt_functionParam28 = 0;
     sjs_rect* sjt_parent12 = 0;
 
@@ -12300,9 +12405,9 @@ void sjf_test_setrect(sjs_test* _parent, sjs_rect* rect_) {
 #line 89 "perf2.sj"
     sjt_functionParam28 = rect_;
 #line 89
-    sjf_rect_isequal(sjt_parent12, sjt_functionParam28, &sjt_capture4);
+    sjf_rect_isequal(sjt_parent12, sjt_functionParam28, &sjt_capture6);
 #line 90
-    result3 = !sjt_capture4;
+    result3 = !sjt_capture6;
     if (result3) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
