@@ -6,7 +6,6 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* remove sjv_ and add g_ only for global values
 * create new project command
 * heap local to stop most of intrafunction refcount'ing
 * property
