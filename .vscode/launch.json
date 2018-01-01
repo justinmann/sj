@@ -10,12 +10,10 @@
             "request": "launch",
             "program": "${workspaceFolder}/sjc.exe",
             "args": [
-                "main.sj",
-                "--debug-file=foo.debug"
-                // "--error-file=foo.error",
+                "lambda10.sj"
             ],
-            "stopAtEntry": true,
-            "cwd": "${workspaceFolder}/../nau",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/tests/basic",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",
