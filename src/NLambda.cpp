@@ -102,6 +102,11 @@ CLambdaClassFunction::CLambdaClassFunction(vector<pair<string, vector<string>>>&
 shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CScope> callerScope, vector<shared_ptr<LocalVarScope>> localVarScopes, vector<string> ns, shared_ptr<CVar> dotVar, const string& name, VarScanMode scanMode, CTypeMode returnMode) {
     auto r = CFunction::getCVar(compiler, callerScope, localVarScopes, ns, dotVar, name, scanMode, returnMode);
     if (!r) {
+        auto parentVar = dynamic_pointer_cast<CParentVar>(dotVar);
+        if (parentVar) {
+            dotVar = parentVar->dotVar;
+        }
+
         auto lambdaFunction = static_pointer_cast<NLambdaClassFunction>(node);
         assert(lambdaFunction->returnMode != CTM_Undefined);
         auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParent);
