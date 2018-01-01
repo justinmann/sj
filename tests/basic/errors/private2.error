@@ -1,0 +1,3 @@
+private2.sj:7:7: error: SJC0011 function '_func' does not exist
+private2.sj:7:1: error: SJC0000 no right side
+private2.sj:7:5: error: SJC0008 right side of dot has no value

@@ -1,0 +1,1 @@
+heap9.sj:9:16: error: SJC0002 right type 'heap class' cannot change mode to left type 'stack class' without using a copy operator like 'a = copy b'

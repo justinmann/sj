@@ -1,0 +1,1 @@
+class18.sj:6:11: error: SJC0002 right type 'stack string' cannot change mode to left type 'heap string' without using a copy operator like 'a = copy b'

@@ -1,0 +1,1 @@
+heap18.sj:10:8: error: SJC0002 right type 'heap class2' cannot change mode to left type 'stack class2' without using a copy operator like 'a = copy b'

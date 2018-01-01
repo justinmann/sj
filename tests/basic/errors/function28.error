@@ -1,0 +1,1 @@
+function28.sj:12:5: error: SJC0002 right type 'stack vec3' does not match left type 'stack vec2'
