@@ -1,9 +1,15 @@
 TARGET = test
 LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
 BASIC_OBJECTS =  $(subst basic,basic/binary,$(patsubst %.sj, %, $(wildcard basic/*.sj)))
 APP_OBJECTS = $(subst app,app/binary,$(patsubst %.sj, %, $(wildcard app/*.sj)))
+
+ifeq ($(mode),release)
+	CFLAGS = -g -O3 -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
+else
+	mode = debug
+	CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
+endif
 
 .PHONY: default all clean
 .PRECIOUS: $(APP_OBJECTS) app/cfiles/%.c app/debug/%.debug app/errors/%.error $(BASIC_OBJECTS) basic/cfiles/%.c basic/debug/%.debug basic/errors/%.error
