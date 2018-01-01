@@ -123,7 +123,7 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
                 break;
             default:
                 assert(false);
-                break;
+                return nullptr;
         }
         
         rightVar = make_shared<CMathVar>(loc, scope, mathOp, leftVar, numberVar);
