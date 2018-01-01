@@ -1,4 +1,0 @@
-private4.sj(2,5): error SJC0004: interface methods cannot be private
-private4.sj(7,5): error SJC0028: cannot find interface 'foo'
-private4.sj(7,5): error SJC0011: function 'bar' does not exist
-private4.sj(7,1): error SJC0000: no right side

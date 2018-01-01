@@ -2,24 +2,38 @@ TARGET = test
 LIBS = -lm
 CC = gcc
 CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
-BASIC_OBJECTS = $(patsubst %.c, %.o, $(wildcard basic/*.c))
-APP_OBJECTS = $(patsubst %.c, %.o, $(wildcard app/*.c))
-HEADERS = $(wildcard *.h)
+BASIC_OBJECTS =  $(subst basic,basic/binary,$(patsubst %.sj, %, $(wildcard basic/*.sj)))
+APP_OBJECTS = $(subst app,app/binary,$(patsubst %.sj, %, $(wildcard app/*.sj)))
 
 .PHONY: default all clean
-.PRECIOUS: $(APP_OBJECTS) $(BASIC_OBJECTS)
+.PRECIOUS: $(APP_OBJECTS) app/cfiles/%.c app/debug/%.debug app/errors/%.error $(BASIC_OBJECTS) basic/cfiles/%.c basic/debug/%.debug basic/errors/%.error
 
 all: default
 
 default: app basic
 
+clean:
+	-rm -f app/cfiles/*.c
+	-rm -f app/errors/*.error
+	-rm -f app/debug/*.debug
+	-rm -f app/binary/*
+	-rm -f basic/cfiles/*.c
+	-rm -f basic/errors/*.error
+	-rm -f basic/debug/*.debug
+	-rm -f basic/binary/*
+
 app: $(APP_OBJECTS)
 
+app/cfiles/%.c: app/%.sj
+	../sjc $^ --c-file=$@ --debug --debug-file=$(subst app/cfiles,app/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst app/cfiles,app/errors,$(patsubst %.c,%.error,$@))
+
+app/binary/%: app/cfiles/%.c
+	-$(CC) $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 $^ -o $@
+	
 basic: $(BASIC_OBJECTS)
 
-clean:
-	-rm -f app/*.o
-	-rm -f basic/*.o
+basic/cfiles/%.c: basic/%.sj
+	../sjc $^ --c-file=$@ --debug --debug-file=$(subst basic/cfiles,basic/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst basic/cfiles,basic/errors,$(patsubst %.c,%.error,$@))
 
-%.o: %.cpp $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+basic/binary/%: basic/cfiles/%.c
+	-$(CC) $(CFLAGS) $^ -o $@
