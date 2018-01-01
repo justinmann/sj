@@ -26,7 +26,7 @@ app/cfiles/%.c: app/%.sj
 	../sjc $^ --c-file=$@ --debug --debug-file=$(subst app/cfiles,app/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst app/cfiles,app/errors,$(patsubst %.c,%.error,$@))
 
 app/binary/%: app/cfiles/%.c
-	-$(CC) $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 $^ -o $@
+	$(CC) $^ $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 -lglu32 -o $@
 	
 clean-basic:
 	-rm -f basic/cfiles/*.c
