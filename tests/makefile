@@ -40,4 +40,5 @@ basic/cfiles/%.c: basic/%.sj
 	../sjc $^ --c-file=$@ --debug --debug-file=$(subst basic/cfiles,basic/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst basic/cfiles,basic/errors,$(patsubst %.c,%.error,$@))
 
 basic/binary/%: basic/cfiles/%.c
-	-$(CC) $(CFLAGS) $^ -o $@
+	if [ -f $^ ]; then $(CC) $(CFLAGS) $^ -o $@; fi
+
