@@ -55,4 +55,5 @@ tests/app/layout.html
 tests/basic/vs/.vs/
 tests/basic/vs/test.c
 tests/app/app.c
+tests/basic/binary/
 sjc.h.gch

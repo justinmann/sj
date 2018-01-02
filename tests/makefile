@@ -5,10 +5,10 @@ BASIC_OBJECTS =  $(subst basic,basic/binary,$(patsubst %.sj, %, $(wildcard basic
 APP_OBJECTS = $(subst app,app/binary,$(patsubst %.sj, %, $(wildcard app/*.sj)))
 
 ifeq ($(mode),release)
-	CFLAGS = -g -O3 -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
+	CFLAGS = -g -O3 -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -Wno-unused-function -I.. -std=c99
 else
 	mode = debug
-	CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -I.. -std=c99
+	CFLAGS = -g -Wall -Wno-unused-but-set-variable -Wno-unknown-warning-option -Wno-unused-function -I.. -std=c99
 endif
 
 .PHONY: default all clean
@@ -32,7 +32,8 @@ app/cfiles/%.c: app/%.sj
 	../sjc $^ --c-file=$@ --debug --debug-file=$(subst app/cfiles,app/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst app/cfiles,app/errors,$(patsubst %.c,%.error,$@))
 
 app/binary/%: app/cfiles/%.c
-	$(CC) $^ $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 -lglu32 -o $@
+	$(CC) $^ $(CFLAGS) -I/usr/local/include/freetype2 -I/usr/local/include -L/usr/local/lib -lSDL2main -lSDL2 -lpng16 -lfreetype -framework OpenGL -o $@
+#	$(CC) $^ $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 -lglu32 -o $@
 	
 clean-basic:
 	-rm -f basic/cfiles/*.c
