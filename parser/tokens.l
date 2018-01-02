@@ -151,6 +151,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 [0-9]+\.[0-9]+(f|d)*		TOKEN_STR(TDOUBLE, 0, 0);
 [0-9]+(i|u|v|l)*			TOKEN_STR(TINTEGER, 0, 0);
 "0x"[0-9a-fA-F]+(i|u|v|l)*	TOKEN_STR(TINTEGER, 0, 0);
+\r\n						TOKEN_VAL(TEND);
 \n							TOKEN_VAL(TEND);
 ;							TOKEN_VAL(TEND);
 "'\\''"						TOKEN_STR(TCHAR, 1, 1);
