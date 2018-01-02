@@ -10,23 +10,20 @@
 pacman -S git make mingw-w64-x86_64-boost mingw-w64-x86_64-SDL2 
 pacman -S bison mingw-w64-x86_64-gcc mingw-w64-x86_64-gdb 
 pacman -S mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-glew
-
-cd ~
-mkdir src
-cd src
-git clone https://github.com/justinmann/sj.git
-cd sj
-git submodule init
-git submodule update
 ```
-4) Open VS Code and select folder c:\msys64\home\\%USERNAME%\\src\sj
+4) Open VS Code and select the root of your git clone as the folder (make sure to git clone inside of msys2 terminal)
 5) Run build task (Ctrl+Shift+B)
 
 ## OS/X
-1) Open sjc.xcodeproj
-2) Compile
-3) Open layout.xcodeproj in the "test\app\xcode" folder
+1) Install vs code: https://code.visualstudio.com/
+1) Install homebrew
+1) Enable GDB debugging https://gist.github.com/gravitylow/fb595186ce6068537a6e9da6d8b5b96d
+1) Install dependencies from terminal
+```
+brew install boost sdl2 gdb
+```
+4) Open VS Code and select the root of your git clone as the folder
+5) Run build task (Ctrl+Shift+B)
 
 ## Linux
-1) Run make
-
+1) Install vs code: https://code.visualstudio.com/
