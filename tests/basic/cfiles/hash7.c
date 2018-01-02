@@ -2,8 +2,8 @@
 
 const char* sjg_string1 = "hi";
 const char* sjg_string2 = "hello";
-const char* sjg_string3 = "good bye";
-const char* sjg_string4 = "bye";
+const char* sjg_string3 = "bye";
+const char* sjg_string4 = "good bye";
 const char* sjg_string5 = "empty";
 
 #define sjs_hash_type_bool_typeId 15
@@ -1676,7 +1676,7 @@ int main(int argc, char** argv) {
 #line 4
     sjt_call3.data.datasize = 3;
 #line 4
-    sjt_call3.data.data = (void*)sjg_string4;
+    sjt_call3.data.data = (void*)sjg_string3;
 #line 4
     sjt_call3.data.isglobal = true;
 #line 4
@@ -1698,7 +1698,7 @@ int main(int argc, char** argv) {
 #line 4
     sjt_call4.data.datasize = 8;
 #line 4
-    sjt_call4.data.data = (void*)sjg_string3;
+    sjt_call4.data.data = (void*)sjg_string4;
 #line 4
     sjt_call4.data.isglobal = true;
 #line 4
@@ -1822,7 +1822,7 @@ int main(int argc, char** argv) {
 #line 9
     sjt_call12.data.datasize = 3;
 #line 9
-    sjt_call12.data.data = (void*)sjg_string4;
+    sjt_call12.data.data = (void*)sjg_string3;
 #line 9
     sjt_call12.data.isglobal = true;
 #line 9
