@@ -15,7 +15,6 @@ private:
     shared_ptr<CVar> dotVar;
     shared_ptr<CCallback> callback;
     shared_ptr<CBaseFunction> function;
-    CTypeMode returnMode;
 }; 
 
 class CCallbackFunction : public CBaseFunction {

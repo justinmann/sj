@@ -45,7 +45,6 @@ public:
     AssignOp op;
 
 private:
-    bool _isFirstAssignment;
     shared_ptr<CVar> _assignVar;
     shared_ptr<NAssignment> shared_from_this();
     shared_ptr<CCallVar> _callVar;

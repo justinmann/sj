@@ -46,7 +46,7 @@ parser/parser.o: parser/parser.cpp
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 parser/tokens.o: parser/tokens.cpp
-	$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -Wno-deprecated-register -Wno-unused-const-variable -c $^ -o $@
 
 build/%.o: src/%.cpp include/sjc.h.gch
 	$(CC) $(CFLAGS) -c $< -o $@
