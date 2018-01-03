@@ -1,9 +1,3 @@
--- getting started --
-* library "master:https://github.com/justinmann/sj-lib-common.git"
-* update submodules on build
-* copy lib/foo/assets -> assets/foo
-* create console project
-
 -- ui --
 * text input
 * wrapping text
