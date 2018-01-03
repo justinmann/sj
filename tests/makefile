@@ -29,7 +29,7 @@ clean-app:
 app: $(APP_OBJECTS)
 
 app/cfiles/%.c: app/%.sj
-	../sjc $^ --c-file=$@ --debug --debug-file=$(subst app/cfiles,app/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst app/cfiles,app/errors,$(patsubst %.c,%.error,$@))
+	../sjc $^ --c-file=$@ --skip-library-pull --debug --debug-file=$(subst app/cfiles,app/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst app/cfiles,app/errors,$(patsubst %.c,%.error,$@))
 
 app/binary/%: app/cfiles/%.c
 	$(CC) $^ $(CFLAGS) -I/usr/local/include/freetype2 -I/usr/local/include -L/usr/local/lib -lSDL2main -lSDL2 -lpng16 -lfreetype -framework OpenGL -o $@
@@ -44,7 +44,7 @@ clean-basic:
 basic: $(BASIC_OBJECTS)
 
 basic/cfiles/%.c: basic/%.sj
-	../sjc $^ --c-file=$@ --debug --debug-file=$(subst basic/cfiles,basic/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst basic/cfiles,basic/errors,$(patsubst %.c,%.error,$@))
+	../sjc $^ --c-file=$@ --skip-library-pull --debug --debug-file=$(subst basic/cfiles,basic/debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst basic/cfiles,basic/errors,$(patsubst %.c,%.error,$@))
 
 basic/binary/%: basic/cfiles/%.c
 	if [ -f $^ ]; then $(CC) $(CFLAGS) $^ -o $@; fi

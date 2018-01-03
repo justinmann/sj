@@ -1,4 +1,4 @@
-include "lib/ui/ui.sj"
+library "release-1.0:https://github.com/justinmann/sj-lib-ui.git"
 
 include "nau/init.sj"
 include "nau/menuController.sj"
