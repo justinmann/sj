@@ -24,6 +24,8 @@ void createProject(string typeName) {
 
     ofstream streamTasks;
     streamTasks.open(".vscode/tasks.json");
+
+    if (typeName == "ui") {
     streamTasks << 
 R"({
     // See https://go.microsoft.com/fwlink/?LinkId=733558
@@ -65,7 +67,7 @@ R"({
         {
             "label": "emcc",
             "type": "shell",
-            "command": "emcc -g main.c -o ${workspaceFolderBasename}.html -I. -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_WEBGL2=1 --preload-file assets --preload-file shaders",
+            "command": "emcc -g main.c -o ${workspaceFolderBasename}.html -I. -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_WEBGL2=1 --preload-file assets",
             "dependsOn" : "sjc",
             "group": "build",
             "problemMatcher": [
@@ -75,7 +77,7 @@ R"({
         {
             "label": "emrun",
             "type": "shell",
-            "command": "emcc -g main.c -o ${workspaceFolderBasename}.html -I. -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_WEBGL2=1 --preload-file assets --preload-file shaders --emrun && emrun ${workspaceFolderBasename}.html",
+            "command": "emcc -g main.c -o ${workspaceFolderBasename}.html -I. -s USE_SDL=2 -s USE_FREETYPE=1 -s USE_LIBPNG=1 -s USE_WEBGL2=1 --preload-file assets --emrun && emrun ${workspaceFolderBasename}.html",
             "dependsOn" : "sjc",
             "group": "build",
             "problemMatcher": [
@@ -84,6 +86,48 @@ R"({
         }
     ]
 })";
+    } else {
+        streamTasks << 
+R"({
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "sjc",
+            "type": "shell",
+            "command": "../sj/sjc main.sj --no-lines",
+            "promptOnClose": true,
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "gcc",
+            "type": "shell",
+            "command": "gcc -g main.c -I. -o ${workspaceFolderBasename}",
+            "windows": {
+                "command": "gcc -g main.c -I. -o ${workspaceFolderBasename}.exe"                
+            },
+            "dependsOn" : "sjc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+})";
+    }
 
     ofstream streamSettings;
     streamSettings.open(".vscode/settings.json");
@@ -151,34 +195,20 @@ R"({
 
     ofstream streamMain;
     streamMain.open("main.sj");
-    streamMain << 
+
+    if (typeName == "ui") {
+        streamMain << 
+R"(library "release-1.0:https://github.com/justinmann/sj-lib-ui.git"
+
+root : textElement(
+    text : "Hello World"
+)
+
+runLoop())";
+    } else {
+        streamMain << 
 R"(console.writeLine("hello world"))";
-
-    // std::string exec = "bjam"; 
-
-    // std::vector<std::string> args; 
-    // args.push_back("--version"); 
-
-    // bp::context ctx; 
-    // ctx.stdout_behavior = bp::capture_stream(); 
-
-    // vector<string> args;
-    // args.push_back("submodule");
-    // args.push_back("add");
-    // args.push_back("-b");
-    // args.push_back("master");
-    // args.push_back("");
-    // bp::child c = bp::launch("git", args, ctx); 
-
-    // bp::pistream &is = c.get_stdout(); 
-    // std::string line; 
-    // while (std::getline(is, line)) 
-    //     std::cout << line << std::endl; 
-        
-    // c.wait();
-
-    fs::create_directory("lib");
-    bp::system("git submodule add -b master https://github.com/justinmann/sj-lib-common.git", bp::std_out > stdout, bp::std_err > stderr, bp::std_in < stdin, bp::start_dir = "lib");
+    }
 }
 
 int main(int argc, char **argv) {
