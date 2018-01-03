@@ -4,6 +4,65 @@
 namespace fs = boost::filesystem;
 namespace bp = boost::process;
 
+bool copyDir(fs::path const & source, fs::path const & destination) {
+    try {
+        // Check whether the function call is valid
+        if(
+            !fs::exists(source) ||
+            !fs::is_directory(source)
+        ) {
+            std::cerr << "Source directory " << source.string()
+                << " does not exist or is not a directory." << '\n';
+            return false;
+        }
+
+        if(fs::exists(destination)) {
+            std::cerr << "Destination directory " << destination.string()
+                << " already exists." << '\n';
+            return false;
+        }
+        // Create the destination directory
+        if(!fs::create_directory(destination)) {
+            std::cerr << "Unable to create destination directory"
+                << destination.string() << '\n';
+            return false;
+        }
+    } catch(fs::filesystem_error const & e) {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
+
+    // Iterate through the source directory
+    for(
+        fs::directory_iterator file(source);
+        file != fs::directory_iterator(); ++file
+    ) {
+        try {
+            fs::path current(file->path());
+            if(fs::is_directory(current)) {
+                // Found directory: Recursion
+                if(!copyDir(
+                        current,
+                        destination / current.filename()
+                    )) {
+                    return false;
+                }
+            } else {
+                // Found file: Copy
+                fs::copy_file(
+                    current,
+                    destination / current.filename()
+                );
+            }
+        }
+        catch(fs::filesystem_error const & e) {
+            std:: cerr << e.what() << '\n';
+        }
+    }
+    return true;
+}
+
+
 void NLibrary::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     if (thisFunction->name != "global") {
         compiler->addError(loc, CErrorCode::IncludeOnlyInGlobal, "can only use library in the global scope");
@@ -44,6 +103,18 @@ void NLibrary::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<
 
     // Include the main.sj file
     compiler->includeFile(mainPath.string());
+
+    // Copy assets
+    if (compiler->libraryCopy) {
+        if (fs::is_directory(libPath / "assets")) {
+            fs::create_directory(compiler->rootPath / "assets");
+            copyDir(libPath / "assets", compiler->rootPath / "assets" / libName);
+
+            ofstream streamGitIgnore;
+            streamGitIgnore.open((compiler->rootPath / "assets" / libName / ".gitignore").string());
+            streamGitIgnore << "*";
+        }
+    }
 }
 
 void NLibrary::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
