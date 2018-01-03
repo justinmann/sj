@@ -3,7 +3,7 @@
 
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;
-namespace bp = ::boost::process;
+namespace bp = boost::process;
            
 #ifdef YYDEBUG
 extern int yydebug;
@@ -198,6 +198,8 @@ int main(int argc, char **argv) {
         ("c-file", po::value<string>(), "filename for c output")
         ("error-file", po::value<string>(), "filename for error output")
         ("new-project", po::value<string>(), "ui or console")
+        ("skip-library-pull", "skip updating the submodules for libraries")
+        ("skip-library-copy", "skip copying assets from the libraries")
 #ifdef YYDEBUG
         ("debug-parser", "add extra debug logging to detect memory leaks")
 #endif
@@ -230,6 +232,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    auto libraryPull = vm.count("skip-library-pull") == 0;
+    auto libraryCopy = vm.count("skip-library-copy") == 0;
     bool outputLines = vm.count("no-lines") == 0;
     bool outputDebug = vm.count("debug");
     bool outputVSErrors = vm.count("vs-errors");
@@ -256,7 +260,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        Compiler compiler(outputLines, outputVSErrors, outputDebugLeaks, outputFree);
+        Compiler compiler(outputLines, outputVSErrors, outputDebugLeaks, outputFree, libraryPull, libraryCopy);
         compiler.transpile(path.string(), cFilename, errorFilename, debugFilename);
     }
 

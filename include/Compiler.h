@@ -127,7 +127,7 @@ class SJException : public exception { };
 class Compiler
 {
 public:
-    Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree);
+    Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree, bool libraryPull, bool libraryCopy);
     bool transpile(const string& sjFilename, string& cFilename, string& errorFilename, string& debugFilename);
     shared_ptr<CType> getType(const string& name, bool isOption) const;
     void includeFile(const string& fileName);
@@ -157,6 +157,8 @@ public:
     bool outputVSErrors;
     bool outputDebugLeaks;
     bool outputFree;
+    bool libraryPull;
+    bool libraryCopy;
     boost::filesystem::path rootPath;
     CompilerState state;
     map<string, map<unsigned, map<string, CError>>> errors;

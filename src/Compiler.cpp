@@ -23,7 +23,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE, void*);
 
 CLoc CLoc::undefined = CLoc();
 
-Compiler::Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree) : outputLines(outputLines), outputVSErrors(outputVSErrors), outputDebugLeaks(outputDebugLeaks), outputFree(outputFree) {
+Compiler::Compiler(bool outputLines, bool outputVSErrors, bool outputDebugLeaks, bool outputFree, bool libraryPull, bool libraryCopy) : outputLines(outputLines), outputVSErrors(outputVSErrors), outputDebugLeaks(outputDebugLeaks), outputFree(outputFree), libraryPull(libraryPull), libraryCopy(libraryCopy) {
     auto ctypes = CType::create(emptyNamespace, "i32", "int32_t", "(int32_t)0", "int32_option", "int32_empty");
     typeI32 = ctypes->stackValueType;
     types["i32"] = ctypes;
@@ -143,7 +143,8 @@ bool Compiler::transpile(const string& sjFilename, string& cFilename, string& er
     auto globalFile = genNodeFile(sjFilename);
     if (errors.size() == 0) {
         auto globalBlock = globalFile->block;
-        globalBlock->statements.insert(globalBlock->statements.begin(), make_shared<NInclude>(CLoc(globalFile->fullFileName, globalFile->shortFileName, 1, 1), "lib/common/common.sj"));
+        globalBlock->statements.insert(globalBlock->statements.begin(), 
+            make_shared<NLibrary>(CLoc(globalFile->fullFileName, globalFile->shortFileName, 1, 1), "release-1.0:https://github.com/justinmann/sj-lib-common.git"));
         anonFunction = make_shared<NFunction>(CLoc::undefined, nullptr, "global", nullptr, nullptr, nullptr, nullptr, globalBlock, nullptr, nullptr, nullptr);
         currentFunctionDefintion = make_shared<CFunctionDefinition>();
         currentFunctionDefintion->init(this, importNamespaces, nullptr, packageNamespace, "", nullptr, nullptr);

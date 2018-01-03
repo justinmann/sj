@@ -132,6 +132,7 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"default")				TOKEN_VAL(TDEFAULT);
 (?:"package")				TOKEN_VAL(TPACKAGE);
 (?:"import")				TOKEN_VAL(TIMPORT);
+(?:"library")				TOKEN_VAL(TLIBRARY);
 (?:"nullptr")				TOKEN_VAL(TNULLPTR);	
 (?:"xor")					TOKEN_VAL(TBOOLXOR);
 (?:"or")					TOKEN_VAL(TBOOLOR);
