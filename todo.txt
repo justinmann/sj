@@ -1,3 +1,9 @@
+-- getting started --
+* library "master:https://github.com/justinmann/sj-lib-common.git"
+* update submodules on build
+* copy lib/foo/assets -> assets/foo
+* create console project
+
 -- ui --
 * text input
 * wrapping text
@@ -6,7 +12,6 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* create new project command
 * heap local to stop most of intrafunction refcount'ing
 * property
 * clone operator to do full copy
