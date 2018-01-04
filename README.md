@@ -24,6 +24,10 @@ brew install boost sdl2 gdb
 ```
 4) Open VS Code and select the root of your git clone as the folder
 5) Run build task (Ctrl+Shift+B)
+NOTE: You may get a weird error when you compile with emcc, this should fix it:
+```
+brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
+```
 
 ## Linux
 1) Install vs code: https://code.visualstudio.com/
