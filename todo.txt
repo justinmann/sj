@@ -8,9 +8,6 @@
 -- language --
 * heap local to stop most of intrafunction refcount'ing
 * property
-* clone operator to do full copy
-* syntax highlighting using textmate
-* make sure debug out is compilable
 
 -- property --
 foo : 'i32 { get; }	// must be set during init
