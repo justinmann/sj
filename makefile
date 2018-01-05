@@ -52,4 +52,4 @@ build/%.o: src/%.cpp include/sjc.h.gch
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(ALLOBJECTS)
-	$(CC) $(ALLOBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt
+	$(CC) $(ALLOBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt -lwsock32
