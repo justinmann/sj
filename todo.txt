@@ -20,7 +20,3 @@ foo := 1 {
 foo := 0 {
 	changed { _ // old, _foo // new } 
 }
-
--- notes --
-* fix mac build:
-brew install llvm && rm /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar && ln -s /usr/local/opt/llvm/bin/llvm-ar /usr/local/opt/emscripten/libexec/llvm/bin/llvm-ar
