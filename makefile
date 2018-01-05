@@ -9,6 +9,12 @@ else
 	CFLAGS = -g -Wall -std=c++11 -Iinclude -Wno-reorder
 endif
 
+ifeq ($(platform),windows)
+	EXTRALINKFLAGS =  -lwsock32
+else
+	EXTRALINKFLAGS = 
+endif
+
 CFILES = $(wildcard src/*.cpp)
 COBJECTS = $(subst src/,build/,$(patsubst %.cpp, %.o, $(CFILES)))
 ALLOBJECTS = $(COBJECTS) parser/parser.o parser/tokens.o
@@ -52,4 +58,4 @@ build/%.o: src/%.cpp include/sjc.h.gch
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(ALLOBJECTS)
-	$(CC) $(ALLOBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt -lwsock32
+	$(CC) $(ALLOBJECTS) -Wall $(LIBS) -o $@ -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt $(EXTRALINKFLAGS)
