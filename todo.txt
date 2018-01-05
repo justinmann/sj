@@ -6,6 +6,10 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
+* map "foo as string" -> foo.asString()
+* allow local var to conflict with global var
+* fix package2.sj
+* fix package3.sj
 * heap local to stop most of intrafunction refcount'ing
 * property
 

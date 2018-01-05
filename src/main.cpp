@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
     if (sjFilename.size() > 0) {
         auto path = fs::path(sjFilename);
         if (cFilename.size() == 0) {
-            cFilename = fs::change_extension(path, ".c").string();
+            cFilename = fs::change_extension(path, ".cpp").string();
         }
 
         if (outputDebug) {
