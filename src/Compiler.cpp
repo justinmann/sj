@@ -74,7 +74,7 @@ shared_ptr<CParseFile> Compiler::genNodeFile(const string& fileName) {
     std::string str;
     
     if (t.fail()) {
-        addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fileName.c_str());
+        addError(CLoc(), CErrorCode::InvalidString, "file does not exist '%s'", fs::path(fileName).generic_string().c_str());
         return nullptr;
     }
     
