@@ -93,12 +93,12 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 %type <typeMode> arg_mode
 %type <enumArgs> enum_args
 %type <enumArg> enum_arg
-%type <strings> namespace namespace_dot func_attribs 
+%type <strings> namespace func_attribs 
 %type <ccode> cblock cdefine cstruct cfunction cinclude ctypedef cvar
 %type <import_namespaces> import_namespaces
 %type <import_namespace> import_namespace
-%type <typeNameParts> namespace_hash namespace_last
-%type <string> namespace_ident func_attrib
+%type <typeNameParts> namespace_hash namespace_dot
+%type <string> func_attrib
 %type <switchClauses> switch_clauses
 %type <switchClause> switch_clause
 %type <hashArg> hash_arg
@@ -543,19 +543,12 @@ temp_block_optional : /* Blank! */									{ $$ = nullptr; }
 					| temp_block									{ $$ = $1; }
 					;
 
-namespace_hash		: namespace_dot namespace_last               	{ $$ = $2; $$->packageNamespace = *$1; delete $1; }
-					| namespace_last								{ $$ = $1; }
+namespace_hash		: THASH namespace_dot							{ $$ = $2; $$->isHash = true; }
+					| namespace_dot									{ $$ = $1; }
 					;
 
-namespace_dot		: namespace_ident               				{ $$ = new vector<string>(); $$->push_back(*$1); delete $1; }
-					| namespace_ident namespace_dot					{ $$ = $2; $$->push_back(*$1); delete $1; }
-					;
-
-namespace_ident     : TIDENTIFIER TDOT 								{ $$ = $1; }
-					;
-
-namespace_last      : THASH TIDENTIFIER								{ $$ = new CTypeNameParts(); $$->isHash = true;  $$->name = *$2; delete $2; }
-					| TIDENTIFIER									{ $$ = new CTypeNameParts(); $$->isHash = false; $$->name = *$1; delete $1; }
+namespace_dot		: TIDENTIFIER               					{ $$ = new CTypeNameParts(); $$->isHash = false; $$->name = *$1; delete $1; }
+					| TIDENTIFIER TDOT namespace_dot  				{ $$ = $3; $$->packageNamespace.insert($$->packageNamespace.begin(), *$1); delete $1; }
 					;
 
 temp_option_optional: /* Blank! */									{ $$.isOption = false;  $$.templateTypeNames = nullptr; }
