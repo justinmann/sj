@@ -1600,6 +1600,31 @@ shared_ptr<CType> CFunction::getVarType(Compiler* compiler, string name, bool is
     return compiler->getType(name, isOption);
 }
 
+vector<vector<string>> getAllPackageNamespaces(vector<string> ns, vector<pair<string, vector<string>>>& importNamespaces) {
+    vector<vector<string>> result;
+    result.push_back(ns);
+
+    for (auto importNS : importNamespaces) {        
+        if (importNS.first.size() == 0) {
+            if (importNS.second.size() == 0) {
+                continue;
+            }
+
+            auto nsEntry = importNS.second;
+            nsEntry.insert(nsEntry.end(), ns.begin(), ns.end());
+            result.push_back(nsEntry);
+        } else if (ns.size() > 0 && ns.front() == importNS.first) {
+            auto nsEntry = importNS.second;
+            auto nsTemp = ns;
+            nsTemp.erase(nsTemp.begin());
+            nsEntry.insert(nsEntry.end(), nsTemp.begin(), nsTemp.end());
+            result.push_back(nsEntry);            
+        }
+    }
+
+    return result;
+}
+
 shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<CTypeName> typeName, CTypeMode defaultMode) {
     if (typeName->ctype) {
         return typeName->ctype;
@@ -1611,20 +1636,23 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
     }
 
     if (typeName->category == CTC_Interface) {
-        auto interface = getCInterface(compiler, typeName->packageNamespace, typeName->valueName, nullptr, typeName->templateTypeNames);
-        if (interface) {
-            auto thisTypes = interface->getThisTypes(compiler);
-            switch (typeMode) {
-            case CTM_Heap:
-                return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
-            case CTM_Undefined:
-            case CTM_Stack:
-            case CTM_Local:
-                return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
-            case CTM_Weak:
-                return thisTypes->weakType;
-            default:
-                return nullptr;
+        auto packageNamespaces = getAllPackageNamespaces(typeName->packageNamespace, importNamespaces);
+        for (auto packageNamespace : packageNamespaces) {
+            auto interface = getCInterface(compiler, typeName->packageNamespace, typeName->valueName, nullptr, typeName->templateTypeNames);
+            if (interface) {
+                auto thisTypes = interface->getThisTypes(compiler);
+                switch (typeMode) {
+                case CTM_Heap:
+                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
+                case CTM_Undefined:
+                case CTM_Stack:
+                case CTM_Local:
+                    return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
+                case CTM_Weak:
+                    return thisTypes->weakType;
+                default:
+                    return nullptr;
+                }
             }
         }
     }
@@ -1662,41 +1690,44 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
             }
         }
         
-        auto baseFunctionDefinition = getFunctionDefinition(typeName->packageNamespace, typeName->valueName);
-        if (baseFunctionDefinition.second != nullptr) {
-            auto templateTypes = vector<shared_ptr<CType>>();
-            if (typeName->templateTypeNames) {
-                for (auto it : *typeName->templateTypeNames) {
-                    auto t = getVarType(loc, compiler, importNamespaces, it, CTM_Undefined);
-                    if (!t) {
-                        return nullptr;
+        auto packageNamespaces = getAllPackageNamespaces(typeName->packageNamespace, importNamespaces);
+        for (auto packageNamespace : packageNamespaces) {
+            auto baseFunctionDefinition = getFunctionDefinition(packageNamespace, typeName->valueName);
+            if (baseFunctionDefinition.second != nullptr) {
+                auto templateTypes = vector<shared_ptr<CType>>();
+                if (typeName->templateTypeNames) {
+                    for (auto it : *typeName->templateTypeNames) {
+                        auto t = getVarType(loc, compiler, importNamespaces, it, CTM_Undefined);
+                        if (!t) {
+                            return nullptr;
+                        }
+                        templateTypes.push_back(t);
                     }
-                    templateTypes.push_back(t);
                 }
-            }
-            
-            auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition.second);
-            auto cfunc = functionDefinition->getFunction(compiler, loc, templateTypes, baseFunctionDefinition.first);
-            if (!cfunc) {
-                return nullptr;
-            }
-            auto thisTypes = cfunc->getThisTypes(compiler);
-            switch (typeMode) {
-                case CTM_Heap:
-                    return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
-                case CTM_Undefined:
-                case CTM_Stack:
-                    return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
-                case CTM_Local:
-                    return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
-                case CTM_Weak:
-                    return thisTypes->weakType;
-                case CTM_Value:
-                case CTM_ValuePtr:
+                
+                auto functionDefinition = static_pointer_cast<CFunctionDefinition>(baseFunctionDefinition.second);
+                auto cfunc = functionDefinition->getFunction(compiler, loc, templateTypes, baseFunctionDefinition.first);
+                if (!cfunc) {
                     return nullptr;
-                default:
-                    assert(false);
-                    return nullptr;
+                }
+                auto thisTypes = cfunc->getThisTypes(compiler);
+                switch (typeMode) {
+                    case CTM_Heap:
+                        return typeName->isOption ? thisTypes->heapOptionType : thisTypes->heapValueType;
+                    case CTM_Undefined:
+                    case CTM_Stack:
+                        return typeName->isOption ? thisTypes->stackOptionType : thisTypes->stackValueType;
+                    case CTM_Local:
+                        return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
+                    case CTM_Weak:
+                        return thisTypes->weakType;
+                    case CTM_Value:
+                    case CTM_ValuePtr:
+                        return nullptr;
+                    default:
+                        assert(false);
+                        return nullptr;
+                }
             }
         }
     }
