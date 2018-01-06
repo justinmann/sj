@@ -134,7 +134,7 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
     stackValueType->fullName = valueName;
     stackValueType->cname = cname;
     stackValueType->safeName = valueName;
-    stackValueType->_defaultValue = defaultValue;
+    stackValueType->defaultValue = defaultValue;
 
     stackOptionType->isOption = true;
     stackOptionType->typeMode = CTM_Value;
@@ -145,7 +145,7 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
     stackOptionType->fullName = valueName + "?";
     stackOptionType->cname = cnameOption;
     stackOptionType->safeName = valueName + "_option";
-    stackOptionType->_defaultValue = defaultValueOption;
+    stackOptionType->defaultValue = defaultValueOption;
 
     localValueType->isOption = false;
     localValueType->typeMode = CTM_ValuePtr;
@@ -156,7 +156,7 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
     localValueType->fullName = "local " + valueName;
     localValueType->cname = cname + "*";
     localValueType->safeName = valueName;
-    localValueType->_defaultValue = defaultValue;
+    localValueType->defaultValue = defaultValue;
 
     localOptionType->isOption = true;
     localOptionType->typeMode = CTM_ValuePtr;
@@ -167,7 +167,7 @@ shared_ptr<CTypes> CType::create(vector<string>& packageNamespace, string valueN
     localOptionType->fullName = "local " + valueName + "?";
     localOptionType->cname = cnameOption + "*";
     localOptionType->safeName = valueName + "_option";
-    localOptionType->_defaultValue = defaultValueOption;
+    localOptionType->defaultValue = defaultValueOption;
 
     return make_shared<CTypes>(stackValueType, stackOptionType, nullptr, nullptr, localValueType, localOptionType, nullptr);
 }
@@ -473,7 +473,7 @@ void CType::transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock
     }
 
     if (category == CTC_Value && parent.expired()) {
-        auto temp = make_shared<TrValue>(nullptr, shared_from_this(), _defaultValue, false);
+        auto temp = make_shared<TrValue>(nullptr, shared_from_this(), defaultValue, false);
         storeValue->retainValue(compiler, loc, trBlock, temp);
     }
     else if (isOption) {

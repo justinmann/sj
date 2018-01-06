@@ -93,6 +93,7 @@ public:
     vector<shared_ptr<CType>> argTypes;
     shared_ptr<CType> stackReturnType;
     shared_ptr<CType> heapReturnType;
+    string defaultValue;
 
     void transpileDefaultValue(Compiler* compiler, CLoc loc, TrBlock* trBlock, shared_ptr<TrStoreValue> storeValue);
     static bool isSameExceptMode(shared_ptr<CType> l, shared_ptr<CType> r);
@@ -111,7 +112,6 @@ public:
     shared_ptr<CType> getWeakType();
 
 private:
-    string _defaultValue;
     weak_ptr<CType> stackValueType;
     weak_ptr<CType> stackOptionType;
     weak_ptr<CType> heapValueType;

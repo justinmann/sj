@@ -61,6 +61,7 @@ enum NodeType {
     NodeType_Empty,
     NodeType_For,
     NodeType_Function,
+    NodeType_GetOrDefault,
     NodeType_GetOrElse,
     NodeType_GetType,
     NodeType_GetValue,
@@ -120,6 +121,7 @@ enum NodeType {
 #include "NEmpty.h"
 #include "NFor.h"
 #include "NFunction.h"
+#include "NGetOrDefault.h"
 #include "NGetOrElse.h"
 #include "NGetType.h"
 #include "NGetValue.h"

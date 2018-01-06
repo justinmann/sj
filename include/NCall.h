@@ -50,8 +50,10 @@ public:
     string name;
     shared_ptr<CTypeNameList> templateTypeNames;
     shared_ptr<NodeList> arguments;
+    shared_ptr<CBaseFunction> callee;
     
     NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
+    NCall(CLoc loc, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments);
 
     void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
