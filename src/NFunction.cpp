@@ -2073,28 +2073,27 @@ shared_ptr<CVar> CScope::getUnderscore(Compiler* compiler, shared_ptr<CScope> ca
 
 vector<vector<string>> CScope::getImportNamespaces() {
     vector<vector<string>> allNamespaces;
-    allNamespaces.push_back(vector<string>());
-    
-    if (function) {
-        for (auto importNamespace : function->importNamespaces) {
-            if (importNamespace.first.size() == 0) {
-                allNamespaces.push_back(importNamespace.second);
-            }
-        }
-    }
-
-    for (auto importScope : importScopes) {
-        for (auto importNamespace : importScope->importNamespaces) {
-            if (importNamespace.first.size() == 0) {
-                allNamespaces.push_back(importNamespace.second);
-            }
-        }
-    }
-    
     if (dotNamespace.size() > 0) {
         allNamespaces.push_back(dotNamespace);
+    } else {
+        allNamespaces.push_back(vector<string>());
+        
+        if (function) {
+            for (auto importNamespace : function->importNamespaces) {
+                if (importNamespace.first.size() == 0) {
+                    allNamespaces.push_back(importNamespace.second);
+                }
+            }
+        }
+
+        for (auto importScope : importScopes) {
+            for (auto importNamespace : importScope->importNamespaces) {
+                if (importNamespace.first.size() == 0) {
+                    allNamespaces.push_back(importNamespace.second);
+                }
+            }
+        }    
     }
-    
     return allNamespaces;
 }
 

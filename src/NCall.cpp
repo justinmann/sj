@@ -347,30 +347,37 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         }
     }
 
+    auto oldNamespace = scope->dotNamespace;
+    scope->dotNamespace = vector<string>();
+    shared_ptr<CVar> resultVar;
+    auto argIndex = (size_t)0;
+    auto hasSetByName = false;
+    shared_ptr<CType> leftType;
+    vector<CallArgument> callArguments;
+    shared_ptr<vector<FunctionParameter>> parameters;
+
     if ((int)arguments->size() + (isHelperFunction ? 1 : 0) > callee->getArgCount(returnMode)) {
         compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size() + (isHelperFunction ? 1 : 0), callee->getArgCount(returnMode));
-        return nullptr;
+        goto done;
     }
 
     // Fill in parameters
-    auto argIndex = (size_t)0;
-    auto hasSetByName = false;
-    vector<CallArgument> callArguments = vector<CallArgument>(callee->getArgCount(returnMode) - (isHelperFunction ? 1 : 0));
+    callArguments = vector<CallArgument>(callee->getArgCount(returnMode) - (isHelperFunction ? 1 : 0));
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
             if (index < 0) {
                 compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
-                return nullptr;
+                goto done;
             }
 
             if (callArguments[index].var != nullptr) {
                 compiler->addError(loc, CErrorCode::ParameterRedefined, "defined parameter '%s' twice", parameterAssignment->name.c_str());
-                return nullptr;
+                goto done;
             }
 
-            auto leftType = callee->getArgVar(index, returnMode)->getType(compiler);
+            leftType = callee->getArgVar(index, returnMode)->getType(compiler);
             assert(parameterAssignment->inFunctionDeclaration);
             CallArgument callArgument(parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[index] = callArgument;
@@ -379,27 +386,31 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         else {
             if (hasSetByName) {
                 compiler->addError(loc, CErrorCode::ParameterByIndexAfterByName, "all named parameters must be after the un-named parameters");
-                return nullptr;
+                goto done;
             }
 
             if (callArguments[argIndex].var != nullptr) {
                 compiler->addError(loc, CErrorCode::Internal, "re-defining the same parameters which should be impossible for un-named parameters");
-                return nullptr;
+                goto done;
             }
 
-            auto leftType = callee->getArgVar((int)argIndex, returnMode)->getType(compiler);
+            leftType = callee->getArgVar((int)argIndex, returnMode)->getType(compiler);
             CallArgument callArgument(it->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[argIndex] = callArgument;
         }
         argIndex++;
     }
 
-    auto parameters = CCallVar::getParameters(compiler, loc, scope, callee, callArguments, isHelperFunction, dotVar, returnMode);
+    parameters = CCallVar::getParameters(compiler, loc, scope, callee, callArguments, isHelperFunction, dotVar, returnMode);
     if (!parameters) {
-        return nullptr;
+        goto done;
     }
 
-    return createCallVar(loc, scope, isHelperFunction ? nullptr : dotVar, parameters, callee, returnMode);
+    resultVar = createCallVar(loc, scope, isHelperFunction ? nullptr : dotVar, parameters, callee, returnMode);
+
+done:
+    scope->dotNamespace = oldNamespace;
+    return resultVar;
 }
 
 shared_ptr<CCallVar> NCall::createCallVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<vector<FunctionParameter>> parameters, shared_ptr<CBaseFunction> callee, CTypeMode returnMode) {
