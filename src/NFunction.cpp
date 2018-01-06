@@ -101,34 +101,34 @@ void NFunction::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector
     parentFunction->addChildFunction(compiler, loc, packageNamespace, name, thisFunction);
 
     for (auto it : interfaces) {
-        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     for (auto it : functions) {
-        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
         
     for (auto it : assignments) {
         if (!it->op.isFirstAssignment) {
             compiler->addError(loc, CErrorCode::InvalidFunction, "assignment '%s' must be : or :=", it->name.c_str());
         }
-        it->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        it->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     if (block) {
-        block->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        block->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     if (copyBlock) {
-        copyBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        copyBlock->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     if (destroyBlock) {
-        destroyBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        destroyBlock->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     if (catchBlock) {
-        catchBlock->initFunctions(compiler, importNamespaces, packageNamespace, thisFunction);
+        catchBlock->initFunctions(compiler, importNamespaces, emptyNamespace, thisFunction);
     }
 
     if ((copyBlock == nullptr) != (destroyBlock == nullptr)) {
@@ -1691,6 +1691,9 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
                     return typeName->isOption ? thisTypes->localOptionType : thisTypes->localValueType;
                 case CTM_Weak:
                     return thisTypes->weakType;
+                case CTM_Value:
+                case CTM_ValuePtr:
+                    return nullptr;
                 default:
                     assert(false);
                     return nullptr;
