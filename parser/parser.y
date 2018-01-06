@@ -356,7 +356,7 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| TWEAK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Weak, shared_ptr<NBase>($2)); }
 					| TCOPY expr_var                             	{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
 					| expr_math TQUESTIONCOLON expr_math			{ $$ = new NGetOrElse(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NBase>($3)); }
-					| expr_math TQUESTIONQUESTION					{ $$ = new NGetOrDefault(LOC, shared_ptr<NVariableBase>($1)); }
+					| expr_var TQUESTIONQUESTION					{ $$ = new NGetOrDefault(LOC, shared_ptr<NVariableBase>($1)); }
 					| expr_var										{ $$ = $1; }
 					;
 

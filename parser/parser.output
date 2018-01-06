@@ -3,17 +3,6 @@ Terminals unused in grammar
    TINVALID
 
 
-State 277 conflicts: 1 shift/reduce
-State 278 conflicts: 1 shift/reduce
-State 279 conflicts: 1 shift/reduce
-State 280 conflicts: 1 shift/reduce
-State 281 conflicts: 1 shift/reduce
-State 284 conflicts: 1 shift/reduce
-State 285 conflicts: 1 shift/reduce
-State 286 conflicts: 1 shift/reduce
-State 287 conflicts: 1 shift/reduce
-State 288 conflicts: 1 shift/reduce
-State 289 conflicts: 1 shift/reduce
 State 299 conflicts: 1 shift/reduce
 
 
@@ -200,7 +189,7 @@ Grammar
   139          | TWEAK expr_var
   140          | TCOPY expr_var
   141          | expr_math TQUESTIONCOLON expr_math
-  142          | expr_math TQUESTIONQUESTION
+  142          | expr_var TQUESTIONQUESTION
   143          | expr_var
 
   144 expr_var: expr_var TAS arg_type
@@ -574,10 +563,11 @@ expr_comp (149)
 expr_math (150)
     on left: 123 124 125 126 127 128 129 130 131 132 133 134 135 136
     137 138 139 140 141 142 143, on right: 114 115 116 117 118 119
-    120 121 122 123 124 125 126 127 128 129 130 131 132 141 142
+    120 121 122 123 124 125 126 127 128 129 130 131 132 141
 expr_var (151)
     on left: 144 145 146 147 148, on right: 44 45 46 47 48 49 50 133
-    134 135 136 137 138 139 140 143 144 145 146 147 193 194 195 200
+    134 135 136 137 138 139 140 142 143 144 145 146 147 193 194 195
+    200
 for_expr (152)
     on left: 149 150, on right: 102
 while_expr (153)
@@ -1816,28 +1806,26 @@ State 71
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TCEQ               shift, and go to state 161
-    TCNE               shift, and go to state 162
-    TCLT               shift, and go to state 163
-    TCLE               shift, and go to state 164
-    TCGT               shift, and go to state 165
-    TCGE               shift, and go to state 166
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TCPEQ              shift, and go to state 172
-    TCPNE              shift, and go to state 173
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TCEQ            shift, and go to state 161
+    TCNE            shift, and go to state 162
+    TCLT            shift, and go to state 163
+    TCLE            shift, and go to state 164
+    TCGT            shift, and go to state 165
+    TCGE            shift, and go to state 166
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TCPEQ           shift, and go to state 172
+    TCPNE           shift, and go to state 173
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 122 (expr_comp)
 
@@ -1851,7 +1839,8 @@ State 72
    48         | expr_var . TMULEQUAL expr_and
    49         | expr_var . TDIVEQUAL expr_and
    50         | expr_var . TLBRACKET expr TRBRACKET TEQUAL stmt
-  143 expr_math: expr_var .
+  142 expr_math: expr_var . TQUESTIONQUESTION
+  143          | expr_var .
   144 expr_var: expr_var . TAS arg_type
   145         | expr_var . TDOT var_right
   146         | expr_var . TQUESTIONDOT var_right
@@ -1860,16 +1849,17 @@ State 72
   194       | expr_var . TDOT TIDENTIFIER assign_type arg_type_quote
   195       | expr_var . TDOT TIDENTIFIER arg_type_quote assign_type stmt
 
-    TAS           shift, and go to state 181
-    TPLUSPLUS     shift, and go to state 182
-    TMINUSMINUS   shift, and go to state 183
-    TPLUSEQUAL    shift, and go to state 184
-    TMINUSEQUAL   shift, and go to state 185
-    TLBRACKET     shift, and go to state 186
-    TDOT          shift, and go to state 187
-    TMULEQUAL     shift, and go to state 188
-    TDIVEQUAL     shift, and go to state 189
-    TQUESTIONDOT  shift, and go to state 190
+    TAS                shift, and go to state 180
+    TPLUSPLUS          shift, and go to state 181
+    TMINUSMINUS        shift, and go to state 182
+    TPLUSEQUAL         shift, and go to state 183
+    TMINUSEQUAL        shift, and go to state 184
+    TLBRACKET          shift, and go to state 185
+    TDOT               shift, and go to state 186
+    TMULEQUAL          shift, and go to state 187
+    TDIVEQUAL          shift, and go to state 188
+    TQUESTIONDOT       shift, and go to state 189
+    TQUESTIONQUESTION  shift, and go to state 190
 
     $default  reduce using rule 143 (expr_math)
 
@@ -2258,17 +2248,19 @@ State 96
 
 State 97
 
-  143 expr_math: expr_var .
+  142 expr_math: expr_var . TQUESTIONQUESTION
+  143          | expr_var .
   144 expr_var: expr_var . TAS arg_type
   145         | expr_var . TDOT var_right
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
   200 assign_tuple_arg: expr_var . TDOT TIDENTIFIER assign_tuple_type
 
-    TAS           shift, and go to state 181
-    TLBRACKET     shift, and go to state 220
-    TDOT          shift, and go to state 221
-    TQUESTIONDOT  shift, and go to state 190
+    TAS                shift, and go to state 180
+    TLBRACKET          shift, and go to state 220
+    TDOT               shift, and go to state 221
+    TQUESTIONDOT       shift, and go to state 189
+    TQUESTIONQUESTION  shift, and go to state 190
 
     $default  reduce using rule 143 (expr_math)
 
@@ -2462,10 +2454,10 @@ State 106
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 134 (expr_math)
 
@@ -2483,16 +2475,18 @@ State 107
 
 State 108
 
-  143 expr_math: expr_var .
+  142 expr_math: expr_var . TQUESTIONQUESTION
+  143          | expr_var .
   144 expr_var: expr_var . TAS arg_type
   145         | expr_var . TDOT var_right
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
-    TLBRACKET     shift, and go to state 220
-    TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TAS                shift, and go to state 180
+    TLBRACKET          shift, and go to state 220
+    TDOT               shift, and go to state 229
+    TQUESTIONDOT       shift, and go to state 189
+    TQUESTIONQUESTION  shift, and go to state 190
 
     $default  reduce using rule 143 (expr_math)
 
@@ -2647,10 +2641,10 @@ State 113
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 135 (expr_math)
 
@@ -2670,10 +2664,10 @@ State 115
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 140 (expr_math)
 
@@ -2953,10 +2947,10 @@ State 122
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 136 (expr_math)
 
@@ -2969,10 +2963,10 @@ State 123
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 138 (expr_math)
 
@@ -2985,10 +2979,10 @@ State 124
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 139 (expr_math)
 
@@ -3001,10 +2995,10 @@ State 125
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 137 (expr_math)
 
@@ -3116,10 +3110,10 @@ State 136
   146         | expr_var . TQUESTIONDOT var_right
   147         | expr_var . TLBRACKET expr TRBRACKET
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 229
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
     $default  reduce using rule 133 (expr_math)
 
@@ -4410,13 +4404,6 @@ State 179
 
 State 180
 
-  142 expr_math: expr_math TQUESTIONQUESTION .
-
-    $default  reduce using rule 142 (expr_math)
-
-
-State 181
-
   144 expr_var: expr_var TAS . arg_type
 
     TSTACK     shift, and go to state 191
@@ -4442,21 +4429,21 @@ State 181
     func_type   go to state 208
 
 
-State 182
+State 181
 
    44 var_decl: expr_var TPLUSPLUS .
 
     $default  reduce using rule 44 (var_decl)
 
 
-State 183
+State 182
 
    45 var_decl: expr_var TMINUSMINUS .
 
     $default  reduce using rule 45 (var_decl)
 
 
-State 184
+State 183
 
    46 var_decl: expr_var TPLUSEQUAL . expr_and
 
@@ -4501,7 +4488,7 @@ State 184
     const           go to state 78
 
 
-State 185
+State 184
 
    47 var_decl: expr_var TMINUSEQUAL . expr_and
 
@@ -4546,7 +4533,7 @@ State 185
     const           go to state 78
 
 
-State 186
+State 185
 
    50 var_decl: expr_var TLBRACKET . expr TRBRACKET TEQUAL stmt
   147 expr_var: expr_var TLBRACKET . expr TRBRACKET
@@ -4609,7 +4596,7 @@ State 186
     hash            go to state 82
 
 
-State 187
+State 186
 
   145 expr_var: expr_var TDOT . var_right
   193 assign: expr_var TDOT . TIDENTIFIER assign_type stmt
@@ -4645,7 +4632,7 @@ State 187
     const           go to state 78
 
 
-State 188
+State 187
 
    48 var_decl: expr_var TMULEQUAL . expr_and
 
@@ -4690,7 +4677,7 @@ State 188
     const           go to state 78
 
 
-State 189
+State 188
 
    49 var_decl: expr_var TDIVEQUAL . expr_and
 
@@ -4735,7 +4722,7 @@ State 189
     const           go to state 78
 
 
-State 190
+State 189
 
   146 expr_var: expr_var TQUESTIONDOT . var_right
 
@@ -4766,6 +4753,13 @@ State 190
     func_attrib     go to state 66
     var_right       go to state 298
     const           go to state 78
+
+
+State 190
+
+  142 expr_math: expr_var TQUESTIONQUESTION .
+
+    $default  reduce using rule 142 (expr_math)
 
 
 State 191
@@ -6038,20 +6032,18 @@ State 271
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 114 (expr_comp)
 
@@ -6070,20 +6062,18 @@ State 272
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 115 (expr_comp)
 
@@ -6102,20 +6092,18 @@ State 273
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 118 (expr_comp)
 
@@ -6134,20 +6122,18 @@ State 274
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 119 (expr_comp)
 
@@ -6166,20 +6152,18 @@ State 275
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 120 (expr_comp)
 
@@ -6198,20 +6182,18 @@ State 276
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 121 (expr_comp)
 
@@ -6230,21 +6212,18 @@ State 277
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
-    TQUESTIONQUESTION  [reduce using rule 123 (expr_math)]
-    $default           reduce using rule 123 (expr_math)
+    $default  reduce using rule 123 (expr_math)
 
 
 State 278
@@ -6261,21 +6240,18 @@ State 278
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
-    TQUESTIONQUESTION  [reduce using rule 124 (expr_math)]
-    $default           reduce using rule 124 (expr_math)
+    $default  reduce using rule 124 (expr_math)
 
 
 State 279
@@ -6292,19 +6268,16 @@ State 279
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
-    TQUESTIONQUESTION  [reduce using rule 125 (expr_math)]
-    $default           reduce using rule 125 (expr_math)
+    $default  reduce using rule 125 (expr_math)
 
 
 State 280
@@ -6321,19 +6294,16 @@ State 280
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
-    TQUESTIONQUESTION  [reduce using rule 126 (expr_math)]
-    $default           reduce using rule 126 (expr_math)
+    $default  reduce using rule 126 (expr_math)
 
 
 State 281
@@ -6350,18 +6320,15 @@ State 281
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
-    TQUESTIONQUESTION  [reduce using rule 127 (expr_math)]
-    $default           reduce using rule 127 (expr_math)
+    $default  reduce using rule 127 (expr_math)
 
 
 State 282
@@ -6378,20 +6345,18 @@ State 282
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 116 (expr_comp)
 
@@ -6410,20 +6375,18 @@ State 283
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TPLUS              shift, and go to state 167
-    TMINUS             shift, and go to state 168
-    TMUL               shift, and go to state 169
-    TDIV               shift, and go to state 170
-    TMOD               shift, and go to state 171
-    TQUESTIONCOLON     shift, and go to state 174
-    TBOOLXOR           shift, and go to state 175
-    TBOOLOR            shift, and go to state 176
-    TBOOLAND           shift, and go to state 177
-    TBOOLSHL           shift, and go to state 178
-    TBOOLSHR           shift, and go to state 179
-    TQUESTIONQUESTION  shift, and go to state 180
+    TPLUS           shift, and go to state 167
+    TMINUS          shift, and go to state 168
+    TMUL            shift, and go to state 169
+    TDIV            shift, and go to state 170
+    TMOD            shift, and go to state 171
+    TQUESTIONCOLON  shift, and go to state 174
+    TBOOLXOR        shift, and go to state 175
+    TBOOLOR         shift, and go to state 176
+    TBOOLAND        shift, and go to state 177
+    TBOOLSHL        shift, and go to state 178
+    TBOOLSHR        shift, and go to state 179
 
     $default  reduce using rule 117 (expr_comp)
 
@@ -6442,12 +6405,8 @@ State 284
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
   141          | expr_math TQUESTIONCOLON expr_math .
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONQUESTION  shift, and go to state 180
-
-    TQUESTIONQUESTION  [reduce using rule 141 (expr_math)]
-    $default           reduce using rule 141 (expr_math)
+    $default  reduce using rule 141 (expr_math)
 
 
 State 285
@@ -6464,13 +6423,10 @@ State 285
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
 
-    TQUESTIONQUESTION  [reduce using rule 128 (expr_math)]
-    $default           reduce using rule 128 (expr_math)
+    $default  reduce using rule 128 (expr_math)
 
 
 State 286
@@ -6487,13 +6443,10 @@ State 286
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
 
-    TQUESTIONQUESTION  [reduce using rule 129 (expr_math)]
-    $default           reduce using rule 129 (expr_math)
+    $default  reduce using rule 129 (expr_math)
 
 
 State 287
@@ -6510,13 +6463,10 @@ State 287
   131          | expr_math . TBOOLSHR expr_math
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
 
-    TQUESTIONQUESTION  [reduce using rule 130 (expr_math)]
-    $default           reduce using rule 130 (expr_math)
+    $default  reduce using rule 130 (expr_math)
 
 
 State 288
@@ -6533,13 +6483,10 @@ State 288
   132          | expr_math . TBOOLSHL expr_math
   132          | expr_math TBOOLSHL expr_math .
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
 
-    TQUESTIONQUESTION  [reduce using rule 132 (expr_math)]
-    $default           reduce using rule 132 (expr_math)
+    $default  reduce using rule 132 (expr_math)
 
 
 State 289
@@ -6556,13 +6503,10 @@ State 289
   131          | expr_math TBOOLSHR expr_math .
   132          | expr_math . TBOOLSHL expr_math
   141          | expr_math . TQUESTIONCOLON expr_math
-  142          | expr_math . TQUESTIONQUESTION
 
-    TQUESTIONCOLON     shift, and go to state 174
-    TQUESTIONQUESTION  shift, and go to state 180
+    TQUESTIONCOLON  shift, and go to state 174
 
-    TQUESTIONQUESTION  [reduce using rule 131 (expr_math)]
-    $default           reduce using rule 131 (expr_math)
+    $default  reduce using rule 131 (expr_math)
 
 
 State 290
@@ -6779,10 +6723,10 @@ State 313
   147         | expr_var . TLBRACKET expr TRBRACKET
   200 assign_tuple_arg: expr_var . TDOT TIDENTIFIER assign_tuple_type
 
-    TAS           shift, and go to state 181
+    TAS           shift, and go to state 180
     TLBRACKET     shift, and go to state 220
     TDOT          shift, and go to state 221
-    TQUESTIONDOT  shift, and go to state 190
+    TQUESTIONDOT  shift, and go to state 189
 
 
 State 314
@@ -7470,7 +7414,8 @@ State 352
 
 State 353
 
-  143 expr_math: expr_var .
+  142 expr_math: expr_var . TQUESTIONQUESTION
+  143          | expr_var .
   144 expr_var: expr_var . TAS arg_type
   145         | expr_var . TDOT var_right
   146         | expr_var . TQUESTIONDOT var_right
@@ -7479,10 +7424,11 @@ State 353
   194       | expr_var . TDOT TIDENTIFIER assign_type arg_type_quote
   195       | expr_var . TDOT TIDENTIFIER arg_type_quote assign_type stmt
 
-    TAS           shift, and go to state 181
-    TLBRACKET     shift, and go to state 220
-    TDOT          shift, and go to state 187
-    TQUESTIONDOT  shift, and go to state 190
+    TAS                shift, and go to state 180
+    TLBRACKET          shift, and go to state 220
+    TDOT               shift, and go to state 186
+    TQUESTIONDOT       shift, and go to state 189
+    TQUESTIONQUESTION  shift, and go to state 190
 
     $default  reduce using rule 143 (expr_math)
 

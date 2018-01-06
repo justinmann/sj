@@ -1,40 +1,5 @@
 #include <sjc.h>
 
-
-bool CConstantVar::getReturnThis() {
-    return false;
-}
-
-shared_ptr<CType> CConstantVar::getType(Compiler* compiler) {
-    return type;
-}
-
-void CConstantVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    storeValue->retainValue(compiler, loc, trBlock, make_shared<TrValue>(nullptr, type, value, false));
-}
-
-void CConstantVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
-    ss << value;
-    if (type == compiler->typeI32) {
-        ss << "i";
-    }
-    else if (type == compiler->typeU32) {
-        ss << "u";
-    }
-    else if (type == compiler->typeI64) {
-        ss << "l";
-    }
-    else if (type == compiler->typeU64) {
-        ss << "v";
-    }
-    else if (type == compiler->typeF32) {
-        ss << "f";
-    }
-    else if (type == compiler->typeF64) {
-        ss << "d";
-    }
-}
-
 NInteger::NInteger(CLoc loc, const char* value_) : NVariableBase(NodeType_Integer, loc), strValue(value_), hasValue(false), strBase(10) {
     if (strValue.size() > 2 && strValue[0] == '0' && strValue[1] == 'x') {
         strBase = 16;

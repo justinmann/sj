@@ -211,7 +211,7 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 }
 
 
-NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
+NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments), _isHelperFunction(false) {
     boost::algorithm::to_lower(this->name);
 
     if (!this->arguments) {
@@ -226,7 +226,7 @@ NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames,
     }
 }
 
-NCall::NCall(CLoc loc, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments) :  NVariableBase(NodeType_Call, loc), callee(callee), arguments(arguments) {
+NCall::NCall(CLoc loc, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments) :  NVariableBase(NodeType_Call, loc), _callee(callee), arguments(arguments), _isHelperFunction(false) {
     if (!this->arguments) {
         this->arguments = make_shared<NodeList>();
     } else {
@@ -256,10 +256,7 @@ void NCall::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<str
 }
 
 void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    // TODO: get callee function
     for (auto it : *arguments) {
-        // TODO: get argument by index or name
-        // TODO: get explicit type for argument
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             if (!parameterAssignment->op.isFirstAssignment) {
@@ -273,8 +270,7 @@ void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction) {
-    
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction) {    
     // Check for the x.name() style function call  
     *pisHelperFunction = false;
     auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
@@ -340,22 +336,21 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
 }
 
 shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
-    bool isHelperFunction = false;
-    if (!callee) {
-        callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
-        if (!callee) {
+    if (!_callee) {
+        _callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &_isHelperFunction);
+        if (!_callee) {
             compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
             return nullptr;
         }
     }
 
-    auto cfunc = dynamic_pointer_cast<CFunction>(callee);
+    auto cfunc = dynamic_pointer_cast<CFunction>(_callee);
     if (cfunc) {
         cfunc->initArgs(compiler);
     }
 
     if (returnMode != CTM_Heap) {
-        if (callee->getIsReturnModeValid(compiler, CTM_Stack)) {
+        if (_callee->getIsReturnModeValid(compiler, CTM_Stack)) {
             returnMode = CTM_Stack;
         }
         else {
@@ -372,17 +367,17 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
     vector<CallArgument> callArguments;
     shared_ptr<vector<FunctionParameter>> parameters;
 
-    if ((int)arguments->size() + (isHelperFunction ? 1 : 0) > callee->getArgCount(returnMode)) {
-        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size() + (isHelperFunction ? 1 : 0), callee->getArgCount(returnMode));
+    if ((int)arguments->size() + (_isHelperFunction ? 1 : 0) > _callee->getArgCount(returnMode)) {
+        compiler->addError(loc, CErrorCode::TooManyParameters, "passing %d, but expecting max of %d", arguments->size() + (_isHelperFunction ? 1 : 0), _callee->getArgCount(returnMode));
         goto done;
     }
 
     // Fill in parameters
-    callArguments = vector<CallArgument>(callee->getArgCount(returnMode) - (isHelperFunction ? 1 : 0));
+    callArguments = vector<CallArgument>(_callee->getArgCount(returnMode) - (_isHelperFunction ? 1 : 0));
     for (auto it : *arguments) {
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
-            auto index = callee->getArgIndex(parameterAssignment->name, returnMode);
+            auto index = _callee->getArgIndex(parameterAssignment->name, returnMode);
             if (index < 0) {
                 compiler->addError(loc, CErrorCode::ParameterDoesNotExist, "cannot find parameter '%s'", parameterAssignment->name.c_str());
                 goto done;
@@ -393,7 +388,7 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
                 goto done;
             }
 
-            leftType = callee->getArgVar(index, returnMode)->getType(compiler);
+            leftType = _callee->getArgVar(index, returnMode)->getType(compiler);
             assert(parameterAssignment->inFunctionDeclaration);
             CallArgument callArgument(parameterAssignment->op, parameterAssignment->rightSide->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[index] = callArgument;
@@ -410,19 +405,19 @@ shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
                 goto done;
             }
 
-            leftType = callee->getArgVar((int)argIndex, returnMode)->getType(compiler);
+            leftType = _callee->getArgVar((int)argIndex, returnMode)->getType(compiler);
             CallArgument callArgument(it->getVar(compiler, scope, leftType, CTM_Undefined));
             callArguments[argIndex] = callArgument;
         }
         argIndex++;
     }
 
-    parameters = CCallVar::getParameters(compiler, loc, scope, callee, callArguments, isHelperFunction, dotVar, returnMode);
+    parameters = CCallVar::getParameters(compiler, loc, scope, _callee, callArguments, _isHelperFunction, dotVar, returnMode);
     if (!parameters) {
         goto done;
     }
 
-    resultVar = createCallVar(loc, scope, isHelperFunction ? nullptr : dotVar, parameters, callee, returnMode);
+    resultVar = createCallVar(loc, scope, _isHelperFunction ? nullptr : dotVar, parameters, _callee, returnMode);
 
 done:
     scope->dotNamespace = oldNamespace;

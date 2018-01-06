@@ -32,7 +32,7 @@ shared_ptr<CVar> NGetOrDefault::getVarImpl(Compiler* compiler, shared_ptr<CScope
     shared_ptr<NBase> right;
     if (leftType->parent.expired()) {
         // Create constant node
-        right = make_shared<NInteger>(loc, leftType->defaultValue.c_str(), leftType);
+        right = make_shared<NConstant>(loc, leftType->getValueType()->defaultValue.c_str(), leftType->getValueType());
     } else {
         // Create call node to create function
         right = make_shared<NCall>(loc, leftType->parent.lock(), nullptr);
