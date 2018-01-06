@@ -49,7 +49,7 @@ include/sjc.h.gch : $(HEADERS)
 	$(CC) $(CFLAGS) -c include/sjc.h -o include/sjc.h.gch
 
 parser/parser.o: parser/parser.cpp
-	$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -Wno-unused-const-variable -c $^ -o $@
 
 parser/tokens.o: parser/tokens.cpp
 	$(CC) $(CFLAGS) -Wno-deprecated-register -Wno-unused-const-variable -c $^ -o $@
