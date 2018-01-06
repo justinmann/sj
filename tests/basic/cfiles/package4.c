@@ -1,12 +1,14 @@
 #include <lib/sj-lib-common/common.h>
 
-#define sjs_hash_type_bool_typeId 15
-#define sjs_log_typeId 20
-#define sjs_json_document_typeId 21
+#define sjs_hash_type_bool_typeId 16
+#define sjs_log_typeId 21
+#define sjs_foo_foo_typeId 15
+#define sjs_foo_bar_typeId 22
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
-typedef struct td_sjs_json_document sjs_json_document;
+typedef struct td_sjs_foo_foo sjs_foo_foo;
+typedef struct td_sjs_foo_bar sjs_foo_bar;
 
 struct td_sjs_hash_type_bool {
     int _refCount;
@@ -24,7 +26,11 @@ struct td_sjs_log {
     sjs_hash_type_bool fatalincludes;
 };
 
-struct td_sjs_json_document {
+struct td_sjs_foo_foo {
+    int _refCount;
+};
+
+struct td_sjs_foo_bar {
     int _refCount;
 };
 
@@ -44,8 +50,8 @@ int32_t g_loglevel_trace;
 int32_t g_loglevel_warn;
 
 int32_t g_clocks_per_sec;
-sjs_json_document g_d = { -1 };
 void* g_emptystringdata;
+sjs_foo_foo g_f = { -1 };
 float g_f32_pi;
 int32_t g_i32_maxvalue;
 int32_t g_i32_minvalue;
@@ -54,21 +60,26 @@ sjs_hash_type_bool g_log_excludeall = { -1 };
 sjs_hash_type_bool g_log_includeall = { -1 };
 uint32_t g_u32_maxvalue;
 int32_t result1;
-sjs_json_document* sjt_parent1 = 0;
+sjs_foo_foo* sjt_parent1 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
-int32_t sjt_void1;
+sjs_foo_bar sjt_void1 = { -1 };
 
+void sjf_foo_bar(sjs_foo_bar* _this);
+void sjf_foo_bar_copy(sjs_foo_bar* _this, sjs_foo_bar* _from);
+void sjf_foo_bar_destroy(sjs_foo_bar* _this);
+void sjf_foo_bar_heap(sjs_foo_bar* _this);
+void sjf_foo_foo(sjs_foo_foo* _this);
+void sjf_foo_foo_copy(sjs_foo_foo* _this, sjs_foo_foo* _from);
+void sjf_foo_foo_destroy(sjs_foo_foo* _this);
+void sjf_foo_foo_do1(sjs_foo_foo* _parent, sjs_foo_bar* _return);
+void sjf_foo_foo_do1_heap(sjs_foo_foo* _parent, sjs_foo_bar** _return);
+void sjf_foo_foo_heap(sjs_foo_foo* _this);
 void sjf_hash_type_bool(sjs_hash_type_bool* _this);
 void sjf_hash_type_bool__weakptrremovekey(sjs_hash_type_bool* _parent, int32_t key);
 void sjf_hash_type_bool__weakptrremovevalue(sjs_hash_type_bool* _parent, bool val);
 void sjf_hash_type_bool_copy(sjs_hash_type_bool* _this, sjs_hash_type_bool* _from);
 void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this);
 void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this);
-void sjf_json_document(sjs_json_document* _this);
-void sjf_json_document_copy(sjs_json_document* _this, sjs_json_document* _from);
-void sjf_json_document_destroy(sjs_json_document* _this);
-void sjf_json_document_heap(sjs_json_document* _this);
-void sjf_json_document_load(sjs_json_document* _parent, int32_t* _return);
 void sjf_log(sjs_log* _this);
 void sjf_log_copy(sjs_log* _this, sjs_log* _from);
 void sjf_log_destroy(sjs_log* _this);
@@ -94,6 +105,57 @@ KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_ty
 #endif
 #endif
 #include <lib/sj-lib-common/common.cpp>
+void sjf_foo_bar(sjs_foo_bar* _this) {
+}
+
+void sjf_foo_bar_copy(sjs_foo_bar* _this, sjs_foo_bar* _from) {
+}
+
+void sjf_foo_bar_destroy(sjs_foo_bar* _this) {
+}
+
+void sjf_foo_bar_heap(sjs_foo_bar* _this) {
+}
+
+void sjf_foo_foo(sjs_foo_foo* _this) {
+}
+
+void sjf_foo_foo_copy(sjs_foo_foo* _this, sjs_foo_foo* _from) {
+}
+
+void sjf_foo_foo_destroy(sjs_foo_foo* _this) {
+}
+
+void sjf_foo_foo_do1(sjs_foo_foo* _parent, sjs_foo_bar* _return) {
+    sjs_foo_bar a = { -1 };
+
+    a._refCount = 1;
+    sjf_foo_bar(&a);
+    _return->_refCount = 1;
+#line 3 "package4.sj"
+    sjf_foo_bar_copy(_return, &a);
+
+    if (a._refCount == 1) { sjf_foo_bar_destroy(&a); }
+;
+}
+
+void sjf_foo_foo_do1_heap(sjs_foo_foo* _parent, sjs_foo_bar** _return) {
+    sjs_foo_bar a = { -1 };
+
+    a._refCount = 1;
+    sjf_foo_bar(&a);
+    (*_return) = (sjs_foo_bar*)malloc(sizeof(sjs_foo_bar));
+    (*_return)->_refCount = 1;
+#line 3 "package4.sj"
+    sjf_foo_bar_copy((*_return), &a);
+
+    if (a._refCount == 1) { sjf_foo_bar_destroy(&a); }
+;
+}
+
+void sjf_foo_foo_heap(sjs_foo_foo* _this) {
+}
+
 void sjf_hash_type_bool(sjs_hash_type_bool* _this) {
 #line 225 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
@@ -198,23 +260,6 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this) {
 #line 225 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
-}
-
-void sjf_json_document(sjs_json_document* _this) {
-}
-
-void sjf_json_document_copy(sjs_json_document* _this, sjs_json_document* _from) {
-}
-
-void sjf_json_document_destroy(sjs_json_document* _this) {
-}
-
-void sjf_json_document_heap(sjs_json_document* _this) {
-}
-
-void sjf_json_document_load(sjs_json_document* _parent, int32_t* _return) {
-#line 3 "package2.sj"
-    (*_return) = 0;
 }
 
 void sjf_log(sjs_log* _this) {
@@ -434,20 +479,20 @@ int main(int argc, char** argv) {
 #line 9
     g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 9
-    g_d._refCount = 1;
+    g_f._refCount = 1;
 #line 9
-    sjf_json_document(&g_d);
-#line 3 "package2.sj"
-    sjt_parent1 = &g_d;
+    sjf_foo_foo(&g_f);
+#line 3 "package4.sj"
+    sjt_parent1 = &g_f;
 #line 3
-    sjf_json_document_load(sjt_parent1, &sjt_void1);
+    sjf_foo_foo_do1(sjt_parent1, &sjt_void1);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    if (g_d._refCount == 1) { sjf_json_document_destroy(&g_d); }
+    if (g_f._refCount == 1) { sjf_foo_foo_destroy(&g_f); }
 ;
     if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
 ;
@@ -456,5 +501,7 @@ void main_destroy() {
     if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
 ;
     if (sjt_value1._refCount == 1) { sjf_hash_type_bool_destroy(&sjt_value1); }
+;
+    if (sjt_void1._refCount == 1) { sjf_foo_bar_destroy(&sjt_void1); }
 ;
 }

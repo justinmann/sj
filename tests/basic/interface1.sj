@@ -19,5 +19,5 @@ package namespace2 {
     ) { this }
 }
 
-a: namespace1.class() as namespace1.#foo
-b: namespace2.class() as namespace2.#foo
+a: namespace1.class() as #namespace1.foo
+b: namespace2.class() as #namespace2.foo

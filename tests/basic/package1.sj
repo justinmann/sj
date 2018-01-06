@@ -35,8 +35,8 @@ import
     y : 0
 }
 
-e : a.class() as a.#foo
+e : a.class() as #a.foo
 f : e.bar()
 
-h : b.class() as b.#foo
+h : b.class() as #b.foo
 i : h.bar()
