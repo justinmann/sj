@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
@@ -116,7 +116,7 @@ void sjf_namespace1_class_copy(sjs_namespace1_class* _this, sjs_namespace1_class
 void sjf_namespace1_class_destroy(sjs_namespace1_class* _this);
 void sjf_namespace1_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this);
-void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return);
+void sjf_namespace1_class_test1(sjs_namespace1_class* _parent, int32_t* _return);
 void sjf_namespace2_class(sjs_namespace2_class* _this);
 void sjf_namespace2_class_as_sji_namespace2_foo(sjs_namespace2_class* _this, sji_namespace2_foo* _return);
 void sjf_namespace2_class_asinterface(sjs_namespace2_class* _this, int typeId, sjs_interface* _return);
@@ -124,7 +124,7 @@ void sjf_namespace2_class_copy(sjs_namespace2_class* _this, sjs_namespace2_class
 void sjf_namespace2_class_destroy(sjs_namespace2_class* _this);
 void sjf_namespace2_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this);
-void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return);
+void sjf_namespace2_class_test2(sjs_namespace2_class* _parent, int32_t* _return);
 void sjf_type_hash(int32_t val, uint32_t* _return);
 void sjf_type_isequal(int32_t l, int32_t r, bool* _return);
 void main_destroy(void);
@@ -145,7 +145,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_hash_type_bool(sjs_hash_type_bool* _this) {
 #line 225 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
@@ -242,7 +242,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -372,7 +372,7 @@ void sjf_namespace1_class_getclasstype(sjs_object* _this, int* _return) {
 void sjf_namespace1_class_heap(sjs_namespace1_class* _this) {
 }
 
-void sjf_namespace1_class_namespace1_test1(sjs_namespace1_class* _parent, int32_t* _return) {
+void sjf_namespace1_class_test1(sjs_namespace1_class* _parent, int32_t* _return) {
 #line 8 "interface1.sj"
     (*_return) = 5;
 }
@@ -412,7 +412,7 @@ void sjf_namespace2_class_getclasstype(sjs_object* _this, int* _return) {
 void sjf_namespace2_class_heap(sjs_namespace2_class* _this) {
 }
 
-void sjf_namespace2_class_namespace2_test2(sjs_namespace2_class* _parent, int32_t* _return) {
+void sjf_namespace2_class_test2(sjs_namespace2_class* _parent, int32_t* _return) {
 #line 18 "interface1.sj"
     (*_return) = 5;
 }
@@ -435,11 +435,11 @@ int main(int argc, char** argv) {
     sjs_namespace1_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace1_class_destroy;
     sjs_namespace1_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace1_class_asinterface;
     sjs_namespace1_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_namespace1_class_getclasstype;
-    sjs_namespace1_class_foo_vtbl.test1 = (void(*)(sjs_object*, int32_t*))sjf_namespace1_class_namespace1_test1;
+    sjs_namespace1_class_foo_vtbl.test1 = (void(*)(sjs_object*, int32_t*))sjf_namespace1_class_test1;
     sjs_namespace2_class_foo_vtbl.destroy = (void(*)(void*))sjf_namespace2_class_destroy;
     sjs_namespace2_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_namespace2_class_asinterface;
     sjs_namespace2_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_namespace2_class_getclasstype;
-    sjs_namespace2_class_foo_vtbl.test2 = (void(*)(sjs_object*, int32_t*))sjf_namespace2_class_namespace2_test2;
+    sjs_namespace2_class_foo_vtbl.test2 = (void(*)(sjs_object*, int32_t*))sjf_namespace2_class_test2;
 #line 1 "lib/sj-lib-common/log.sj"
     g_loglevel_trace = 0;
 #line 1
@@ -547,7 +547,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3

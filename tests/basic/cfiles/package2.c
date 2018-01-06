@@ -2,11 +2,11 @@
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
-#define sjs_class_typeId 21
+#define sjs_json_document_typeId 21
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
-typedef struct td_sjs_class sjs_class;
+typedef struct td_sjs_json_document sjs_json_document;
 
 struct td_sjs_hash_type_bool {
     int _refCount;
@@ -24,7 +24,7 @@ struct td_sjs_log {
     sjs_hash_type_bool fatalincludes;
 };
 
-struct td_sjs_class {
+struct td_sjs_json_document {
     int _refCount;
 };
 
@@ -43,8 +43,8 @@ int32_t g_loglevel_info;
 int32_t g_loglevel_trace;
 int32_t g_loglevel_warn;
 
-sjs_class g_c = { -1 };
 int32_t g_clocks_per_sec;
+sjs_json_document g_d = { -1 };
 void* g_emptystringdata;
 float g_f32_pi;
 int32_t g_i32_maxvalue;
@@ -54,21 +54,21 @@ sjs_hash_type_bool g_log_excludeall = { -1 };
 sjs_hash_type_bool g_log_includeall = { -1 };
 uint32_t g_u32_maxvalue;
 int32_t result1;
-sjs_class* sjt_parent1 = 0;
+sjs_json_document* sjt_parent1 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 int32_t sjt_void1;
 
-void sjf_class(sjs_class* _this);
-void sjf_class_copy(sjs_class* _this, sjs_class* _from);
-void sjf_class_destroy(sjs_class* _this);
-void sjf_class_func(sjs_class* _parent, int32_t* _return);
-void sjf_class_heap(sjs_class* _this);
 void sjf_hash_type_bool(sjs_hash_type_bool* _this);
 void sjf_hash_type_bool__weakptrremovekey(sjs_hash_type_bool* _parent, int32_t key);
 void sjf_hash_type_bool__weakptrremovevalue(sjs_hash_type_bool* _parent, bool val);
 void sjf_hash_type_bool_copy(sjs_hash_type_bool* _this, sjs_hash_type_bool* _from);
 void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this);
 void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this);
+void sjf_json_document(sjs_json_document* _this);
+void sjf_json_document_copy(sjs_json_document* _this, sjs_json_document* _from);
+void sjf_json_document_destroy(sjs_json_document* _this);
+void sjf_json_document_heap(sjs_json_document* _this);
+void sjf_json_document_load(sjs_json_document* _parent, int32_t* _return);
 void sjf_log(sjs_log* _this);
 void sjf_log_copy(sjs_log* _this, sjs_log* _from);
 void sjf_log_destroy(sjs_log* _this);
@@ -94,23 +94,6 @@ KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_ty
 #endif
 #endif
 #include <lib/sj-lib-common/common.cpp>
-void sjf_class(sjs_class* _this) {
-}
-
-void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
-}
-
-void sjf_class_destroy(sjs_class* _this) {
-}
-
-void sjf_class_func(sjs_class* _parent, int32_t* _return) {
-#line 1 "class9.sj"
-    (*_return) = 1;
-}
-
-void sjf_class_heap(sjs_class* _this) {
-}
-
 void sjf_hash_type_bool(sjs_hash_type_bool* _this) {
 #line 225 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
@@ -215,6 +198,23 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this) {
 #line 225 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
+}
+
+void sjf_json_document(sjs_json_document* _this) {
+}
+
+void sjf_json_document_copy(sjs_json_document* _this, sjs_json_document* _from) {
+}
+
+void sjf_json_document_destroy(sjs_json_document* _this) {
+}
+
+void sjf_json_document_heap(sjs_json_document* _this) {
+}
+
+void sjf_json_document_load(sjs_json_document* _parent, int32_t* _return) {
+#line 3 "package2.sj"
+    (*_return) = 0;
 }
 
 void sjf_log(sjs_log* _this) {
@@ -434,20 +434,20 @@ int main(int argc, char** argv) {
 #line 9
     g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 9
-    g_c._refCount = 1;
+    g_d._refCount = 1;
 #line 9
-    sjf_class(&g_c);
-#line 1 "class9.sj"
-    sjt_parent1 = &g_c;
-#line 1
-    sjf_class_func(sjt_parent1, &sjt_void1);
+    sjf_json_document(&g_d);
+#line 3 "package2.sj"
+    sjt_parent1 = &g_d;
+#line 3
+    sjf_json_document_load(sjt_parent1, &sjt_void1);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
-    if (g_c._refCount == 1) { sjf_class_destroy(&g_c); }
+    if (g_d._refCount == 1) { sjf_json_document_destroy(&g_d); }
 ;
     if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
 ;

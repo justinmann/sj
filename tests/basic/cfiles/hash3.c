@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 const char* sjg_string1 = "foo";
 const char* sjg_string2 = "bob";
@@ -116,7 +116,7 @@ sjs_string sjt_call3 = { -1 };
 sjs_string sjt_call4 = { -1 };
 sjs_string sjt_call5 = { -1 };
 sjs_string sjt_call6 = { -1 };
-sjs_string* sjt_capture1 = 0;
+sjs_string* sjt_capture2 = 0;
 sjs_class* sjt_cast2 = 0;
 sjs_string* sjt_functionParam2 = 0;
 sji_interface sjt_functionParam3 = { 0 };
@@ -189,7 +189,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 #ifndef string_heap_iface_interface_hash_function
 #define string_heap_iface_interface_hash_function
 #if true
@@ -666,7 +666,7 @@ void sjf_hash_string_heap_iface_interface_destroy(sjs_hash_string_heap_iface_int
 #line 256
         }
 #line 257
-        kh_destroy(string_heap_iface_interface_hash_type, _this->_hash);
+        kh_destroy(string_heap_iface_interface_hash_type, (khash_t(string_heap_iface_interface_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -737,11 +737,11 @@ int ret;
 #line 53
 #if true
 #line 54
-k = kh_put(string_heap_iface_interface_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(string_heap_iface_interface_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(string_heap_iface_interface_hash_type, _parent->_hash, key, &ret);
+k = kh_put(string_heap_iface_interface_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -880,7 +880,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -1018,14 +1018,24 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture1;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture1 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture1 = false;
+    }
+
+    if (sjt_capture1) {
         int32_t sjt_functionParam6;
         char sjt_functionParam7;
         sjs_array_char* sjt_parent5 = 0;
@@ -1193,7 +1203,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
@@ -1283,13 +1293,13 @@ int main(int argc, char** argv) {
 #line 13
         sjt_value2 = &sjt_call4;
 #line 13
-        sjt_capture1 = sjt_value2;
+        sjt_capture2 = sjt_value2;
     } else {
 #line 13 "hash3.sj"
-        sjt_capture1 = 0;
+        sjt_capture2 = 0;
     }
 
-    if (sjt_capture1 != 0) {
+    if (sjt_capture2 != 0) {
         if (g_b._parent != 0) {
             sji_interface sjt_parent8 = { 0 };
             sjs_string* sjt_value3 = 0;

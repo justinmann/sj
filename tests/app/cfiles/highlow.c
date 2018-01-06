@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 const char* sjg_string1 = "Shall we play\n";
 const char* sjg_string2 = "Too high\n";
@@ -76,7 +76,7 @@ int32_t result1;
 bool result4;
 sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call4 = { -1 };
-int32_t sjt_capture1;
+int32_t sjt_capture2;
 sjs_string* sjt_functionParam4 = 0;
 sjs_string* sjt_functionParam8 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
@@ -129,7 +129,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
 #line 309 "lib/sj-lib-common/array.sj"
     if (_this->datasize < 0) {
@@ -382,15 +382,15 @@ p[index] = item;
 }
 
 void sjf_console_readline(sjs_string* _return) {
-    void* console_data;
-    int32_t console_datasize;
+    void* data;
+    int32_t datasize;
 
 #line 17 "lib/sj-lib-common/console.sj"
-    console_data = 0;
+    data = 0;
 #line 18
-    console_datasize = 1024;
+    datasize = 1024;
 #line 20
-    char* str = (char*)malloc(console_datasize);
+    char* str = (char*)malloc(datasize);
 #line 21
     int index = 0;
 #line 22
@@ -406,11 +406,11 @@ void sjf_console_readline(sjs_string* _return) {
 #line 27
             index++;
 #line 28
-            if (index >= console_datasize) {
+            if (index >= datasize) {
 #line 29
-                console_datasize *= 2;
+                datasize *= 2;
 #line 30
-                str = (char*)realloc(str, console_datasize);
+                str = (char*)realloc(str, datasize);
 #line 31
             }
 #line 32
@@ -418,23 +418,23 @@ void sjf_console_readline(sjs_string* _return) {
 #line 33
     } while (ch != '\n');
 #line 35
-    console_data = (void*)str;
+    data = (void*)str;
 #line 36
-    console_datasize = index;
+    datasize = index;
 #line 36
     _return->_refCount = 1;
 #line 39
-    _return->count = console_datasize;
+    _return->count = datasize;
 #line 39
     _return->data._refCount = 1;
 #line 39
-    _return->data.datasize = console_datasize;
+    _return->data.datasize = datasize;
 #line 39
-    _return->data.data = console_data;
+    _return->data.data = data;
 #line 4 "lib/sj-lib-common/array.sj"
     _return->data.isglobal = false;
 #line 39 "lib/sj-lib-common/console.sj"
-    _return->data.count = console_datasize;
+    _return->data.count = datasize;
 #line 39
     sjf_array_char(&_return->data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -444,15 +444,15 @@ void sjf_console_readline(sjs_string* _return) {
 }
 
 void sjf_console_readline_heap(sjs_string** _return) {
-    void* console_data;
-    int32_t console_datasize;
+    void* data;
+    int32_t datasize;
 
 #line 17 "lib/sj-lib-common/console.sj"
-    console_data = 0;
+    data = 0;
 #line 18
-    console_datasize = 1024;
+    datasize = 1024;
 #line 20
-    char* str = (char*)malloc(console_datasize);
+    char* str = (char*)malloc(datasize);
 #line 21
     int index = 0;
 #line 22
@@ -468,11 +468,11 @@ void sjf_console_readline_heap(sjs_string** _return) {
 #line 27
             index++;
 #line 28
-            if (index >= console_datasize) {
+            if (index >= datasize) {
 #line 29
-                console_datasize *= 2;
+                datasize *= 2;
 #line 30
-                str = (char*)realloc(str, console_datasize);
+                str = (char*)realloc(str, datasize);
 #line 31
             }
 #line 32
@@ -480,25 +480,25 @@ void sjf_console_readline_heap(sjs_string** _return) {
 #line 33
     } while (ch != '\n');
 #line 35
-    console_data = (void*)str;
+    data = (void*)str;
 #line 36
-    console_datasize = index;
+    datasize = index;
 #line 36
     (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
 #line 36
     (*_return)->_refCount = 1;
 #line 39
-    (*_return)->count = console_datasize;
+    (*_return)->count = datasize;
 #line 39
     (*_return)->data._refCount = 1;
 #line 39
-    (*_return)->data.datasize = console_datasize;
+    (*_return)->data.datasize = datasize;
 #line 39
-    (*_return)->data.data = console_data;
+    (*_return)->data.data = data;
 #line 4 "lib/sj-lib-common/array.sj"
     (*_return)->data.isglobal = false;
 #line 39 "lib/sj-lib-common/console.sj"
-    (*_return)->data.count = console_datasize;
+    (*_return)->data.count = datasize;
 #line 39
     sjf_array_char(&(*_return)->data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -614,7 +614,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -769,14 +769,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture1;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture1 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture1 = false;
+    }
+
+    if (sjt_capture1) {
         int32_t sjt_functionParam2;
         char sjt_functionParam3;
         sjs_array_char* sjt_parent2 = 0;
@@ -939,7 +949,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
@@ -973,9 +983,9 @@ int main(int argc, char** argv) {
 #line 2
     sjf_console_write(sjt_functionParam4);
 #line 2
-    sjf_i32_random(&sjt_capture1);
+    sjf_i32_random(&sjt_capture2);
 #line 4
-    g_num = (sjt_capture1 % 10) + 1;
+    g_num = (sjt_capture2 % 10) + 1;
 #line 5
     g_iscorrect = false;
 #line 7

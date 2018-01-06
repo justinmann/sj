@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 #ifdef WIN32
 #define GLEW_STATIC
 #include <windows.h>
@@ -36,7 +36,7 @@
 #endif
 #include <float.h>
 #include <ft2build.h>
-#include <lib/ui/obj_parser.h>
+#include <lib/sj-lib-ui/obj_parser.h>
 #include <limits.h>
 #include <math.h>
 #include <png.h>
@@ -51,8 +51,8 @@
 typedef struct vector_td vector_t;
 typedef struct vertex_attribute_td vertex_attribute_t;
 typedef struct vertex_buffer_td vertex_buffer_t;
-const char* sjg_string1 = "shaders/v3f-t2f.vert";
-const char* sjg_string10 = "shaders/v3f-t2f-n3f-phong.vert";
+const char* sjg_string1 = "assets/sj-lib-ui/shaders/v3f-t2f.vert";
+const char* sjg_string10 = "assets/sj-lib-ui/shaders/v3f-t2f-n3f-phong.vert";
 const char* sjg_string100 = "assets/tree3.png";
 const char* sjg_string101 = "assets/tree4.png";
 const char* sjg_string102 = "assets/tree2.png";
@@ -63,338 +63,339 @@ const char* sjg_string106 = "assets/menu4.png";
 const char* sjg_string107 = "assets/menu5.png";
 const char* sjg_string108 = "assets/menu6.png";
 const char* sjg_string109 = "assets/menu7.png";
-const char* sjg_string11 = "shaders/v3f-t2f-n3f-phong.frag";
+const char* sjg_string11 = "assets/sj-lib-ui/shaders/v3f-t2f-n3f-phong.frag";
 const char* sjg_string110 = "assets/menu8.png";
 const char* sjg_string111 = "assets/menu9.png";
 const char* sjg_string112 = "assets/menu10.png";
 const char* sjg_string113 = "assets/menu11.png";
 const char* sjg_string114 = "assets/menu12.png";
-const char* sjg_string115 = "womens";
-const char* sjg_string116 = "pants/shorts";
-const char* sjg_string117 = "forestMenu";
-const char* sjg_string118 = "mens";
-const char* sjg_string119 = "forest collection";
-const char* sjg_string12 = "shaders/v3f-t2f-c4f.vert";
-const char* sjg_string120 = "fieldMenu";
-const char* sjg_string121 = "field collection";
-const char* sjg_string122 = "FPS: ";
-const char* sjg_string123 = "bool";
-const char* sjg_string124 = "borderposition";
-const char* sjg_string125 = "(:f32)void";
-const char* sjg_string126 = "(:heap #model, :heap #model)i32";
-const char* sjg_string127 = "(:heap #model)stack mat4";
-const char* sjg_string128 = "(:local #model, :local #model)i32";
-const char* sjg_string129 = "(:local #model)stack mat4";
-const char* sjg_string13 = "shaders/v3f-t2f-c4f.frag";
-const char* sjg_string130 = "(:stack rect)void";
-const char* sjg_string131 = "(:stack scene2d)void";
-const char* sjg_string132 = "()stack string";
-const char* sjg_string133 = "(:stack texture)heap #model";
-const char* sjg_string134 = "(:stack vec3)void";
-const char* sjg_string135 = "()void";
-const char* sjg_string136 = "char";
-const char* sjg_string137 = "clickstate";
-const char* sjg_string138 = "f32";
-const char* sjg_string139 = "f64";
+const char* sjg_string115 = "assets/arial.ttf";
+const char* sjg_string116 = "womens";
+const char* sjg_string117 = "pants/shorts";
+const char* sjg_string118 = "forestMenu";
+const char* sjg_string119 = "mens";
+const char* sjg_string12 = "assets/sj-lib-ui/shaders/v3f-t2f-c4f.vert";
+const char* sjg_string120 = "forest collection";
+const char* sjg_string121 = "fieldMenu";
+const char* sjg_string122 = "field collection";
+const char* sjg_string123 = "FPS: ";
+const char* sjg_string124 = "bool";
+const char* sjg_string125 = "borderposition";
+const char* sjg_string126 = "(:f32)void";
+const char* sjg_string127 = "(:heap #model, :heap #model)i32";
+const char* sjg_string128 = "(:heap #model)stack mat4";
+const char* sjg_string129 = "(:local #model, :local #model)i32";
+const char* sjg_string13 = "assets/sj-lib-ui/shaders/v3f-t2f-c4f.frag";
+const char* sjg_string130 = "(:local #model)stack mat4";
+const char* sjg_string131 = "(:stack rect)void";
+const char* sjg_string132 = "(:stack scene2d)void";
+const char* sjg_string133 = "()stack string";
+const char* sjg_string134 = "(:stack texture)heap #model";
+const char* sjg_string135 = "(:stack vec3)void";
+const char* sjg_string136 = "()void";
+const char* sjg_string137 = "char";
+const char* sjg_string138 = "clickstate";
+const char* sjg_string139 = "f32";
 const char* sjg_string14 = "vertex:3f,tex_coord:2f,normal:3f";
-const char* sjg_string140 = "flowlayoutorientation";
-const char* sjg_string141 = "glblendfunctype";
-const char* sjg_string142 = "gldrawmode";
-const char* sjg_string143 = "glfeature";
-const char* sjg_string144 = "glframebufferattachment";
-const char* sjg_string145 = "glframebufferstatus";
-const char* sjg_string146 = "glframebuffertexture";
-const char* sjg_string147 = "glrenderbufferformat";
-const char* sjg_string148 = "gltexture";
-const char* sjg_string149 = "gltextureattribute";
-const char* sjg_string15 = "shaders/saturate.frag";
-const char* sjg_string150 = "gltextureformat";
-const char* sjg_string151 = "gltexturetype";
-const char* sjg_string152 = "gltexturevalue";
-const char* sjg_string153 = "gridunittype";
-const char* sjg_string154 = "i32";
-const char* sjg_string155 = "i64";
-const char* sjg_string156 = "imagestretch";
-const char* sjg_string157 = "listlayoutorientation";
-const char* sjg_string158 = "loglevel";
-const char* sjg_string159 = "mouseeventtype";
+const char* sjg_string140 = "f64";
+const char* sjg_string141 = "flowlayoutorientation";
+const char* sjg_string142 = "glblendfunctype";
+const char* sjg_string143 = "gldrawmode";
+const char* sjg_string144 = "glfeature";
+const char* sjg_string145 = "glframebufferattachment";
+const char* sjg_string146 = "glframebufferstatus";
+const char* sjg_string147 = "glframebuffertexture";
+const char* sjg_string148 = "glrenderbufferformat";
+const char* sjg_string149 = "gltexture";
+const char* sjg_string15 = "assets/sj-lib-ui/shaders/saturate.frag";
+const char* sjg_string150 = "gltextureattribute";
+const char* sjg_string151 = "gltextureformat";
+const char* sjg_string152 = "gltexturetype";
+const char* sjg_string153 = "gltexturevalue";
+const char* sjg_string154 = "gridunittype";
+const char* sjg_string155 = "i32";
+const char* sjg_string156 = "i64";
+const char* sjg_string157 = "imagestretch";
+const char* sjg_string158 = "listlayoutorientation";
+const char* sjg_string159 = "loglevel";
 const char* sjg_string16 = "release";
-const char* sjg_string160 = "ptr";
-const char* sjg_string161 = "#animation";
-const char* sjg_string162 = "#borderchild";
-const char* sjg_string163 = "#clickable";
-const char* sjg_string164 = "#effect";
-const char* sjg_string165 = "#element";
-const char* sjg_string166 = "#model";
-const char* sjg_string167 = "#textelement";
-const char* sjg_string168 = "animation!f32";
-const char* sjg_string169 = "nextframe";
+const char* sjg_string160 = "mouseeventtype";
+const char* sjg_string161 = "ptr";
+const char* sjg_string162 = "#animation";
+const char* sjg_string163 = "#borderchild";
+const char* sjg_string164 = "#clickable";
+const char* sjg_string165 = "#effect";
+const char* sjg_string166 = "#element";
+const char* sjg_string167 = "#model";
+const char* sjg_string168 = "#textelement";
+const char* sjg_string169 = "animation!f32";
 const char* sjg_string17 = "release done";
-const char* sjg_string170 = "animation!vec3";
-const char* sjg_string171 = "animator";
-const char* sjg_string172 = "array!char";
-const char* sjg_string173 = "getat";
-const char* sjg_string174 = "grow";
-const char* sjg_string175 = "initat";
-const char* sjg_string176 = "isequal";
-const char* sjg_string177 = "array!#animation";
-const char* sjg_string178 = "array!#element";
-const char* sjg_string179 = "array!#model";
+const char* sjg_string170 = "nextframe";
+const char* sjg_string171 = "animation!vec3";
+const char* sjg_string172 = "animator";
+const char* sjg_string173 = "array!char";
+const char* sjg_string174 = "getat";
+const char* sjg_string175 = "grow";
+const char* sjg_string176 = "initat";
+const char* sjg_string177 = "isequal";
+const char* sjg_string178 = "array!#animation";
+const char* sjg_string179 = "array!#element";
 const char* sjg_string18 = "Framebuffer failed";
-const char* sjg_string180 = "_quicksortcallback";
-const char* sjg_string181 = "map!mat4";
-const char* sjg_string182 = "setat";
-const char* sjg_string183 = "sortcb";
-const char* sjg_string184 = "array!i32";
-const char* sjg_string185 = "array!mat4";
-const char* sjg_string186 = "array!rect";
-const char* sjg_string187 = "array!texture";
-const char* sjg_string188 = "map!#model";
-const char* sjg_string189 = "array!u32";
+const char* sjg_string180 = "array!#model";
+const char* sjg_string181 = "_quicksortcallback";
+const char* sjg_string182 = "map!mat4";
+const char* sjg_string183 = "setat";
+const char* sjg_string184 = "sortcb";
+const char* sjg_string185 = "array!i32";
+const char* sjg_string186 = "array!mat4";
+const char* sjg_string187 = "array!rect";
+const char* sjg_string188 = "array!texture";
+const char* sjg_string189 = "map!#model";
 const char* sjg_string19 = "framebuffer being pop'ed is wrong";
-const char* sjg_string190 = "array!vertex_location_texture_normal";
-const char* sjg_string191 = "bool_asstring";
-const char* sjg_string192 = "borderchild";
-const char* sjg_string193 = "firemouseevent";
-const char* sjg_string194 = "getposition";
-const char* sjg_string195 = "getrect";
-const char* sjg_string196 = "getsize";
-const char* sjg_string197 = "render";
-const char* sjg_string198 = "setrect";
-const char* sjg_string199 = "borderlayout";
-const char* sjg_string2 = "shaders/blur-horizontal.frag";
+const char* sjg_string190 = "array!u32";
+const char* sjg_string191 = "array!vertex_location_texture_normal";
+const char* sjg_string192 = "bool_asstring";
+const char* sjg_string193 = "borderchild";
+const char* sjg_string194 = "firemouseevent";
+const char* sjg_string195 = "getposition";
+const char* sjg_string196 = "getrect";
+const char* sjg_string197 = "getsize";
+const char* sjg_string198 = "render";
+const char* sjg_string199 = "setrect";
+const char* sjg_string2 = "assets/sj-lib-ui/shaders/blur-horizontal.frag";
 const char* sjg_string20 = "viewport being pop'ed is wrong";
-const char* sjg_string200 = "boxelement";
-const char* sjg_string201 = "boxrenderer";
-const char* sjg_string202 = "boxvertexbuffer";
-const char* sjg_string203 = "buttonelement";
-const char* sjg_string204 = "onclickgestureclick";
-const char* sjg_string205 = "onclickgestureenter";
-const char* sjg_string206 = "onclickgestureleave";
-const char* sjg_string207 = "onclickgesturepress";
-const char* sjg_string208 = "centerlayout";
-const char* sjg_string209 = "char_touppercase";
+const char* sjg_string200 = "borderlayout";
+const char* sjg_string201 = "boxelement";
+const char* sjg_string202 = "boxrenderer";
+const char* sjg_string203 = "boxvertexbuffer";
+const char* sjg_string204 = "buttonelement";
+const char* sjg_string205 = "onclickgestureclick";
+const char* sjg_string206 = "onclickgestureenter";
+const char* sjg_string207 = "onclickgestureleave";
+const char* sjg_string208 = "onclickgesturepress";
+const char* sjg_string209 = "centerlayout";
 const char* sjg_string21 = "texture";
-const char* sjg_string210 = "clickgesture";
-const char* sjg_string211 = "getstate";
-const char* sjg_string212 = "color";
-const char* sjg_string213 = "asvec3";
-const char* sjg_string214 = "writeline";
-const char* sjg_string215 = "crossfadeelement";
-const char* sjg_string216 = "renderinner";
-const char* sjg_string217 = "setamount";
-const char* sjg_string218 = "setrectinner";
-const char* sjg_string219 = "f32_asstring";
+const char* sjg_string210 = "char_touppercase";
+const char* sjg_string211 = "clickgesture";
+const char* sjg_string212 = "getstate";
+const char* sjg_string213 = "color";
+const char* sjg_string214 = "asvec3";
+const char* sjg_string215 = "writeline";
+const char* sjg_string216 = "crossfadeelement";
+const char* sjg_string217 = "renderinner";
+const char* sjg_string218 = "setamount";
+const char* sjg_string219 = "setrectinner";
 const char* sjg_string22 = "alpha";
-const char* sjg_string220 = "f32_ceil";
-const char* sjg_string221 = "f32_compare";
-const char* sjg_string222 = "f32_cos";
-const char* sjg_string223 = "f32_floor";
-const char* sjg_string224 = "f32_hash";
-const char* sjg_string225 = "f32_interpolate";
-const char* sjg_string226 = "f32_max";
-const char* sjg_string227 = "f32_min";
-const char* sjg_string228 = "f32_random";
-const char* sjg_string229 = "f32_sin";
+const char* sjg_string220 = "f32_asstring";
+const char* sjg_string221 = "f32_ceil";
+const char* sjg_string222 = "f32_compare";
+const char* sjg_string223 = "f32_cos";
+const char* sjg_string224 = "f32_floor";
+const char* sjg_string225 = "f32_hash";
+const char* sjg_string226 = "f32_interpolate";
+const char* sjg_string227 = "f32_max";
+const char* sjg_string228 = "f32_min";
+const char* sjg_string229 = "f32_random";
 const char* sjg_string23 = "model";
-const char* sjg_string230 = "f32_sqrt";
-const char* sjg_string231 = "f32_tan";
-const char* sjg_string232 = "fadeeffect";
-const char* sjg_string233 = "animatealpha";
-const char* sjg_string234 = "setalpha";
-const char* sjg_string235 = "fieldcontroller";
-const char* sjg_string236 = "onback";
-const char* sjg_string237 = "selectperson";
-const char* sjg_string238 = "filllayout";
-const char* sjg_string239 = "flowlayout";
+const char* sjg_string230 = "f32_sin";
+const char* sjg_string231 = "f32_sqrt";
+const char* sjg_string232 = "f32_tan";
+const char* sjg_string233 = "fadeeffect";
+const char* sjg_string234 = "animatealpha";
+const char* sjg_string235 = "setalpha";
+const char* sjg_string236 = "fieldcontroller";
+const char* sjg_string237 = "onback";
+const char* sjg_string238 = "selectperson";
+const char* sjg_string239 = "filllayout";
 const char* sjg_string24 = "view";
-const char* sjg_string240 = "font";
-const char* sjg_string241 = "gettextsize";
-const char* sjg_string242 = "font_load";
-const char* sjg_string243 = "fontkey";
-const char* sjg_string244 = "hash";
-const char* sjg_string245 = "forestcontroller";
-const char* sjg_string246 = "framebuffer";
-const char* sjg_string247 = "glbindrenderbuffer";
-const char* sjg_string248 = "glbindtexture";
-const char* sjg_string249 = "glblendfunc";
+const char* sjg_string240 = "flowlayout";
+const char* sjg_string241 = "font";
+const char* sjg_string242 = "gettextsize";
+const char* sjg_string243 = "font_load";
+const char* sjg_string244 = "fontkey";
+const char* sjg_string245 = "hash";
+const char* sjg_string246 = "forestcontroller";
+const char* sjg_string247 = "framebuffer";
+const char* sjg_string248 = "glbindrenderbuffer";
+const char* sjg_string249 = "glbindtexture";
 const char* sjg_string25 = "projection";
-const char* sjg_string250 = "glcheckframebufferstatus";
-const char* sjg_string251 = "glclearcolor";
-const char* sjg_string252 = "gldisable";
-const char* sjg_string253 = "glenable";
-const char* sjg_string254 = "glframebufferrenderbuffer";
-const char* sjg_string255 = "glframebuffertexture2d";
-const char* sjg_string256 = "glgenframebuffer";
-const char* sjg_string257 = "glgenrenderbuffer";
-const char* sjg_string258 = "glgentexture";
-const char* sjg_string259 = "glgetuniformlocation";
+const char* sjg_string250 = "glblendfunc";
+const char* sjg_string251 = "glcheckframebufferstatus";
+const char* sjg_string252 = "glclearcolor";
+const char* sjg_string253 = "gldisable";
+const char* sjg_string254 = "glenable";
+const char* sjg_string255 = "glframebufferrenderbuffer";
+const char* sjg_string256 = "glframebuffertexture2d";
+const char* sjg_string257 = "glgenframebuffer";
+const char* sjg_string258 = "glgenrenderbuffer";
+const char* sjg_string259 = "glgentexture";
 const char* sjg_string26 = "";
-const char* sjg_string260 = "global";
-const char* sjg_string261 = "glpopframebuffer";
-const char* sjg_string262 = "glpopviewport";
-const char* sjg_string263 = "glpushframebuffer";
-const char* sjg_string264 = "glpushviewport";
-const char* sjg_string265 = "glrenderbufferstorage";
-const char* sjg_string266 = "glteximage2d";
-const char* sjg_string267 = "gltexparameteri";
-const char* sjg_string268 = "gluniformf32";
-const char* sjg_string269 = "gluniformi32";
-const char* sjg_string27 = "assets/arial.ttf";
-const char* sjg_string270 = "gluniformmat4";
-const char* sjg_string271 = "gluniformvec3";
-const char* sjg_string272 = "gluseprogram";
-const char* sjg_string273 = "halt";
-const char* sjg_string274 = "hash![fontkey, font?]";
-const char* sjg_string275 = "_weakptrremovekey";
-const char* sjg_string276 = "_weakptrremovevalue";
-const char* sjg_string277 = "hash![string, #element?]";
-const char* sjg_string278 = "hash![string, #model?]";
-const char* sjg_string279 = "hash![type, bool]";
-const char* sjg_string28 = "assets/buttonNormal.png";
-const char* sjg_string280 = "i32_asstring";
-const char* sjg_string281 = "i32_max";
-const char* sjg_string282 = "image";
-const char* sjg_string283 = "imageelement";
-const char* sjg_string284 = "imagerenderer";
-const char* sjg_string285 = "intersecttriangle";
-const char* sjg_string286 = "lambda1";
-const char* sjg_string287 = "invoke";
-const char* sjg_string288 = "lambda2";
-const char* sjg_string289 = "lambda3";
-const char* sjg_string29 = "assets/buttonHot.png";
-const char* sjg_string290 = "lambda4";
-const char* sjg_string291 = "leafpanel";
-const char* sjg_string292 = "getcenter";
-const char* sjg_string293 = "getworld";
-const char* sjg_string294 = "getz";
-const char* sjg_string295 = "renderorqueue";
-const char* sjg_string296 = "texturetomodel";
-const char* sjg_string297 = "update";
-const char* sjg_string298 = "light";
-const char* sjg_string299 = "list!#animation";
-const char* sjg_string3 = "shaders/blur-vertical.frag";
-const char* sjg_string30 = "assets/buttonPressed.png";
-const char* sjg_string300 = "add";
-const char* sjg_string301 = "getcount";
-const char* sjg_string302 = "removeat";
-const char* sjg_string303 = "list!#model";
-const char* sjg_string304 = "list!mat4";
-const char* sjg_string305 = "list!rect";
-const char* sjg_string306 = "list!u32";
-const char* sjg_string307 = "listlayout";
-const char* sjg_string308 = "log";
-const char* sjg_string309 = "_write";
+const char* sjg_string260 = "glgetuniformlocation";
+const char* sjg_string261 = "global";
+const char* sjg_string262 = "glpopframebuffer";
+const char* sjg_string263 = "glpopviewport";
+const char* sjg_string264 = "glpushframebuffer";
+const char* sjg_string265 = "glpushviewport";
+const char* sjg_string266 = "glrenderbufferstorage";
+const char* sjg_string267 = "glteximage2d";
+const char* sjg_string268 = "gltexparameteri";
+const char* sjg_string269 = "gluniformf32";
+const char* sjg_string27 = "assets/sj-lib-ui/fonts/arial.ttf";
+const char* sjg_string270 = "gluniformi32";
+const char* sjg_string271 = "gluniformmat4";
+const char* sjg_string272 = "gluniformvec3";
+const char* sjg_string273 = "gluseprogram";
+const char* sjg_string274 = "halt";
+const char* sjg_string275 = "hash![fontkey, font?]";
+const char* sjg_string276 = "_weakptrremovekey";
+const char* sjg_string277 = "_weakptrremovevalue";
+const char* sjg_string278 = "hash![string, #element?]";
+const char* sjg_string279 = "hash![string, #model?]";
+const char* sjg_string28 = "assets/sj-lib-ui/images/buttonNormal.png";
+const char* sjg_string280 = "hash![type, bool]";
+const char* sjg_string281 = "i32_asstring";
+const char* sjg_string282 = "i32_max";
+const char* sjg_string283 = "image";
+const char* sjg_string284 = "imageelement";
+const char* sjg_string285 = "imagerenderer";
+const char* sjg_string286 = "intersecttriangle";
+const char* sjg_string287 = "lambda1";
+const char* sjg_string288 = "invoke";
+const char* sjg_string289 = "lambda2";
+const char* sjg_string29 = "assets/sj-lib-ui/images/buttonHot.png";
+const char* sjg_string290 = "lambda3";
+const char* sjg_string291 = "lambda4";
+const char* sjg_string292 = "leafpanel";
+const char* sjg_string293 = "getcenter";
+const char* sjg_string294 = "getworld";
+const char* sjg_string295 = "getz";
+const char* sjg_string296 = "renderorqueue";
+const char* sjg_string297 = "texturetomodel";
+const char* sjg_string298 = "update";
+const char* sjg_string299 = "light";
+const char* sjg_string3 = "assets/sj-lib-ui/shaders/blur-vertical.frag";
+const char* sjg_string30 = "assets/sj-lib-ui/images/buttonPressed.png";
+const char* sjg_string300 = "list!#animation";
+const char* sjg_string301 = "add";
+const char* sjg_string302 = "getcount";
+const char* sjg_string303 = "removeat";
+const char* sjg_string304 = "list!#model";
+const char* sjg_string305 = "list!mat4";
+const char* sjg_string306 = "list!rect";
+const char* sjg_string307 = "list!u32";
+const char* sjg_string308 = "listlayout";
+const char* sjg_string309 = "log";
 const char* sjg_string31 = "Buy me!";
-const char* sjg_string310 = "loglevel_asstring";
-const char* sjg_string311 = "mainloop";
-const char* sjg_string312 = "mainpanel";
-const char* sjg_string313 = "margin";
-const char* sjg_string314 = "mat4";
-const char* sjg_string315 = "determinant";
-const char* sjg_string316 = "mat4_identity";
-const char* sjg_string317 = "invert";
-const char* sjg_string318 = "mat4_lookatlh";
-const char* sjg_string319 = "multiply";
+const char* sjg_string310 = "_write";
+const char* sjg_string311 = "loglevel_asstring";
+const char* sjg_string312 = "mainloop";
+const char* sjg_string313 = "mainpanel";
+const char* sjg_string314 = "margin";
+const char* sjg_string315 = "mat4";
+const char* sjg_string316 = "determinant";
+const char* sjg_string317 = "mat4_identity";
+const char* sjg_string318 = "invert";
+const char* sjg_string319 = "mat4_lookatlh";
 const char* sjg_string32 = "Product description";
-const char* sjg_string320 = "multiplyf32";
-const char* sjg_string321 = "multiplyvec4";
-const char* sjg_string322 = "mat4_orthographic";
-const char* sjg_string323 = "mat4_perspective";
-const char* sjg_string324 = "mat4_rotate";
-const char* sjg_string325 = "mat4_scale";
-const char* sjg_string326 = "mat4_translate";
-const char* sjg_string327 = "transpose";
-const char* sjg_string328 = "menucontroller";
-const char* sjg_string329 = "onbackfromfield";
+const char* sjg_string320 = "multiply";
+const char* sjg_string321 = "multiplyf32";
+const char* sjg_string322 = "multiplyvec4";
+const char* sjg_string323 = "mat4_orthographic";
+const char* sjg_string324 = "mat4_perspective";
+const char* sjg_string325 = "mat4_rotate";
+const char* sjg_string326 = "mat4_scale";
+const char* sjg_string327 = "mat4_translate";
+const char* sjg_string328 = "transpose";
+const char* sjg_string329 = "menucontroller";
 const char* sjg_string33 = "viewModel";
-const char* sjg_string330 = "onbackfromforest";
-const char* sjg_string331 = "start";
-const char* sjg_string332 = "viewfieldmenu";
-const char* sjg_string333 = "viewforestmenu";
-const char* sjg_string334 = "model_zsort";
-const char* sjg_string335 = "mouse_capture";
-const char* sjg_string336 = "mouse_hascapture";
-const char* sjg_string337 = "mouse_release";
-const char* sjg_string338 = "mouseevent";
-const char* sjg_string339 = "asstring";
+const char* sjg_string330 = "onbackfromfield";
+const char* sjg_string331 = "onbackfromforest";
+const char* sjg_string332 = "start";
+const char* sjg_string333 = "viewfieldmenu";
+const char* sjg_string334 = "viewforestmenu";
+const char* sjg_string335 = "model_zsort";
+const char* sjg_string336 = "mouse_capture";
+const char* sjg_string337 = "mouse_hascapture";
+const char* sjg_string338 = "mouse_release";
+const char* sjg_string339 = "mouseevent";
 const char* sjg_string34 = "normalMat";
-const char* sjg_string340 = "firechildren";
-const char* sjg_string341 = "nauscene3delement";
-const char* sjg_string342 = "animatecameradistance";
-const char* sjg_string343 = "animatelookat";
-const char* sjg_string344 = "setcameradistance";
-const char* sjg_string345 = "setlookat";
-const char* sjg_string346 = "panel3d";
-const char* sjg_string347 = "peoplepanel";
-const char* sjg_string348 = "getmodelmatrix";
-const char* sjg_string349 = "personelement";
+const char* sjg_string340 = "asstring";
+const char* sjg_string341 = "firechildren";
+const char* sjg_string342 = "nauscene3delement";
+const char* sjg_string343 = "animatecameradistance";
+const char* sjg_string344 = "animatelookat";
+const char* sjg_string345 = "setcameradistance";
+const char* sjg_string346 = "setlookat";
+const char* sjg_string347 = "panel3d";
+const char* sjg_string348 = "peoplepanel";
+const char* sjg_string349 = "getmodelmatrix";
 const char* sjg_string35 = "lightPos";
-const char* sjg_string350 = "planevertexbuffer";
-const char* sjg_string351 = "point";
-const char* sjg_string352 = "rect";
-const char* sjg_string353 = "containspoint";
-const char* sjg_string354 = "subtractmargin";
-const char* sjg_string355 = "renderbuffer";
-const char* sjg_string356 = "runloop";
-const char* sjg_string357 = "scene2d";
-const char* sjg_string358 = "end";
-const char* sjg_string359 = "setsize";
+const char* sjg_string350 = "personelement";
+const char* sjg_string351 = "planevertexbuffer";
+const char* sjg_string352 = "point";
+const char* sjg_string353 = "rect";
+const char* sjg_string354 = "containspoint";
+const char* sjg_string355 = "subtractmargin";
+const char* sjg_string356 = "renderbuffer";
+const char* sjg_string357 = "runloop";
+const char* sjg_string358 = "scene2d";
+const char* sjg_string359 = "end";
 const char* sjg_string36 = "diffuseColor";
-const char* sjg_string360 = "scene2dmodel";
-const char* sjg_string361 = "scenebuffer";
-const char* sjg_string362 = "shader";
-const char* sjg_string363 = "size";
-const char* sjg_string364 = "addmargin";
-const char* sjg_string365 = "max";
-const char* sjg_string366 = "min";
-const char* sjg_string367 = "string";
-const char* sjg_string368 = "nullterminate";
-const char* sjg_string369 = "touppercase";
+const char* sjg_string360 = "setsize";
+const char* sjg_string361 = "scene2dmodel";
+const char* sjg_string362 = "scenebuffer";
+const char* sjg_string363 = "shader";
+const char* sjg_string364 = "size";
+const char* sjg_string365 = "addmargin";
+const char* sjg_string366 = "max";
+const char* sjg_string367 = "min";
+const char* sjg_string368 = "string";
+const char* sjg_string369 = "nullterminate";
 const char* sjg_string37 = "specColor";
-const char* sjg_string370 = "style";
-const char* sjg_string371 = "getfont";
-const char* sjg_string372 = "textelement";
-const char* sjg_string373 = "gettext";
-const char* sjg_string374 = "settext";
-const char* sjg_string375 = "textrenderer";
-const char* sjg_string376 = "texture_fromelement";
-const char* sjg_string377 = "texture_frompng";
-const char* sjg_string378 = "type_asstring";
-const char* sjg_string379 = "type_hash";
+const char* sjg_string370 = "touppercase";
+const char* sjg_string371 = "style";
+const char* sjg_string372 = "getfont";
+const char* sjg_string373 = "textelement";
+const char* sjg_string374 = "gettext";
+const char* sjg_string375 = "settext";
+const char* sjg_string376 = "textrenderer";
+const char* sjg_string377 = "texture_fromelement";
+const char* sjg_string378 = "texture_frompng";
+const char* sjg_string379 = "type_asstring";
 const char* sjg_string38 = "assets/clouds.png";
-const char* sjg_string380 = "type_isequal";
-const char* sjg_string381 = "vec2";
-const char* sjg_string382 = "vec2_getrawsize";
-const char* sjg_string383 = "vec2_rawcopy";
-const char* sjg_string384 = "vec3";
-const char* sjg_string385 = "asvec4";
-const char* sjg_string386 = "cross";
-const char* sjg_string387 = "dot";
-const char* sjg_string388 = "vec3_getrawsize";
-const char* sjg_string389 = "interpolate";
+const char* sjg_string380 = "type_hash";
+const char* sjg_string381 = "type_isequal";
+const char* sjg_string382 = "vec2";
+const char* sjg_string383 = "vec2_getrawsize";
+const char* sjg_string384 = "vec2_rawcopy";
+const char* sjg_string385 = "vec3";
+const char* sjg_string386 = "asvec4";
+const char* sjg_string387 = "cross";
+const char* sjg_string388 = "dot";
+const char* sjg_string389 = "vec3_getrawsize";
 const char* sjg_string39 = "leaf";
-const char* sjg_string390 = "vec3_max";
-const char* sjg_string391 = "vec3_min";
-const char* sjg_string392 = "normalize";
-const char* sjg_string393 = "vec3_rawcopy";
-const char* sjg_string394 = "subtract";
-const char* sjg_string395 = "vec4";
-const char* sjg_string396 = "vertex_location_texture_normal";
-const char* sjg_string397 = "vertex_location_texture_normal_getrawsize";
-const char* sjg_string398 = "vertex_location_texture_normal_rawcopy";
-const char* sjg_string399 = "vertexbuffer!vertex_location_texture_normal";
-const char* sjg_string4 = "shaders/fade.frag";
+const char* sjg_string390 = "interpolate";
+const char* sjg_string391 = "vec3_max";
+const char* sjg_string392 = "vec3_min";
+const char* sjg_string393 = "normalize";
+const char* sjg_string394 = "vec3_rawcopy";
+const char* sjg_string395 = "subtract";
+const char* sjg_string396 = "vec4";
+const char* sjg_string397 = "vertex_location_texture_normal";
+const char* sjg_string398 = "vertex_location_texture_normal_getrawsize";
+const char* sjg_string399 = "vertex_location_texture_normal_rawcopy";
+const char* sjg_string4 = "assets/sj-lib-ui/shaders/fade.frag";
 const char* sjg_string40 = "assets/whitestar1.png";
-const char* sjg_string400 = "translatescreentotexture";
-const char* sjg_string401 = "windowrenderer";
-const char* sjg_string402 = "present";
-const char* sjg_string403 = "texthorizontal";
-const char* sjg_string404 = "textvertical";
-const char* sjg_string405 = "type";
-const char* sjg_string406 = "u32";
-const char* sjg_string407 = "u64";
-const char* sjg_string408 = "void";
+const char* sjg_string400 = "vertexbuffer!vertex_location_texture_normal";
+const char* sjg_string401 = "translatescreentotexture";
+const char* sjg_string402 = "windowrenderer";
+const char* sjg_string403 = "present";
+const char* sjg_string404 = "texthorizontal";
+const char* sjg_string405 = "textvertical";
+const char* sjg_string406 = "type";
+const char* sjg_string407 = "u32";
+const char* sjg_string408 = "u64";
+const char* sjg_string409 = "void";
 const char* sjg_string41 = "assets/whitestar2.png";
 const char* sjg_string42 = "trace";
 const char* sjg_string43 = "debug";
@@ -404,7 +405,7 @@ const char* sjg_string46 = "error";
 const char* sjg_string47 = "fatal";
 const char* sjg_string48 = " [";
 const char* sjg_string49 = "] ";
-const char* sjg_string5 = "shaders/v3f-c4f.vert";
+const char* sjg_string5 = "assets/sj-lib-ui/shaders/v3f-c4f.vert";
 const char* sjg_string50 = "point : ";
 const char* sjg_string51 = ", ";
 const char* sjg_string52 = " isCaptured : ";
@@ -415,7 +416,7 @@ const char* sjg_string56 = " -> does not map";
 const char* sjg_string57 = " -> ";
 const char* sjg_string58 = "person1";
 const char* sjg_string59 = "clicked";
-const char* sjg_string6 = "shaders/v3f-c4f.frag";
+const char* sjg_string6 = "assets/sj-lib-ui/shaders/v3f-c4f.frag";
 const char* sjg_string60 = "personElement pressed";
 const char* sjg_string61 = "cannot find parent mode by id: ";
 const char* sjg_string62 = " => ";
@@ -426,7 +427,7 @@ const char* sjg_string66 = "assets/forestperson2.png";
 const char* sjg_string67 = "person3";
 const char* sjg_string68 = "assets/forestperson3.png";
 const char* sjg_string69 = "person4";
-const char* sjg_string7 = "shaders/v3f-t2f.frag";
+const char* sjg_string7 = "assets/sj-lib-ui/shaders/v3f-t2f.frag";
 const char* sjg_string70 = "assets/forestperson4.png";
 const char* sjg_string71 = "person5";
 const char* sjg_string72 = "assets/forestperson5.png";
@@ -437,7 +438,7 @@ const char* sjg_string76 = "assets/forestperson7.png";
 const char* sjg_string77 = "person8";
 const char* sjg_string78 = "assets/forestperson8.png";
 const char* sjg_string79 = "grass6.2";
-const char* sjg_string8 = "shaders/v3f-n3f-phong.vert";
+const char* sjg_string8 = "assets/sj-lib-ui/shaders/v3f-n3f-phong.vert";
 const char* sjg_string80 = "assets/grass.png";
 const char* sjg_string81 = "grass4.2";
 const char* sjg_string82 = "grass2.2";
@@ -448,7 +449,7 @@ const char* sjg_string86 = "assets/forest_backdrop.png";
 const char* sjg_string87 = "assets/leaf11.png";
 const char* sjg_string88 = "assets/leaf12.png";
 const char* sjg_string89 = "assets/leaf13.png";
-const char* sjg_string9 = "shaders/v3f-n3f-phong.frag";
+const char* sjg_string9 = "assets/sj-lib-ui/shaders/v3f-n3f-phong.frag";
 const char* sjg_string90 = "forest_person1";
 const char* sjg_string91 = "forest_person2";
 const char* sjg_string92 = "forest_person3";
@@ -6036,7 +6037,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 #ifndef string_weak_iface_model_hash_function
 #define string_weak_iface_model_hash_function
 #if true
@@ -8786,7 +8787,7 @@ shader_read( const char *filename )
         vector_erase( self->items, index );
         self->state = DIRTY;
     }
-    #include <lib/ui/obj_parser.c>
+    #include <lib/sj-lib-ui/obj_parser.c>
 void sjf_animation_f32(sjs_animation_f32* _this) {
 }
 
@@ -9010,7 +9011,7 @@ void sjf_animator_heap(sjs_animator* _this) {
 }
 
 void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
-    int32_t sjt_capture79;
+    int32_t sjt_capture80;
     sjs_list_heap_iface_animation* sjt_parent729 = 0;
 
 #line 31 "lib/sj-lib-ui/animation.sj"
@@ -9018,8 +9019,8 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 4 "lib/sj-lib-common/list.sj"
     sjt_parent729 = &_parent->animations;
 #line 4
-    sjf_list_heap_iface_animation_getcount(sjt_parent729, &sjt_capture79);
-    if (sjt_capture79 > 0) {
+    sjf_list_heap_iface_animation_getcount(sjt_parent729, &sjt_capture80);
+    if (sjt_capture80 > 0) {
         int32_t i;
         int32_t sjt_forEnd47;
         int32_t sjt_forStart47;
@@ -9035,7 +9036,7 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
         i = sjt_forEnd47 - 1;
         while (i >= sjt_forStart47) {
             sji_animation a = { 0 };
-            bool sjt_capture80;
+            bool sjt_capture81;
             int32_t sjt_functionParam2022;
             int32_t sjt_interfaceParam96;
             sjs_list_heap_iface_animation* sjt_parent732 = 0;
@@ -9052,8 +9053,8 @@ void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
 #line 31
             sjt_interfaceParam96 = time;
 #line 37
-            sjt_parent733._vtbl->nextframe(sjt_parent733._parent, sjt_interfaceParam96, &sjt_capture80);
-            if (sjt_capture80) {
+            sjt_parent733._vtbl->nextframe(sjt_parent733._parent, sjt_interfaceParam96, &sjt_capture81);
+            if (sjt_capture81) {
                 int32_t sjt_functionParam2023;
                 sjs_list_heap_iface_animation* sjt_parent734 = 0;
 
@@ -12353,7 +12354,7 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         sjs_rect sjt_call32 = { -1 };
         sjs_rect sjt_call33 = { -1 };
         sjs_rect sjt_call34 = { -1 };
-        int32_option sjt_capture19;
+        int32_option sjt_capture20;
         sji_element sjt_cast17 = { 0 };
         sjs_rect sjt_funcold10 = { -1 };
         sjs_rect sjt_funcold11 = { -1 };
@@ -12385,15 +12386,15 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 58
             sjt_parent64._vtbl->getposition(sjt_parent64._parent, &sjt_value3);
 #line 58
-            sjt_capture19.isvalid = true;
+            sjt_capture20.isvalid = true;
 #line 58
-            sjt_capture19.value = sjt_value3;
+            sjt_capture20.value = sjt_value3;
         } else {
 #line 58 "lib/sj-lib-ui/borderLayout.sj"
-            sjt_capture19 = int32_empty;
+            sjt_capture20 = int32_empty;
         }
 
-        if (sjt_capture19.isvalid) {
+        if (sjt_capture20.isvalid) {
             int32_option sjt_getValue1;
 
             if (borderchild._parent != 0) {
@@ -12668,7 +12669,7 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
         sji_borderchild borderchild2 = { 0 };
         sji_element child2 = { 0 };
         int32_t position2;
-        int32_option sjt_capture20;
+        int32_option sjt_capture21;
         sji_element sjt_cast18 = { 0 };
         int32_t sjt_functionParam140;
         sjs_array_heap_iface_element* sjt_parent71 = 0;
@@ -12696,15 +12697,15 @@ void sjf_borderlayout_setrect(sjs_borderlayout* _parent, sjs_rect* rect_) {
 #line 85
             sjt_parent72._vtbl->getposition(sjt_parent72._parent, &sjt_value5);
 #line 85
-            sjt_capture20.isvalid = true;
+            sjt_capture21.isvalid = true;
 #line 85
-            sjt_capture20.value = sjt_value5;
+            sjt_capture21.value = sjt_value5;
         } else {
 #line 85 "lib/sj-lib-ui/borderLayout.sj"
-            sjt_capture20 = int32_empty;
+            sjt_capture21 = int32_empty;
         }
 
-        if (sjt_capture20.isvalid) {
+        if (sjt_capture21.isvalid) {
             int32_option sjt_getValue2;
 
             if (borderchild2._parent != 0) {
@@ -12915,7 +12916,7 @@ void sjf_boxelement_render(sjs_boxelement* _parent, sjs_scene2d* scene) {
 
 void sjf_boxelement_setrect(sjs_boxelement* _parent, sjs_rect* rect_) {
     bool result199;
-    bool sjt_capture78;
+    bool sjt_capture79;
     sjs_rect* sjt_functionParam2015 = 0;
     sjs_rect* sjt_parent724 = 0;
 
@@ -12924,9 +12925,9 @@ void sjf_boxelement_setrect(sjs_boxelement* _parent, sjs_rect* rect_) {
 #line 13 "lib/sj-lib-ui/boxElement.sj"
     sjt_functionParam2015 = rect_;
 #line 13
-    sjf_rect_isequal(sjt_parent724, sjt_functionParam2015, &sjt_capture78);
+    sjf_rect_isequal(sjt_parent724, sjt_functionParam2015, &sjt_capture79);
 #line 14
-    result199 = !sjt_capture78;
+    result199 = !sjt_capture79;
     if (result199) {
         if (_parent->rect._refCount == 1) { sjf_rect_destroy(&_parent->rect); }
 ;
@@ -13703,7 +13704,7 @@ void sjf_buttonelement_render(sjs_buttonelement* _parent, sjs_scene2d* scene) {
 
 void sjf_buttonelement_setrect(sjs_buttonelement* _parent, sjs_rect* rect_) {
     bool result10;
-    bool sjt_capture23;
+    bool sjt_capture24;
     sjs_rect* sjt_functionParam151 = 0;
     sjs_rect* sjt_parent92 = 0;
 
@@ -13712,9 +13713,9 @@ void sjf_buttonelement_setrect(sjs_buttonelement* _parent, sjs_rect* rect_) {
 #line 22 "lib/sj-lib-ui/buttonElement.sj"
     sjt_functionParam151 = rect_;
 #line 22
-    sjf_rect_isequal(sjt_parent92, sjt_functionParam151, &sjt_capture23);
+    sjf_rect_isequal(sjt_parent92, sjt_functionParam151, &sjt_capture24);
 #line 23
-    result10 = !sjt_capture23;
+    result10 = !sjt_capture24;
     if (result10) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -14247,7 +14248,7 @@ void sjf_clickgesture_destroy(sjs_clickgesture* _this) {
 void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* mouseevent, bool* _return) {
     if ((_parent->element._parent != 0)) {
         sji_element ifValue19 = { 0 };
-        bool sjt_capture26;
+        bool sjt_capture27;
         sjs_point* sjt_functionParam196 = 0;
         sjs_rect* sjt_parent98 = 0;
 
@@ -14262,8 +14263,8 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
 #line 24 "lib/sj-lib-ui/clickGesture.sj"
         sjt_functionParam196 = &mouseevent->point;
 #line 24
-        sjf_rect_containspoint(sjt_parent98, sjt_functionParam196, &sjt_capture26);
-        if (sjt_capture26) {
+        sjf_rect_containspoint(sjt_parent98, sjt_functionParam196, &sjt_capture27);
+        if (sjt_capture27) {
             int32_t underscore5;
 
 #line 25 "lib/sj-lib-ui/clickGesture.sj"
@@ -14342,7 +14343,7 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 } else {
                     if (underscore5 == g_mouseeventtype_move) {
                         bool result11;
-                        bool sjt_capture27;
+                        bool sjt_capture28;
                         sji_element sjt_functionParam199 = { 0 };
 
                         if (_parent->_state == g_clickstate_none) {
@@ -14374,9 +14375,9 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                         }
 
 #line 47
-                        sjf_mouse_hascapture(sjt_functionParam199, &sjt_capture27);
+                        sjf_mouse_hascapture(sjt_functionParam199, &sjt_capture28);
 #line 47
-                        result11 = !sjt_capture27;
+                        result11 = !sjt_capture28;
 #line 47
                         (*_return) = result11;
 
@@ -14394,7 +14395,7 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
             }
         } else {
-            bool sjt_capture28;
+            bool sjt_capture29;
 
             if ((_parent->_state == g_clickstate_entered) || (_parent->_state == g_clickstate_pressed)) {
                 if (_parent->clickable._parent != 0) {
@@ -14414,7 +14415,7 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
             }
 
             if (mouseevent->eventtype == g_mouseeventtype_up) {
-                bool sjt_capture29;
+                bool sjt_capture30;
                 sji_element sjt_functionParam200 = { 0 };
 
 #line 59 "lib/sj-lib-ui/clickGesture.sj"
@@ -14424,9 +14425,9 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
 
 #line 59
-                sjf_mouse_hascapture(sjt_functionParam200, &sjt_capture29);
+                sjf_mouse_hascapture(sjt_functionParam200, &sjt_capture30);
 #line 59
-                sjt_capture28 = sjt_capture29;
+                sjt_capture29 = sjt_capture30;
 
                 if (sjt_functionParam200._parent != 0) {
                     sjt_functionParam200._parent->_refCount--;
@@ -14437,10 +14438,10 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
             } else {
 #line 59 "lib/sj-lib-ui/clickGesture.sj"
-                sjt_capture28 = false;
+                sjt_capture29 = false;
             }
 
-            if (sjt_capture28) {
+            if (sjt_capture29) {
                 sji_element sjt_functionParam201 = { 0 };
 
 #line 60 "lib/sj-lib-ui/clickGesture.sj"
@@ -14463,7 +14464,7 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
             } else {
                 bool result12;
-                bool sjt_capture30;
+                bool sjt_capture31;
                 sji_element sjt_functionParam202 = { 0 };
 
 #line 63 "lib/sj-lib-ui/clickGesture.sj"
@@ -14473,9 +14474,9 @@ void sjf_clickgesture_firemouseevent(sjs_clickgesture* _parent, sjs_mouseevent* 
                 }
 
 #line 63
-                sjf_mouse_hascapture(sjt_functionParam202, &sjt_capture30);
+                sjf_mouse_hascapture(sjt_functionParam202, &sjt_capture31);
 #line 63
-                result12 = !sjt_capture30;
+                result12 = !sjt_capture31;
 #line 63
                 (*_return) = result12;
 
@@ -15540,7 +15541,7 @@ void sjf_fadeeffect_setalpha(sjs_fadeeffect* _parent, float a) {
 void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_void cb) {
     bool result14;
     sjs_rect sjt_call61 = { -1 };
-    bool sjt_capture37;
+    bool sjt_capture38;
     sjs_rect* sjt_functionParam311 = 0;
     sjs_rect* sjt_functionParam313 = 0;
     sjs_rect* sjt_parent135 = 0;
@@ -15550,9 +15551,9 @@ void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_vo
 #line 28 "lib/sj-lib-ui/fadeEffect.sj"
     sjt_functionParam311 = rect_;
 #line 28
-    sjf_rect_isequal(sjt_parent135, sjt_functionParam311, &sjt_capture37);
+    sjf_rect_isequal(sjt_parent135, sjt_functionParam311, &sjt_capture38);
 #line 29
-    result14 = !sjt_capture37;
+    result14 = !sjt_capture38;
     if (result14) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -15562,7 +15563,7 @@ void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_vo
             sjs_scenebuffer* ifValue9 = 0;
             bool result15;
             sjs_size sjt_call60 = { -1 };
-            bool sjt_capture38;
+            bool sjt_capture39;
             sjs_size* sjt_functionParam312 = 0;
             sjs_size* sjt_parent136 = 0;
 
@@ -15581,9 +15582,9 @@ void sjf_fadeeffect_setrect(sjs_fadeeffect* _parent, sjs_rect* rect_, cb_rect_vo
 #line 33
             sjt_functionParam312 = &sjt_call60;
 #line 33
-            sjf_size_isequal(sjt_parent136, sjt_functionParam312, &sjt_capture38);
+            sjf_size_isequal(sjt_parent136, sjt_functionParam312, &sjt_capture39);
 #line 33
-            result15 = !sjt_capture38;
+            result15 = !sjt_capture39;
             if (result15) {
                 if (_parent->_scenebuffer._refCount == 1) { sjf_scenebuffer_destroy(&_parent->_scenebuffer); }
 ;
@@ -18218,10 +18219,10 @@ return;;
 void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
     uint32_t id;
     sjs_string sjt_call58 = { -1 };
-    int32_t sjt_capture32;
-    uint32_t sjt_capture33;
-    int32_t sjt_capture34;
+    int32_t sjt_capture33;
+    uint32_t sjt_capture34;
     int32_t sjt_capture35;
+    int32_t sjt_capture36;
     int32_t sjt_functionParam271;
     int32_t sjt_functionParam273;
     sjs_list_u32* sjt_parent128 = 0;
@@ -18235,12 +18236,12 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
 #line 4
     sjt_parent129 = &g_glframebuffers;
 #line 4
-    sjf_list_u32_getcount(sjt_parent129, &sjt_capture32);
+    sjf_list_u32_getcount(sjt_parent129, &sjt_capture33);
 #line 155 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam271 = sjt_capture32 - 1;
+    sjt_functionParam271 = sjt_capture33 - 1;
 #line 155
-    sjf_list_u32_getat(sjt_parent128, sjt_functionParam271, &sjt_capture33);
-    if (sjt_capture33 != framebuffer->id) {
+    sjf_list_u32_getat(sjt_parent128, sjt_functionParam271, &sjt_capture34);
+    if (sjt_capture34 != framebuffer->id) {
         sjs_string* sjt_functionParam272 = 0;
 
         sjt_call58._refCount = 1;
@@ -18273,17 +18274,17 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
 #line 4
     sjt_parent131 = &g_glframebuffers;
 #line 4
-    sjf_list_u32_getcount(sjt_parent131, &sjt_capture34);
+    sjf_list_u32_getcount(sjt_parent131, &sjt_capture35);
 #line 158 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam273 = sjt_capture34 - 1;
+    sjt_functionParam273 = sjt_capture35 - 1;
 #line 158
     sjf_list_u32_removeat(sjt_parent130, sjt_functionParam273);
 #line 4 "lib/sj-lib-common/list.sj"
     sjt_parent132 = &g_glframebuffers;
 #line 4
-    sjf_list_u32_getcount(sjt_parent132, &sjt_capture35);
-    if (sjt_capture35 > 0) {
-        int32_t sjt_capture36;
+    sjf_list_u32_getcount(sjt_parent132, &sjt_capture36);
+    if (sjt_capture36 > 0) {
+        int32_t sjt_capture37;
         int32_t sjt_functionParam274;
         sjs_list_u32* sjt_parent133 = 0;
         sjs_list_u32* sjt_parent134 = 0;
@@ -18293,9 +18294,9 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
 #line 4
         sjt_parent134 = &g_glframebuffers;
 #line 4
-        sjf_list_u32_getcount(sjt_parent134, &sjt_capture36);
+        sjf_list_u32_getcount(sjt_parent134, &sjt_capture37);
 #line 159 "lib/sj-lib-ui/gl.sj"
-        sjt_functionParam274 = sjt_capture36 - 1;
+        sjt_functionParam274 = sjt_capture37 - 1;
 #line 159
         sjf_list_u32_getat(sjt_parent133, sjt_functionParam274, &id);
     } else {
@@ -18316,10 +18317,10 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     bool result21;
     sjs_rect sjt_call62 = { -1 };
     sjs_string sjt_call63 = { -1 };
-    int32_t sjt_capture40;
-    bool sjt_capture41;
-    int32_t sjt_capture42;
+    int32_t sjt_capture41;
+    bool sjt_capture42;
     int32_t sjt_capture43;
+    int32_t sjt_capture44;
     int32_t sjt_functionParam337;
     sjs_rect* sjt_functionParam338 = 0;
     int32_t sjt_functionParam340;
@@ -18346,9 +18347,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
     sjt_parent147 = &g_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent147, &sjt_capture40);
+    sjf_list_rect_getcount(sjt_parent147, &sjt_capture41);
 #line 135 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam337 = sjt_capture40 - 1;
+    sjt_functionParam337 = sjt_capture41 - 1;
 #line 135
     sjf_list_rect_getat(sjt_parent146, sjt_functionParam337, &sjt_call62);
 #line 135
@@ -18356,9 +18357,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 135
     sjt_functionParam338 = &oldrect;
 #line 135
-    sjf_rect_isequal(sjt_parent143, sjt_functionParam338, &sjt_capture41);
+    sjf_rect_isequal(sjt_parent143, sjt_functionParam338, &sjt_capture42);
 #line 135
-    result21 = !sjt_capture41;
+    result21 = !sjt_capture42;
     if (result21) {
         sjs_string* sjt_functionParam339 = 0;
 
@@ -18392,17 +18393,17 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
     sjt_parent149 = &g_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent149, &sjt_capture42);
+    sjf_list_rect_getcount(sjt_parent149, &sjt_capture43);
 #line 138 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam340 = sjt_capture42 - 1;
+    sjt_functionParam340 = sjt_capture43 - 1;
 #line 138
     sjf_list_rect_removeat(sjt_parent148, sjt_functionParam340);
 #line 4 "lib/sj-lib-common/list.sj"
     sjt_parent150 = &g_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent150, &sjt_capture43);
-    if (sjt_capture43 > 0) {
-        int32_t sjt_capture44;
+    sjf_list_rect_getcount(sjt_parent150, &sjt_capture44);
+    if (sjt_capture44 > 0) {
+        int32_t sjt_capture45;
         int32_t sjt_functionParam341;
         sjs_list_rect* sjt_parent151 = 0;
         sjs_list_rect* sjt_parent152 = 0;
@@ -18412,9 +18413,9 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 4
         sjt_parent152 = &g_glviewports;
 #line 4
-        sjf_list_rect_getcount(sjt_parent152, &sjt_capture44);
+        sjf_list_rect_getcount(sjt_parent152, &sjt_capture45);
 #line 139 "lib/sj-lib-ui/gl.sj"
-        sjt_functionParam341 = sjt_capture44 - 1;
+        sjt_functionParam341 = sjt_capture45 - 1;
 #line 139
         sjf_list_rect_getat(sjt_parent151, sjt_functionParam341, &newrect);
     } else {
@@ -18636,7 +18637,7 @@ if (kh_value(p, k) != 0) { weakptr_cb_remove(kh_value(p, k), weakptrcb15); }
 #line 256
         }
 #line 257
-        kh_destroy(fontkey_weak_font_hash_type, _this->_hash);
+        kh_destroy(fontkey_weak_font_hash_type, (khash_t(fontkey_weak_font_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -18707,11 +18708,11 @@ int ret;
 #line 53
 #if true
 #line 54
-k = kh_put(fontkey_weak_font_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(fontkey_weak_font_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(fontkey_weak_font_hash_type, _parent->_hash, key, &ret);
+k = kh_put(fontkey_weak_font_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -18853,7 +18854,7 @@ if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, wea
 #line 256
         }
 #line 257
-        kh_destroy(string_weak_iface_element_hash_type, _this->_hash);
+        kh_destroy(string_weak_iface_element_hash_type, (khash_t(string_weak_iface_element_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -18889,11 +18890,11 @@ int ret;
 #line 53
 #if true
 #line 54
-k = kh_put(string_weak_iface_element_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(string_weak_iface_element_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(string_weak_iface_element_hash_type, _parent->_hash, key, &ret);
+k = kh_put(string_weak_iface_element_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -19035,7 +19036,7 @@ if (kh_value(p, k)._parent != 0) { weakptr_cb_remove(kh_value(p, k)._parent, wea
 #line 256
         }
 #line 257
-        kh_destroy(string_weak_iface_model_hash_type, _this->_hash);
+        kh_destroy(string_weak_iface_model_hash_type, (khash_t(string_weak_iface_model_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -19102,11 +19103,11 @@ int ret;
 #line 53
 #if true
 #line 54
-k = kh_put(string_weak_iface_model_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(string_weak_iface_model_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(string_weak_iface_model_hash_type, _parent->_hash, key, &ret);
+k = kh_put(string_weak_iface_model_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -19246,7 +19247,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -19483,18 +19484,18 @@ void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
 
 void sjf_image(sjs_image* _this) {
     sjs_size size = { -1 };
-    bool sjt_capture21;
+    bool sjt_capture22;
     sjs_rect sjt_funcold15 = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture21 = ((&_this->rect)->h == 0);
+        sjt_capture22 = ((&_this->rect)->h == 0);
     } else {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture21 = false;
+        sjt_capture22 = false;
     }
 
-    if (sjt_capture21) {
+    if (sjt_capture22) {
         sjs_texture* sjt_parent84 = 0;
 
 #line 1 "lib/sj-lib-ui/image.sj"
@@ -19555,18 +19556,18 @@ void sjf_image_destroy(sjs_image* _this) {
 
 void sjf_image_heap(sjs_image* _this) {
     sjs_size size = { -1 };
-    bool sjt_capture22;
+    bool sjt_capture23;
     sjs_rect sjt_funcold16 = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture22 = ((&_this->rect)->h == 0);
+        sjt_capture23 = ((&_this->rect)->h == 0);
     } else {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture22 = false;
+        sjt_capture23 = false;
     }
 
-    if (sjt_capture22) {
+    if (sjt_capture23) {
         sjs_texture* sjt_parent85 = 0;
 
 #line 5 "lib/sj-lib-ui/texture.sj"
@@ -19928,7 +19929,7 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 
 void sjf_imageelement_setrect(sjs_imageelement* _parent, sjs_rect* rect_) {
     bool result39;
-    bool sjt_capture67;
+    bool sjt_capture68;
     sjs_rect* sjt_functionParam883 = 0;
     sjs_rect* sjt_parent434 = 0;
 
@@ -19937,9 +19938,9 @@ void sjf_imageelement_setrect(sjs_imageelement* _parent, sjs_rect* rect_) {
 #line 20 "lib/sj-lib-ui/imageElement.sj"
     sjt_functionParam883 = rect_;
 #line 20
-    sjf_rect_isequal(sjt_parent434, sjt_functionParam883, &sjt_capture67);
+    sjf_rect_isequal(sjt_parent434, sjt_functionParam883, &sjt_capture68);
 #line 21
-    result39 = !sjt_capture67;
+    result39 = !sjt_capture68;
     if (result39) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -21638,8 +21639,8 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
     sjs_model* sjt_call97 = 0;
     sjs_vec3 sjt_call98 = { -1 };
     sjs_string sjt_call99 = { -1 };
-    float sjt_capture50;
     float sjt_capture51;
+    float sjt_capture52;
     sjs_model* sjt_cast35 = 0;
     float sjt_functionParam488;
     float sjt_functionParam489;
@@ -21660,9 +21661,9 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
     float y;
     float z;
 
-    sjf_f32_random(&sjt_capture50);
+    sjf_f32_random(&sjt_capture51);
 #line 39 "nau/leafPanel.sj"
-    noise = sjt_capture50 - 0.5f;
+    noise = sjt_capture51 - 0.5f;
 #line 40
     x = (_parent->_angle * 2.0f) + (noise * 0.2f);
 #line 41
@@ -21670,9 +21671,9 @@ void sjf_leafpanel_texturetomodel_heap(sjs_leafpanel* _parent, sjs_texture* text
 #line 42
     sjt_functionParam488 = _parent->_angle + (noise * 0.2f);
 #line 42
-    sjf_f32_cos(sjt_functionParam488, &sjt_capture51);
+    sjf_f32_cos(sjt_functionParam488, &sjt_capture52);
 #line 42
-    z = sjt_capture51 * 2.0f;
+    z = sjt_capture52 * 2.0f;
 #line 43
     _parent->_angle = _parent->_angle + 0.8f;
 #line 43
@@ -22992,8 +22993,8 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
             sjs_string sjt_call155 = { -1 };
             sjs_string sjt_call156 = { -1 };
             sjs_string sjt_call157 = { -1 };
-            bool sjt_capture64;
-            bool_option sjt_capture65;
+            bool sjt_capture65;
+            bool_option sjt_capture66;
             int32_t sjt_functionParam709;
             sjs_hash_type_bool* sjt_parent311 = 0;
 
@@ -23004,8 +23005,8 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 46 "lib/sj-lib-common/log.sj"
             sjt_functionParam709 = t;
 #line 46
-            sjf_hash_type_bool_getat(sjt_parent311, sjt_functionParam709, &sjt_capture65);
-            if (sjt_capture65.isvalid) {
+            sjf_hash_type_bool_getat(sjt_parent311, sjt_functionParam709, &sjt_capture66);
+            if (sjt_capture66.isvalid) {
                 int32_t sjt_functionParam710;
                 bool_option sjt_getValue6;
                 sjs_hash_type_bool* sjt_parent312 = 0;
@@ -23017,13 +23018,13 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 46
                 sjf_hash_type_bool_getat(sjt_parent312, sjt_functionParam710, &sjt_getValue6);
 #line 49
-                sjt_capture64 = sjt_getValue6.value;
+                sjt_capture65 = sjt_getValue6.value;
             } else {
 #line 49 "lib/sj-lib-common/log.sj"
-                sjt_capture64 = false;
+                sjt_capture65 = false;
             }
 
-            if (sjt_capture64) {
+            if (sjt_capture65) {
                 sjs_string* sjt_functionParam711 = 0;
                 int32_t sjt_functionParam720;
                 sjs_string* sjt_functionParam721 = 0;
@@ -23778,7 +23779,7 @@ void sjf_mainloop(void) {
     sjs_string sjt_call660 = { -1 };
     sjs_string sjt_call661 = { -1 };
     sjs_string sjt_call662 = { -1 };
-    bool sjt_capture81;
+    bool sjt_capture82;
     int32_t sjt_functionParam2024;
     sjs_size* sjt_functionParam2028 = 0;
     sjs_rect* sjt_functionParam2029 = 0;
@@ -23832,7 +23833,7 @@ void sjf_mainloop(void) {
 #line 20
             sjt_call661.data.datasize = 5;
 #line 20
-            sjt_call661.data.data = (void*)sjg_string122;
+            sjt_call661.data.data = (void*)sjg_string123;
 #line 20
             sjt_call661.data.isglobal = true;
 #line 20
@@ -23895,9 +23896,9 @@ void sjf_mainloop(void) {
 #line 30 "lib/sj-lib-ui/loop.sj"
     sjt_functionParam2029 = &rect;
 #line 30
-    sjf_rect_isequal(sjt_parent740, sjt_functionParam2029, &sjt_capture81);
+    sjf_rect_isequal(sjt_parent740, sjt_functionParam2029, &sjt_capture82);
 #line 30
-    result200 = !sjt_capture81;
+    result200 = !sjt_capture82;
     if (result200) {
         sjs_rect* sjt_interfaceParam97 = 0;
         sji_element sjt_parent741 = { 0 };
@@ -24137,11 +24138,11 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
         sjs_vec3 sjt_call521 = { -1 };
         sjs_mat4 sjt_call522 = { -1 };
         sjs_vec3 sjt_call523 = { -1 };
-        float sjt_capture68;
         float sjt_capture69;
         float sjt_capture70;
         float sjt_capture71;
         float sjt_capture72;
+        float sjt_capture73;
         float sjt_functionParam1579;
         float sjt_functionParam1580;
         sjs_mat4* sjt_functionParam1586 = 0;
@@ -24155,29 +24156,29 @@ void sjf_mainpanel(sjs_mainpanel* _this) {
         float y;
         float z;
 
-        sjf_f32_random(&sjt_capture68);
-#line 43 "nau/mainPanel.sj"
-        angleoffset = sjt_capture68 * 0.01f;
-#line 43
         sjf_f32_random(&sjt_capture69);
-#line 44
-        radiusoffset = sjt_capture69 * 0.5f;
-#line 44
+#line 43 "nau/mainPanel.sj"
+        angleoffset = sjt_capture69 * 0.01f;
+#line 43
         sjf_f32_random(&sjt_capture70);
+#line 44
+        radiusoffset = sjt_capture70 * 0.5f;
+#line 44
+        sjf_f32_random(&sjt_capture71);
 #line 45
-        y = (sjt_capture70 - 0.5f) * 0.4f;
+        y = (sjt_capture71 - 0.5f) * 0.4f;
 #line 46
         sjt_functionParam1579 = angle + angleoffset;
 #line 46
-        sjf_f32_sin(sjt_functionParam1579, &sjt_capture71);
+        sjf_f32_sin(sjt_functionParam1579, &sjt_capture72);
 #line 46
-        x = sjt_capture71 * (_this->radius + radiusoffset);
+        x = sjt_capture72 * (_this->radius + radiusoffset);
 #line 47
         sjt_functionParam1580 = angle + angleoffset;
 #line 47
-        sjf_f32_cos(sjt_functionParam1580, &sjt_capture72);
+        sjf_f32_cos(sjt_functionParam1580, &sjt_capture73);
 #line 47
-        z = sjt_capture72 * (_this->radius + radiusoffset);
+        z = sjt_capture73 * (_this->radius + radiusoffset);
 #line 44 "lib/sj-lib-common/list.sj"
         sjt_parent605 = &_this->_childworlds;
 #line 44
@@ -24420,11 +24421,11 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
         sjs_vec3 sjt_call527 = { -1 };
         sjs_mat4 sjt_call528 = { -1 };
         sjs_vec3 sjt_call529 = { -1 };
-        float sjt_capture73;
         float sjt_capture74;
         float sjt_capture75;
         float sjt_capture76;
         float sjt_capture77;
+        float sjt_capture78;
         float sjt_functionParam1601;
         float sjt_functionParam1602;
         sjs_mat4* sjt_functionParam1603 = 0;
@@ -24438,29 +24439,29 @@ void sjf_mainpanel_heap(sjs_mainpanel* _this) {
         float y;
         float z;
 
-        sjf_f32_random(&sjt_capture73);
-#line 43 "nau/mainPanel.sj"
-        angleoffset = sjt_capture73 * 0.01f;
-#line 43
         sjf_f32_random(&sjt_capture74);
-#line 44
-        radiusoffset = sjt_capture74 * 0.5f;
-#line 44
+#line 43 "nau/mainPanel.sj"
+        angleoffset = sjt_capture74 * 0.01f;
+#line 43
         sjf_f32_random(&sjt_capture75);
+#line 44
+        radiusoffset = sjt_capture75 * 0.5f;
+#line 44
+        sjf_f32_random(&sjt_capture76);
 #line 45
-        y = (sjt_capture75 - 0.5f) * 0.4f;
+        y = (sjt_capture76 - 0.5f) * 0.4f;
 #line 46
         sjt_functionParam1601 = angle + angleoffset;
 #line 46
-        sjf_f32_sin(sjt_functionParam1601, &sjt_capture76);
+        sjf_f32_sin(sjt_functionParam1601, &sjt_capture77);
 #line 46
-        x = sjt_capture76 * (_this->radius + radiusoffset);
+        x = sjt_capture77 * (_this->radius + radiusoffset);
 #line 47
         sjt_functionParam1602 = angle + angleoffset;
 #line 47
-        sjf_f32_cos(sjt_functionParam1602, &sjt_capture77);
+        sjf_f32_cos(sjt_functionParam1602, &sjt_capture78);
 #line 47
-        z = sjt_capture77 * (_this->radius + radiusoffset);
+        z = sjt_capture78 * (_this->radius + radiusoffset);
 #line 44 "lib/sj-lib-common/list.sj"
         sjt_parent620 = &_this->_childworlds;
 #line 44
@@ -24802,7 +24803,7 @@ void sjf_mat4_identity_heap(sjs_mat4** _return) {
 }
 
 void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
-    float sjt_capture48;
+    float sjt_capture49;
     float sjt_functionParam394;
     sjs_mat4* sjt_parent168 = 0;
     sjs_mat4 t = { -1 };
@@ -24845,9 +24846,9 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
 #line 40
     sjt_parent168 = &t;
 #line 40
-    sjf_mat4_determinant(_parent, &sjt_capture48);
+    sjf_mat4_determinant(_parent, &sjt_capture49);
 #line 91
-    sjt_functionParam394 = 1.0f / sjt_capture48;
+    sjt_functionParam394 = 1.0f / sjt_capture49;
 #line 91
     sjf_mat4_multiplyf32(sjt_parent168, sjt_functionParam394, _return);
 
@@ -24856,7 +24857,7 @@ void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
 }
 
 void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
-    float sjt_capture49;
+    float sjt_capture50;
     float sjt_functionParam395;
     sjs_mat4* sjt_parent169 = 0;
     sjs_mat4 t = { -1 };
@@ -24899,9 +24900,9 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
 #line 40
     sjt_parent169 = &t;
 #line 40
-    sjf_mat4_determinant(_parent, &sjt_capture49);
+    sjf_mat4_determinant(_parent, &sjt_capture50);
 #line 91
-    sjt_functionParam395 = 1.0f / sjt_capture49;
+    sjt_functionParam395 = 1.0f / sjt_capture50;
 #line 91
     sjf_mat4_multiplyf32_heap(sjt_parent169, sjt_functionParam395, _return);
 
@@ -26570,7 +26571,7 @@ void sjf_menucontroller_viewfieldmenu(sjs_menucontroller* _parent) {
 #line 7
     sjt_call643.data.datasize = 9;
 #line 7
-    sjt_call643.data.data = (void*)sjg_string120;
+    sjt_call643.data.data = (void*)sjg_string121;
 #line 7
     sjt_call643.data.isglobal = true;
 #line 7
@@ -26958,7 +26959,7 @@ void sjf_menucontroller_viewforestmenu(sjs_menucontroller* _parent) {
 #line 62
     sjt_call620.data.datasize = 10;
 #line 62
-    sjt_call620.data.data = (void*)sjg_string117;
+    sjt_call620.data.data = (void*)sjg_string118;
 #line 62
     sjt_call620.data.isglobal = true;
 #line 62
@@ -28718,7 +28719,7 @@ void sjf_nauscene3delement_destroy(sjs_nauscene3delement* _this) {
 
 void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mouseevent* mouseevent, bool* _return) {
     bool result6;
-    bool sjt_capture18;
+    bool sjt_capture19;
     sjs_nauscene3delement* sjt_cast12 = 0;
     sji_element sjt_functionParam125 = { 0 };
     int32_t underscore1;
@@ -28945,9 +28946,9 @@ void sjf_nauscene3delement_firemouseevent(sjs_nauscene3delement* _parent, sjs_mo
     }
 
 #line 1
-    sjf_mouse_hascapture(sjt_functionParam125, &sjt_capture18);
+    sjf_mouse_hascapture(sjt_functionParam125, &sjt_capture19);
 #line 124 "nau/nauScene3dElement.sj"
-    result6 = !sjt_capture18;
+    result6 = !sjt_capture19;
     if (result6) {
         int32_t i;
         int32_t sjt_forEnd9;
@@ -29614,7 +29615,7 @@ void sjf_panel3d_update(sjs_panel3d* _parent, sjs_rect* scenerect, sjs_mat4* pro
 
 void sjf_peoplepanel(sjs_peoplepanel* _this) {
     float result34;
-    float sjt_capture52;
+    float sjt_capture53;
     int32_t sjt_cast38;
     int32_t sjt_cast39;
     sjs_array_mat4 sjt_funcold37 = { -1 };
@@ -29629,9 +29630,9 @@ void sjf_peoplepanel(sjs_peoplepanel* _this) {
 #line 62
     sjt_functionParam540 = (float)sjt_cast38 / (float)sjt_cast39;
 #line 62
-    sjf_f32_ceil(sjt_functionParam540, &sjt_capture52);
+    sjf_f32_ceil(sjt_functionParam540, &sjt_capture53);
 #line 62
-    result34 = -((_this->_xincrement * sjt_capture52) / 2.0f);
+    result34 = -((_this->_xincrement * sjt_capture53) / 2.0f);
 #line 62
     _this->_xoffset = result34;
 #line 62
@@ -29791,7 +29792,7 @@ void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, s
     float noise;
     float row;
     sjs_vec3 sjt_call118 = { -1 };
-    float sjt_capture53;
+    float sjt_capture54;
     int32_t sjt_cast40;
     int32_t sjt_cast41;
     int32_t sjt_cast42;
@@ -29800,9 +29801,9 @@ void sjf_peoplepanel_getmodelmatrix(sjs_peoplepanel* _parent, sji_model model, s
     float x;
     float z;
 
-    sjf_f32_random(&sjt_capture53);
+    sjf_f32_random(&sjt_capture54);
 #line 47 "nau/peoplePanel.sj"
-    noise = sjt_capture53 - 0.5f;
+    noise = sjt_capture54 - 0.5f;
 #line 48
     sjt_cast40 = _parent->_index;
 #line 48
@@ -29850,7 +29851,7 @@ void sjf_peoplepanel_getmodelmatrix_heap(sjs_peoplepanel* _parent, sji_model mod
     float noise;
     float row;
     sjs_vec3 sjt_call119 = { -1 };
-    float sjt_capture54;
+    float sjt_capture55;
     int32_t sjt_cast43;
     int32_t sjt_cast44;
     int32_t sjt_cast45;
@@ -29859,9 +29860,9 @@ void sjf_peoplepanel_getmodelmatrix_heap(sjs_peoplepanel* _parent, sji_model mod
     float x;
     float z;
 
-    sjf_f32_random(&sjt_capture54);
+    sjf_f32_random(&sjt_capture55);
 #line 47 "nau/peoplePanel.sj"
-    noise = sjt_capture54 - 0.5f;
+    noise = sjt_capture55 - 0.5f;
 #line 48
     sjt_cast43 = _parent->_index;
 #line 48
@@ -29935,7 +29936,7 @@ void sjf_peoplepanel_getz(sjs_peoplepanel* _parent, float* _return) {
 
 void sjf_peoplepanel_heap(sjs_peoplepanel* _this) {
     float result35;
-    float sjt_capture55;
+    float sjt_capture56;
     int32_t sjt_cast46;
     int32_t sjt_cast47;
     sjs_array_mat4 sjt_funcold38 = { -1 };
@@ -29950,9 +29951,9 @@ void sjf_peoplepanel_heap(sjs_peoplepanel* _this) {
 #line 62
     sjt_functionParam558 = (float)sjt_cast46 / (float)sjt_cast47;
 #line 62
-    sjf_f32_ceil(sjt_functionParam558, &sjt_capture55);
+    sjf_f32_ceil(sjt_functionParam558, &sjt_capture56);
 #line 62
-    result35 = -((_this->_xincrement * sjt_capture55) / 2.0f);
+    result35 = -((_this->_xincrement * sjt_capture56) / 2.0f);
 #line 62
     _this->_xoffset = result35;
 #line 62
@@ -30366,7 +30367,7 @@ void sjf_personelement_render(sjs_personelement* _parent, sjs_scene2d* scene) {
 
 void sjf_personelement_setrect(sjs_personelement* _parent, sjs_rect* r) {
     bool result38;
-    bool sjt_capture66;
+    bool sjt_capture67;
     sjs_rect* sjt_functionParam793 = 0;
     sjs_rect* sjt_parent364 = 0;
 
@@ -30375,9 +30376,9 @@ void sjf_personelement_setrect(sjs_personelement* _parent, sjs_rect* r) {
 #line 10 "nau/personElement.sj"
     sjt_functionParam793 = r;
 #line 10
-    sjf_rect_isequal(sjt_parent364, sjt_functionParam793, &sjt_capture66);
+    sjf_rect_isequal(sjt_parent364, sjt_functionParam793, &sjt_capture67);
 #line 11
-    result38 = !sjt_capture66;
+    result38 = !sjt_capture67;
     if (result38) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -31161,28 +31162,28 @@ void sjf_rect(sjs_rect* _this) {
 
 void sjf_rect_containspoint(sjs_rect* _parent, sjs_point* point, bool* _return) {
     if (_parent->x <= point->x) {
-        bool sjt_capture24;
+        bool sjt_capture25;
 
         if (_parent->y <= point->y) {
-            bool sjt_capture25;
+            bool sjt_capture26;
 
             if (point->x < (_parent->x + _parent->w)) {
 #line 12 "lib/sj-lib-ui/rect.sj"
-                sjt_capture25 = (point->y < (_parent->y + _parent->h));
+                sjt_capture26 = (point->y < (_parent->y + _parent->h));
             } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
-                sjt_capture25 = false;
+                sjt_capture26 = false;
             }
 
 #line 12 "lib/sj-lib-ui/rect.sj"
-            sjt_capture24 = sjt_capture25;
+            sjt_capture25 = sjt_capture26;
         } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
-            sjt_capture24 = false;
+            sjt_capture25 = false;
         }
 
 #line 12 "lib/sj-lib-ui/rect.sj"
-        (*_return) = sjt_capture24;
+        (*_return) = sjt_capture25;
     } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
         (*_return) = false;
@@ -31369,7 +31370,7 @@ void sjf_scene2d_heap(sjs_scene2d* _this) {
 
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
     bool result16;
-    bool sjt_capture39;
+    bool sjt_capture40;
     sjs_mat4 sjt_funcold24 = { -1 };
     sjs_mat4 sjt_funcold25 = { -1 };
     sjs_mat4 sjt_funcold26 = { -1 };
@@ -31381,9 +31382,9 @@ void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
 #line 27 "lib/sj-lib-ui/scene2d.sj"
     sjt_functionParam315 = size;
 #line 27
-    sjf_size_isequal(sjt_parent137, sjt_functionParam315, &sjt_capture39);
+    sjf_size_isequal(sjt_parent137, sjt_functionParam315, &sjt_capture40);
 #line 28
-    result16 = !sjt_capture39;
+    result16 = !sjt_capture40;
     if (result16) {
         float result19;
         float result20;
@@ -33522,14 +33523,24 @@ void sjf_string_isequal(sjs_string* _parent, sjs_string* test, bool* _return) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result4;
-    bool result5;
+    bool sjt_capture18;
     sjs_array_char sjt_funcold8 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result4 = !(&_parent->data)->isglobal;
+    if (result4) {
+        bool result5;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result5 = !_parent->_isnullterminated;
 #line 73
-    result5 = !_parent->_isnullterminated;
-    if (result4 || result5) {
+        sjt_capture18 = result5;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture18 = false;
+    }
+
+    if (sjt_capture18) {
         int32_t sjt_functionParam120;
         char sjt_functionParam121;
         sjs_array_char* sjt_parent57 = 0;
@@ -33720,17 +33731,17 @@ void sjf_style_getfont_heap(sjs_style* _parent, sjs_font** _return) {
 
     sjt_call47._refCount = 1;
 #line 3 "lib/sj-lib-ui/style.sj"
-    sjt_call47.count = 16;
+    sjt_call47.count = 32;
 #line 3
     sjt_call47.data._refCount = 1;
 #line 3
-    sjt_call47.data.datasize = 16;
+    sjt_call47.data.datasize = 32;
 #line 3
     sjt_call47.data.data = (void*)sjg_string27;
 #line 3
     sjt_call47.data.isglobal = true;
 #line 3
-    sjt_call47.data.count = 16;
+    sjt_call47.data.count = 32;
 #line 3
     sjf_array_char(&sjt_call47.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -34152,7 +34163,7 @@ void sjf_textelement_render(sjs_textelement* _parent, sjs_scene2d* scene) {
 
 void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_) {
     bool result13;
-    bool sjt_capture31;
+    bool sjt_capture32;
     sjs_rect* sjt_functionParam226 = 0;
     sjs_rect* sjt_parent118 = 0;
 
@@ -34161,9 +34172,9 @@ void sjf_textelement_setrect(sjs_textelement* _parent, sjs_rect* rect_) {
 #line 41 "lib/sj-lib-ui/textElement.sj"
     sjt_functionParam226 = rect_;
 #line 41
-    sjf_rect_isequal(sjt_parent118, sjt_functionParam226, &sjt_capture31);
+    sjf_rect_isequal(sjt_parent118, sjt_functionParam226, &sjt_capture32);
 #line 42
-    result13 = !sjt_capture31;
+    result13 = !sjt_capture32;
     if (result13) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -35063,7 +35074,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
         _return->count = 4;
         _return->data._refCount = 1;
         _return->data.datasize = 4;
-        _return->data.data = (void*)sjg_string123;
+        _return->data.data = (void*)sjg_string124;
         _return->data.isglobal = true;
         _return->data.count = 4;
         sjf_array_char(&_return->data);
@@ -35084,7 +35095,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string124;
+        _return->data.data = (void*)sjg_string125;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35108,7 +35119,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string125;
+        _return->data.data = (void*)sjg_string126;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35132,7 +35143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 31;
 #line 14
-        _return->data.data = (void*)sjg_string126;
+        _return->data.data = (void*)sjg_string127;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35156,7 +35167,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 24;
 #line 14
-        _return->data.data = (void*)sjg_string127;
+        _return->data.data = (void*)sjg_string128;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35180,7 +35191,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 33;
 #line 14
-        _return->data.data = (void*)sjg_string128;
+        _return->data.data = (void*)sjg_string129;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35204,7 +35215,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 25;
 #line 14
-        _return->data.data = (void*)sjg_string129;
+        _return->data.data = (void*)sjg_string130;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35228,7 +35239,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string130;
+        _return->data.data = (void*)sjg_string131;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35252,7 +35263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 20;
 #line 14
-        _return->data.data = (void*)sjg_string131;
+        _return->data.data = (void*)sjg_string132;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35276,7 +35287,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string132;
+        _return->data.data = (void*)sjg_string133;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35300,7 +35311,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 27;
 #line 14
-        _return->data.data = (void*)sjg_string133;
+        _return->data.data = (void*)sjg_string134;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35324,7 +35335,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string134;
+        _return->data.data = (void*)sjg_string135;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35348,7 +35359,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string135;
+        _return->data.data = (void*)sjg_string136;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35372,7 +35383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string136;
+        _return->data.data = (void*)sjg_string137;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35396,7 +35407,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string137;
+        _return->data.data = (void*)sjg_string138;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35420,7 +35431,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string138;
+        _return->data.data = (void*)sjg_string139;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35444,7 +35455,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string139;
+        _return->data.data = (void*)sjg_string140;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35468,7 +35479,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 21;
 #line 14
-        _return->data.data = (void*)sjg_string140;
+        _return->data.data = (void*)sjg_string141;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35492,7 +35503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string141;
+        _return->data.data = (void*)sjg_string142;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35516,7 +35527,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string142;
+        _return->data.data = (void*)sjg_string143;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35540,7 +35551,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string143;
+        _return->data.data = (void*)sjg_string144;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35564,7 +35575,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 23;
 #line 14
-        _return->data.data = (void*)sjg_string144;
+        _return->data.data = (void*)sjg_string145;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35588,7 +35599,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string145;
+        _return->data.data = (void*)sjg_string146;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35612,7 +35623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 20;
 #line 14
-        _return->data.data = (void*)sjg_string146;
+        _return->data.data = (void*)sjg_string147;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35636,7 +35647,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 20;
 #line 14
-        _return->data.data = (void*)sjg_string147;
+        _return->data.data = (void*)sjg_string148;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35660,7 +35671,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string148;
+        _return->data.data = (void*)sjg_string149;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35684,7 +35695,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 18;
 #line 14
-        _return->data.data = (void*)sjg_string149;
+        _return->data.data = (void*)sjg_string150;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35708,7 +35719,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string150;
+        _return->data.data = (void*)sjg_string151;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35732,7 +35743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string151;
+        _return->data.data = (void*)sjg_string152;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35756,7 +35767,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string152;
+        _return->data.data = (void*)sjg_string153;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35780,7 +35791,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string153;
+        _return->data.data = (void*)sjg_string154;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35804,7 +35815,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string154;
+        _return->data.data = (void*)sjg_string155;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35828,7 +35839,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string155;
+        _return->data.data = (void*)sjg_string156;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35852,7 +35863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string156;
+        _return->data.data = (void*)sjg_string157;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35876,7 +35887,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 21;
 #line 14
-        _return->data.data = (void*)sjg_string157;
+        _return->data.data = (void*)sjg_string158;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35900,7 +35911,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string158;
+        _return->data.data = (void*)sjg_string159;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35924,7 +35935,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string159;
+        _return->data.data = (void*)sjg_string160;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35948,7 +35959,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string160;
+        _return->data.data = (void*)sjg_string161;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35972,7 +35983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string161;
+        _return->data.data = (void*)sjg_string162;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -35996,7 +36007,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string162;
+        _return->data.data = (void*)sjg_string163;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36020,7 +36031,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string163;
+        _return->data.data = (void*)sjg_string164;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36044,7 +36055,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string164;
+        _return->data.data = (void*)sjg_string165;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36068,7 +36079,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string165;
+        _return->data.data = (void*)sjg_string166;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36092,7 +36103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string166;
+        _return->data.data = (void*)sjg_string167;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36116,7 +36127,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string167;
+        _return->data.data = (void*)sjg_string168;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36164,7 +36175,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string168;
+        _return->data.data = (void*)sjg_string169;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36188,7 +36199,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string169;
+        _return->data.data = (void*)sjg_string170;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36212,7 +36223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string170;
+        _return->data.data = (void*)sjg_string171;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36236,7 +36247,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string169;
+        _return->data.data = (void*)sjg_string170;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36260,7 +36271,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string171;
+        _return->data.data = (void*)sjg_string172;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36284,7 +36295,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string169;
+        _return->data.data = (void*)sjg_string170;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36308,7 +36319,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string172;
+        _return->data.data = (void*)sjg_string173;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36332,7 +36343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36356,7 +36367,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36380,7 +36391,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36404,7 +36415,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string176;
+        _return->data.data = (void*)sjg_string177;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36428,7 +36439,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string177;
+        _return->data.data = (void*)sjg_string178;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36452,7 +36463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36476,7 +36487,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36500,7 +36511,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36524,7 +36535,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string178;
+        _return->data.data = (void*)sjg_string179;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36548,7 +36559,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36572,7 +36583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36596,7 +36607,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string179;
+        _return->data.data = (void*)sjg_string180;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36620,7 +36631,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 18;
 #line 14
-        _return->data.data = (void*)sjg_string180;
+        _return->data.data = (void*)sjg_string181;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36644,7 +36655,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36668,7 +36679,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36692,7 +36703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36716,7 +36727,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string181;
+        _return->data.data = (void*)sjg_string182;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36740,7 +36751,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string182;
+        _return->data.data = (void*)sjg_string183;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36764,7 +36775,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string183;
+        _return->data.data = (void*)sjg_string184;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36788,7 +36799,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string184;
+        _return->data.data = (void*)sjg_string185;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36812,7 +36823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36836,7 +36847,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36860,7 +36871,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string185;
+        _return->data.data = (void*)sjg_string186;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36884,7 +36895,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36908,7 +36919,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36932,7 +36943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36956,7 +36967,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string186;
+        _return->data.data = (void*)sjg_string187;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -36980,7 +36991,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37004,7 +37015,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37028,7 +37039,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37052,7 +37063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string187;
+        _return->data.data = (void*)sjg_string188;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37076,7 +37087,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37100,7 +37111,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37124,7 +37135,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string188;
+        _return->data.data = (void*)sjg_string189;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37148,7 +37159,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string189;
+        _return->data.data = (void*)sjg_string190;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37172,7 +37183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37196,7 +37207,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string174;
+        _return->data.data = (void*)sjg_string175;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37220,7 +37231,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37244,7 +37255,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 36;
 #line 14
-        _return->data.data = (void*)sjg_string190;
+        _return->data.data = (void*)sjg_string191;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37268,7 +37279,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37292,7 +37303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string175;
+        _return->data.data = (void*)sjg_string176;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37316,7 +37327,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string191;
+        _return->data.data = (void*)sjg_string192;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37340,7 +37351,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string192;
+        _return->data.data = (void*)sjg_string193;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37364,7 +37375,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37388,7 +37399,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string194;
+        _return->data.data = (void*)sjg_string195;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37412,7 +37423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37436,7 +37447,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37460,7 +37471,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37484,7 +37495,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37508,7 +37519,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string199;
+        _return->data.data = (void*)sjg_string200;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37532,7 +37543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37556,7 +37567,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37580,7 +37591,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37604,7 +37615,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37628,7 +37639,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37652,7 +37663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string200;
+        _return->data.data = (void*)sjg_string201;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37676,7 +37687,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37700,7 +37711,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37724,7 +37735,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37748,7 +37759,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37772,7 +37783,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37796,7 +37807,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string201;
+        _return->data.data = (void*)sjg_string202;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37820,7 +37831,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37844,7 +37855,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string202;
+        _return->data.data = (void*)sjg_string203;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37868,7 +37879,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37892,7 +37903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string203;
+        _return->data.data = (void*)sjg_string204;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37916,7 +37927,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37940,7 +37951,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37964,7 +37975,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -37988,7 +37999,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string204;
+        _return->data.data = (void*)sjg_string205;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38012,7 +38023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string205;
+        _return->data.data = (void*)sjg_string206;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38036,7 +38047,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string206;
+        _return->data.data = (void*)sjg_string207;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38060,7 +38071,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string207;
+        _return->data.data = (void*)sjg_string208;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38084,7 +38095,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38108,7 +38119,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38132,7 +38143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string208;
+        _return->data.data = (void*)sjg_string209;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38156,7 +38167,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38180,7 +38191,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38204,7 +38215,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38228,7 +38239,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38252,7 +38263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38276,7 +38287,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string209;
+        _return->data.data = (void*)sjg_string210;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38300,7 +38311,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string210;
+        _return->data.data = (void*)sjg_string211;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38324,7 +38335,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38348,7 +38359,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string211;
+        _return->data.data = (void*)sjg_string212;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38372,7 +38383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string212;
+        _return->data.data = (void*)sjg_string213;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38396,7 +38407,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string213;
+        _return->data.data = (void*)sjg_string214;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38420,7 +38431,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string214;
+        _return->data.data = (void*)sjg_string215;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38444,7 +38455,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string215;
+        _return->data.data = (void*)sjg_string216;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38468,7 +38479,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38492,7 +38503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38516,7 +38527,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38540,7 +38551,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38564,7 +38575,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string216;
+        _return->data.data = (void*)sjg_string217;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38588,7 +38599,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string217;
+        _return->data.data = (void*)sjg_string218;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38612,7 +38623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38636,7 +38647,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string218;
+        _return->data.data = (void*)sjg_string219;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38660,7 +38671,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string214;
+        _return->data.data = (void*)sjg_string215;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38684,7 +38695,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string219;
+        _return->data.data = (void*)sjg_string220;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38708,7 +38719,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string220;
+        _return->data.data = (void*)sjg_string221;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38732,7 +38743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string221;
+        _return->data.data = (void*)sjg_string222;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38756,7 +38767,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string222;
+        _return->data.data = (void*)sjg_string223;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38780,7 +38791,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string223;
+        _return->data.data = (void*)sjg_string224;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38804,7 +38815,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string224;
+        _return->data.data = (void*)sjg_string225;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38828,7 +38839,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string225;
+        _return->data.data = (void*)sjg_string226;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38852,7 +38863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string226;
+        _return->data.data = (void*)sjg_string227;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38876,7 +38887,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string227;
+        _return->data.data = (void*)sjg_string228;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38900,7 +38911,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string228;
+        _return->data.data = (void*)sjg_string229;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38924,7 +38935,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string229;
+        _return->data.data = (void*)sjg_string230;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38948,7 +38959,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string230;
+        _return->data.data = (void*)sjg_string231;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38972,7 +38983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string231;
+        _return->data.data = (void*)sjg_string232;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -38996,7 +39007,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string232;
+        _return->data.data = (void*)sjg_string233;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39020,7 +39031,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string233;
+        _return->data.data = (void*)sjg_string234;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39044,7 +39055,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39068,7 +39079,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39092,7 +39103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string234;
+        _return->data.data = (void*)sjg_string235;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39116,7 +39127,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39140,7 +39151,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string235;
+        _return->data.data = (void*)sjg_string236;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39164,7 +39175,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string236;
+        _return->data.data = (void*)sjg_string237;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39188,7 +39199,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string237;
+        _return->data.data = (void*)sjg_string238;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39212,7 +39223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string238;
+        _return->data.data = (void*)sjg_string239;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39236,7 +39247,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39260,7 +39271,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39284,7 +39295,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39308,7 +39319,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39332,7 +39343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string216;
+        _return->data.data = (void*)sjg_string217;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39356,7 +39367,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39380,7 +39391,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string218;
+        _return->data.data = (void*)sjg_string219;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39404,7 +39415,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string239;
+        _return->data.data = (void*)sjg_string240;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39428,7 +39439,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39452,7 +39463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39476,7 +39487,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39500,7 +39511,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39524,7 +39535,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39548,7 +39559,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string240;
+        _return->data.data = (void*)sjg_string241;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39572,7 +39583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string241;
+        _return->data.data = (void*)sjg_string242;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39596,7 +39607,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string242;
+        _return->data.data = (void*)sjg_string243;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39620,7 +39631,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string243;
+        _return->data.data = (void*)sjg_string244;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39644,7 +39655,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string244;
+        _return->data.data = (void*)sjg_string245;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39668,7 +39679,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string176;
+        _return->data.data = (void*)sjg_string177;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39692,7 +39703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string245;
+        _return->data.data = (void*)sjg_string246;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39716,7 +39727,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string236;
+        _return->data.data = (void*)sjg_string237;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39740,7 +39751,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string237;
+        _return->data.data = (void*)sjg_string238;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39764,7 +39775,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string246;
+        _return->data.data = (void*)sjg_string247;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39788,7 +39799,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 18;
 #line 14
-        _return->data.data = (void*)sjg_string247;
+        _return->data.data = (void*)sjg_string248;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39812,7 +39823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string248;
+        _return->data.data = (void*)sjg_string249;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39836,7 +39847,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string249;
+        _return->data.data = (void*)sjg_string250;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39860,7 +39871,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 24;
 #line 14
-        _return->data.data = (void*)sjg_string250;
+        _return->data.data = (void*)sjg_string251;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39884,7 +39895,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string251;
+        _return->data.data = (void*)sjg_string252;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39908,7 +39919,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string252;
+        _return->data.data = (void*)sjg_string253;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39932,7 +39943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string253;
+        _return->data.data = (void*)sjg_string254;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39956,7 +39967,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 25;
 #line 14
-        _return->data.data = (void*)sjg_string254;
+        _return->data.data = (void*)sjg_string255;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -39980,7 +39991,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 22;
 #line 14
-        _return->data.data = (void*)sjg_string255;
+        _return->data.data = (void*)sjg_string256;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40004,7 +40015,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string256;
+        _return->data.data = (void*)sjg_string257;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40028,7 +40039,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string257;
+        _return->data.data = (void*)sjg_string258;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40052,7 +40063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string258;
+        _return->data.data = (void*)sjg_string259;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40076,7 +40087,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 20;
 #line 14
-        _return->data.data = (void*)sjg_string259;
+        _return->data.data = (void*)sjg_string260;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40100,7 +40111,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string260;
+        _return->data.data = (void*)sjg_string261;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40124,7 +40135,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string261;
+        _return->data.data = (void*)sjg_string262;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40148,7 +40159,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string262;
+        _return->data.data = (void*)sjg_string263;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40172,7 +40183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string263;
+        _return->data.data = (void*)sjg_string264;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40196,7 +40207,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string264;
+        _return->data.data = (void*)sjg_string265;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40220,7 +40231,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 21;
 #line 14
-        _return->data.data = (void*)sjg_string265;
+        _return->data.data = (void*)sjg_string266;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40244,7 +40255,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string266;
+        _return->data.data = (void*)sjg_string267;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40268,7 +40279,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string267;
+        _return->data.data = (void*)sjg_string268;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40292,7 +40303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string268;
+        _return->data.data = (void*)sjg_string269;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40316,7 +40327,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string269;
+        _return->data.data = (void*)sjg_string270;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40340,7 +40351,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string270;
+        _return->data.data = (void*)sjg_string271;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40364,7 +40375,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string271;
+        _return->data.data = (void*)sjg_string272;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40388,7 +40399,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string272;
+        _return->data.data = (void*)sjg_string273;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40412,7 +40423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string273;
+        _return->data.data = (void*)sjg_string274;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40436,7 +40447,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 21;
 #line 14
-        _return->data.data = (void*)sjg_string274;
+        _return->data.data = (void*)sjg_string275;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40460,7 +40471,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string275;
+        _return->data.data = (void*)sjg_string276;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40484,7 +40495,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string276;
+        _return->data.data = (void*)sjg_string277;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40508,7 +40519,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40532,7 +40543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string182;
+        _return->data.data = (void*)sjg_string183;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40556,7 +40567,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 24;
 #line 14
-        _return->data.data = (void*)sjg_string277;
+        _return->data.data = (void*)sjg_string278;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40580,7 +40591,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string275;
+        _return->data.data = (void*)sjg_string276;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40604,7 +40615,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string276;
+        _return->data.data = (void*)sjg_string277;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40628,7 +40639,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string182;
+        _return->data.data = (void*)sjg_string183;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40652,7 +40663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 22;
 #line 14
-        _return->data.data = (void*)sjg_string278;
+        _return->data.data = (void*)sjg_string279;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40676,7 +40687,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string275;
+        _return->data.data = (void*)sjg_string276;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40700,7 +40711,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string276;
+        _return->data.data = (void*)sjg_string277;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40724,7 +40735,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40748,7 +40759,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string182;
+        _return->data.data = (void*)sjg_string183;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40772,7 +40783,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string279;
+        _return->data.data = (void*)sjg_string280;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40796,7 +40807,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string275;
+        _return->data.data = (void*)sjg_string276;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40820,7 +40831,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string276;
+        _return->data.data = (void*)sjg_string277;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40844,7 +40855,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40868,7 +40879,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string280;
+        _return->data.data = (void*)sjg_string281;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40892,7 +40903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string281;
+        _return->data.data = (void*)sjg_string282;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40916,7 +40927,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string282;
+        _return->data.data = (void*)sjg_string283;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40940,7 +40951,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string283;
+        _return->data.data = (void*)sjg_string284;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40964,7 +40975,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -40988,7 +40999,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41012,7 +41023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41036,7 +41047,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41060,7 +41071,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41084,7 +41095,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string284;
+        _return->data.data = (void*)sjg_string285;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41108,7 +41119,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41132,7 +41143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string285;
+        _return->data.data = (void*)sjg_string286;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41156,7 +41167,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string286;
+        _return->data.data = (void*)sjg_string287;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41180,7 +41191,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string287;
+        _return->data.data = (void*)sjg_string288;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41204,7 +41215,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string288;
+        _return->data.data = (void*)sjg_string289;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41228,7 +41239,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string287;
+        _return->data.data = (void*)sjg_string288;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41252,7 +41263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string289;
+        _return->data.data = (void*)sjg_string290;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41276,7 +41287,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string287;
+        _return->data.data = (void*)sjg_string288;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41300,7 +41311,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string290;
+        _return->data.data = (void*)sjg_string291;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41324,7 +41335,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string287;
+        _return->data.data = (void*)sjg_string288;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41348,7 +41359,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string291;
+        _return->data.data = (void*)sjg_string292;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41372,7 +41383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41396,7 +41407,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41420,7 +41431,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41444,7 +41455,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41468,7 +41479,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41492,7 +41503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41516,7 +41527,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string296;
+        _return->data.data = (void*)sjg_string297;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41540,7 +41551,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41564,7 +41575,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string298;
+        _return->data.data = (void*)sjg_string299;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41588,7 +41599,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string299;
+        _return->data.data = (void*)sjg_string300;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41612,7 +41623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41636,7 +41647,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41660,7 +41671,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string301;
+        _return->data.data = (void*)sjg_string302;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41684,7 +41695,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string302;
+        _return->data.data = (void*)sjg_string303;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41708,7 +41719,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string303;
+        _return->data.data = (void*)sjg_string304;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41732,7 +41743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41756,7 +41767,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41780,7 +41791,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string301;
+        _return->data.data = (void*)sjg_string302;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41804,7 +41815,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string183;
+        _return->data.data = (void*)sjg_string184;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41828,7 +41839,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string304;
+        _return->data.data = (void*)sjg_string305;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41852,7 +41863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41876,7 +41887,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41900,7 +41911,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string305;
+        _return->data.data = (void*)sjg_string306;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41924,7 +41935,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41948,7 +41959,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41972,7 +41983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string301;
+        _return->data.data = (void*)sjg_string302;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -41996,7 +42007,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string302;
+        _return->data.data = (void*)sjg_string303;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42020,7 +42031,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string306;
+        _return->data.data = (void*)sjg_string307;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42044,7 +42055,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42068,7 +42079,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42092,7 +42103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string301;
+        _return->data.data = (void*)sjg_string302;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42116,7 +42127,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string302;
+        _return->data.data = (void*)sjg_string303;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42140,7 +42151,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string307;
+        _return->data.data = (void*)sjg_string308;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42164,7 +42175,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42188,7 +42199,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42212,7 +42223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42236,7 +42247,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42260,7 +42271,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42284,7 +42295,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string308;
+        _return->data.data = (void*)sjg_string309;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42308,7 +42319,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string309;
+        _return->data.data = (void*)sjg_string310;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42356,7 +42367,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string310;
+        _return->data.data = (void*)sjg_string311;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42380,7 +42391,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string311;
+        _return->data.data = (void*)sjg_string312;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42404,7 +42415,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string312;
+        _return->data.data = (void*)sjg_string313;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42428,7 +42439,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42452,7 +42463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42476,7 +42487,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42500,7 +42511,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42524,7 +42535,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42548,7 +42559,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42572,7 +42583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42596,7 +42607,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string313;
+        _return->data.data = (void*)sjg_string314;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42620,7 +42631,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string314;
+        _return->data.data = (void*)sjg_string315;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42644,7 +42655,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string315;
+        _return->data.data = (void*)sjg_string316;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42668,7 +42679,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string316;
+        _return->data.data = (void*)sjg_string317;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42692,7 +42703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string317;
+        _return->data.data = (void*)sjg_string318;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42716,7 +42727,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string318;
+        _return->data.data = (void*)sjg_string319;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42740,7 +42751,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string319;
+        _return->data.data = (void*)sjg_string320;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42764,7 +42775,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string320;
+        _return->data.data = (void*)sjg_string321;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42788,7 +42799,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string321;
+        _return->data.data = (void*)sjg_string322;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42812,7 +42823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string322;
+        _return->data.data = (void*)sjg_string323;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42836,7 +42847,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string323;
+        _return->data.data = (void*)sjg_string324;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42860,7 +42871,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string324;
+        _return->data.data = (void*)sjg_string325;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42884,7 +42895,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string325;
+        _return->data.data = (void*)sjg_string326;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42908,7 +42919,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string326;
+        _return->data.data = (void*)sjg_string327;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42932,7 +42943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string327;
+        _return->data.data = (void*)sjg_string328;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42956,7 +42967,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string328;
+        _return->data.data = (void*)sjg_string329;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -42980,7 +42991,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string329;
+        _return->data.data = (void*)sjg_string330;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43004,7 +43015,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string330;
+        _return->data.data = (void*)sjg_string331;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43028,7 +43039,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string331;
+        _return->data.data = (void*)sjg_string332;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43052,7 +43063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string332;
+        _return->data.data = (void*)sjg_string333;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43076,7 +43087,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string333;
+        _return->data.data = (void*)sjg_string334;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43124,7 +43135,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43148,7 +43159,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43172,7 +43183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43196,7 +43207,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43220,7 +43231,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43244,7 +43255,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43268,7 +43279,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43292,7 +43303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string334;
+        _return->data.data = (void*)sjg_string335;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43316,7 +43327,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string335;
+        _return->data.data = (void*)sjg_string336;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43340,7 +43351,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 16;
 #line 14
-        _return->data.data = (void*)sjg_string336;
+        _return->data.data = (void*)sjg_string337;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43364,7 +43375,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string337;
+        _return->data.data = (void*)sjg_string338;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43388,7 +43399,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 10;
 #line 14
-        _return->data.data = (void*)sjg_string338;
+        _return->data.data = (void*)sjg_string339;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43412,7 +43423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string339;
+        _return->data.data = (void*)sjg_string340;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43436,7 +43447,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string340;
+        _return->data.data = (void*)sjg_string341;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43460,7 +43471,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string341;
+        _return->data.data = (void*)sjg_string342;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43484,7 +43495,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 21;
 #line 14
-        _return->data.data = (void*)sjg_string342;
+        _return->data.data = (void*)sjg_string343;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43508,7 +43519,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string343;
+        _return->data.data = (void*)sjg_string344;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43532,7 +43543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43556,7 +43567,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43580,7 +43591,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43604,7 +43615,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43628,7 +43639,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string344;
+        _return->data.data = (void*)sjg_string345;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43652,7 +43663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string345;
+        _return->data.data = (void*)sjg_string346;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43676,7 +43687,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43700,7 +43711,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string346;
+        _return->data.data = (void*)sjg_string347;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43724,7 +43735,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43748,7 +43759,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43772,7 +43783,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43796,7 +43807,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43820,7 +43831,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43844,7 +43855,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43868,7 +43879,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43892,7 +43903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string347;
+        _return->data.data = (void*)sjg_string348;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43916,7 +43927,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43940,7 +43951,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43964,7 +43975,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string348;
+        _return->data.data = (void*)sjg_string349;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -43988,7 +43999,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44012,7 +44023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44036,7 +44047,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44060,7 +44071,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44084,7 +44095,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44108,7 +44119,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string349;
+        _return->data.data = (void*)sjg_string350;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44132,7 +44143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44156,7 +44167,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44180,7 +44191,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44204,7 +44215,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string204;
+        _return->data.data = (void*)sjg_string205;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44228,7 +44239,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string205;
+        _return->data.data = (void*)sjg_string206;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44252,7 +44263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string206;
+        _return->data.data = (void*)sjg_string207;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44276,7 +44287,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string207;
+        _return->data.data = (void*)sjg_string208;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44300,7 +44311,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44324,7 +44335,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44348,7 +44359,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 17;
 #line 14
-        _return->data.data = (void*)sjg_string350;
+        _return->data.data = (void*)sjg_string351;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44372,7 +44383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string351;
+        _return->data.data = (void*)sjg_string352;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44396,7 +44407,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string339;
+        _return->data.data = (void*)sjg_string340;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44420,7 +44431,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string352;
+        _return->data.data = (void*)sjg_string353;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44444,7 +44455,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string353;
+        _return->data.data = (void*)sjg_string354;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44468,7 +44479,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string176;
+        _return->data.data = (void*)sjg_string177;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44492,7 +44503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string354;
+        _return->data.data = (void*)sjg_string355;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44516,7 +44527,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string355;
+        _return->data.data = (void*)sjg_string356;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44540,7 +44551,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string356;
+        _return->data.data = (void*)sjg_string357;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44564,7 +44575,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string357;
+        _return->data.data = (void*)sjg_string358;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44588,7 +44599,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string358;
+        _return->data.data = (void*)sjg_string359;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44612,7 +44623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string359;
+        _return->data.data = (void*)sjg_string360;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44636,7 +44647,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string331;
+        _return->data.data = (void*)sjg_string332;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44660,7 +44671,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string360;
+        _return->data.data = (void*)sjg_string361;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44684,7 +44695,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44708,7 +44719,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string292;
+        _return->data.data = (void*)sjg_string293;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44732,7 +44743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string293;
+        _return->data.data = (void*)sjg_string294;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44756,7 +44767,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string294;
+        _return->data.data = (void*)sjg_string295;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44780,7 +44791,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44804,7 +44815,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string295;
+        _return->data.data = (void*)sjg_string296;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44828,7 +44839,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string297;
+        _return->data.data = (void*)sjg_string298;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44852,7 +44863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string361;
+        _return->data.data = (void*)sjg_string362;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44876,7 +44887,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string362;
+        _return->data.data = (void*)sjg_string363;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44900,7 +44911,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string363;
+        _return->data.data = (void*)sjg_string364;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44924,7 +44935,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string364;
+        _return->data.data = (void*)sjg_string365;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44948,7 +44959,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string176;
+        _return->data.data = (void*)sjg_string177;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44972,7 +44983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string365;
+        _return->data.data = (void*)sjg_string366;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -44996,7 +45007,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string366;
+        _return->data.data = (void*)sjg_string367;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45020,7 +45031,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string354;
+        _return->data.data = (void*)sjg_string355;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45044,7 +45055,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string367;
+        _return->data.data = (void*)sjg_string368;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45068,7 +45079,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45092,7 +45103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string173;
+        _return->data.data = (void*)sjg_string174;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45116,7 +45127,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string244;
+        _return->data.data = (void*)sjg_string245;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45140,7 +45151,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string176;
+        _return->data.data = (void*)sjg_string177;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45164,7 +45175,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string368;
+        _return->data.data = (void*)sjg_string369;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45188,7 +45199,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string369;
+        _return->data.data = (void*)sjg_string370;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45212,7 +45223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string370;
+        _return->data.data = (void*)sjg_string371;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45236,7 +45247,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string371;
+        _return->data.data = (void*)sjg_string372;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45260,7 +45271,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string372;
+        _return->data.data = (void*)sjg_string373;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45284,7 +45295,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string193;
+        _return->data.data = (void*)sjg_string194;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45308,7 +45319,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string195;
+        _return->data.data = (void*)sjg_string196;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45332,7 +45343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45356,7 +45367,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string373;
+        _return->data.data = (void*)sjg_string374;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45380,7 +45391,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45404,7 +45415,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string198;
+        _return->data.data = (void*)sjg_string199;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45428,7 +45439,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string374;
+        _return->data.data = (void*)sjg_string375;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45452,7 +45463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string375;
+        _return->data.data = (void*)sjg_string376;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45476,7 +45487,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45524,7 +45535,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 19;
 #line 14
-        _return->data.data = (void*)sjg_string376;
+        _return->data.data = (void*)sjg_string377;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45548,7 +45559,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string377;
+        _return->data.data = (void*)sjg_string378;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45572,7 +45583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45596,7 +45607,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 13;
 #line 14
-        _return->data.data = (void*)sjg_string378;
+        _return->data.data = (void*)sjg_string379;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45620,7 +45631,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string379;
+        _return->data.data = (void*)sjg_string380;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45644,7 +45655,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string380;
+        _return->data.data = (void*)sjg_string381;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45668,7 +45679,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string381;
+        _return->data.data = (void*)sjg_string382;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45692,7 +45703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string339;
+        _return->data.data = (void*)sjg_string340;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45716,7 +45727,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string382;
+        _return->data.data = (void*)sjg_string383;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45740,7 +45751,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string383;
+        _return->data.data = (void*)sjg_string384;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45764,7 +45775,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string384;
+        _return->data.data = (void*)sjg_string385;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45788,7 +45799,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string300;
+        _return->data.data = (void*)sjg_string301;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45812,7 +45823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string339;
+        _return->data.data = (void*)sjg_string340;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45836,7 +45847,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string385;
+        _return->data.data = (void*)sjg_string386;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45860,7 +45871,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 5;
 #line 14
-        _return->data.data = (void*)sjg_string386;
+        _return->data.data = (void*)sjg_string387;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45884,7 +45895,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string387;
+        _return->data.data = (void*)sjg_string388;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45908,7 +45919,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 15;
 #line 14
-        _return->data.data = (void*)sjg_string388;
+        _return->data.data = (void*)sjg_string389;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45932,7 +45943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 11;
 #line 14
-        _return->data.data = (void*)sjg_string389;
+        _return->data.data = (void*)sjg_string390;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45956,7 +45967,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string390;
+        _return->data.data = (void*)sjg_string391;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -45980,7 +45991,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string391;
+        _return->data.data = (void*)sjg_string392;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46004,7 +46015,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 9;
 #line 14
-        _return->data.data = (void*)sjg_string392;
+        _return->data.data = (void*)sjg_string393;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46028,7 +46039,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string393;
+        _return->data.data = (void*)sjg_string394;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46052,7 +46063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string394;
+        _return->data.data = (void*)sjg_string395;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46076,7 +46087,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string395;
+        _return->data.data = (void*)sjg_string396;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46100,7 +46111,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 8;
 #line 14
-        _return->data.data = (void*)sjg_string339;
+        _return->data.data = (void*)sjg_string340;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46124,7 +46135,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string213;
+        _return->data.data = (void*)sjg_string214;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46148,7 +46159,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 30;
 #line 14
-        _return->data.data = (void*)sjg_string396;
+        _return->data.data = (void*)sjg_string397;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46172,7 +46183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 41;
 #line 14
-        _return->data.data = (void*)sjg_string397;
+        _return->data.data = (void*)sjg_string398;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46196,7 +46207,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 38;
 #line 14
-        _return->data.data = (void*)sjg_string398;
+        _return->data.data = (void*)sjg_string399;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46220,7 +46231,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 43;
 #line 14
-        _return->data.data = (void*)sjg_string399;
+        _return->data.data = (void*)sjg_string400;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46244,7 +46255,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 6;
 #line 14
-        _return->data.data = (void*)sjg_string197;
+        _return->data.data = (void*)sjg_string198;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46268,7 +46279,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 24;
 #line 14
-        _return->data.data = (void*)sjg_string400;
+        _return->data.data = (void*)sjg_string401;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46292,7 +46303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string401;
+        _return->data.data = (void*)sjg_string402;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46316,7 +46327,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string196;
+        _return->data.data = (void*)sjg_string197;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46340,7 +46351,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 7;
 #line 14
-        _return->data.data = (void*)sjg_string402;
+        _return->data.data = (void*)sjg_string403;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46364,7 +46375,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 14;
 #line 14
-        _return->data.data = (void*)sjg_string403;
+        _return->data.data = (void*)sjg_string404;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46388,7 +46399,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 12;
 #line 14
-        _return->data.data = (void*)sjg_string404;
+        _return->data.data = (void*)sjg_string405;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46412,7 +46423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string405;
+        _return->data.data = (void*)sjg_string406;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46436,7 +46447,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string406;
+        _return->data.data = (void*)sjg_string407;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46460,7 +46471,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 3;
 #line 14
-        _return->data.data = (void*)sjg_string407;
+        _return->data.data = (void*)sjg_string408;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -46484,7 +46495,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 14
         _return->data.datasize = 4;
 #line 14
-        _return->data.data = (void*)sjg_string408;
+        _return->data.data = (void*)sjg_string409;
 #line 14
         _return->data.isglobal = true;
 #line 14
@@ -47722,15 +47733,15 @@ void sjf_vertex_location_texture_normal_destroy(sjs_vertex_location_texture_norm
 }
 
 void sjf_vertex_location_texture_normal_getrawsize(int32_t* _return) {
-    int32_t sjt_capture45;
     int32_t sjt_capture46;
     int32_t sjt_capture47;
+    int32_t sjt_capture48;
 
-    sjf_vec3_getrawsize(&sjt_capture45);
-    sjf_vec2_getrawsize(&sjt_capture46);
-    sjf_vec3_getrawsize(&sjt_capture47);
+    sjf_vec3_getrawsize(&sjt_capture46);
+    sjf_vec2_getrawsize(&sjt_capture47);
+    sjf_vec3_getrawsize(&sjt_capture48);
 #line 9 "lib/sj-lib-ui/vertexBufferBuilders.sj"
-    (*_return) = (sjt_capture45 + sjt_capture46) + sjt_capture47;
+    (*_return) = (sjt_capture46 + sjt_capture47) + sjt_capture48;
 }
 
 void sjf_vertex_location_texture_normal_heap(sjs_vertex_location_texture_normal* _this) {
@@ -48162,41 +48173,41 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
         sjf_intersecttriangle(sjt_functionParam679, sjt_functionParam680, sjt_functionParam681, sjt_functionParam682, sjt_functionParam683, &result);
         if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue29 = 0;
-            float sjt_capture56;
-            float_option sjt_capture57;
+            float sjt_capture57;
+            float_option sjt_capture58;
             sjs_vec3 sjt_value22 = { -1 };
             sjs_vec2 sjt_value23 = { -1 };
 
 #line 73 "lib/sj-lib-ui/vertexBuffer.sj"
             ifValue29 = (result._refCount != -1 ? &result : 0);
             if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                sjs_vec3* sjt_capture58 = 0;
+                sjs_vec3* sjt_capture59 = 0;
                 float sjt_value20;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                sjt_capture58 = (intersection._refCount != -1 ? &intersection : 0);
+                sjt_capture59 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_value20 = sjt_capture58->z;
+                sjt_value20 = sjt_capture59->z;
 #line 74
-                sjt_capture57.isvalid = true;
+                sjt_capture58.isvalid = true;
 #line 74
-                sjt_capture57.value = sjt_value20;
+                sjt_capture58.value = sjt_value20;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture57 = float_empty;
+                sjt_capture58 = float_empty;
             }
 
-            if (sjt_capture57.isvalid) {
+            if (sjt_capture58.isvalid) {
                 float_option sjt_getValue4;
 
                 if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                    sjs_vec3* sjt_capture59 = 0;
+                    sjs_vec3* sjt_capture60 = 0;
                     float sjt_value21;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                    sjt_capture59 = (intersection._refCount != -1 ? &intersection : 0);
+                    sjt_capture60 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                    sjt_value21 = sjt_capture59->z;
+                    sjt_value21 = sjt_capture60->z;
 #line 74
                     sjt_getValue4.isvalid = true;
 #line 74
@@ -48207,13 +48218,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 }
 
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture56 = sjt_getValue4.value;
+                sjt_capture57 = sjt_getValue4.value;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture56 = 0.0f;
+                sjt_capture57 = 0.0f;
             }
 
-            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue29->z < sjt_capture56)) {
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue29->z < sjt_capture57)) {
                 float dtu1;
                 float dtu2;
                 float dtv1;
@@ -48592,41 +48603,41 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
         sjf_intersecttriangle(sjt_functionParam698, sjt_functionParam699, sjt_functionParam700, sjt_functionParam701, sjt_functionParam702, &result);
         if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue30 = 0;
-            float sjt_capture60;
-            float_option sjt_capture61;
+            float sjt_capture61;
+            float_option sjt_capture62;
             sjs_vec3 sjt_value26 = { -1 };
             sjs_vec2 sjt_value27 = { -1 };
 
 #line 73 "lib/sj-lib-ui/vertexBuffer.sj"
             ifValue30 = (result._refCount != -1 ? &result : 0);
             if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                sjs_vec3* sjt_capture62 = 0;
+                sjs_vec3* sjt_capture63 = 0;
                 float sjt_value24;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                sjt_capture62 = (intersection._refCount != -1 ? &intersection : 0);
+                sjt_capture63 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_value24 = sjt_capture62->z;
+                sjt_value24 = sjt_capture63->z;
 #line 74
-                sjt_capture61.isvalid = true;
+                sjt_capture62.isvalid = true;
 #line 74
-                sjt_capture61.value = sjt_value24;
+                sjt_capture62.value = sjt_value24;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture61 = float_empty;
+                sjt_capture62 = float_empty;
             }
 
-            if (sjt_capture61.isvalid) {
+            if (sjt_capture62.isvalid) {
                 float_option sjt_getValue5;
 
                 if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                    sjs_vec3* sjt_capture63 = 0;
+                    sjs_vec3* sjt_capture64 = 0;
                     float sjt_value25;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                    sjt_capture63 = (intersection._refCount != -1 ? &intersection : 0);
+                    sjt_capture64 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                    sjt_value25 = sjt_capture63->z;
+                    sjt_value25 = sjt_capture64->z;
 #line 74
                     sjt_getValue5.isvalid = true;
 #line 74
@@ -48637,13 +48648,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
                 }
 
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture60 = sjt_getValue5.value;
+                sjt_capture61 = sjt_getValue5.value;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture60 = 0.0f;
+                sjt_capture61 = 0.0f;
             }
 
-            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue30->z < sjt_capture60)) {
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue30->z < sjt_capture61)) {
                 float dtu1;
                 float dtu2;
                 float dtv1;
@@ -49578,7 +49589,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
@@ -49758,17 +49769,17 @@ int main(int argc, char** argv) {
 #line 29
     g_blurhorizontalshader.vertex._refCount = 1;
 #line 1 "lib/sj-lib-ui/blurEffect.sj"
-    g_blurhorizontalshader.vertex.count = 20;
+    g_blurhorizontalshader.vertex.count = 37;
 #line 1
     g_blurhorizontalshader.vertex.data._refCount = 1;
 #line 1
-    g_blurhorizontalshader.vertex.data.datasize = 20;
+    g_blurhorizontalshader.vertex.data.datasize = 37;
 #line 1
     g_blurhorizontalshader.vertex.data.data = (void*)sjg_string1;
 #line 1
     g_blurhorizontalshader.vertex.data.isglobal = true;
 #line 1
-    g_blurhorizontalshader.vertex.data.count = 20;
+    g_blurhorizontalshader.vertex.data.count = 37;
 #line 1
     sjf_array_char(&g_blurhorizontalshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -49778,17 +49789,17 @@ int main(int argc, char** argv) {
 #line 14
     g_blurhorizontalshader.pixel._refCount = 1;
 #line 1 "lib/sj-lib-ui/blurEffect.sj"
-    g_blurhorizontalshader.pixel.count = 28;
+    g_blurhorizontalshader.pixel.count = 45;
 #line 1
     g_blurhorizontalshader.pixel.data._refCount = 1;
 #line 1
-    g_blurhorizontalshader.pixel.data.datasize = 28;
+    g_blurhorizontalshader.pixel.data.datasize = 45;
 #line 1
     g_blurhorizontalshader.pixel.data.data = (void*)sjg_string2;
 #line 1
     g_blurhorizontalshader.pixel.data.isglobal = true;
 #line 1
-    g_blurhorizontalshader.pixel.data.count = 28;
+    g_blurhorizontalshader.pixel.data.count = 45;
 #line 1
     sjf_array_char(&g_blurhorizontalshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -49802,17 +49813,17 @@ int main(int argc, char** argv) {
 #line 14
     g_blurverticalshader.vertex._refCount = 1;
 #line 2 "lib/sj-lib-ui/blurEffect.sj"
-    g_blurverticalshader.vertex.count = 20;
+    g_blurverticalshader.vertex.count = 37;
 #line 2
     g_blurverticalshader.vertex.data._refCount = 1;
 #line 2
-    g_blurverticalshader.vertex.data.datasize = 20;
+    g_blurverticalshader.vertex.data.datasize = 37;
 #line 2
     g_blurverticalshader.vertex.data.data = (void*)sjg_string1;
 #line 2
     g_blurverticalshader.vertex.data.isglobal = true;
 #line 2
-    g_blurverticalshader.vertex.data.count = 20;
+    g_blurverticalshader.vertex.data.count = 37;
 #line 2
     sjf_array_char(&g_blurverticalshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -49822,17 +49833,17 @@ int main(int argc, char** argv) {
 #line 14
     g_blurverticalshader.pixel._refCount = 1;
 #line 2 "lib/sj-lib-ui/blurEffect.sj"
-    g_blurverticalshader.pixel.count = 26;
+    g_blurverticalshader.pixel.count = 43;
 #line 2
     g_blurverticalshader.pixel.data._refCount = 1;
 #line 2
-    g_blurverticalshader.pixel.data.datasize = 26;
+    g_blurverticalshader.pixel.data.datasize = 43;
 #line 2
     g_blurverticalshader.pixel.data.data = (void*)sjg_string3;
 #line 2
     g_blurverticalshader.pixel.data.isglobal = true;
 #line 2
-    g_blurverticalshader.pixel.data.count = 26;
+    g_blurverticalshader.pixel.data.count = 43;
 #line 2
     sjf_array_char(&g_blurverticalshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -49918,17 +49929,17 @@ int main(int argc, char** argv) {
 #line 14
     g_fadeshader.vertex._refCount = 1;
 #line 1 "lib/sj-lib-ui/fadeEffect.sj"
-    g_fadeshader.vertex.count = 20;
+    g_fadeshader.vertex.count = 37;
 #line 1
     g_fadeshader.vertex.data._refCount = 1;
 #line 1
-    g_fadeshader.vertex.data.datasize = 20;
+    g_fadeshader.vertex.data.datasize = 37;
 #line 1
     g_fadeshader.vertex.data.data = (void*)sjg_string1;
 #line 1
     g_fadeshader.vertex.data.isglobal = true;
 #line 1
-    g_fadeshader.vertex.data.count = 20;
+    g_fadeshader.vertex.data.count = 37;
 #line 1
     sjf_array_char(&g_fadeshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -49938,17 +49949,17 @@ int main(int argc, char** argv) {
 #line 14
     g_fadeshader.pixel._refCount = 1;
 #line 1 "lib/sj-lib-ui/fadeEffect.sj"
-    g_fadeshader.pixel.count = 17;
+    g_fadeshader.pixel.count = 34;
 #line 1
     g_fadeshader.pixel.data._refCount = 1;
 #line 1
-    g_fadeshader.pixel.data.datasize = 17;
+    g_fadeshader.pixel.data.datasize = 34;
 #line 1
     g_fadeshader.pixel.data.data = (void*)sjg_string4;
 #line 1
     g_fadeshader.pixel.data.isglobal = true;
 #line 1
-    g_fadeshader.pixel.data.count = 17;
+    g_fadeshader.pixel.data.count = 34;
 #line 1
     sjf_array_char(&g_fadeshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50022,17 +50033,17 @@ int main(int argc, char** argv) {
 #line 1
     g_boxshader.vertex._refCount = 1;
 #line 1 "lib/sj-lib-ui/shader.sj"
-    g_boxshader.vertex.count = 20;
+    g_boxshader.vertex.count = 37;
 #line 1
     g_boxshader.vertex.data._refCount = 1;
 #line 1
-    g_boxshader.vertex.data.datasize = 20;
+    g_boxshader.vertex.data.datasize = 37;
 #line 1
     g_boxshader.vertex.data.data = (void*)sjg_string5;
 #line 1
     g_boxshader.vertex.data.isglobal = true;
 #line 1
-    g_boxshader.vertex.data.count = 20;
+    g_boxshader.vertex.data.count = 37;
 #line 1
     sjf_array_char(&g_boxshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50042,17 +50053,17 @@ int main(int argc, char** argv) {
 #line 14
     g_boxshader.pixel._refCount = 1;
 #line 1 "lib/sj-lib-ui/shader.sj"
-    g_boxshader.pixel.count = 20;
+    g_boxshader.pixel.count = 37;
 #line 1
     g_boxshader.pixel.data._refCount = 1;
 #line 1
-    g_boxshader.pixel.data.datasize = 20;
+    g_boxshader.pixel.data.datasize = 37;
 #line 1
     g_boxshader.pixel.data.data = (void*)sjg_string6;
 #line 1
     g_boxshader.pixel.data.isglobal = true;
 #line 1
-    g_boxshader.pixel.data.count = 20;
+    g_boxshader.pixel.data.count = 37;
 #line 1
     sjf_array_char(&g_boxshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50066,17 +50077,17 @@ int main(int argc, char** argv) {
 #line 14
     g_imageshader.vertex._refCount = 1;
 #line 2 "lib/sj-lib-ui/shader.sj"
-    g_imageshader.vertex.count = 20;
+    g_imageshader.vertex.count = 37;
 #line 2
     g_imageshader.vertex.data._refCount = 1;
 #line 2
-    g_imageshader.vertex.data.datasize = 20;
+    g_imageshader.vertex.data.datasize = 37;
 #line 2
     g_imageshader.vertex.data.data = (void*)sjg_string1;
 #line 2
     g_imageshader.vertex.data.isglobal = true;
 #line 2
-    g_imageshader.vertex.data.count = 20;
+    g_imageshader.vertex.data.count = 37;
 #line 2
     sjf_array_char(&g_imageshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50086,17 +50097,17 @@ int main(int argc, char** argv) {
 #line 14
     g_imageshader.pixel._refCount = 1;
 #line 2 "lib/sj-lib-ui/shader.sj"
-    g_imageshader.pixel.count = 20;
+    g_imageshader.pixel.count = 37;
 #line 2
     g_imageshader.pixel.data._refCount = 1;
 #line 2
-    g_imageshader.pixel.data.datasize = 20;
+    g_imageshader.pixel.data.datasize = 37;
 #line 2
     g_imageshader.pixel.data.data = (void*)sjg_string7;
 #line 2
     g_imageshader.pixel.data.isglobal = true;
 #line 2
-    g_imageshader.pixel.data.count = 20;
+    g_imageshader.pixel.data.count = 37;
 #line 2
     sjf_array_char(&g_imageshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50110,17 +50121,17 @@ int main(int argc, char** argv) {
 #line 14
     g_phongcolorshader.vertex._refCount = 1;
 #line 3 "lib/sj-lib-ui/shader.sj"
-    g_phongcolorshader.vertex.count = 26;
+    g_phongcolorshader.vertex.count = 43;
 #line 3
     g_phongcolorshader.vertex.data._refCount = 1;
 #line 3
-    g_phongcolorshader.vertex.data.datasize = 26;
+    g_phongcolorshader.vertex.data.datasize = 43;
 #line 3
     g_phongcolorshader.vertex.data.data = (void*)sjg_string8;
 #line 3
     g_phongcolorshader.vertex.data.isglobal = true;
 #line 3
-    g_phongcolorshader.vertex.data.count = 26;
+    g_phongcolorshader.vertex.data.count = 43;
 #line 3
     sjf_array_char(&g_phongcolorshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50130,17 +50141,17 @@ int main(int argc, char** argv) {
 #line 14
     g_phongcolorshader.pixel._refCount = 1;
 #line 3 "lib/sj-lib-ui/shader.sj"
-    g_phongcolorshader.pixel.count = 26;
+    g_phongcolorshader.pixel.count = 43;
 #line 3
     g_phongcolorshader.pixel.data._refCount = 1;
 #line 3
-    g_phongcolorshader.pixel.data.datasize = 26;
+    g_phongcolorshader.pixel.data.datasize = 43;
 #line 3
     g_phongcolorshader.pixel.data.data = (void*)sjg_string9;
 #line 3
     g_phongcolorshader.pixel.data.isglobal = true;
 #line 3
-    g_phongcolorshader.pixel.data.count = 26;
+    g_phongcolorshader.pixel.data.count = 43;
 #line 3
     sjf_array_char(&g_phongcolorshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50154,17 +50165,17 @@ int main(int argc, char** argv) {
 #line 14
     g_phongtextureshader.vertex._refCount = 1;
 #line 4 "lib/sj-lib-ui/shader.sj"
-    g_phongtextureshader.vertex.count = 30;
+    g_phongtextureshader.vertex.count = 47;
 #line 4
     g_phongtextureshader.vertex.data._refCount = 1;
 #line 4
-    g_phongtextureshader.vertex.data.datasize = 30;
+    g_phongtextureshader.vertex.data.datasize = 47;
 #line 4
     g_phongtextureshader.vertex.data.data = (void*)sjg_string10;
 #line 4
     g_phongtextureshader.vertex.data.isglobal = true;
 #line 4
-    g_phongtextureshader.vertex.data.count = 30;
+    g_phongtextureshader.vertex.data.count = 47;
 #line 4
     sjf_array_char(&g_phongtextureshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50174,17 +50185,17 @@ int main(int argc, char** argv) {
 #line 14
     g_phongtextureshader.pixel._refCount = 1;
 #line 4 "lib/sj-lib-ui/shader.sj"
-    g_phongtextureshader.pixel.count = 30;
+    g_phongtextureshader.pixel.count = 47;
 #line 4
     g_phongtextureshader.pixel.data._refCount = 1;
 #line 4
-    g_phongtextureshader.pixel.data.datasize = 30;
+    g_phongtextureshader.pixel.data.datasize = 47;
 #line 4
     g_phongtextureshader.pixel.data.data = (void*)sjg_string11;
 #line 4
     g_phongtextureshader.pixel.data.isglobal = true;
 #line 4
-    g_phongtextureshader.pixel.data.count = 30;
+    g_phongtextureshader.pixel.data.count = 47;
 #line 4
     sjf_array_char(&g_phongtextureshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50198,17 +50209,17 @@ int main(int argc, char** argv) {
 #line 14
     g_textshader.vertex._refCount = 1;
 #line 5 "lib/sj-lib-ui/shader.sj"
-    g_textshader.vertex.count = 24;
+    g_textshader.vertex.count = 41;
 #line 5
     g_textshader.vertex.data._refCount = 1;
 #line 5
-    g_textshader.vertex.data.datasize = 24;
+    g_textshader.vertex.data.datasize = 41;
 #line 5
     g_textshader.vertex.data.data = (void*)sjg_string12;
 #line 5
     g_textshader.vertex.data.isglobal = true;
 #line 5
-    g_textshader.vertex.data.count = 24;
+    g_textshader.vertex.data.count = 41;
 #line 5
     sjf_array_char(&g_textshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50218,17 +50229,17 @@ int main(int argc, char** argv) {
 #line 14
     g_textshader.pixel._refCount = 1;
 #line 5 "lib/sj-lib-ui/shader.sj"
-    g_textshader.pixel.count = 24;
+    g_textshader.pixel.count = 41;
 #line 5
     g_textshader.pixel.data._refCount = 1;
 #line 5
-    g_textshader.pixel.data.datasize = 24;
+    g_textshader.pixel.data.datasize = 41;
 #line 5
     g_textshader.pixel.data.data = (void*)sjg_string13;
 #line 5
     g_textshader.pixel.data.isglobal = true;
 #line 5
-    g_textshader.pixel.data.count = 24;
+    g_textshader.pixel.data.count = 41;
 #line 5
     sjf_array_char(&g_textshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50266,17 +50277,17 @@ int main(int argc, char** argv) {
 #line 14
     g_saturateshader.vertex._refCount = 1;
 #line 1 "lib/sj-lib-ui/saturateEffect.sj"
-    g_saturateshader.vertex.count = 20;
+    g_saturateshader.vertex.count = 37;
 #line 1
     g_saturateshader.vertex.data._refCount = 1;
 #line 1
-    g_saturateshader.vertex.data.datasize = 20;
+    g_saturateshader.vertex.data.datasize = 37;
 #line 1
     g_saturateshader.vertex.data.data = (void*)sjg_string1;
 #line 1
     g_saturateshader.vertex.data.isglobal = true;
 #line 1
-    g_saturateshader.vertex.data.count = 20;
+    g_saturateshader.vertex.data.count = 37;
 #line 1
     sjf_array_char(&g_saturateshader.vertex.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -50286,17 +50297,17 @@ int main(int argc, char** argv) {
 #line 14
     g_saturateshader.pixel._refCount = 1;
 #line 1 "lib/sj-lib-ui/saturateEffect.sj"
-    g_saturateshader.pixel.count = 21;
+    g_saturateshader.pixel.count = 38;
 #line 1
     g_saturateshader.pixel.data._refCount = 1;
 #line 1
-    g_saturateshader.pixel.data.datasize = 21;
+    g_saturateshader.pixel.data.datasize = 38;
 #line 1
     g_saturateshader.pixel.data.data = (void*)sjg_string15;
 #line 1
     g_saturateshader.pixel.data.isglobal = true;
 #line 1
-    g_saturateshader.pixel.data.count = 21;
+    g_saturateshader.pixel.data.count = 38;
 #line 1
     sjf_array_char(&g_saturateshader.pixel.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -51324,17 +51335,17 @@ int main(int argc, char** argv) {
 #line 2
     sjt_call48._refCount = 1;
 #line 6 "lib/sj-lib-ui/buttonElement.sj"
-    sjt_call48.count = 23;
+    sjt_call48.count = 40;
 #line 6
     sjt_call48.data._refCount = 1;
 #line 6
-    sjt_call48.data.datasize = 23;
+    sjt_call48.data.datasize = 40;
 #line 6
     sjt_call48.data.data = (void*)sjg_string28;
 #line 6
     sjt_call48.data.isglobal = true;
 #line 6
-    sjt_call48.data.count = 23;
+    sjt_call48.data.count = 40;
 #line 6
     sjf_array_char(&sjt_call48.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -51386,17 +51397,17 @@ int main(int argc, char** argv) {
 #line 6
     sjt_call49._refCount = 1;
 #line 7
-    sjt_call49.count = 20;
+    sjt_call49.count = 37;
 #line 7
     sjt_call49.data._refCount = 1;
 #line 7
-    sjt_call49.data.datasize = 20;
+    sjt_call49.data.datasize = 37;
 #line 7
     sjt_call49.data.data = (void*)sjg_string29;
 #line 7
     sjt_call49.data.isglobal = true;
 #line 7
-    sjt_call49.data.count = 20;
+    sjt_call49.data.count = 37;
 #line 7
     sjf_array_char(&sjt_call49.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -51448,17 +51459,17 @@ int main(int argc, char** argv) {
 #line 7
     sjt_call50._refCount = 1;
 #line 8
-    sjt_call50.count = 24;
+    sjt_call50.count = 41;
 #line 8
     sjt_call50.data._refCount = 1;
 #line 8
-    sjt_call50.data.datasize = 24;
+    sjt_call50.data.datasize = 41;
 #line 8
     sjt_call50.data.data = (void*)sjg_string30;
 #line 8
     sjt_call50.data.isglobal = true;
 #line 8
-    sjt_call50.data.count = 24;
+    sjt_call50.data.count = 41;
 #line 8
     sjf_array_char(&sjt_call50.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61218,17 +61229,17 @@ int main(int argc, char** argv) {
 #line 2
     sjt_call393._refCount = 1;
 #line 6 "lib/sj-lib-ui/buttonElement.sj"
-    sjt_call393.count = 23;
+    sjt_call393.count = 40;
 #line 6
     sjt_call393.data._refCount = 1;
 #line 6
-    sjt_call393.data.datasize = 23;
+    sjt_call393.data.datasize = 40;
 #line 6
     sjt_call393.data.data = (void*)sjg_string28;
 #line 6
     sjt_call393.data.isglobal = true;
 #line 6
-    sjt_call393.data.count = 23;
+    sjt_call393.data.count = 40;
 #line 6
     sjf_array_char(&sjt_call393.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61280,17 +61291,17 @@ int main(int argc, char** argv) {
 #line 6
     sjt_call394._refCount = 1;
 #line 7
-    sjt_call394.count = 20;
+    sjt_call394.count = 37;
 #line 7
     sjt_call394.data._refCount = 1;
 #line 7
-    sjt_call394.data.datasize = 20;
+    sjt_call394.data.datasize = 37;
 #line 7
     sjt_call394.data.data = (void*)sjg_string29;
 #line 7
     sjt_call394.data.isglobal = true;
 #line 7
-    sjt_call394.data.count = 20;
+    sjt_call394.data.count = 37;
 #line 7
     sjf_array_char(&sjt_call394.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61342,17 +61353,17 @@ int main(int argc, char** argv) {
 #line 7
     sjt_call395._refCount = 1;
 #line 8
-    sjt_call395.count = 24;
+    sjt_call395.count = 41;
 #line 8
     sjt_call395.data._refCount = 1;
 #line 8
-    sjt_call395.data.datasize = 24;
+    sjt_call395.data.datasize = 41;
 #line 8
     sjt_call395.data.data = (void*)sjg_string30;
 #line 8
     sjt_call395.data.isglobal = true;
 #line 8
-    sjt_call395.data.count = 24;
+    sjt_call395.data.count = 41;
 #line 8
     sjf_array_char(&sjt_call395.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61658,17 +61669,17 @@ int main(int argc, char** argv) {
 #line 2
     sjt_call406._refCount = 1;
 #line 6 "lib/sj-lib-ui/buttonElement.sj"
-    sjt_call406.count = 23;
+    sjt_call406.count = 40;
 #line 6
     sjt_call406.data._refCount = 1;
 #line 6
-    sjt_call406.data.datasize = 23;
+    sjt_call406.data.datasize = 40;
 #line 6
     sjt_call406.data.data = (void*)sjg_string28;
 #line 6
     sjt_call406.data.isglobal = true;
 #line 6
-    sjt_call406.data.count = 23;
+    sjt_call406.data.count = 40;
 #line 6
     sjf_array_char(&sjt_call406.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61720,17 +61731,17 @@ int main(int argc, char** argv) {
 #line 6
     sjt_call407._refCount = 1;
 #line 7
-    sjt_call407.count = 20;
+    sjt_call407.count = 37;
 #line 7
     sjt_call407.data._refCount = 1;
 #line 7
-    sjt_call407.data.datasize = 20;
+    sjt_call407.data.datasize = 37;
 #line 7
     sjt_call407.data.data = (void*)sjg_string29;
 #line 7
     sjt_call407.data.isglobal = true;
 #line 7
-    sjt_call407.data.count = 20;
+    sjt_call407.data.count = 37;
 #line 7
     sjf_array_char(&sjt_call407.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -61782,17 +61793,17 @@ int main(int argc, char** argv) {
 #line 7
     sjt_call408._refCount = 1;
 #line 8
-    sjt_call408.count = 24;
+    sjt_call408.count = 41;
 #line 8
     sjt_call408.data._refCount = 1;
 #line 8
-    sjt_call408.data.datasize = 24;
+    sjt_call408.data.datasize = 41;
 #line 8
     sjt_call408.data.data = (void*)sjg_string30;
 #line 8
     sjt_call408.data.isglobal = true;
 #line 8
-    sjt_call408.data.count = 24;
+    sjt_call408.data.count = 41;
 #line 8
     sjf_array_char(&sjt_call408.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -71138,17 +71149,17 @@ int main(int argc, char** argv) {
 #line 2
     sjt_call510._refCount = 1;
 #line 6 "lib/sj-lib-ui/buttonElement.sj"
-    sjt_call510.count = 23;
+    sjt_call510.count = 40;
 #line 6
     sjt_call510.data._refCount = 1;
 #line 6
-    sjt_call510.data.datasize = 23;
+    sjt_call510.data.datasize = 40;
 #line 6
     sjt_call510.data.data = (void*)sjg_string28;
 #line 6
     sjt_call510.data.isglobal = true;
 #line 6
-    sjt_call510.data.count = 23;
+    sjt_call510.data.count = 40;
 #line 6
     sjf_array_char(&sjt_call510.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -71200,17 +71211,17 @@ int main(int argc, char** argv) {
 #line 6
     sjt_call511._refCount = 1;
 #line 7
-    sjt_call511.count = 20;
+    sjt_call511.count = 37;
 #line 7
     sjt_call511.data._refCount = 1;
 #line 7
-    sjt_call511.data.datasize = 20;
+    sjt_call511.data.datasize = 37;
 #line 7
     sjt_call511.data.data = (void*)sjg_string29;
 #line 7
     sjt_call511.data.isglobal = true;
 #line 7
-    sjt_call511.data.count = 20;
+    sjt_call511.data.count = 37;
 #line 7
     sjf_array_char(&sjt_call511.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -71262,17 +71273,17 @@ int main(int argc, char** argv) {
 #line 7
     sjt_call512._refCount = 1;
 #line 8
-    sjt_call512.count = 24;
+    sjt_call512.count = 41;
 #line 8
     sjt_call512.data._refCount = 1;
 #line 8
-    sjt_call512.data.datasize = 24;
+    sjt_call512.data.datasize = 41;
 #line 8
     sjt_call512.data.data = (void*)sjg_string30;
 #line 8
     sjt_call512.data.isglobal = true;
 #line 8
-    sjt_call512.data.count = 24;
+    sjt_call512.data.count = 41;
 #line 8
     sjf_array_char(&sjt_call512.data);
 #line 14 "lib/sj-lib-common/string.sj"
@@ -76952,7 +76963,7 @@ int main(int argc, char** argv) {
 #line 207
     sjt_call613.data.datasize = 16;
 #line 207
-    sjt_call613.data.data = (void*)sjg_string27;
+    sjt_call613.data.data = (void*)sjg_string115;
 #line 207
     sjt_call613.data.isglobal = true;
 #line 207
@@ -76978,7 +76989,7 @@ int main(int argc, char** argv) {
 #line 208
     sjt_call612->text.data.datasize = 6;
 #line 208
-    sjt_call612->text.data.data = (void*)sjg_string115;
+    sjt_call612->text.data.data = (void*)sjg_string116;
 #line 208
     sjt_call612->text.data.isglobal = true;
 #line 208
@@ -77056,7 +77067,7 @@ int main(int argc, char** argv) {
 #line 213
     sjt_call615.data.datasize = 16;
 #line 213
-    sjt_call615.data.data = (void*)sjg_string27;
+    sjt_call615.data.data = (void*)sjg_string115;
 #line 213
     sjt_call615.data.isglobal = true;
 #line 213
@@ -77082,7 +77093,7 @@ int main(int argc, char** argv) {
 #line 214
     sjt_call614->text.data.datasize = 12;
 #line 214
-    sjt_call614->text.data.data = (void*)sjg_string116;
+    sjt_call614->text.data.data = (void*)sjg_string117;
 #line 214
     sjt_call614->text.data.isglobal = true;
 #line 214
@@ -77626,7 +77637,7 @@ int main(int argc, char** argv) {
 #line 226
     sjt_value84.data.datasize = 10;
 #line 226
-    sjt_value84.data.data = (void*)sjg_string117;
+    sjt_value84.data.data = (void*)sjg_string118;
 #line 226
     sjt_value84.data.isglobal = true;
 #line 226
@@ -77964,7 +77975,7 @@ int main(int argc, char** argv) {
 #line 252
     sjt_call626.data.datasize = 16;
 #line 252
-    sjt_call626.data.data = (void*)sjg_string27;
+    sjt_call626.data.data = (void*)sjg_string115;
 #line 252
     sjt_call626.data.isglobal = true;
 #line 252
@@ -77990,7 +78001,7 @@ int main(int argc, char** argv) {
 #line 253
     sjt_call625->text.data.datasize = 4;
 #line 253
-    sjt_call625->text.data.data = (void*)sjg_string118;
+    sjt_call625->text.data.data = (void*)sjg_string119;
 #line 253
     sjt_call625->text.data.isglobal = true;
 #line 253
@@ -78068,7 +78079,7 @@ int main(int argc, char** argv) {
 #line 258
     sjt_call628.data.datasize = 16;
 #line 258
-    sjt_call628.data.data = (void*)sjg_string27;
+    sjt_call628.data.data = (void*)sjg_string115;
 #line 258
     sjt_call628.data.isglobal = true;
 #line 258
@@ -78094,7 +78105,7 @@ int main(int argc, char** argv) {
 #line 259
     sjt_call627->text.data.datasize = 17;
 #line 259
-    sjt_call627->text.data.data = (void*)sjg_string119;
+    sjt_call627->text.data.data = (void*)sjg_string120;
 #line 259
     sjt_call627->text.data.isglobal = true;
 #line 259
@@ -78850,7 +78861,7 @@ int main(int argc, char** argv) {
 #line 290
     sjt_call636.data.datasize = 16;
 #line 290
-    sjt_call636.data.data = (void*)sjg_string27;
+    sjt_call636.data.data = (void*)sjg_string115;
 #line 290
     sjt_call636.data.isglobal = true;
 #line 290
@@ -78876,7 +78887,7 @@ int main(int argc, char** argv) {
 #line 291
     sjt_call635->text.data.datasize = 6;
 #line 291
-    sjt_call635->text.data.data = (void*)sjg_string115;
+    sjt_call635->text.data.data = (void*)sjg_string116;
 #line 291
     sjt_call635->text.data.isglobal = true;
 #line 291
@@ -78954,7 +78965,7 @@ int main(int argc, char** argv) {
 #line 296
     sjt_call638.data.datasize = 16;
 #line 296
-    sjt_call638.data.data = (void*)sjg_string27;
+    sjt_call638.data.data = (void*)sjg_string115;
 #line 296
     sjt_call638.data.isglobal = true;
 #line 296
@@ -78980,7 +78991,7 @@ int main(int argc, char** argv) {
 #line 297
     sjt_call637->text.data.datasize = 12;
 #line 297
-    sjt_call637->text.data.data = (void*)sjg_string116;
+    sjt_call637->text.data.data = (void*)sjg_string117;
 #line 297
     sjt_call637->text.data.isglobal = true;
 #line 297
@@ -79524,7 +79535,7 @@ int main(int argc, char** argv) {
 #line 309
     sjt_value90.data.datasize = 9;
 #line 309
-    sjt_value90.data.data = (void*)sjg_string120;
+    sjt_value90.data.data = (void*)sjg_string121;
 #line 309
     sjt_value90.data.isglobal = true;
 #line 309
@@ -79862,7 +79873,7 @@ int main(int argc, char** argv) {
 #line 335
     sjt_call649.data.datasize = 16;
 #line 335
-    sjt_call649.data.data = (void*)sjg_string27;
+    sjt_call649.data.data = (void*)sjg_string115;
 #line 335
     sjt_call649.data.isglobal = true;
 #line 335
@@ -79888,7 +79899,7 @@ int main(int argc, char** argv) {
 #line 336
     sjt_call648->text.data.datasize = 4;
 #line 336
-    sjt_call648->text.data.data = (void*)sjg_string118;
+    sjt_call648->text.data.data = (void*)sjg_string119;
 #line 336
     sjt_call648->text.data.isglobal = true;
 #line 336
@@ -79966,7 +79977,7 @@ int main(int argc, char** argv) {
 #line 341
     sjt_call651.data.datasize = 16;
 #line 341
-    sjt_call651.data.data = (void*)sjg_string27;
+    sjt_call651.data.data = (void*)sjg_string115;
 #line 341
     sjt_call651.data.isglobal = true;
 #line 341
@@ -79992,7 +80003,7 @@ int main(int argc, char** argv) {
 #line 342
     sjt_call650->text.data.datasize = 16;
 #line 342
-    sjt_call650->text.data.data = (void*)sjg_string121;
+    sjt_call650->text.data.data = (void*)sjg_string122;
 #line 342
     sjt_call650->text.data.isglobal = true;
 #line 342

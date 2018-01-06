@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 const char* sjg_string1 = ", ";
 const char* sjg_string2 = "";
@@ -218,7 +218,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
 #line 309 "lib/sj-lib-common/array.sj"
     if (_this->datasize < 0) {
@@ -718,7 +718,7 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 
         while (sjt_while5) {
             sjs_class sjt_call24 = { -1 };
-            int32_t sjt_capture1;
+            int32_t sjt_capture2;
             sjs_class* sjt_functionParam67 = 0;
             int32_t sjt_functionParam68;
             sjs_class* sjt_functionParam69 = 0;
@@ -732,9 +732,9 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 #line 206
             sjt_functionParam69 = &pivot;
 #line 206
-            cb._cb(cb._parent, sjt_functionParam67, sjt_functionParam69, &sjt_capture1);
+            cb._cb(cb._parent, sjt_functionParam67, sjt_functionParam69, &sjt_capture2);
 #line 206
-            shouldcontinue = sjt_capture1 < 0;
+            shouldcontinue = sjt_capture2 < 0;
             if (shouldcontinue) {
 #line 208 "lib/sj-lib-common/array.sj"
                 i = i + 1;
@@ -764,7 +764,7 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 
         while (sjt_while6) {
             sjs_class sjt_call25 = { -1 };
-            int32_t sjt_capture2;
+            int32_t sjt_capture3;
             sjs_class* sjt_functionParam70 = 0;
             int32_t sjt_functionParam71;
             sjs_class* sjt_functionParam72 = 0;
@@ -778,9 +778,9 @@ void sjf_array_class__quicksortcallback(sjs_array_class* _parent, int32_t left, 
 #line 214
             sjt_functionParam72 = &pivot;
 #line 214
-            cb._cb(cb._parent, sjt_functionParam70, sjt_functionParam72, &sjt_capture2);
+            cb._cb(cb._parent, sjt_functionParam70, sjt_functionParam72, &sjt_capture3);
 #line 214
-            shouldcontinue = sjt_capture2 > 0;
+            shouldcontinue = sjt_capture3 > 0;
             if (shouldcontinue) {
 #line 216 "lib/sj-lib-common/array.sj"
                 j = j - 1;
@@ -1561,7 +1561,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -2076,14 +2076,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture1;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture1 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture1 = false;
+    }
+
+    if (sjt_capture1) {
         int32_t sjt_functionParam33;
         char sjt_functionParam34;
         sjs_array_char* sjt_parent12 = 0;
@@ -2246,7 +2256,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3

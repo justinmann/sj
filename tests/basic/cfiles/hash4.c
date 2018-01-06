@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 const char* sjg_string1 = " = ";
 
@@ -227,7 +227,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 #ifndef heap_iface_interface_i32_hash_function
 #define heap_iface_interface_i32_hash_function
 #if false
@@ -688,7 +688,7 @@ void sjf_hash_heap_iface_interface_i32_destroy(sjs_hash_heap_iface_interface_i32
 #line 256
         }
 #line 257
-        kh_destroy(heap_iface_interface_i32_hash_type, _this->_hash);
+        kh_destroy(heap_iface_interface_i32_hash_type, (khash_t(heap_iface_interface_i32_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -790,11 +790,11 @@ int ret;
 #line 53
 #if false
 #line 54
-k = kh_put(heap_iface_interface_i32_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(heap_iface_interface_i32_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(heap_iface_interface_i32_hash_type, _parent->_hash, key, &ret);
+k = kh_put(heap_iface_interface_i32_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -932,7 +932,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -1512,14 +1512,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture3;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture3 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture3 = false;
+    }
+
+    if (sjt_capture3) {
         int32_t sjt_functionParam6;
         char sjt_functionParam7;
         sjs_array_char* sjt_parent6 = 0;
@@ -1696,7 +1706,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3

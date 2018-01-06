@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 const char* sjg_string1 = ", ";
 const char* sjg_string2 = "";
@@ -177,7 +177,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
 #line 309 "lib/sj-lib-common/array.sj"
     if (_this->datasize < 0) {
@@ -505,7 +505,7 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
         sjs_string sjt_call3 = { -1 };
         sjs_string sjt_call6 = { -1 };
         sjs_string sjt_call8 = { -1 };
-        sjs_string* sjt_capture1 = 0;
+        sjs_string* sjt_capture2 = 0;
         sjs_string sjt_funcold2 = { -1 };
         sjs_string sjt_funcold3 = { -1 };
         sjs_string* sjt_functionParam19 = 0;
@@ -558,16 +558,16 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
 #line 264
             sjt_value2 = &sjt_call3;
 #line 264
-            sjt_capture1 = sjt_value2;
+            sjt_capture2 = sjt_value2;
 
             delete_cb weakptrcb8 = { &sjt_call4, weakptr_clear };
             if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb8); }
         } else {
 #line 264 "lib/sj-lib-common/array.sj"
-            sjt_capture1 = 0;
+            sjt_capture2 = 0;
         }
 
-        if (sjt_capture1 != 0) {
+        if (sjt_capture2 != 0) {
             sjs_class* sjt_call5 = 0;
             int32_t sjt_functionParam26;
 
@@ -696,7 +696,7 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
         sjs_string sjt_call13 = { -1 };
         sjs_string sjt_call15 = { -1 };
         sjs_class* sjt_call9 = 0;
-        sjs_string* sjt_capture2 = 0;
+        sjs_string* sjt_capture3 = 0;
         sjs_string sjt_funcold4 = { -1 };
         sjs_string sjt_funcold5 = { -1 };
         sjs_string* sjt_functionParam29 = 0;
@@ -749,16 +749,16 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
 #line 264
             sjt_value4 = &sjt_call10;
 #line 264
-            sjt_capture2 = sjt_value4;
+            sjt_capture3 = sjt_value4;
 
             delete_cb weakptrcb12 = { &sjt_call11, weakptr_clear };
             if (sjt_call11 != 0) { weakptr_cb_remove(sjt_call11, weakptrcb12); }
         } else {
 #line 264 "lib/sj-lib-common/array.sj"
-            sjt_capture2 = 0;
+            sjt_capture3 = 0;
         }
 
-        if (sjt_capture2 != 0) {
+        if (sjt_capture3 != 0) {
             sjs_class* sjt_call12 = 0;
             int32_t sjt_functionParam32;
 
@@ -1121,7 +1121,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -1617,14 +1617,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture1;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture1 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture1 = false;
+    }
+
+    if (sjt_capture1) {
         int32_t sjt_functionParam6;
         char sjt_functionParam7;
         sjs_array_char* sjt_parent4 = 0;
@@ -1787,7 +1797,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3

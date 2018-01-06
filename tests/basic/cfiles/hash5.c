@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
@@ -94,8 +94,8 @@ sjs_string sjt_call1 = { -1 };
 sjs_class* sjt_call2 = 0;
 sjs_string sjt_call6 = { -1 };
 sjs_class* sjt_call7 = 0;
-int32_option sjt_capture1;
-int32_option sjt_capture4;
+int32_option sjt_capture2;
+int32_option sjt_capture5;
 sjs_class* sjt_funcold2 = 0;
 int32_t sjt_functionParam1;
 int32_t sjt_functionParam12;
@@ -171,7 +171,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 #ifndef i32_weak_class_hash_function
 #define i32_weak_class_hash_function
 #if false
@@ -562,7 +562,7 @@ if (kh_value(p, k) != 0) { weakptr_cb_remove(kh_value(p, k), weakptrcb6); }
 #line 256
         }
 #line 257
-        kh_destroy(i32_weak_class_hash_type, _this->_hash);
+        kh_destroy(i32_weak_class_hash_type, (khash_t(i32_weak_class_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -633,11 +633,11 @@ int ret;
 #line 53
 #if false
 #line 54
-k = kh_put(i32_weak_class_hash_type, _parent->_hash, *key, &ret);
+k = kh_put(i32_weak_class_hash_type, p, *key, &ret);
 #line 55
 #else
 #line 56
-k = kh_put(i32_weak_class_hash_type, _parent->_hash, key, &ret);
+k = kh_put(i32_weak_class_hash_type, p, key, &ret);
 #line 57
 #endif
 #line 59
@@ -776,7 +776,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -1095,14 +1095,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture1;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture1 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture1 = false;
+    }
+
+    if (sjt_capture1) {
         int32_t sjt_functionParam4;
         char sjt_functionParam5;
         sjs_array_char* sjt_parent3 = 0;
@@ -1265,7 +1275,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
@@ -1306,7 +1316,7 @@ int main(int argc, char** argv) {
     sjf_hash_i32_weak_class_getat(sjt_parent5, sjt_functionParam8, &sjt_call2);
     if (sjt_call2 != 0) {
         sjs_class* sjt_call3 = 0;
-        sjs_class* sjt_capture2 = 0;
+        sjs_class* sjt_capture3 = 0;
         int32_t sjt_functionParam9;
         sjs_hash_i32_weak_class* sjt_parent6 = 0;
         int32_t sjt_value2;
@@ -1318,22 +1328,22 @@ int main(int argc, char** argv) {
 #line 9
         sjf_hash_i32_weak_class_getat(sjt_parent6, sjt_functionParam9, &sjt_call3);
 #line 9
-        sjt_capture2 = sjt_call3;
+        sjt_capture3 = sjt_call3;
 #line 9
-        sjt_value2 = sjt_capture2->x;
+        sjt_value2 = sjt_capture3->x;
 #line 9
-        sjt_capture1.isvalid = true;
+        sjt_capture2.isvalid = true;
 #line 9
-        sjt_capture1.value = sjt_value2;
+        sjt_capture2.value = sjt_value2;
 
         delete_cb weakptrcb12 = { &sjt_call3, weakptr_clear };
         if (sjt_call3 != 0) { weakptr_cb_remove(sjt_call3, weakptrcb12); }
     } else {
 #line 9 "hash5.sj"
-        sjt_capture1 = int32_empty;
+        sjt_capture2 = int32_empty;
     }
 
-    if (sjt_capture1.isvalid) {
+    if (sjt_capture2.isvalid) {
         sjs_class* sjt_call4 = 0;
         int32_t sjt_functionParam10;
         int32_option sjt_getValue1;
@@ -1347,7 +1357,7 @@ int main(int argc, char** argv) {
         sjf_hash_i32_weak_class_getat(sjt_parent7, sjt_functionParam10, &sjt_call4);
         if (sjt_call4 != 0) {
             sjs_class* sjt_call5 = 0;
-            sjs_class* sjt_capture3 = 0;
+            sjs_class* sjt_capture4 = 0;
             int32_t sjt_functionParam11;
             sjs_hash_i32_weak_class* sjt_parent8 = 0;
             int32_t sjt_value3;
@@ -1359,9 +1369,9 @@ int main(int argc, char** argv) {
 #line 9
             sjf_hash_i32_weak_class_getat(sjt_parent8, sjt_functionParam11, &sjt_call5);
 #line 9
-            sjt_capture3 = sjt_call5;
+            sjt_capture4 = sjt_call5;
 #line 9
-            sjt_value3 = sjt_capture3->x;
+            sjt_value3 = sjt_capture4->x;
 #line 9
             sjt_getValue1.isvalid = true;
 #line 9
@@ -1428,7 +1438,7 @@ int main(int argc, char** argv) {
     sjf_hash_i32_weak_class_getat(sjt_parent9, sjt_functionParam15, &sjt_call7);
     if (sjt_call7 != 0) {
         sjs_class* sjt_call8 = 0;
-        sjs_class* sjt_capture5 = 0;
+        sjs_class* sjt_capture6 = 0;
         int32_t sjt_functionParam16;
         sjs_hash_i32_weak_class* sjt_parent10 = 0;
         int32_t sjt_value4;
@@ -1440,22 +1450,22 @@ int main(int argc, char** argv) {
 #line 11
         sjf_hash_i32_weak_class_getat(sjt_parent10, sjt_functionParam16, &sjt_call8);
 #line 11
-        sjt_capture5 = sjt_call8;
+        sjt_capture6 = sjt_call8;
 #line 11
-        sjt_value4 = sjt_capture5->x;
+        sjt_value4 = sjt_capture6->x;
 #line 11
-        sjt_capture4.isvalid = true;
+        sjt_capture5.isvalid = true;
 #line 11
-        sjt_capture4.value = sjt_value4;
+        sjt_capture5.value = sjt_value4;
 
         delete_cb weakptrcb15 = { &sjt_call8, weakptr_clear };
         if (sjt_call8 != 0) { weakptr_cb_remove(sjt_call8, weakptrcb15); }
     } else {
 #line 11 "hash5.sj"
-        sjt_capture4 = int32_empty;
+        sjt_capture5 = int32_empty;
     }
 
-    if (sjt_capture4.isvalid) {
+    if (sjt_capture5.isvalid) {
         sjs_class* sjt_call9 = 0;
         int32_t sjt_functionParam17;
         int32_option sjt_getValue2;
@@ -1469,7 +1479,7 @@ int main(int argc, char** argv) {
         sjf_hash_i32_weak_class_getat(sjt_parent11, sjt_functionParam17, &sjt_call9);
         if (sjt_call9 != 0) {
             sjs_class* sjt_call10 = 0;
-            sjs_class* sjt_capture6 = 0;
+            sjs_class* sjt_capture7 = 0;
             int32_t sjt_functionParam18;
             sjs_hash_i32_weak_class* sjt_parent12 = 0;
             int32_t sjt_value5;
@@ -1481,9 +1491,9 @@ int main(int argc, char** argv) {
 #line 11
             sjf_hash_i32_weak_class_getat(sjt_parent12, sjt_functionParam18, &sjt_call10);
 #line 11
-            sjt_capture6 = sjt_call10;
+            sjt_capture7 = sjt_call10;
 #line 11
-            sjt_value5 = sjt_capture6->x;
+            sjt_value5 = sjt_capture7->x;
 #line 11
             sjt_getValue2.isvalid = true;
 #line 11

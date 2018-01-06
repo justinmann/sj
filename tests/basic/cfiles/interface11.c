@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
@@ -94,8 +94,8 @@ uint32_t g_u32_maxvalue;
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call2 = { -1 };
-int32_option sjt_capture3;
 int32_option sjt_capture4;
+int32_option sjt_capture5;
 sjs_class* sjt_cast2 = 0;
 sjs_class* sjt_funcold2 = 0;
 sjs_string* sjt_functionParam4 = 0;
@@ -160,7 +160,7 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
 #line 309 "lib/sj-lib-common/array.sj"
     if (_this->datasize < 0) {
@@ -575,7 +575,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -880,14 +880,24 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool result3;
+    bool sjt_capture3;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
     result2 = !(&_parent->data)->isglobal;
+    if (result2) {
+        bool result3;
+
+#line 73 "lib/sj-lib-common/string.sj"
+        result3 = !_parent->_isnullterminated;
 #line 73
-    result3 = !_parent->_isnullterminated;
-    if (result2 || result3) {
+        sjt_capture3 = result3;
+    } else {
+#line 73 "lib/sj-lib-common/string.sj"
+        sjt_capture3 = false;
+    }
+
+    if (sjt_capture3) {
         int32_t sjt_functionParam2;
         char sjt_functionParam3;
         sjs_array_char* sjt_parent3 = 0;
@@ -1055,7 +1065,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
@@ -1089,15 +1099,15 @@ int main(int argc, char** argv) {
 #line 17
         sjt_parent5._vtbl->test(sjt_parent5._parent, &sjt_value2);
 #line 17
-        sjt_capture3.isvalid = true;
+        sjt_capture4.isvalid = true;
 #line 17
-        sjt_capture3.value = sjt_value2;
+        sjt_capture4.value = sjt_value2;
     } else {
 #line 17 "interface11.sj"
-        sjt_capture3 = int32_empty;
+        sjt_capture4 = int32_empty;
     }
 
-    if (sjt_capture3.isvalid) {
+    if (sjt_capture4.isvalid) {
         int32_option sjt_getValue1;
 
         if (g_a._parent != 0) {
@@ -1169,15 +1179,15 @@ int main(int argc, char** argv) {
 #line 20
         sjt_parent7._vtbl->test(sjt_parent7._parent, &sjt_value4);
 #line 20
-        sjt_capture4.isvalid = true;
+        sjt_capture5.isvalid = true;
 #line 20
-        sjt_capture4.value = sjt_value4;
+        sjt_capture5.value = sjt_value4;
     } else {
 #line 20 "interface11.sj"
-        sjt_capture4 = int32_empty;
+        sjt_capture5 = int32_empty;
     }
 
-    if (sjt_capture4.isvalid) {
+    if (sjt_capture5.isvalid) {
         int32_option sjt_getValue2;
 
         if (g_a._parent != 0) {

@@ -1,4 +1,4 @@
-#include <lib/common/common.h>
+#include <lib/sj-lib-common/common.h>
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
@@ -110,9 +110,9 @@ sji_b_foo sjt_parent2 = { 0 };
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_a_class(sjs_a_class* _this);
-void sjf_a_class_a_bar(sjs_a_class* _parent, int32_t* _return);
 void sjf_a_class_as_sji_a_foo(sjs_a_class* _this, sji_a_foo* _return);
 void sjf_a_class_asinterface(sjs_a_class* _this, int typeId, sjs_interface* _return);
+void sjf_a_class_bar(sjs_a_class* _parent, int32_t* _return);
 void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from);
 void sjf_a_class_destroy(sjs_a_class* _this);
 void sjf_a_class_getclasstype(sjs_object* _this, int* _return);
@@ -121,7 +121,7 @@ void sjf_a_func(int32_t* _return);
 void sjf_b_class(sjs_b_class* _this);
 void sjf_b_class_as_sji_b_foo(sjs_b_class* _this, sji_b_foo* _return);
 void sjf_b_class_asinterface(sjs_b_class* _this, int typeId, sjs_interface* _return);
-void sjf_b_class_b_bar(sjs_b_class* _parent, int32_t* _return);
+void sjf_b_class_bar(sjs_b_class* _parent, int32_t* _return);
 void sjf_b_class_copy(sjs_b_class* _this, sjs_b_class* _from);
 void sjf_b_class_destroy(sjs_b_class* _this);
 void sjf_b_class_getclasstype(sjs_object* _this, int* _return);
@@ -157,12 +157,8 @@ KHASH_INIT_FUNCTION_DEREF(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, 
 KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_type_isequal)
 #endif
 #endif
-#include <lib/common/common.c>
+#include <lib/sj-lib-common/common.cpp>
 void sjf_a_class(sjs_a_class* _this) {
-}
-
-void sjf_a_class_a_bar(sjs_a_class* _parent, int32_t* _return) {
-    sjf_a_func(_return);
 }
 
 void sjf_a_class_as_sji_a_foo(sjs_a_class* _this, sji_a_foo* _return) {
@@ -182,6 +178,10 @@ void sjf_a_class_asinterface(sjs_a_class* _this, int typeId, sjs_interface* _ret
             break;
         }
     }
+}
+
+void sjf_a_class_bar(sjs_a_class* _parent, int32_t* _return) {
+    sjf_a_func(_return);
 }
 
 void sjf_a_class_copy(sjs_a_class* _this, sjs_a_class* _from) {
@@ -224,7 +224,7 @@ void sjf_b_class_asinterface(sjs_b_class* _this, int typeId, sjs_interface* _ret
     }
 }
 
-void sjf_b_class_b_bar(sjs_b_class* _parent, int32_t* _return) {
+void sjf_b_class_bar(sjs_b_class* _parent, int32_t* _return) {
     sjf_b_func(_return);
 }
 
@@ -342,7 +342,7 @@ void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
 #line 256
         }
 #line 257
-        kh_destroy(type_bool_hash_type, _this->_hash);
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
 #line 258
     }
 }
@@ -455,11 +455,11 @@ int main(int argc, char** argv) {
     sjs_a_class_foo_vtbl.destroy = (void(*)(void*))sjf_a_class_destroy;
     sjs_a_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_a_class_asinterface;
     sjs_a_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_a_class_getclasstype;
-    sjs_a_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_a_class_a_bar;
+    sjs_a_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_a_class_bar;
     sjs_b_class_foo_vtbl.destroy = (void(*)(void*))sjf_b_class_destroy;
     sjs_b_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_b_class_asinterface;
     sjs_b_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_b_class_getclasstype;
-    sjs_b_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_b_class_b_bar;
+    sjs_b_class_foo_vtbl.bar = (void(*)(sjs_object*, int32_t*))sjf_b_class_bar;
 #line 1 "lib/sj-lib-common/log.sj"
     g_loglevel_trace = 0;
 #line 1
@@ -567,7 +567,7 @@ int main(int argc, char** argv) {
 #line 1 "lib/sj-lib-common/string.sj"
     g_emptystringdata = 0;
 #line 3
-    g_emptystringdata = "";
+    g_emptystringdata = (void*)"";
 #line 2 "lib/sj-lib-common/weakptr.sj"
     ptr_init();
 #line 3
