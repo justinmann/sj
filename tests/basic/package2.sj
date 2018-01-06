@@ -1,8 +1,8 @@
-package {
+package json {
     document(
-        load()
+        load() { 0 }
     ) { this }
 }
 
-d : document()
+d : json.document()
 d.load()
