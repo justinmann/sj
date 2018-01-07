@@ -29,7 +29,7 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
             return;
         }
     }
-    
+
     if (typeTo != nullptr && typeTo->category == CTC_Interface) {
         auto interface = static_pointer_cast<CInterface>(typeTo->parent.lock());
         interface->transpileDefinition(compiler, trOutput);
@@ -97,12 +97,20 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
 
     auto fromType = var->getType(compiler);
 
-    auto type = scope->getVarType(loc, compiler, typeName, fromType->typeMode);
+    auto type = scope->getVarType(loc, compiler, typeName, (fromType->typeMode == CTM_Stack || fromType->typeMode == CTM_Heap || fromType->typeMode == CTM_Weak) ? fromType->typeMode : CTM_Undefined);
     if (!type) {
         compiler->addError(loc, CErrorCode::InvalidType, "type '%s' does not exist", typeName->getFullName().c_str());
         return nullptr;
     }
 
-    return make_shared<CCastVar>(loc, scope, type, var);
+    auto functionName = "as" + type->shortName;
+    bool isHelperFunction;
+    auto cfunction = NCall::getCFunction(compiler, loc, scope, var, functionName, nullptr, returnMode, &isHelperFunction);
+    if (cfunction) {
+        auto operatorOverloadNode = make_shared<NDot>(loc, node, make_shared<NCall>(loc, functionName, nullptr, nullptr));
+        return operatorOverloadNode->getVar(compiler, scope, nullptr, returnType, returnMode);
+    } else {
+        return make_shared<CCastVar>(loc, scope, type, var);
+    }
 }
 
