@@ -15,6 +15,7 @@ class(
 
 c : class()
 debug.writeLine(c as string)
-debug.writeLine(c as i32 as string)
+debug.writeLine(12 as string)
+debug.writeLine((c as i32).asstring())
 debug.writeLine((c as array!i32)[0] as string)
 debug.writeLine((c as #iface).getX() as string)

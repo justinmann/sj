@@ -1,6 +1,2 @@
 interface6.sj:5:1: error: SJC0029 cannot find interface method: 'test'
 interface6.sj:9:5: error: SJC0007 function does not have a this value
-interface6.sj:11:1: error: SJC0000 no right side
-interface6.sj:11:4: error: SJC0004 type '#foo' does not exist
-interface6.sj:12:1: error: SJC0007 cannot find variable 'a'
-interface6.sj:12:1: error: SJC0008 left side of dot has no value

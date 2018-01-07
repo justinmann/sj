@@ -71,7 +71,6 @@ int32_t g_i32_minvalue;
 sjs_log g_log = { -1 };
 sjs_hash_type_bool g_log_excludeall = { -1 };
 sjs_hash_type_bool g_log_includeall = { -1 };
-bool g_t1;
 bool g_t2;
 bool g_t3;
 uint32_t g_u32_maxvalue;
@@ -528,14 +527,12 @@ int main(int argc, char** argv) {
 #line 2
     sjf_class_as_sji_foo(sjt_cast3, &g_b);
 #line 18
-    g_t1 = g_a._parent == g_a._parent;
-#line 19
     g_t2 = g_a._parent == g_b._parent;
 #line 4
     sjt_parent2 = g_a;
-#line 20
+#line 19
     sjt_interfaceParam1 = g_b;
-#line 20
+#line 19
     sjt_parent2._vtbl->isequal(sjt_parent2._parent, sjt_interfaceParam1, &g_t3);
     main_destroy();
     return 0;
