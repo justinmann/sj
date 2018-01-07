@@ -519,15 +519,15 @@ void sjf_f64_asstring_heap(double val, sjs_string** _return) {
 }
 
 void sjf_f64_pow(double x, double y, double* _return) {
-#line 16 "lib/sj-lib-common/f64.sj"
-    #line 15 "lib/sj-lib-common/f64.sj"
+#line 32 "lib/sj-lib-common/f64.sj"
+    #line 31 "lib/sj-lib-common/f64.sj"
 (*_return) = pow(x, y);
 return;;
 }
 
 void sjf_f64_sqrt(double v, double* _return) {
-#line 22 "lib/sj-lib-common/f64.sj"
-    #line 21 "lib/sj-lib-common/f64.sj"
+#line 38 "lib/sj-lib-common/f64.sj"
+    #line 37 "lib/sj-lib-common/f64.sj"
 (*_return) = sqrt(v);
 return;;
 }
