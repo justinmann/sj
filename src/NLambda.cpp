@@ -109,7 +109,7 @@ shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CS
 
         auto lambdaFunction = static_pointer_cast<NLambdaClassFunction>(node);
         assert(lambdaFunction->returnMode != CTM_Undefined);
-        auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParent);
+        auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParentGlobal);
         if (callerVar) {
             auto lambdaArgVar = vars[CTM_Stack][callerVar];
             if (!lambdaArgVar) {

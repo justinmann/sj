@@ -37,6 +37,11 @@ shared_ptr<CVar> NMathAssignment::getVarImpl(Compiler* compiler, shared_ptr<CSco
         return nullptr;
     }
 
+    if (!leftVar->isMutable) {
+        compiler->addError(loc, CErrorCode::InvalidType, "left type is immutable");
+        return nullptr;        
+    }
+
     // Check to see if we have operator overloading
     shared_ptr<CVar> rightVar;
     if (!leftType->parent.expired()) {

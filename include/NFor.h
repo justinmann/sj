@@ -44,7 +44,9 @@ private:
 
 class NFor : public NBase {
 public:
-    NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body, bool isAscending) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body), isAscending(isAscending) { }
+    NFor(CLoc loc, const char* varName, shared_ptr<NBase> start, shared_ptr<NBase> end, shared_ptr<NBase> body, bool isAscending) : NBase(NodeType_For, loc), varName(varName), start(start), end(end), body(body), isAscending(isAscending) { 
+        boost::algorithm::to_lower(this->varName);
+    }
     void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
     shared_ptr<CVar> getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode);

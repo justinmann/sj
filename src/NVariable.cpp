@@ -45,7 +45,7 @@ shared_ptr<CVar> NVariable::getVarImpl(Compiler* compiler, shared_ptr<CScope> sc
     if (varScope) {
         shared_ptr<CVar> cvar;
         if (!templateTypeNames) {
-            cvar = varScope->getCVar(compiler, scope, dotVar, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParent);
+            cvar = varScope->getCVar(compiler, scope, dotVar, name, dotVar ? VSM_ThisOnly : VSM_LocalThisParentGlobal);
         }
 
         if (!cvar) {

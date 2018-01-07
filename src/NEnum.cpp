@@ -98,7 +98,7 @@ void NEnum::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     enumNamespace.push_back(name);
     scope->pushNamespace(compiler, enumNamespace);
     for (auto enumArg : *enumArgs) {
-        auto leftVar = scope->getCVar(compiler, scope, nullptr, enumArg->name, VSM_LocalThisParent);
+        auto leftVar = scope->getCVar(compiler, scope, nullptr, enumArg->name, VSM_LocalThisParentGlobal);
         if (leftVar) {
             compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' already exists", enumArg->name.c_str());
             return;
