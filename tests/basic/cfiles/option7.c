@@ -2,15 +2,15 @@
 
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
-#define sjs_class_typeId 21
-#define sjs_array_char_typeId 25
-#define sjs_string_typeId 23
+#define sjs_array_char_typeId 23
+#define sjs_string_typeId 21
+#define sjs_class_typeId 24
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
-typedef struct td_sjs_class sjs_class;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
+typedef struct td_sjs_class sjs_class;
 
 struct td_sjs_hash_type_bool {
     int _refCount;
@@ -28,11 +28,6 @@ struct td_sjs_log {
     sjs_hash_type_bool fatalincludes;
 };
 
-struct td_sjs_class {
-    int _refCount;
-    int32_t x;
-};
-
 struct td_sjs_array_char {
     int _refCount;
     int32_t datasize;
@@ -46,6 +41,11 @@ struct td_sjs_string {
     int32_t count;
     sjs_array_char data;
     bool _isnullterminated;
+};
+
+struct td_sjs_class {
+    int _refCount;
+    int32_t x;
 };
 
 #ifndef type_bool_hash_typedef
@@ -64,10 +64,10 @@ int32_t g_loglevel_trace;
 int32_t g_loglevel_warn;
 
 int32_option g_a;
-int32_t g_b;
+sjs_string g_b = { -1 };
 sjs_class g_c = { -1 };
 int32_t g_clocks_per_sec;
-sjs_class g_d = { -1 };
+sjs_string g_d = { -1 };
 void* g_emptystringdata;
 float g_f32_pi;
 int32_t g_i32_maxvalue;
@@ -77,14 +77,14 @@ sjs_hash_type_bool g_log_excludeall = { -1 };
 sjs_hash_type_bool g_log_includeall = { -1 };
 uint32_t g_u32_maxvalue;
 int32_t result1;
-sjs_string sjt_call1 = { -1 };
-sjs_string sjt_call2 = { -1 };
-sjs_string* sjt_functionParam4 = 0;
-int32_t sjt_functionParam5;
-int32_t sjt_functionParam6;
-sjs_string* sjt_functionParam7 = 0;
-int32_t sjt_functionParam8;
-int32_t sjt_functionParam9;
+sjs_class sjt_call1 = { -1 };
+sjs_class* sjt_capture1 = 0;
+int32_t sjt_functionParam1;
+int32_t sjt_functionParam2;
+int32_t sjt_functionParam3;
+int32_t sjt_functionParam4;
+sjs_string* sjt_functionParam8 = 0;
+sjs_string* sjt_functionParam9 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_array_char(sjs_array_char* _this);
@@ -814,7 +814,7 @@ void sjf_string_heap(sjs_string* _this) {
 
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
-    bool sjt_capture1;
+    bool sjt_capture2;
     sjs_array_char sjt_funcold1 = { -1 };
 
 #line 73 "lib/sj-lib-common/string.sj"
@@ -825,19 +825,19 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 73 "lib/sj-lib-common/string.sj"
         result3 = !_parent->_isnullterminated;
 #line 73
-        sjt_capture1 = result3;
+        sjt_capture2 = result3;
     } else {
 #line 73 "lib/sj-lib-common/string.sj"
-        sjt_capture1 = false;
+        sjt_capture2 = false;
     }
 
-    if (sjt_capture1) {
-        int32_t sjt_functionParam2;
-        char sjt_functionParam3;
+    if (sjt_capture2) {
+        int32_t sjt_functionParam6;
+        char sjt_functionParam7;
         sjs_array_char* sjt_parent2 = 0;
 
         if ((_parent->count + 1) > (&_parent->data)->datasize) {
-            int32_t sjt_functionParam1;
+            int32_t sjt_functionParam5;
             sjs_array_char* sjt_parent1 = 0;
 
             sjt_funcold1._refCount = 1;
@@ -846,9 +846,9 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 134
             sjt_parent1 = &_parent->data;
 #line 75 "lib/sj-lib-common/string.sj"
-            sjt_functionParam1 = _parent->count + 1;
+            sjt_functionParam5 = _parent->count + 1;
 #line 75
-            sjf_array_char_grow(sjt_parent1, sjt_functionParam1, &sjt_funcold1);
+            sjf_array_char_grow(sjt_parent1, sjt_functionParam5, &sjt_funcold1);
 #line 75
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -859,11 +859,11 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 34 "lib/sj-lib-common/array.sj"
         sjt_parent2 = &_parent->data;
 #line 77 "lib/sj-lib-common/string.sj"
-        sjt_functionParam2 = _parent->count;
+        sjt_functionParam6 = _parent->count;
 #line 77
-        sjt_functionParam3 = '\0';
+        sjt_functionParam7 = '\0';
 #line 77
-        sjf_array_char_initat(sjt_parent2, sjt_functionParam2, sjt_functionParam3);
+        sjf_array_char_initat(sjt_parent2, sjt_functionParam6, sjt_functionParam7);
 #line 78
         _parent->_isnullterminated = true;
     }
@@ -1011,61 +1011,56 @@ int main(int argc, char** argv) {
 #line 4 "option7.sj"
         sjt_getValue1 = g_a;
 #line 4
-        g_b = sjt_getValue1.value;
+        sjt_functionParam1 = sjt_getValue1.value;
     } else {
 #line 4 "option7.sj"
-        g_b = (int32_t)0;
+        sjt_functionParam1 = (int32_t)0;
     }
 
-#line 5
+#line 22 "lib/sj-lib-common/i32.sj"
+    sjt_functionParam2 = 10;
+#line 22
+    sjf_i32_asstring(sjt_functionParam1, sjt_functionParam2, &g_b);
+#line 5 "option7.sj"
     g_c._refCount = -1;
     if ((g_c._refCount != -1 ? &g_c : 0) != 0) {
-#line 6 "option7.sj"
-        sjs_class* copyoption14 = (g_c._refCount != -1 ? &g_c : 0);
-        if (copyoption14 != 0) {
-            g_d._refCount = 1;
-#line 6 "option7.sj"
-            sjf_class_copy(&g_d, copyoption14);
-        } else {
-            g_d._refCount = -1;
-        }
-    } else {
-        g_d._refCount = 1;
 #line 1 "option7.sj"
-        g_d.x = 0;
+        sjt_capture1 = (g_c._refCount != -1 ? &g_c : 0);
+    } else {
+        sjt_call1._refCount = 1;
+#line 1 "option7.sj"
+        sjt_call1.x = 0;
 #line 1
-        sjf_class(&g_d);
+        sjf_class(&sjt_call1);
+#line 6
+        sjt_capture1 = &sjt_call1;
     }
 
-#line 8
-    sjt_functionParam5 = g_b;
+#line 6
+    sjt_functionParam3 = sjt_capture1->x;
 #line 22 "lib/sj-lib-common/i32.sj"
-    sjt_functionParam6 = 10;
+    sjt_functionParam4 = 10;
 #line 22
-    sjf_i32_asstring(sjt_functionParam5, sjt_functionParam6, &sjt_call1);
+    sjf_i32_asstring(sjt_functionParam3, sjt_functionParam4, &g_d);
 #line 8 "option7.sj"
-    sjt_functionParam4 = &sjt_call1;
+    sjt_functionParam8 = &g_b;
 #line 8
-    sjf_console_writeline(sjt_functionParam4);
+    sjf_console_writeline(sjt_functionParam8);
 #line 9
-    sjt_functionParam8 = (&g_d)->x;
-#line 22 "lib/sj-lib-common/i32.sj"
-    sjt_functionParam9 = 10;
-#line 22
-    sjf_i32_asstring(sjt_functionParam8, sjt_functionParam9, &sjt_call2);
-#line 9 "option7.sj"
-    sjt_functionParam7 = &sjt_call2;
+    sjt_functionParam9 = &g_d;
 #line 9
-    sjf_console_writeline(sjt_functionParam7);
+    sjf_console_writeline(sjt_functionParam9);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
+    if (g_b._refCount == 1) { sjf_string_destroy(&g_b); }
+;
     if (g_c._refCount == 1) { sjf_class_destroy(&g_c); }
 ;
-    if (g_d._refCount == 1) { sjf_class_destroy(&g_d); }
+    if (g_d._refCount == 1) { sjf_string_destroy(&g_d); }
 ;
     if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
 ;
@@ -1073,9 +1068,7 @@ void main_destroy() {
 ;
     if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
 ;
-    if (sjt_call1._refCount == 1) { sjf_string_destroy(&sjt_call1); }
-;
-    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
+    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
 ;
     if (sjt_value1._refCount == 1) { sjf_hash_type_bool_destroy(&sjt_value1); }
 ;

@@ -1,9 +1,9 @@
 class(x : 0) { this }
 
 a : empty'i32
-b : a??
+b : a?? as string
 c : empty'class
-d : c??
+d : c??.x as string
 
-console.writeLine(b.asString())
-console.writeLine(d.x.asString())
+console.writeLine(b)
+console.writeLine(d)
