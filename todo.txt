@@ -1,8 +1,3 @@
-* ??
-* [] on option
-* map "foo as string" -> foo.asString()
-* allow local var to conflict with global var
-
 -- ui --
 * text input
 * wrapping text
