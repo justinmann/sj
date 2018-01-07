@@ -65,9 +65,9 @@ void CCastVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBloc
         }
     }
     else {
-        if (!typeTo->parent.expired()) {
-            compiler->addError(loc, CErrorCode::InvalidCast, "cannot cast to type '%s'", typeTo->fullName.c_str());
-            return;
+        if (!typeTo->parent.expired() || !rightValue->type->parent.expired()) {
+            compiler->addError(loc, CErrorCode::InvalidCast, "cannot cast from type '%s' to type '%s'", rightValue->type->fullName.c_str(), typeTo->fullName.c_str());
+            return;            
         }
         
         auto tempValue = make_shared<TrValue>(nullptr, typeTo, "(" + typeTo->cname + ")" + rightValue->name, false);
