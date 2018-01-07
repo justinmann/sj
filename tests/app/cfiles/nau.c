@@ -14917,18 +14917,18 @@ void sjf_f32_ceil(float v, float* _return) {
 
 void sjf_f32_compare(float l, float r, int32_t* _return) {
     if (l == r) {
-#line 117 "lib/sj-lib-common/f32.sj"
+#line 133 "lib/sj-lib-common/f32.sj"
         (*_return) = 0;
     } else {
         if (l < r) {
             int32_t result3;
 
-#line 119 "lib/sj-lib-common/f32.sj"
+#line 135 "lib/sj-lib-common/f32.sj"
             result3 = -1;
-#line 119
+#line 135
             (*_return) = result3;
         } else {
-#line 121 "lib/sj-lib-common/f32.sj"
+#line 137 "lib/sj-lib-common/f32.sj"
             (*_return) = 1;
         }
     }
@@ -14959,13 +14959,13 @@ void sjf_f32_floor(float v, float* _return) {
 void sjf_f32_hash(float val, uint32_t* _return) {
     uint32_t result;
 
-#line 107 "lib/sj-lib-common/f32.sj"
+#line 123 "lib/sj-lib-common/f32.sj"
     result = (uint32_t)0u;
-#line 109
+#line 125
     int32_t* p = (int32_t*)&val;
-#line 110
+#line 126
     result = *p;
-#line 106
+#line 122
     (*_return) = result;
 }
 

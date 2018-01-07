@@ -8642,13 +8642,13 @@ void sjf_f32_asstring_heap(float val, sjs_string** _return) {
 void sjf_f32_hash(float val, uint32_t* _return) {
     uint32_t result;
 
-#line 107 "lib/sj-lib-common/f32.sj"
+#line 123 "lib/sj-lib-common/f32.sj"
     result = (uint32_t)0u;
-#line 109
+#line 125
     int32_t* p = (int32_t*)&val;
-#line 110
+#line 126
     result = *p;
-#line 106
+#line 122
     (*_return) = result;
 }
 
