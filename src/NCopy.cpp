@@ -92,6 +92,12 @@ shared_ptr<CVar> NCopy::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
+    if (!alwaysCopy) {
+        if (returnMode == CTM_Undefined || leftType->typeMode == returnMode || leftType->typeMode == CTM_Value) {
+            return leftVar;
+        }
+    }
+
     if (leftType->isOption) {
         auto getValueVar = make_shared<CGetValueVar>(loc, leftVar->scope.lock(), leftVar, true);
         auto copyVar = make_shared<CCopyVar>(loc, scope, getValueVar, returnMode);

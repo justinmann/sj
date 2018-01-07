@@ -75,11 +75,16 @@ void NChangeMode::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTy
 }
 
 shared_ptr<CVar> NChangeMode::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
-    auto var = node->getVar(compiler, scope, returnType, typeMode);
-    if (!var) {
-        return nullptr;
-    }
+    shared_ptr<CVar> var;
+    if (typeMode == CTM_MatchReturn) {
+        return node->getVar(compiler, scope, returnType, scope->returnMode);
+    } else {
+        var = node->getVar(compiler, scope, returnType, typeMode);
+        if (!var) {
+            return nullptr;
+        }
 
-    return make_shared<CChangeModeVar>(loc, scope, typeMode, var);
+        return make_shared<CChangeModeVar>(loc, scope, typeMode, var);
+    }
 }
 

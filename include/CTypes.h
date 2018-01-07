@@ -41,7 +41,8 @@ enum CTypeMode {
     CTM_Weak,
     CTM_Local,
     CTM_Value,
-    CTM_ValuePtr
+    CTM_ValuePtr,
+    CTM_MatchReturn
 };
 
 class AssignOp {

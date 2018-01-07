@@ -90,12 +90,14 @@ void updateLocation(YYLOCATION& loc, const char* s, const size_t len) {
 (?:"as")					TOKEN_VAL(TAS);
 (?:"throw")					TOKEN_VAL(TTHROW);
 (?:"copy")					TOKEN_VAL(TCOPY);
+(?:"optionalcopy")	 		TOKEN_VAL(TOPTIONALCOPY);
 (?:"catch")					TOKEN_VAL(TCATCH);
 (?:"destroy")				TOKEN_VAL(TDESTROY);
 (?:"true")					TOKEN_VAL(TTRUE);
 (?:"false")					TOKEN_VAL(TFALSE);
 (?:"void")					TOKEN_VAL(TVOID);
 (?:"stack")					TOKEN_VAL(TSTACK);
+(?:"matchreturn")	 		TOKEN_VAL(TMATCHRETURN);
 (?:"heap")					TOKEN_VAL(THEAP);
 (?:"weak")					TOKEN_VAL(TWEAK);
 (?:"local")					TOKEN_VAL(TLOCAL);

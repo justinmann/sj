@@ -77,7 +77,7 @@ void yyprint(FILE* file, unsigned short int v1, const YYSTYPE type) {
 
 /* Terminal symbols. They need to match tokens in tokens.l file */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTRING TCHAR TCBLOCK TCFUNCTION TCDEFINE TCSTRUCT TCINCLUDE TCVAR TCTYPEDEF TQUOTEDIDENTIFIER
-%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT TCARET TTYPE TLIBRARY TQUESTIONQUESTION
+%token <token> error TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL TEND TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TCOLON TQUOTE TPLUS TMINUS TMUL TDIV TTRUE TFALSE TAS TVOID TIF TELSE TTHROW TCATCH TFOR TTO TWHILE TPLUSPLUS TMINUSMINUS TPLUSEQUAL TMINUSEQUAL TLBRACKET TRBRACKET TEXCLAIM TDOT TTHIS TINCLUDE TAND TOR TCOPY TDESTROY TMOD THASH TCPEQ TCPNE TMULEQUAL TDIVEQUAL TISEMPTY TISVALID TGETVALUE TQUESTION TEMPTY TVALID TQUESTIONCOLON TQUESTIONDOT TPARENT TSTACK THEAP TWEAK TLOCAL TTYPEI32 TTYPEU32 TTYPEF32 TTYPEI64 TTYPEU64 TTYPEF64 TTYPECHAR TTYPEBOOL TTYPEPTR TINVALID TCOLONEQUAL TIFVALID TELSEEMPTY TTOREVERSE TENUM TSWITCH TDEFAULT TPACKAGE TIMPORT TUNDERSCORE TNULLPTR TBOOLXOR TBOOLOR TBOOLAND TBOOLSHL TBOOLSHR TBOOLNOT TAT TCARET TTYPE TLIBRARY TQUESTIONQUESTION TMATCHRETURN TOPTIONALCOPY
 
 /* Non Terminal symbols. Types refer to union decl above */
 %type <node> program stmt var_decl func_decl func_arg for_expr while_expr assign array interface_decl interface_arg block catch copy destroy expr end_optional end_star if_expr ifValue_var enum_decl switch_expr hash
@@ -354,9 +354,10 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 					| TLOCAL expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Local, shared_ptr<NBase>($2)); }
 					| THEAP expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Heap, shared_ptr<NBase>($2)); }
 					| TWEAK expr_var                             	{ $$ = new NChangeMode(LOC, CTM_Weak, shared_ptr<NBase>($2)); }
-					| TCOPY expr_var                             	{ $$ = new NCopy(LOC, shared_ptr<NBase>($2)); }
+					| TCOPY expr_var                             	{ $$ = new NCopy(LOC, shared_ptr<NBase>($2), true); }
+					| TMATCHRETURN expr_var                         { $$ = new NChangeMode(LOC, CTM_MatchReturn, shared_ptr<NBase>($2)); }
+					| TOPTIONALCOPY expr_var                        { $$ = new NCopy(LOC, shared_ptr<NBase>($2), false); }
 					| expr_math TQUESTIONCOLON expr_math			{ $$ = new NGetOrElse(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NBase>($3)); }
-					| expr_var TQUESTIONQUESTION					{ $$ = new NGetOrDefault(LOC, shared_ptr<NVariableBase>($1)); }
 					| expr_var										{ $$ = $1; }
 					;
 
@@ -364,6 +365,7 @@ expr_var 			: expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CType
 					| expr_var TDOT var_right						{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| expr_var TQUESTIONDOT var_right				{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NGetAt(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NBase>($3)); }
+					| expr_var TQUESTIONQUESTION					{ $$ = new NGetOrDefault(LOC, shared_ptr<NVariableBase>($1)); }
 					| var_right 									{ $$ = $1; }
 					;
 
