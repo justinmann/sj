@@ -20,10 +20,10 @@
             "request": "launch",
             "program": "${workspaceFolder}/sjc",
             "args": [
-                "--new-project ui"
+                "cast3.sj"
             ],
             "stopAtEntry": false,
-            "cwd": "/Users/jusmann/lang/t2",
+            "cwd": "${workspaceRoot}/tests/basic",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",
