@@ -6,5 +6,6 @@ test(
     }
 ) { this }
 
-a : test.getAt(0)?.getAt(1)
-b : test[0][1]
+t : test()
+a : t.getAt(0)?.getAt(1)
+b : t[0][1]

@@ -2973,7 +2973,7 @@ yyreduce:
 
   case 148:
 
-    { (yyval.var) = new NDot(LOC, shared_ptr<NVariableBase>((yyvsp[-3].var)), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>((yyvsp[-1].node))))); }
+    { (yyval.var) = new NGetAt(LOC, shared_ptr<NVariableBase>((yyvsp[-3].var)), shared_ptr<NBase>((yyvsp[-1].node))); }
 
     break;
 

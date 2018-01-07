@@ -363,7 +363,7 @@ expr_math			: expr_math TPLUS expr_math 					{ $$ = new NMath(LOC, shared_ptr<NV
 expr_var 			: expr_var TAS arg_type 						{ $$ = new NCast(LOC, shared_ptr<CTypeName>($3), shared_ptr<NVariableBase>($1)); }
 					| expr_var TDOT var_right						{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
 					| expr_var TQUESTIONDOT var_right				{ $$ = new NOptionDot(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NVariableBase>($3)); }
-					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NDot(LOC, shared_ptr<NVariableBase>($1), make_shared<NCall>(LOC, "getAt", nullptr, make_shared<NodeList>(shared_ptr<NBase>($3)))); }
+					| expr_var TLBRACKET expr TRBRACKET				{ $$ = new NGetAt(LOC, shared_ptr<NVariableBase>($1), shared_ptr<NBase>($3)); }
 					| var_right 									{ $$ = $1; }
 					;
 
