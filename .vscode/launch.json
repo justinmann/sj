@@ -10,9 +10,10 @@
             "name": "Launch",
             "program": "${workspaceRoot}/sjc",
             "args": [
-                "learnxiny.sj"
+                "package4.sj"
             ],
-            "cwd": "${workspaceRoot}/tests/basic"
+            "cwd": "${workspaceRoot}/tests/basic",
+            "preLaunchTask": "build-debug"
         },
         {
             "name": "(gdb) Launch",
