@@ -20,8 +20,7 @@ shared_ptr<CVar> NGetOrDefault::getVarImpl(Compiler* compiler, shared_ptr<CScope
     }
 
     if (!leftType->isOption) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "?? requires an option type");
-        return nullptr;
+        return leftVar;
     }
 
     if (leftType->category != CTC_Value) {
