@@ -1299,24 +1299,26 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
         
         // Map template type string list to type list
         for (auto templateTypeName : *calleeTemplateTypeNames) {
-            shared_ptr<CType> ctype = nullptr;
-            if (callerScope) {
-                ctype = callerScope->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
-            }
-            
+            shared_ptr<CType> ctype = templateTypeName->ctype;
             if (!ctype) {
-                vector<pair<string, vector<string>>> allNamespaces;
                 if (callerScope) {
-                    allNamespaces = callerScope->getImportNamespacesWithRenames();
+                    ctype = callerScope->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
                 }
-                else {
-                    allNamespaces.push_back(make_pair(string(""), vector<string>()));
-                }
-
-                ctype = thisFunction->getVarType(loc, compiler, allNamespaces, templateTypeName, CTM_Undefined);
+                
                 if (!ctype) {
-                    compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
-                    return false;
+                    vector<pair<string, vector<string>>> allNamespaces;
+                    if (callerScope) {
+                        allNamespaces = callerScope->getImportNamespacesWithRenames();
+                    }
+                    else {
+                        allNamespaces.push_back(make_pair(string(""), vector<string>()));
+                    }
+
+                    ctype = thisFunction->getVarType(loc, compiler, allNamespaces, templateTypeName, CTM_Undefined);
+                    if (!ctype) {
+                        compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
+                        return false;
+                    }
                 }
             }
             
