@@ -1,13 +1,13 @@
-#writer(
+#writer2(
     write(s : 'string)'void
 )
 
-consoleWriter #writer(
+consoleWriter2 #writer2(
     write(s : 'string) {
         console.write(s)
         void
     }
 ) { this }
 
-c : consoleWriter() as #writer
+c : consoleWriter2() as #writer2
 c.write("hello")

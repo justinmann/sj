@@ -99,17 +99,11 @@ console.writeLine(plusConcatenated)
 // Output: Strings can be concatenated via + operator.
 
 // Arrays
-// By default arrays are uninitialized and you must call initAt on the first
-// assignment
-intArray : array!i32(10)
-intArray.initAt(0, 1) // intArray[0] == 1
-
 // If you want to set all elements in array to the same default value
-// you can use the init function
-intArray2 : array!i32(10).init(-1)
+intArray1 : array.create!i32(10, -1)
 
 // Or you can you use the static initializer
-intArray3 : [1, 2, 3]
+intArray2 : [1, 2, 3]
 
 obj() { this }
 
@@ -117,7 +111,7 @@ obj() { this }
 objArray : [obj(), obj()]
 
 // Indexing an array - Accessing an element
-console.writeLine("intArray @ 0: " + intArray[0] as string)
+console.writeLine("intArray1 @ 0: " + intArray1[0] as string)
 
 // Arrays are zero-indexed and mutable.
 intArray2[1] = 1
