@@ -46,7 +46,7 @@ parser/tokens.cpp: parser/tokens.l
 	flex -L -o $@ $^
 
 include/sjc.h.gch : $(HEADERS)
-	$(CC) $(CFLAGS) -c include/sjc.h -o include/sjc.h.gch
+	$(CC) $(CFLAGS) -c include/sjc.h -o include/sjc.h.gch  -Wno-deprecated
 
 parser/parser.o: parser/parser.cpp
 	$(CC) $(CFLAGS) -Wno-unused-const-variable -c $^ -o $@
