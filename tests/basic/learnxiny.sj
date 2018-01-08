@@ -55,7 +55,7 @@ barInt : 1
 */
 // char - 8-bit unsigned
 // (0 <= char <= 255)
-fooChar = '4'
+fooChar : '4'
 
 // i32 - 32-bit signed two's complement integer
 // (-2,147,483,648 <= i32 <= 2,147,483,647)
@@ -63,7 +63,7 @@ bazInt : 1
 
 // i64 - 64-bit signed two's complement integer
 // (-9,223,372,036,854,775,808 <= long <= 9,223,372,036,854,775,807)
-fooLong : 100000L
+fooLong : 100000l
 // L is used to denote that this variable value is of type Long
 // anything without is treated as integer by default.
 
@@ -99,27 +99,23 @@ console.writeLine(plusConcatenated)
 // Output: Strings can be concatenated via + operator.
 
 // Arrays
-// By default arrays are uninitialized and you must call initAt on the first
-// assignment
-intArray : array!i32(10)
-intArray.initAt(0, 1) // intArray[0] == 1
-
 // If you want to set all elements in array to the same default value
-// you can use the init function
-intArray2 : array!i32(10).init(-1)
+intArray1 : array.create!i32(10, -1)
 
 // Or you can you use the static initializer
-intArray3 : [1, 2, 3]
+intArray2 : [1, 2, 3]
+
+obj() { this }
 
 // Arrays can contain any type, but all elements must have the same type
 objArray : [obj(), obj()]
 
 // Indexing an array - Accessing an element
-console.writeLine("intArray @ 0: " + intArray[0])
+console.writeLine("intArray1 @ 0: " + intArray1[0] as string)
 
 // Arrays are zero-indexed and mutable.
 intArray2[1] = 1
-console.writeLine("intArray2 @ 1: " + intArray2[1]) // => 1
+console.writeLine("intArray2 @ 1: " + intArray2[1] as string) // => 1
 
 // List - array that can grow
 l : list!string()
@@ -131,7 +127,7 @@ l.removeAt(0)
 h : hash![string, i32]()
 h["bob"] = 1
 h["foo"] = 2
-h["foo"] = h["bob"] + 1
+h["foo"] = h["bob"]?? + 1
 
 ///////////////////////////////////////
 // Operators
@@ -140,27 +136,27 @@ i1 : 1
 i2 : 2
 
 // Arithmetic is straightforward
-console.writeLine("1+2 = " + (i1 + i2)) // => 3
-console.writeLine("2-1 = " + (i2 - i1)) // => 1
-console.writeLine("2*1 = " + (i2 * i1)) // => 2
-console.writeLine("1/2 = " + (i1 / i2)) // => 0 (int/int returns int)
-console.writeLine("1/2.0 = " + (i1 as f64 / i2 as f64)) // => 0.5
+console.writeLine("1+2 = " + (i1 + i2) as string) // => 3
+console.writeLine("2-1 = " + (i2 - i1) as string) // => 1
+console.writeLine("2*1 = " + (i2 * i1) as string) // => 2
+console.writeLine("1/2 = " + (i1 / i2) as string) // => 0 (int/int returns int)
+console.writeLine("1/2.0 = " + (i1 as f64 / i2 as f64) as string) // => 0.5
 
 // Modulo
-console.writeLine("11%3 = "+(11 % 3)) // => 2
+console.writeLine("11%3 = " + (11 % 3) as string) // => 2
 
 // Comparison operators
-console.writeLine("3 == 2? " + (3 == 2)) // => false
-console.writeLine("3 != 2? " + (3 != 2)) // => true
-console.writeLine("3 > 2? " + (3 > 2)) // => true
-console.writeLine("3 < 2? " + (3 < 2)) // => false
-console.writeLine("2 <= 2? " + (2 <= 2)) // => true
-console.writeLine("2 >= 2? " + (2 >= 2)) // => true
+console.writeLine("3 == 2? " + (3 == 2) as string) // => false
+console.writeLine("3 != 2? " + (3 != 2) as string) // => true
+console.writeLine("3 > 2? " + (3 > 2) as string) // => true
+console.writeLine("3 < 2? " + (3 < 2) as string) // => false
+console.writeLine("2 <= 2? " + (2 <= 2) as string) // => true
+console.writeLine("2 >= 2? " + (2 >= 2) as string) // => true
 
 // Boolean operators
-console.writeLine("3 > 2 && 2 > 3? " + ((3 > 2) && (2 > 3))) // => false
-console.writeLine("3 > 2 || 2 > 3? " + ((3 > 2) || (2 > 3))) // => true
-console.writeLine("!(3 == 2)? " + (!(3 == 2))) // => true
+console.writeLine("3 > 2 && 2 > 3? " + ((3 > 2) && (2 > 3)) as string) // => false
+console.writeLine("3 > 2 || 2 > 3? " + ((3 > 2) || (2 > 3)) as string) // => true
+console.writeLine("!(3 == 2)? " + (!(3 == 2)) as string) // => true
 
 // Bitwise operators!
 /*
@@ -174,7 +170,7 @@ console.writeLine("!(3 == 2)? " + (!(3 == 2))) // => true
 */
 
 // Increment operators
-i : 0
+i := 0
 console.writeLine("\n->Inc/Dec-rementation")
 // The ++ and -- operators increment and decrement by 1 respectively.
 i ++
@@ -200,20 +196,19 @@ if (j == 10) {
 // While loop
 fooWhile := 0
 while(fooWhile < 100) {
-    console.writeLine(fooWhile)
+    console.writeLine(fooWhile as string)
     // Increment the counter
     // Iterated 100 times, fooWhile 0,1,2...99
     fooWhile++
 }
-console.writeLine("fooWhile Value: " + fooWhile)
+console.writeLine("fooWhile Value: " + fooWhile as string)
 
 // For Loop
 // for loop structure => for(<start_statement> <conditional> <step>)
 for fooFor : 0 to 10 {
-    console.writeLine(fooFor)
+    console.writeLine(fooFor as string)
     // Iterated 10 times, fooFor 0->9
 }
-console.writeLine("fooFor Value: " + fooFor)
 
 // For Each Loop
 // The for loop is also able to iterate over arrays as well as objects
@@ -224,7 +219,7 @@ fooList : [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 // note: the object type must match the element type of the iterable.
 
 fooList.each(^{
-    console.writeLine(_)
+    console.writeLine(_ as string)
     //Iterates 9 times and prints 1-9 on new lines
 })
 
@@ -271,7 +266,7 @@ class(x : 0, y : 0) { this } // Class with two fields
 // Class definition for Bicycle
 Bicycle(
     // Bicycle's Fields/Variables
-    cadence : 50 // Public: Can be accessed from anywhere
+    cadence := 50 // Public: Can be accessed from anywhere
     gear := 1
     name := "Bontrager"
     _speed := 5 // Private: Only accessible from within the class (any function/var that starts with _ is private)
@@ -307,7 +302,7 @@ Bicycle(
 
     //Method to display the attribute values of this Object.
     asString() {
-        "gear: " + gear + " cadence: " + cadence + " speed: " + _speed + " name: " + name
+        "gear: " + gear as string + " cadence: " + cadence as string + " speed: " + _speed as string + " name: " + name
     }
 ) {
     // This is a constructor
@@ -362,13 +357,13 @@ EnumTest(
 
     tellItLikeItIs() {
         switch day {
-            MONDAY { 
+            Day.MONDAY { 
                 console.writeLine("Mondays are bad.") 
             }
-            FRIDAY {     
+            Day.FRIDAY {     
                 console.writeLine("Fridays are better.") 
             }
-            _ == SATURDAY || _ == SUNDAY {
+            _ == Day.SATURDAY || _ == Day.SUNDAY {
                 console.writeLine("Weekends are best.") 
             }
             default {

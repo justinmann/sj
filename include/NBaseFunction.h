@@ -35,7 +35,8 @@ enum VarScanMode {
     VSM_LocalOnly,
     VSM_ThisOnly,
     VSM_FromChild,
-    VSM_LocalThisParent
+    VSM_LocalThisParent,
+    VSM_LocalThisParentGlobal,
 };
 
 class FunctionParameter {

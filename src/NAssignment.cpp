@@ -192,7 +192,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
         else {
             if (op.isFirstAssignment) {
                 if (typeName) {
-                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                    auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParentGlobal);
                     if (!leftVar) {
                         compiler->addError(loc, CErrorCode::Internal, "var '%s' should have been initialized already", name.c_str());
                         return nullptr;
@@ -241,7 +241,7 @@ shared_ptr<CVar> NAssignment::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
                 }
             }
             else {
-                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+                auto leftVar = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParentGlobal);
                 if (!leftVar) {
                     compiler->addError(loc, CErrorCode::ImmutableAssignment, "var '%s' does not exist", name.c_str());
                     return nullptr;

@@ -16,19 +16,6 @@ enum NIT {
     NIT_U64,
 };
 
-class CConstantVar : public CVar {
-public:
-    CConstantVar(CLoc loc, shared_ptr<CScope> scope, shared_ptr<CType> type, string value) : CVar(loc, scope), type(type), value(value) { }
-    bool getReturnThis();
-    shared_ptr<CType> getType(Compiler* compiler);
-    void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
-    void dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level);
-    
-private:
-    shared_ptr<CType> type;
-    string value;
-};
-
 class NInteger : public NVariableBase {
 public:
     NInteger(CLoc loc, const char* value);

@@ -6,7 +6,7 @@ func(start : 'i32, cb : '(:i32)i32) {
 }
 
 do() {
-	c : 12
+	c := 12
 	a : func(11, ^{ c += _ })
 	debug.writeLine(c.asString())
 }

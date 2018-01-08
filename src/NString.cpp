@@ -24,7 +24,7 @@ shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler) {
 
 void CGlobalPtrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
     trOutput->strings[varName] = str;
-    auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "(void*)" + varName, false);
+    auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "&" + varName, false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
@@ -65,10 +65,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
 
     auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, 
         CallArgument::createList(
-            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size())),
-            make_shared<CGlobalPtrVar>(loc, scope, varName, str),
-            make_shared<CConstantVar>(loc, scope, compiler->typeBool, "true"),
-            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size()))
+            make_shared<CGlobalPtrVar>(loc, scope, varName, str)
         ), false, nullptr, CTM_Stack);
     auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, CTM_Stack);
     if (!createArrayVar) {
@@ -81,9 +78,26 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         return nullptr;
     }
 
+    int chars = 0;
+    bool previousSlash = false;
+    for (auto ch : str) {
+        if (ch == '\\') {
+            if (previousSlash) {
+                previousSlash = false;
+                chars++;
+            } else {
+                previousSlash = true;
+            }
+        } else {
+            previousSlash = false;
+            chars++;
+        }
+    }
+
     auto createStringParameters = CCallVar::getParameters(compiler, loc, scope, creatStringCallee,
         CallArgument::createList(
-            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(str.size())),
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(0)),
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(chars)),
             createArrayVar
         ), false, nullptr, returnMode);
     auto createStringVar = make_shared<CCallVar>(loc, scope, nullptr, createStringParameters, creatStringCallee, returnMode);

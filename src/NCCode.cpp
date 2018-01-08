@@ -98,6 +98,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 }
 
                 if (!ctype->parent.expired()) {
+                    if (trOutput) {
+                        ctype->parent.lock()->transpileStructDefinition(compiler, trOutput);
+                    }
+
                     auto cfunction = static_pointer_cast<CBaseFunction>(ctype->parent.lock()->getCFunction(compiler, loc, ctypeName2->valueName, scope, ctypeName2->templateTypeNames, CTM_Stack));
                     if (cfunction) {
                         functions.push_back(cfunction);
@@ -307,7 +311,7 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
             TrBlock block(trBlock);
             stringstream retainStream;
             auto leftStoreValue = make_shared<TrStoreValue>(loc, scope, ctype, leftName, AssignOp::create(true, false, ctype->typeMode == CTM_Stack, ctype->typeMode));
-            auto rightVar = scope->getCVar(compiler, scope, nullptr, rightName, VSM_LocalThisParent);
+            auto rightVar = scope->getCVar(compiler, scope, nullptr, rightName, VSM_LocalThisParentGlobal);
             if (!rightVar) {
                 auto rightValue = make_shared<TrValue>(scope, ctype, rightName, false);
                 if (trOutput) {

@@ -109,7 +109,7 @@ shared_ptr<CVar> CLambdaClassFunction::getCVar(Compiler* compiler, shared_ptr<CS
 
         auto lambdaFunction = static_pointer_cast<NLambdaClassFunction>(node);
         assert(lambdaFunction->returnMode != CTM_Undefined);
-        auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParent);
+        auto callerVar = lambdaFunction->callerScope->getCVar(compiler, callerScope, dotVar, name, VSM_LocalThisParentGlobal);
         if (callerVar) {
             auto lambdaArgVar = vars[CTM_Stack][callerVar];
             if (!lambdaArgVar) {
@@ -187,7 +187,7 @@ shared_ptr<CVar> NLambdaCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> 
     bool isHelperFunction = false;
     auto callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
     if (!callee) {
-        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
+        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist for type '%s'", name.c_str(), dotVar ? dotVar->getType(compiler)->valueName.c_str() : "");
         return nullptr;
     }
 

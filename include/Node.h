@@ -54,6 +54,7 @@ enum NodeType {
     NodeType_Char,
     NodeType_Code,
     NodeType_Compare,
+    NodeType_Constant,
     NodeType_Copy,
     NodeType_Dot,
     NodeType_Double,
@@ -61,6 +62,8 @@ enum NodeType {
     NodeType_Empty,
     NodeType_For,
     NodeType_Function,
+    NodeType_GetAt,
+    NodeType_GetOrDefault,
     NodeType_GetOrElse,
     NodeType_GetType,
     NodeType_GetValue,
@@ -113,6 +116,7 @@ enum NodeType {
 #include "NChangeMode.h"
 #include "NChar.h"
 #include "NCompare.h"
+#include "NConstant.h"
 #include "NCopy.h"
 #include "NDot.h"
 #include "NDouble.h"
@@ -120,6 +124,8 @@ enum NodeType {
 #include "NEmpty.h"
 #include "NFor.h"
 #include "NFunction.h"
+#include "NGetAt.h"
+#include "NGetOrDefault.h"
 #include "NGetOrElse.h"
 #include "NGetType.h"
 #include "NGetValue.h"

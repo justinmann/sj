@@ -52,6 +52,7 @@ public:
     shared_ptr<NodeList> arguments;
     
     NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments);
+    NCall(CLoc loc, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments);
 
     void initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction);
     void initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode);
@@ -63,6 +64,9 @@ protected:
 
 private:
     shared_ptr<NCall> shared_from_this() { return static_pointer_cast<NCall>(NBase::shared_from_this()); };
+
+    bool _isHelperFunction;
+    shared_ptr<CBaseFunction> _callee;
 };
 
 #endif /* NCall_h */

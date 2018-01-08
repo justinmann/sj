@@ -1299,24 +1299,26 @@ bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> th
         
         // Map template type string list to type list
         for (auto templateTypeName : *calleeTemplateTypeNames) {
-            shared_ptr<CType> ctype = nullptr;
-            if (callerScope) {
-                ctype = callerScope->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
-            }
-            
+            shared_ptr<CType> ctype = templateTypeName->ctype;
             if (!ctype) {
-                vector<pair<string, vector<string>>> allNamespaces;
                 if (callerScope) {
-                    allNamespaces = callerScope->getImportNamespacesWithRenames();
+                    ctype = callerScope->getVarType(loc, compiler, templateTypeName, CTM_Undefined);
                 }
-                else {
-                    allNamespaces.push_back(make_pair(string(""), vector<string>()));
-                }
-
-                ctype = thisFunction->getVarType(loc, compiler, allNamespaces, templateTypeName, CTM_Undefined);
+                
                 if (!ctype) {
-                    compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
-                    return false;
+                    vector<pair<string, vector<string>>> allNamespaces;
+                    if (callerScope) {
+                        allNamespaces = callerScope->getImportNamespacesWithRenames();
+                    }
+                    else {
+                        allNamespaces.push_back(make_pair(string(""), vector<string>()));
+                    }
+
+                    ctype = thisFunction->getVarType(loc, compiler, allNamespaces, templateTypeName, CTM_Undefined);
+                    if (!ctype) {
+                        compiler->addError(loc, CErrorCode::TemplateUnspecified, "cannot find template type: '%s'", templateTypeName->getFullName().c_str());
+                        return false;
+                    }
                 }
             }
             
@@ -1448,7 +1450,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
         assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
         assert(!_data[returnMode].isInvalid);
 
-        if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent) {
+        if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_LocalThisParentGlobal) {
             for (auto fb = localVarScopes.rbegin(); fb != localVarScopes.rend(); ++fb) {
                 auto t1 = _data[returnMode].localVarsByName[*fb][ns].find(name);
                 if (t1 != _data[returnMode].localVarsByName[*fb][ns].end()) {
@@ -1462,7 +1464,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
             }
         }
         
-        if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_FromChild) {
+        if (scanMode == VSM_ThisOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_LocalThisParentGlobal || scanMode == VSM_FromChild) {
             auto isPrivateOkay = false;
             if (scanMode == VSM_FromChild) {
                 isPrivateOkay = true;
@@ -1502,21 +1504,23 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
             }
         }
 
-        if (scanMode == VSM_LocalThisParent && !parent.expired()) {
+        if ((scanMode == VSM_LocalThisParent || scanMode == VSM_LocalThisParentGlobal) && !parent.expired()) {
             shared_ptr<CFunction> parentCheck = dynamic_pointer_cast<CFunction>(parent.lock());
             auto cvar = parentCheck->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, make_shared<CParentVar>(loc, callerScope, dotVar, parentCheck), name, VSM_FromChild, CTM_Undefined);
             if (cvar) {
                 return cvar;
             }
 
-            shared_ptr<CFunction> globalFunction = dynamic_pointer_cast<CFunction>(parent.lock());
-            while (globalFunction != nullptr && globalFunction->name != "global") {
-                globalFunction = dynamic_pointer_cast<CFunction>(globalFunction->parent.lock());
-            }
+            if (scanMode == VSM_LocalThisParentGlobal) {
+                shared_ptr<CFunction> globalFunction = dynamic_pointer_cast<CFunction>(parent.lock());
+                while (globalFunction != nullptr && globalFunction->name != "global") {
+                    globalFunction = dynamic_pointer_cast<CFunction>(globalFunction->parent.lock());
+                }
 
-            if (globalFunction) {
-                cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, nullptr, name, VSM_LocalOnly, CTM_Undefined);
-                return cvar;
+                if (globalFunction) {
+                    cvar = globalFunction->getCVar(compiler, callerScope, vector<shared_ptr<LocalVarScope>>(), ns, nullptr, name, VSM_LocalOnly, CTM_Undefined);
+                    return cvar;
+                }
             }
         }
     }

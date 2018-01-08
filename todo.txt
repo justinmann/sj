@@ -6,8 +6,6 @@
 * fix weird highlighting issue in nau demo
 
 -- language --
-* map "foo as string" -> foo.asString()
-* allow local var to conflict with global var
 * heap local to stop most of intrafunction refcount'ing
 * property
 

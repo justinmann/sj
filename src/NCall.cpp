@@ -211,7 +211,7 @@ void CCallVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& 
 }
 
 
-NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments) {
+NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames, shared_ptr<NodeList> arguments) : NVariableBase(NodeType_Call, loc), name(name), templateTypeNames(templateTypeNames), arguments(arguments), _isHelperFunction(false) {
     boost::algorithm::to_lower(this->name);
 
     if (!this->arguments) {
@@ -225,6 +225,20 @@ NCall::NCall(CLoc loc, string name, shared_ptr<CTypeNameList> templateTypeNames,
         }
     }
 }
+
+NCall::NCall(CLoc loc, shared_ptr<CBaseFunction> callee, shared_ptr<NodeList> arguments) :  NVariableBase(NodeType_Call, loc), _callee(callee), arguments(arguments), _isHelperFunction(false) {
+    if (!this->arguments) {
+        this->arguments = make_shared<NodeList>();
+    } else {
+        for (auto it : *arguments) {
+            if (it != nullptr && it->nodeType == NodeType_Assignment) {
+                auto parameterAssignment = static_pointer_cast<NAssignment>(it);
+                parameterAssignment->inFunctionDeclaration = true;
+            }
+        }
+    }
+}
+
 
 void NCall::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, vector<string>& packageNamespace, shared_ptr<CBaseFunctionDefinition> thisFunction) {
     assert(compiler->state == CompilerState::Define);
@@ -242,10 +256,7 @@ void NCall::initFunctionsImpl(Compiler* compiler, vector<pair<string, vector<str
 }
 
 void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode returnMode) {
-    // TODO: get callee function
     for (auto it : *arguments) {
-        // TODO: get argument by index or name
-        // TODO: get explicit type for argument
         if (it->nodeType == NodeType_Assignment) {
             auto parameterAssignment = static_pointer_cast<NAssignment>(it);
             if (!parameterAssignment->op.isFirstAssignment) {
@@ -259,8 +270,7 @@ void NCall::initVarsImpl(Compiler* compiler, shared_ptr<CScope> scope, CTypeMode
     }
 }
 
-shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction) {
-    
+shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, string name, shared_ptr<CTypeNameList> templateTypeNames, CTypeMode returnMode, bool* pisHelperFunction) {    
     // Check for the x.name() style function call  
     *pisHelperFunction = false;
     auto cfunction = static_pointer_cast<CBaseFunction>(scope->function);
@@ -309,7 +319,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
         }
     }
     else {
-        var = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParent);
+        var = scope->getCVar(compiler, scope, nullptr, name, VSM_LocalThisParentGlobal);
     }
 
     if (var) {
@@ -326,11 +336,15 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
 }
 
 shared_ptr<CVar> NCall::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
-    bool isHelperFunction = false;
-    auto callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
+    auto callee = _callee;
+    auto isHelperFunction = _isHelperFunction;
+
     if (!callee) {
-        compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist", name.c_str());
-        return nullptr;
+        callee = getCFunction(compiler, loc, scope, dotVar, name, templateTypeNames, returnMode, &isHelperFunction);
+        if (!callee) {
+            compiler->addError(loc, CErrorCode::UnknownFunction, "function '%s' does not exist for type '%s'", name.c_str(), dotVar ? dotVar->getType(compiler)->valueName.c_str() : "");
+            return nullptr;
+        }
     }
 
     auto cfunc = dynamic_pointer_cast<CFunction>(callee);
