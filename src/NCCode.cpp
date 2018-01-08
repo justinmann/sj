@@ -98,6 +98,10 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
                 }
 
                 if (!ctype->parent.expired()) {
+                    if (trOutput) {
+                        ctype->parent.lock()->transpileStructDefinition(compiler, trOutput);
+                    }
+
                     auto cfunction = static_pointer_cast<CBaseFunction>(ctype->parent.lock()->getCFunction(compiler, loc, ctypeName2->valueName, scope, ctypeName2->templateTypeNames, CTM_Stack));
                     if (cfunction) {
                         functions.push_back(cfunction);
