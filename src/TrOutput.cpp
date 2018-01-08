@@ -41,7 +41,12 @@ void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLo
 
     if (strings.size() > 0) {
         for (auto t : strings) {
-            stream << "sjs_array " << t.first << " = { 1, " << to_string(t.second.size()) << ", " << to_string(t.second.size()) << ", \""<< t.second << "\"};\n";
+            stream << "struct {\n";
+            stream << "    int refcount;\n";
+            stream << "    int size;\n";
+            stream << "    int count;\n";
+            stream << "    char data[" << t.second.second + 1 << "];\n";
+            stream << "} " << t.first << " = { 1, " << to_string(t.second.second + 1) << ", " << to_string(t.second.second) << ", \""<< t.second.first << "\"};\n";
         }
         stream << "\n";
     }
