@@ -41,7 +41,7 @@ void TrOutput::writeToStream(Compiler* compiler, ostream& stream, bool hasMainLo
 
     if (strings.size() > 0) {
         for (auto t : strings) {
-            stream << "const char* " << t.first << " = \"" << t.second << "\";\n";
+            stream << "sjs_array " << t.first << " = { 1, " << to_string(t.second.size()) << ", " << to_string(t.second.size()) << ", \""<< t.second << "\"};\n";
         }
         stream << "\n";
     }
