@@ -90,12 +90,13 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
 
     auto tempName = TrBlock::nextVarName("array");
 
-    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType->category, elementType->typeMode, elementType->packageNamespace, elementType->valueName, elementType->isOption), returnMode);
+    auto createArrayCallee = scope->function->getCFunction(compiler, loc, "array", scope, make_shared<CTypeNameList>(elementType), returnMode);
     if (!createArrayCallee) {
         return nullptr;
     }
 
-    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(elements->size()))), false, nullptr, returnMode);
+    auto createArrayName = "createarray(" + to_string(elements->size()) + " * sizeof(" + elementType->cname + "))";
+    auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typePtr, createArrayName)), false, nullptr, returnMode);
     auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, returnMode);
     if (!createArrayVar) {
         return nullptr;

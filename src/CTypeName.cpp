@@ -18,6 +18,11 @@ CTypeNameList::CTypeNameList(CTypeCategory category, CTypeMode typeMode, vector<
     push_back(make_shared<CTypeName>(category, typeMode, packageNamespace, valueName, isOption));
 }
 
+CTypeNameList::CTypeNameList(shared_ptr<CType> ctype) {
+    push_back(make_shared<CTypeName>(ctype));    
+}
+
+
 shared_ptr<CTypeName> CTypeName::parse(string name) {
     CTypeMode typeMode;
     vector<string> packageNamespace;

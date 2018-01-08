@@ -21,6 +21,7 @@ class CTypeNameList : public vector<shared_ptr<CTypeName>> {
 public:
     CTypeNameList() { }
     CTypeNameList(CTypeCategory category, CTypeMode typeMode, vector<string> packageNamespace, const string& name, bool isOption);
+    CTypeNameList(shared_ptr<CType> ctype);
 };
 
 class CTypeNameParts {
