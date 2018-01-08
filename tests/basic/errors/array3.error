@@ -1,1 +1,1 @@
-lib/sj-lib-common/array.sj:8:9: error: SJC0002 right type 'heap class' cannot change mode to left type 'stack class' without using a copy operator like 'a = copy b'
+lib/sj-lib-common/array.sj:37:9: error: SJC0002 right type 'heap class' cannot change mode to left type 'stack class' without using a copy operator like 'a = copy b'
