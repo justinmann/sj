@@ -34,8 +34,8 @@ struct {
     int refcount;
     int size;
     int count;
-    char data[8];
-} sjg_string14 = { 1, 8, 7, "getsize"};
+    char data[14];
+} sjg_string14 = { 1, 14, 13, "gettotalcount"};
 struct {
     int refcount;
     int size;
@@ -191,8 +191,8 @@ struct {
     int refcount;
     int size;
     int count;
-    char data[1];
-} g_empty = { 1, 1, 0, "" };
+    char data[0];
+} g_empty = { 1, 0, 0 };
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
@@ -325,7 +325,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_array_char_getsize(sjs_array_char* _parent, int32_t* _return);
+void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
 void sjf_class_as_sji_iface(sjs_class* _this, sji_iface* _return);
@@ -410,7 +410,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 #line 179
     }
 #line 181
-    sjs_array* newArr = createarray(newsize * sizeof(char));
+    sjs_array* newArr = createarray(sizeof(char), newsize);
 #line 182
     if (!newArr) {
 #line 183
@@ -473,7 +473,7 @@ void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t 
 #line 179
     }
 #line 181
-    sjs_array* newArr = createarray(newsize * sizeof(char));
+    sjs_array* newArr = createarray(sizeof(char), newsize);
 #line 182
     if (!newArr) {
 #line 183
@@ -552,7 +552,7 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
     }
 }
 
-void sjf_array_char_getsize(sjs_array_char* _parent, int32_t* _return) {
+void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
 #line 37 "lib/sj-lib-common/array.sj"
     #line 36 "lib/sj-lib-common/array.sj"
 (*_return) = ((sjs_array*)_parent->v)->size;
@@ -840,7 +840,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
-        sjf_array_char_getsize(sjt_parent1, &sjt_capture1);
+        sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
         if ((_parent->count + 1) > sjt_capture1) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
@@ -1141,7 +1141,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->offset = 0;
 #line 16
-        _return->count = 7;
+        _return->count = 13;
 #line 16
         _return->data._refCount = 1;
 #line 16
