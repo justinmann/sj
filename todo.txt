@@ -1,9 +1,7 @@
 -- ui --
 * text input
 * wrapping text
-* depth of field effect
 * style switch based on #element.type & #element.class
-* fix weird highlighting issue in nau demo
 
 -- language --
 * heap local to stop most of intrafunction refcount'ing
