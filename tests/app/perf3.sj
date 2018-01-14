@@ -29,33 +29,33 @@ img_dots : (f32_pi * img_dotsscale as f32) as i32
 test #element (
     funcid := 0
     lastfuncid := 0
-    datax : array!f32(dots).init(0.0f)
-    datay : array!f32(dots).init(0.0f)
+    datax : array.create!f32(dots, 0.0f)
+    datay : array.create!f32(dots, 0.0f)
     rotatex := 0.0f
     rotatey := 0.0f
     rotatez := 0.0f
     
-    datavert1x : array!f32(img_dots).init(0.0f)
-    datavert1y : array!f32(img_dots).init(0.0f)
-    datavert2x : array!f32(img_dots).init(0.0f)
-    datavert2y : array!f32(img_dots).init(0.0f)
-    datavert3x : array!f32(img_dots).init(0.0f)
-    datavert3y : array!f32(img_dots).init(0.0f)
-    datavert4x : array!f32(img_dots).init(0.0f)
-    datavert4y : array!f32(img_dots).init(0.0f)
-    datavert5x : array!f32(img_dots).init(0.0f)
-    datavert5y : array!f32(img_dots).init(0.0f)
+    datavert1x : array.create!f32(img_dots, 0.0f)
+    datavert1y : array.create!f32(img_dots, 0.0f)
+    datavert2x : array.create!f32(img_dots, 0.0f)
+    datavert2y : array.create!f32(img_dots, 0.0f)
+    datavert3x : array.create!f32(img_dots, 0.0f)
+    datavert3y : array.create!f32(img_dots, 0.0f)
+    datavert4x : array.create!f32(img_dots, 0.0f)
+    datavert4y : array.create!f32(img_dots, 0.0f)
+    datavert5x : array.create!f32(img_dots, 0.0f)
+    datavert5y : array.create!f32(img_dots, 0.0f)
     
-    datahotizont1x : array!f32(img_dots).init(0.0f)
-    datahotizont1y : array!f32(img_dots).init(0.0f)
-    datahotizont2x : array!f32(img_dots).init(0.0f)
-    datahotizont2y : array!f32(img_dots).init(0.0f)
-    datahotizont3x : array!f32(img_dots).init(0.0f)
-    datahotizont3y : array!f32(img_dots).init(0.0f)
-    datahotizont4x : array!f32(img_dots).init(0.0f)
-    datahotizont4y : array!f32(img_dots).init(0.0f)
-    datahotizont5x : array!f32(img_dots).init(0.0f)
-    datahotizont5y : array!f32(img_dots).init(0.0f)
+    datahotizont1x : array.create!f32(img_dots, 0.0f)
+    datahotizont1y : array.create!f32(img_dots, 0.0f)
+    datahotizont2x : array.create!f32(img_dots, 0.0f)
+    datahotizont2y : array.create!f32(img_dots, 0.0f)
+    datahotizont3x : array.create!f32(img_dots, 0.0f)
+    datahotizont3y : array.create!f32(img_dots, 0.0f)
+    datahotizont4x : array.create!f32(img_dots, 0.0f)
+    datahotizont4y : array.create!f32(img_dots, 0.0f)
+    datahotizont5x : array.create!f32(img_dots, 0.0f)
+    datahotizont5y : array.create!f32(img_dots, 0.0f)
 
     shader : shader("shaders/point.vert", "shaders/point.frag")
     _rect := rect()
@@ -93,7 +93,7 @@ test #element (
         )
 
         if funcid == 18 {
-            vertices : array!vertex_location(dots).init(vertex_location())
+            vertices : array.create!vertex_location(dots, vertex_location())
             index := 0
             for n : 0 to img_dots {
                 /* glVertex3f(datahotizont1x[n] * scale, datahotizont1y[n] * scale, 0.0f)
@@ -121,7 +121,7 @@ test #element (
                 glVertex3f(datavert5x[n] * scale + 1.0f - 1.0f / 6.0f, datavert5y[n] * scale - 0.2f, 0.0f) */
             }
         } else {
-            vertices : array!vertex_location(dots).init(vertex_location())
+            vertices : array.create!vertex_location(dots, vertex_location())
             index := 0
             for n : 0 to dots {
                 vertices[index] = vertex_location(

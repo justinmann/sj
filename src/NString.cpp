@@ -3,7 +3,7 @@
 
 class CGlobalPtrVar : public CVar {
 public:
-    CGlobalPtrVar(CLoc loc, shared_ptr<CScope> scope, string varName, string str) : CVar(loc, scope), varName(varName), str(str) { }
+    CGlobalPtrVar(CLoc loc, shared_ptr<CScope> scope, string varName, string str, int count) : CVar(loc, scope), varName(varName), str(str), count(count) { }
     bool getReturnThis();
     shared_ptr<CType> getType(Compiler* compiler);
     void transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue);
@@ -12,6 +12,7 @@ public:
 private:
     string varName;
     string str;
+    int count;
 };
 
 bool CGlobalPtrVar::getReturnThis() {
@@ -23,12 +24,31 @@ shared_ptr<CType> CGlobalPtrVar::getType(Compiler* compiler) {
 }
 
 void CGlobalPtrVar::transpile(Compiler* compiler, TrOutput* trOutput, TrBlock* trBlock, shared_ptr<TrValue> thisValue, shared_ptr<TrStoreValue> storeValue) {
-    trOutput->strings[varName] = str;
+    trOutput->strings[varName] = make_pair(str, count);
     auto resultValue = make_shared<TrValue>(nullptr, compiler->typePtr, "&" + varName, false);
     storeValue->retainValue(compiler, loc, trBlock, resultValue);
 }
 
 void CGlobalPtrVar::dump(Compiler* compiler, map<shared_ptr<CBaseFunction>, string>& functions, stringstream& ss, int level) {
+}
+
+int getChars(string& str) {
+    int chars = 0;
+    bool previousSlash = false;
+    for (auto ch : str) {
+        if (ch == '\\') {
+            if (previousSlash) {
+                previousSlash = false;
+                chars++;
+            } else {
+                previousSlash = true;
+            }
+        } else {
+            previousSlash = false;
+            chars++;
+        }
+    }
+    return chars;
 }
 
 class NGlobalPtrVar : public NBase {
@@ -44,7 +64,7 @@ private:
 };
 
 shared_ptr<CVar> NGlobalPtrVar::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CType> returnType, CTypeMode returnMode) {
-    return make_shared<CGlobalPtrVar>(loc, scope, varName, str);
+    return make_shared<CGlobalPtrVar>(loc, scope, varName, str, getChars(str));
 }
 
 shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope, shared_ptr<CVar> dotVar, shared_ptr<CType> returnType, CTypeMode returnMode) {
@@ -65,7 +85,7 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
 
     auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, 
         CallArgument::createList(
-            make_shared<CGlobalPtrVar>(loc, scope, varName, str)
+            make_shared<CGlobalPtrVar>(loc, scope, varName, str, getChars(str))
         ), false, nullptr, CTM_Stack);
     auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, CTM_Stack);
     if (!createArrayVar) {
@@ -78,26 +98,10 @@ shared_ptr<CVar> NString::getVarImpl(Compiler* compiler, shared_ptr<CScope> scop
         return nullptr;
     }
 
-    int chars = 0;
-    bool previousSlash = false;
-    for (auto ch : str) {
-        if (ch == '\\') {
-            if (previousSlash) {
-                previousSlash = false;
-                chars++;
-            } else {
-                previousSlash = true;
-            }
-        } else {
-            previousSlash = false;
-            chars++;
-        }
-    }
-
     auto createStringParameters = CCallVar::getParameters(compiler, loc, scope, creatStringCallee,
         CallArgument::createList(
             make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(0)),
-            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(chars)),
+            make_shared<CConstantVar>(loc, scope, compiler->typeI32, to_string(getChars(str))),
             createArrayVar
         ), false, nullptr, returnMode);
     auto createStringVar = make_shared<CCallVar>(loc, scope, nullptr, createStringParameters, creatStringCallee, returnMode);

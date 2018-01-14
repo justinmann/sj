@@ -1,6 +1,11 @@
 #include <lib/sj-lib-common/common.h>
 
-sjs_array g_empty = { 1, 1, 0, "" };
+struct {
+    int refcount;
+    int size;
+    int count;
+    char data[0];
+} g_empty = { 1, 0, 0 };
 #define sjs_hash_type_bool_typeId 17
 #define sjs_log_typeId 22
 #define sjs_array_char_typeId 25
@@ -103,7 +108,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
-void sjf_array_char_getsize(sjs_array_char* _parent, int32_t* _return);
+void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
 void sjf_class2(sjs_class2* _this);
@@ -154,197 +159,197 @@ char* string_char(sjs_string* str) {
 }
 #include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
-#line 351 "lib/sj-lib-common/array.sj"
+#line 356 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 352
+#line 357
         _this->v = &g_empty;
-#line 353
+#line 358
     }
-#line 354
+#line 359
     sjs_array* arr = (sjs_array*)_this->v;
-#line 355
+#line 360
     arr->refcount++;
 }
 
 void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char* _return) {
     void* newv;
 
-#line 165 "lib/sj-lib-common/array.sj"
+#line 170 "lib/sj-lib-common/array.sj"
     newv = 0;
-#line 167
-    sjs_array* arr = (sjs_array*)_parent->v;
-#line 168
-    if (offset + count > arr->count) {
-#line 169
-        halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
-#line 170
-    }
 #line 172
-    if (count > arr->count - offset) {
+    sjs_array* arr = (sjs_array*)_parent->v;
 #line 173
-        halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
+    if (offset + count > arr->count) {
 #line 174
+        halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
+#line 175
     }
-#line 176
-    sjs_array* newArr = createarray(newsize * sizeof(char));
 #line 177
-    if (!newArr) {
+    if (count > arr->count - offset) {
 #line 178
-        halt("grow: out of memory\n");
+        halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
 #line 179
     }
 #line 181
-    newv = newArr;
+    sjs_array* newArr = createarray(sizeof(char), newsize);
 #line 182
-    char* p = (char*)arr->data + offset;
+    if (!newArr) {
 #line 183
-    char* newp = (char*)newArr->data;
-#line 185
-    newArr->refcount = 1;
+        halt("grow: out of memory\n");
+#line 184
+    }
 #line 186
-    newArr->size = newsize;
+    newv = newArr;
 #line 187
-    newArr->count = count;
-#line 189
-    #if true
+    char* p = (char*)arr->data + offset;
+#line 188
+    char* newp = (char*)newArr->data;
 #line 190
-    memcpy(newp, p, sizeof(char) * count);
+    newArr->refcount = 1;
 #line 191
-    #else
+    newArr->size = newsize;
 #line 192
+    newArr->count = count;
+#line 194
+    #if true
+#line 195
+    memcpy(newp, p, sizeof(char) * count);
+#line 196
+    #else
+#line 197
     for (int i = 0; i < count; i++) {
-#line 193
-        #line 166 "lib/sj-lib-common/array.sj"
+#line 198
+        #line 171 "lib/sj-lib-common/array.sj"
 newp[i] = p[i];
 ;
-#line 194
+#line 199
     }
-#line 195
+#line 200
     #endif
-#line 195
+#line 200
     _return->_refCount = 1;
-#line 197
+#line 202
     _return->v = newv;
-#line 197
+#line 202
     sjf_array_char(_return);
 }
 
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return) {
     void* newv;
 
-#line 165 "lib/sj-lib-common/array.sj"
+#line 170 "lib/sj-lib-common/array.sj"
     newv = 0;
-#line 167
-    sjs_array* arr = (sjs_array*)_parent->v;
-#line 168
-    if (offset + count > arr->count) {
-#line 169
-        halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
-#line 170
-    }
 #line 172
-    if (count > arr->count - offset) {
+    sjs_array* arr = (sjs_array*)_parent->v;
 #line 173
-        halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
+    if (offset + count > arr->count) {
 #line 174
+        halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
+#line 175
     }
-#line 176
-    sjs_array* newArr = createarray(newsize * sizeof(char));
 #line 177
-    if (!newArr) {
+    if (count > arr->count - offset) {
 #line 178
-        halt("grow: out of memory\n");
+        halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
 #line 179
     }
 #line 181
-    newv = newArr;
+    sjs_array* newArr = createarray(sizeof(char), newsize);
 #line 182
-    char* p = (char*)arr->data + offset;
+    if (!newArr) {
 #line 183
-    char* newp = (char*)newArr->data;
-#line 185
-    newArr->refcount = 1;
+        halt("grow: out of memory\n");
+#line 184
+    }
 #line 186
-    newArr->size = newsize;
+    newv = newArr;
 #line 187
-    newArr->count = count;
-#line 189
-    #if true
+    char* p = (char*)arr->data + offset;
+#line 188
+    char* newp = (char*)newArr->data;
 #line 190
-    memcpy(newp, p, sizeof(char) * count);
+    newArr->refcount = 1;
 #line 191
-    #else
+    newArr->size = newsize;
 #line 192
+    newArr->count = count;
+#line 194
+    #if true
+#line 195
+    memcpy(newp, p, sizeof(char) * count);
+#line 196
+    #else
+#line 197
     for (int i = 0; i < count; i++) {
-#line 193
-        #line 166 "lib/sj-lib-common/array.sj"
+#line 198
+        #line 171 "lib/sj-lib-common/array.sj"
 newp[i] = p[i];
 ;
-#line 194
+#line 199
     }
-#line 195
+#line 200
     #endif
-#line 195
+#line 200
     (*_return) = (sjs_array_char*)malloc(sizeof(sjs_array_char));
-#line 195
+#line 200
     (*_return)->_refCount = 1;
-#line 197
+#line 202
     (*_return)->v = newv;
-#line 197
+#line 202
     sjf_array_char_heap((*_return));
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
-#line 21 "lib/sj-lib-common/array.sj"
+#line 26 "lib/sj-lib-common/array.sj"
     _this->v = _from->v;
-#line 360
+#line 365
     sjs_array* arr = (sjs_array*)_this->v;
-#line 361
+#line 366
     arr->refcount++;
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 365 "lib/sj-lib-common/array.sj"
+#line 370 "lib/sj-lib-common/array.sj"
     sjs_array* arr = (sjs_array*)_this->v;
-#line 366
-    arr->refcount--;
-#line 367
-    if (arr->refcount == 0) {
-#line 368
-        #if !true && !false
-#line 369
-        char* p = (char*)arr->data;
-#line 370
-        for (int i = 0; i < arr->count; i++) {
 #line 371
-            ;
+    arr->refcount--;
 #line 372
-        }
+    if (arr->refcount == 0) {
 #line 373
-        #endif
+        #if !true && !false
 #line 374
-        free(arr);
+        char* p = (char*)arr->data;
 #line 375
+        for (int i = 0; i < arr->count; i++) {
+#line 376
+            ;
+#line 377
+        }
+#line 378
+        #endif
+#line 379
+        free(arr);
+#line 380
     }
 }
 
-void sjf_array_char_getsize(sjs_array_char* _parent, int32_t* _return) {
-#line 32 "lib/sj-lib-common/array.sj"
-    #line 31 "lib/sj-lib-common/array.sj"
+void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
+#line 37 "lib/sj-lib-common/array.sj"
+    #line 36 "lib/sj-lib-common/array.sj"
 (*_return) = ((sjs_array*)_parent->v)->size;
 return;;
 }
 
 void sjf_array_char_heap(sjs_array_char* _this) {
-#line 351 "lib/sj-lib-common/array.sj"
+#line 356 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 352
+#line 357
         _this->v = &g_empty;
-#line 353
+#line 358
     }
-#line 354
+#line 359
     sjs_array* arr = (sjs_array*)_this->v;
-#line 355
+#line 360
     arr->refcount++;
 }
 
@@ -601,10 +606,10 @@ void sjf_string_nullterminate(sjs_string* _parent) {
         int32_t sjt_capture1;
         sjs_array_char* sjt_parent1 = 0;
 
-#line 30 "lib/sj-lib-common/array.sj"
+#line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
-#line 30
-        sjf_array_char_getsize(sjt_parent1, &sjt_capture1);
+#line 35
+        sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
         if ((_parent->count + 1) > sjt_capture1) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
@@ -612,9 +617,9 @@ void sjf_string_nullterminate(sjs_string* _parent) {
             sjs_array_char* sjt_parent2 = 0;
 
             sjt_funcold1._refCount = 1;
-#line 164 "lib/sj-lib-common/array.sj"
+#line 169 "lib/sj-lib-common/array.sj"
             sjf_array_char_copy(&sjt_funcold1, &_parent->data);
-#line 164
+#line 169
             sjt_parent2 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
@@ -627,7 +632,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
-#line 164 "lib/sj-lib-common/array.sj"
+#line 169 "lib/sj-lib-common/array.sj"
             sjf_array_char_copy(&_parent->data, &sjt_funcold1);
 #line 136 "lib/sj-lib-common/string.sj"
             _parent->offset = 0;

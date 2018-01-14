@@ -16,6 +16,11 @@ string expandMacro(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOut
         if (t[i] == ')') { parenCount--; }
     }
 
+    if (parenCount != 0) {
+        compiler->addError(loc, CErrorCode::InvalidMacro, "parens do not match");
+        return "";
+    }
+
     params.push_back(t.substr(lastI, t.size() - lastI));
 
     for (auto i = 0; i < (int)params.size(); i++) {
@@ -536,6 +541,11 @@ string expandMacros(Compiler* compiler, CLoc loc, shared_ptr<CScope> scope, TrOu
             finalCode[finalIndex] = ch;
             finalIndex++;
         }
+    }
+
+    if (parenCount != 0) {
+        compiler->addError(loc, CErrorCode::InvalidMacro, "parens do not match");
+        return "";
     }
 
     finalCode[finalIndex] = 0;

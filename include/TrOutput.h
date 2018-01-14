@@ -14,7 +14,7 @@ public:
     map<string, vector<string>> structs;
     map<string, shared_ptr<TrVtbl>> vtbls;
     vector<pair<string, int>> structOrder;
-    map<string, string> strings;
+    map<string, pair<string, int>> strings;
     map<string, map<string, bool>> includes;
     vector<string> ccodeIncludes;
     vector<string> ccodeStructs;
