@@ -33,6 +33,16 @@ shared_ptr<CVar> NEmpty::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
+    if (returnMode == CTM_Heap) {
+        if (type->getHeapType()) {
+            type = type->getHeapType();
+        }
+    } else if (returnMode == CTM_Stack) {
+        if (type->getStackType()) {
+            type = type->getStackType();
+        }
+    }
+
     if (!type->isOption) {
         type = type->getOptionType();
     }
