@@ -95,7 +95,7 @@ shared_ptr<CVar> NArray::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope
         return nullptr;
     }
 
-    auto createArrayName = "createarray(" + to_string(elements->size()) + " * sizeof(" + elementType->cname + "))";
+    auto createArrayName = "createarray(" + to_string(elements->size()) + ", sizeof(" + elementType->cname + "))";
     auto createArrayParameters = CCallVar::getParameters(compiler, loc, scope, createArrayCallee, CallArgument::createList(make_shared<CConstantVar>(loc, scope, compiler->typePtr, createArrayName)), false, nullptr, returnMode);
     auto createArrayVar = make_shared<CCallVar>(loc, scope, nullptr, createArrayParameters, createArrayCallee, returnMode);
     if (!createArrayVar) {
