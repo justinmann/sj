@@ -1292,7 +1292,7 @@ shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Comp
 
 bool getTemplateTypes(Compiler* compiler, CLoc loc, shared_ptr<CBaseFunction> thisFunction, shared_ptr<CScope> callerScope, shared_ptr<CTypeNameList> calleeTemplateTypeNames, shared_ptr<CTypeNameList> funcTemplateTypeNames, vector<shared_ptr<CType>>& templateTypes) {
     if (calleeTemplateTypeNames) {
-        if (calleeTemplateTypeNames->size() != funcTemplateTypeNames->size()) {
+        if (calleeTemplateTypeNames->size() != (funcTemplateTypeNames ? funcTemplateTypeNames->size() : 0)) {
             compiler->addError(loc, CErrorCode::InvalidTemplateArg, "size does not match");
             return false;
         }
@@ -1680,6 +1680,7 @@ shared_ptr<CType> CFunction::getVarType(CLoc loc, Compiler* compiler, vector<pai
                 auto argType = getVarType(loc, compiler, importNamespaces, argTypeName, CTM_Undefined);
                 if (argType == nullptr) {
                     compiler->addError(loc, CErrorCode::InvalidType, "cannot find type '%s'", argTypeName->valueName.c_str());
+                    return nullptr;
                 }
                 argTypes.push_back(argType);
             }
