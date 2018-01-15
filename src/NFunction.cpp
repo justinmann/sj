@@ -182,25 +182,25 @@ bool CFunction::init(Compiler* compiler, shared_ptr<NFunction> node, CLoc locCal
 
     }
     else if (templateTypes.size() == 1) {
-        name = name + "!" + templateTypes[0]->shortName;
+        name = name + "!" + templateTypes[0]->getShortNameWithNamespace();
     }
     else {
         name = name + "![";
         bool isFirst = true;
         for (auto it : templateTypes) {
             if (isFirst) {
-                name = name + it->shortName;
+                name = name + it->getShortNameWithNamespace();
                 isFirst = false;
             }
             else {
-                name = name + ", " + it->shortName;
+                name = name + ", " + it->getShortNameWithNamespace();
             }
         }
         name = name + "]";
     }
     
     for (auto it : templateTypes) {
-        safeName = safeName + "_" + it->safeName;
+        safeName = safeName + "_" + it->getSafeNameWithNamespace();
     }
 
     hasParent = !parent.expired() && name != "global" && parent.lock()->name != "global";
@@ -1766,6 +1766,7 @@ void CFunctionDefinition::init(Compiler* compiler, vector<pair<string, vector<st
     boost::replace_all(this->safeName, " ", "");
     boost::replace_all(this->safeName, "[", "");
     boost::replace_all(this->safeName, "]", "");
+    boost::replace_all(this->safeName, ".", "_");
 
     if (this->implementedInterfaceTypeNames) {
         for (auto it : *this->implementedInterfaceTypeNames) {

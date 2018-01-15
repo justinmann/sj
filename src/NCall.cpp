@@ -302,7 +302,7 @@ shared_ptr<CBaseFunction> NCall::getCFunction(Compiler* compiler, CLoc loc, shar
 
     // Check for type_name(x) style function call
     if (dotVar) {
-        auto functionName = dotVar->getType(compiler)->valueName + "_" + name;
+        auto functionName = dotVar->getType(compiler)->getValueNameWithNamespace() + "_" + name;
         auto callee = scope->function->getCFunction(compiler, loc, functionName, scope, templateTypeNames, returnMode);
         if (callee) {
             *pisHelperFunction = true;

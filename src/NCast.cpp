@@ -103,14 +103,20 @@ shared_ptr<CVar> NCast::getVarImpl(Compiler* compiler, shared_ptr<CScope> scope,
         return nullptr;
     }
 
-    auto functionName = "as" + type->shortName;
+    auto functionName = "as" + type->getShortNameWithNamespace();
     bool isHelperFunction;
     auto cfunction = NCall::getCFunction(compiler, loc, scope, var, functionName, nullptr, returnMode, &isHelperFunction);
     if (cfunction) {
         auto operatorOverloadNode = make_shared<NDot>(loc, node, make_shared<NCall>(loc, functionName, nullptr, nullptr));
         return operatorOverloadNode->getVar(compiler, scope, nullptr, returnType, returnMode);
     } else {
-        return make_shared<CCastVar>(loc, scope, type, var);
+        if (type->category == CTC_Interface || (type->category == CTC_Value && type->parent.expired())) {
+            return make_shared<CCastVar>(loc, scope, type, var);
+        } else {
+            auto helperFunctionNanme = var->getType(compiler)->getValueNameWithNamespace() + "_" + functionName;
+            compiler->addError(loc, CErrorCode::InvalidType, "no function '%s' or '%s' to handle cast", functionName.c_str(), helperFunctionNanme.c_str());
+            return nullptr;            
+        }
     }
 }
 

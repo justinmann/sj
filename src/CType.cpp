@@ -575,3 +575,49 @@ shared_ptr<CType> CType::getLocalOptionType() {
 shared_ptr<CType> CType::getWeakType() {
     return weakType.lock();
 }
+
+
+string CType::getShortNameWithNamespace() {
+    string s;
+    for (auto ns : packageNamespace) {
+        if (s.size() > 0) {
+            s += ".";
+        }
+        s += ns;
+    }
+    if (s.size() > 0) {
+        s += ".";
+    }
+    s += shortName;
+    return s;
+}
+
+string CType::getValueNameWithNamespace() {
+    string s;
+    for (auto ns : packageNamespace) {
+        if (s.size() > 0) {
+            s += ".";
+        }
+        s += ns;
+    }
+    if (s.size() > 0) {
+        s += ".";
+    }
+    s += valueName;
+    return s;
+}
+
+string CType::getSafeNameWithNamespace() {
+    string s;
+    for (auto ns : packageNamespace) {
+        if (s.size() > 0) {
+            s += "_";
+        }
+        s += ns;
+    }
+    if (s.size() > 0) {
+        s += "_";
+    }
+    s += safeName;
+    return s;
+}

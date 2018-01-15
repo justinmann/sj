@@ -111,6 +111,9 @@ public:
     shared_ptr<CType> getLocalValueType();
     shared_ptr<CType> getLocalOptionType();
     shared_ptr<CType> getWeakType();
+    string getShortNameWithNamespace();
+    string getValueNameWithNamespace();
+    string getSafeNameWithNamespace();
 
 private:
     weak_ptr<CType> stackValueType;

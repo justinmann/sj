@@ -79,6 +79,7 @@ CInterfaceMethod::CInterfaceMethod(string name, weak_ptr<CInterface> parent, int
     boost::replace_all(safeName, " ", "");
     boost::replace_all(safeName, "[", "");
     boost::replace_all(safeName, "]", "");
+    boost::replace_all(safeName, ".", "_");
 }
 
 shared_ptr<CInterfaceMethod> CInterfaceMethod::init(Compiler* compiler, vector<pair<string, vector<string>>>& importNamespaces, shared_ptr<NInterfaceMethod> method, shared_ptr<CBaseFunction> thisFunction) {
