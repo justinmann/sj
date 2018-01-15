@@ -731,7 +731,6 @@ void CFunction::transpile(Compiler* compiler, shared_ptr<CScope> callerScope, Tr
     if (!storeValue->op.isFirstAssignment) {
         previousReturnValue = storeValue;
         storeValue = trBlock->createTempStoreVariable(loc, callerScope, storeValue->type, "funcold");
-        storeValue->retainValue(compiler, loc, trBlock, previousReturnValue->getValue());
     }
 
     assert(returnType == storeValue->type);
@@ -1162,19 +1161,30 @@ shared_ptr<CType> CFunction::getReturnType(Compiler* compiler, CTypeMode returnM
     
     _isInGetType = true;    
     if (!_data[returnMode].returnType) {
-        auto getReturnTypeFromBlock = true;
         if (_returnTypeName) {
             shared_ptr<CType> valueType = getVarType(loc, compiler, importNamespaces, _returnTypeName, CTM_Undefined);
             if (!valueType) {
                 compiler->addError(loc, CErrorCode::InvalidType, "explicit type '%s' does not exist", _returnTypeName->getFullName().c_str());
                 _data[returnMode].returnType = nullptr;
             }
+
+            if (_returnTypeName->typeMode == CTM_Undefined) {
+                if (valueType->category == CTC_Value) {
+                    if (!valueType->parent.expired()) {
+                        if (returnMode == CTM_Heap) {
+                            valueType = valueType->getHeapType();
+                        }
+                    }
+                }
+            }
             _data[returnMode].returnType = valueType;
-            
-            getReturnTypeFromBlock = _returnTypeName->typeMode == CTM_Undefined;
         }
-        
-        if (_data[returnMode].blockVar && getReturnTypeFromBlock) {
+        else {
+            if (!_data[returnMode].blockVar) {
+                compiler->addError(loc, CErrorCode::TypeLoop, "while trying to determine type a cycle was detected");
+                return nullptr;
+            }
+
             auto calleeVar = getThisVar(compiler, returnMode);
             auto calleeScope = getScope(compiler, returnMode);
             auto type = _data[returnMode].blockVar->getType(compiler);
@@ -1262,7 +1272,8 @@ int CFunction::getArgCount(CTypeMode returnMode) {
 shared_ptr<vector<pair<string, shared_ptr<CType>>>> CFunction::getCTypeList(Compiler* compiler, CTypeMode returnMode) {
     assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
     assert(_hasTranspileStructDefinitions != NOTSTARTED);
-    assert(_hasInitArgs);
+    
+    initArgs(compiler);
 
     if (_data[returnMode].isInvalid) {
         return nullptr;
@@ -1448,7 +1459,7 @@ shared_ptr<CVar> CFunction::getCVar(Compiler* compiler, shared_ptr<CScope> calle
     }
     else {       
         assert(returnMode == CTM_Stack || returnMode == CTM_Heap);
-        assert(!_data[returnMode].isInvalid);
+        // assert(!_data[returnMode].isInvalid);
 
         if (scanMode == VSM_LocalOnly || scanMode == VSM_LocalThisParent || scanMode == VSM_LocalThisParentGlobal) {
             for (auto fb = localVarScopes.rbegin(); fb != localVarScopes.rend(); ++fb) {
