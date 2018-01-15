@@ -10,7 +10,7 @@ extern int yydebug;
 #endif
 
 void __fail(const char* s) {
-    printf("%s\n", s);
+    printf("FAIL: %s\n", s);
     exit(-1);
 }
 
