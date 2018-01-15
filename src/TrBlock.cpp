@@ -692,9 +692,11 @@ void TrStoreValue::retainValue(Compiler* compiler, CLoc loc, TrBlock* block, sha
         return;
     }
 
-    if (rightValue->type->isOption && !type->isOption && type->typeMode != CTM_Local) {
-        compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot be converted to left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
-        return;
+    if (rightValue->type->isOption && !type->isOption) {
+        if (type->category != CTC_Function || type->typeMode != CTM_Local) {
+            compiler->addError(loc, CErrorCode::TypeMismatch, "right type '%s' cannot be converted to left type '%s'", rightValue->type->fullName.c_str(), type->fullName.c_str());
+            return;
+        }
     }
 
     switch (type->typeMode) {
