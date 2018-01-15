@@ -12,5 +12,7 @@ class #foo (
 
 f : weak class() as #foo
 cb : f?.getBar
-a : cb()
-b : heap cb()
+ifValid cb {
+    a : cb()
+    b : heap cb()
+}

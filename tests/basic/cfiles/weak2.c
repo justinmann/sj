@@ -141,6 +141,7 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
 void sjf_array_weak_class_copy(sjs_array_weak_class* _this, sjs_array_weak_class* _from);
 void sjf_array_weak_class_destroy(sjs_array_weak_class* _this);
 void sjf_array_weak_class_getat(sjs_array_weak_class* _parent, int32_t index, sjs_class** _return);
+void sjf_array_weak_class_getat_heap(sjs_array_weak_class* _parent, int32_t index, sjs_class** _return);
 void sjf_array_weak_class_getcount(sjs_array_weak_class* _parent, int32_t* _return);
 void sjf_array_weak_class_heap(sjs_array_weak_class* _this);
 void sjf_array_weak_class_initat(sjs_array_weak_class* _parent, int32_t index, sjs_class* item);
@@ -193,181 +194,177 @@ KHASH_INIT_FUNCTION(type_bool_hash_type, int32_t, bool, 1, sjf_type_hash, sjf_ty
 #endif
 char* string_char(sjs_string* str) {
     sjf_string_nullterminate(str);
-    return ((sjs_array*)str->data.v)->data;
+    return ((sjs_array*)str->data.v)->data + str->offset;
 }
 #include <lib/sj-lib-common/common.cpp>
 void sjf_array_char(sjs_array_char* _this) {
-#line 356 "lib/sj-lib-common/array.sj"
+#line 363 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 357
+#line 364
         _this->v = &g_empty;
-#line 358
+#line 365
     }
-#line 359
+#line 366
     sjs_array* arr = (sjs_array*)_this->v;
-#line 360
+#line 367
     arr->refcount++;
 }
 
 void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char* _return) {
     void* newv;
 
-#line 170 "lib/sj-lib-common/array.sj"
+#line 169 "lib/sj-lib-common/array.sj"
     newv = 0;
-#line 172
+#line 171
     sjs_array* arr = (sjs_array*)_parent->v;
-#line 173
+#line 172
     if (offset + count > arr->count) {
-#line 174
+#line 173
         halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
-#line 175
+#line 174
     }
-#line 177
+#line 176
     if (count > arr->count - offset) {
-#line 178
+#line 177
         halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
-#line 179
+#line 178
     }
-#line 181
+#line 180
     sjs_array* newArr = createarray(sizeof(char), newsize);
-#line 182
+#line 181
     if (!newArr) {
-#line 183
+#line 182
         halt("grow: out of memory\n");
-#line 184
+#line 183
     }
-#line 186
+#line 185
     newv = newArr;
-#line 187
+#line 186
     char* p = (char*)arr->data + offset;
-#line 188
+#line 187
     char* newp = (char*)newArr->data;
-#line 190
-    newArr->refcount = 1;
-#line 191
+#line 189
     newArr->size = newsize;
-#line 192
+#line 190
     newArr->count = count;
-#line 194
+#line 192
     #if true
-#line 195
+#line 193
     memcpy(newp, p, sizeof(char) * count);
-#line 196
+#line 194
     #else
-#line 197
+#line 195
     for (int i = 0; i < count; i++) {
-#line 198
-        #line 171 "lib/sj-lib-common/array.sj"
+#line 196
+        #line 170 "lib/sj-lib-common/array.sj"
 newp[i] = p[i];
 ;
-#line 199
+#line 197
     }
-#line 200
+#line 198
     #endif
-#line 200
+#line 198
     _return->_refCount = 1;
-#line 202
+#line 200
     _return->v = newv;
-#line 202
+#line 200
     sjf_array_char(_return);
 }
 
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return) {
     void* newv;
 
-#line 170 "lib/sj-lib-common/array.sj"
+#line 169 "lib/sj-lib-common/array.sj"
     newv = 0;
-#line 172
+#line 171
     sjs_array* arr = (sjs_array*)_parent->v;
-#line 173
+#line 172
     if (offset + count > arr->count) {
-#line 174
+#line 173
         halt("grow: offset %d count %d out of bounds %d\n", offset, count, arr->count);
-#line 175
+#line 174
     }
-#line 177
+#line 176
     if (count > arr->count - offset) {
-#line 178
+#line 177
         halt("grow: new count larger than old count %d:%d\n", count, arr->count - offset);
-#line 179
+#line 178
     }
-#line 181
+#line 180
     sjs_array* newArr = createarray(sizeof(char), newsize);
-#line 182
+#line 181
     if (!newArr) {
-#line 183
+#line 182
         halt("grow: out of memory\n");
-#line 184
+#line 183
     }
-#line 186
+#line 185
     newv = newArr;
-#line 187
+#line 186
     char* p = (char*)arr->data + offset;
-#line 188
+#line 187
     char* newp = (char*)newArr->data;
-#line 190
-    newArr->refcount = 1;
-#line 191
+#line 189
     newArr->size = newsize;
-#line 192
+#line 190
     newArr->count = count;
-#line 194
+#line 192
     #if true
-#line 195
+#line 193
     memcpy(newp, p, sizeof(char) * count);
-#line 196
+#line 194
     #else
-#line 197
+#line 195
     for (int i = 0; i < count; i++) {
-#line 198
-        #line 171 "lib/sj-lib-common/array.sj"
+#line 196
+        #line 170 "lib/sj-lib-common/array.sj"
 newp[i] = p[i];
 ;
-#line 199
+#line 197
     }
-#line 200
+#line 198
     #endif
-#line 200
+#line 198
     (*_return) = (sjs_array_char*)malloc(sizeof(sjs_array_char));
-#line 200
+#line 198
     (*_return)->_refCount = 1;
-#line 202
+#line 200
     (*_return)->v = newv;
-#line 202
+#line 200
     sjf_array_char_heap((*_return));
 }
 
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from) {
 #line 26 "lib/sj-lib-common/array.sj"
     _this->v = _from->v;
-#line 365
+#line 372
     sjs_array* arr = (sjs_array*)_this->v;
-#line 366
+#line 373
     arr->refcount++;
 }
 
 void sjf_array_char_destroy(sjs_array_char* _this) {
-#line 370 "lib/sj-lib-common/array.sj"
+#line 377 "lib/sj-lib-common/array.sj"
     sjs_array* arr = (sjs_array*)_this->v;
-#line 371
-    arr->refcount--;
-#line 372
-    if (arr->refcount == 0) {
-#line 373
-        #if !true && !false
-#line 374
-        char* p = (char*)arr->data;
-#line 375
-        for (int i = 0; i < arr->count; i++) {
-#line 376
-            ;
-#line 377
-        }
 #line 378
-        #endif
+    arr->refcount--;
 #line 379
-        free(arr);
+    if (arr->refcount == 0) {
 #line 380
+        #if !true && !false
+#line 381
+        char* p = (char*)arr->data;
+#line 382
+        for (int i = 0; i < arr->count; i++) {
+#line 383
+            ;
+#line 384
+        }
+#line 385
+        #endif
+#line 386
+        free(arr);
+#line 387
     }
 }
 
@@ -403,15 +400,15 @@ return;;
 }
 
 void sjf_array_char_heap(sjs_array_char* _this) {
-#line 356 "lib/sj-lib-common/array.sj"
+#line 363 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 357
+#line 364
         _this->v = &g_empty;
-#line 358
+#line 365
     }
-#line 359
+#line 366
     sjs_array* arr = (sjs_array*)_this->v;
-#line 360
+#line 367
     arr->refcount++;
 }
 
@@ -441,15 +438,15 @@ p[index] = item;
 }
 
 void sjf_array_weak_class(sjs_array_weak_class* _this) {
-#line 356 "lib/sj-lib-common/array.sj"
+#line 363 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 357
+#line 364
         _this->v = &g_empty;
-#line 358
+#line 365
     }
-#line 359
+#line 366
     sjs_array* arr = (sjs_array*)_this->v;
-#line 360
+#line 367
     arr->refcount++;
 }
 
@@ -460,25 +457,25 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
     int32_t sjt_forStart1;
 
     result._refCount = 1;
-#line 297 "lib/sj-lib-common/array.sj"
+#line 295 "lib/sj-lib-common/array.sj"
     result.offset = 0;
-#line 297
+#line 295
     result.count = 0;
-#line 297
+#line 295
     result.data._refCount = 1;
-#line 297
+#line 295
     result.data.v = &sjg_string2;
-#line 297
+#line 295
     sjf_array_char(&result.data);
 #line 16 "lib/sj-lib-common/string.sj"
     result._isnullterminated = false;
 #line 16
     sjf_string(&result);
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
     sjt_forStart1 = 0;
-#line 298
+#line 296
     sjf_array_weak_class_getcount(_parent, &sjt_forEnd1);
-#line 298
+#line 296
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
         sjs_class* sjt_call2 = 0;
@@ -496,30 +493,24 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
             sjs_string* sjt_functionParam28 = 0;
             sjs_string* sjt_parent22 = 0;
 
-            sjt_funcold2._refCount = 1;
 #line 18 "lib/sj-lib-common/string.sj"
-            sjf_string_copy(&sjt_funcold2, &result);
-#line 18
             sjt_parent22 = &result;
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
             sjt_functionParam28 = sep;
-#line 296
+#line 294
             sjf_string_add(sjt_parent22, sjt_functionParam28, &sjt_funcold2);
-#line 296
+#line 294
             if (result._refCount == 1) { sjf_string_destroy(&result); }
 ;
 #line 18 "lib/sj-lib-common/string.sj"
             sjf_string_copy(&result, &sjt_funcold2);
         }
 
-        sjt_funcold3._refCount = 1;
 #line 18 "lib/sj-lib-common/string.sj"
-        sjf_string_copy(&sjt_funcold3, &result);
-#line 18
         sjt_parent23 = &result;
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
         sjt_functionParam30 = i;
-#line 298
+#line 296
         sjf_array_weak_class_getat(_parent, sjt_functionParam30, &sjt_call2);
         if (sjt_call2 != 0) {
             sjs_class* sjt_call4 = 0;
@@ -527,23 +518,23 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
             sjs_class* sjt_parent24 = 0;
             sjs_string* sjt_value2 = 0;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
             sjt_functionParam35 = i;
-#line 298
+#line 296
             sjf_array_weak_class_getat(_parent, sjt_functionParam35, &sjt_call4);
-#line 302
+#line 300
             sjt_parent24 = sjt_call4;
-#line 302
+#line 300
             sjf_class_asstring(sjt_parent24, &sjt_call3);
-#line 302
+#line 300
             sjt_value2 = &sjt_call3;
-#line 302
+#line 300
             sjt_capture8 = sjt_value2;
 
             delete_cb weakptrcb8 = { &sjt_call4, weakptr_clear };
             if (sjt_call4 != 0) { weakptr_cb_remove(sjt_call4, weakptrcb8); }
         } else {
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
             sjt_capture8 = 0;
         }
 
@@ -551,9 +542,9 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
             sjs_class* sjt_call5 = 0;
             int32_t sjt_functionParam36;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
             sjt_functionParam36 = i;
-#line 298
+#line 296
             sjf_array_weak_class_getat(_parent, sjt_functionParam36, &sjt_call5);
             if (sjt_call5 != 0) {
                 sjs_class* sjt_call7 = 0;
@@ -561,23 +552,23 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
                 sjs_class* sjt_parent25 = 0;
                 sjs_string* sjt_value3 = 0;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
                 sjt_functionParam37 = i;
-#line 298
+#line 296
                 sjf_array_weak_class_getat(_parent, sjt_functionParam37, &sjt_call7);
-#line 302
+#line 300
                 sjt_parent25 = sjt_call7;
-#line 302
+#line 300
                 sjf_class_asstring(sjt_parent25, &sjt_call6);
-#line 302
+#line 300
                 sjt_value3 = &sjt_call6;
-#line 302
+#line 300
                 sjt_functionParam29 = sjt_value3;
 
                 delete_cb weakptrcb9 = { &sjt_call7, weakptr_clear };
                 if (sjt_call7 != 0) { weakptr_cb_remove(sjt_call7, weakptrcb9); }
             } else {
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
                 sjt_functionParam29 = 0;
             }
 
@@ -599,18 +590,18 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
             sjt_call8._isnullterminated = false;
 #line 16
             sjf_string(&sjt_call8);
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
             sjt_functionParam29 = &sjt_call8;
         }
 
-#line 298
+#line 296
         sjf_string_add(sjt_parent23, sjt_functionParam29, &sjt_funcold3);
-#line 298
+#line 296
         if (result._refCount == 1) { sjf_string_destroy(&result); }
 ;
 #line 18 "lib/sj-lib-common/string.sj"
         sjf_string_copy(&result, &sjt_funcold3);
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
         i++;
 
         delete_cb weakptrcb11 = { &sjt_call2, weakptr_clear };
@@ -627,9 +618,9 @@ void sjf_array_weak_class_asstring(sjs_array_weak_class* _parent, sjs_string* se
 ;
     }
 
-#line 298
-    _return->_refCount = 1;
 #line 296
+    _return->_refCount = 1;
+#line 294
     sjf_string_copy(_return, &result);
 
     if (result._refCount == 1) { sjf_string_destroy(&result); }
@@ -643,25 +634,25 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
     int32_t sjt_forStart6;
 
     result._refCount = 1;
-#line 297 "lib/sj-lib-common/array.sj"
+#line 295 "lib/sj-lib-common/array.sj"
     result.offset = 0;
-#line 297
+#line 295
     result.count = 0;
-#line 297
+#line 295
     result.data._refCount = 1;
-#line 297
+#line 295
     result.data.v = &sjg_string2;
-#line 297
+#line 295
     sjf_array_char(&result.data);
 #line 16 "lib/sj-lib-common/string.sj"
     result._isnullterminated = false;
 #line 16
     sjf_string(&result);
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
     sjt_forStart6 = 0;
-#line 298
+#line 296
     sjf_array_weak_class_getcount(_parent, &sjt_forEnd6);
-#line 298
+#line 296
     i = sjt_forStart6;
     while (i < sjt_forEnd6) {
         sjs_string sjt_call10 = { -1 };
@@ -679,30 +670,24 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
             sjs_string* sjt_functionParam38 = 0;
             sjs_string* sjt_parent26 = 0;
 
-            sjt_funcold4._refCount = 1;
 #line 18 "lib/sj-lib-common/string.sj"
-            sjf_string_copy(&sjt_funcold4, &result);
-#line 18
             sjt_parent26 = &result;
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
             sjt_functionParam38 = sep;
-#line 296
+#line 294
             sjf_string_add(sjt_parent26, sjt_functionParam38, &sjt_funcold4);
-#line 296
+#line 294
             if (result._refCount == 1) { sjf_string_destroy(&result); }
 ;
 #line 18 "lib/sj-lib-common/string.sj"
             sjf_string_copy(&result, &sjt_funcold4);
         }
 
-        sjt_funcold5._refCount = 1;
 #line 18 "lib/sj-lib-common/string.sj"
-        sjf_string_copy(&sjt_funcold5, &result);
-#line 18
         sjt_parent27 = &result;
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
         sjt_functionParam40 = i;
-#line 298
+#line 296
         sjf_array_weak_class_getat(_parent, sjt_functionParam40, &sjt_call9);
         if (sjt_call9 != 0) {
             sjs_class* sjt_call11 = 0;
@@ -710,23 +695,23 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
             sjs_class* sjt_parent28 = 0;
             sjs_string* sjt_value4 = 0;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
             sjt_functionParam41 = i;
-#line 298
+#line 296
             sjf_array_weak_class_getat(_parent, sjt_functionParam41, &sjt_call11);
-#line 302
+#line 300
             sjt_parent28 = sjt_call11;
-#line 302
+#line 300
             sjf_class_asstring(sjt_parent28, &sjt_call10);
-#line 302
+#line 300
             sjt_value4 = &sjt_call10;
-#line 302
+#line 300
             sjt_capture9 = sjt_value4;
 
             delete_cb weakptrcb12 = { &sjt_call11, weakptr_clear };
             if (sjt_call11 != 0) { weakptr_cb_remove(sjt_call11, weakptrcb12); }
         } else {
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
             sjt_capture9 = 0;
         }
 
@@ -734,9 +719,9 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
             sjs_class* sjt_call12 = 0;
             int32_t sjt_functionParam42;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
             sjt_functionParam42 = i;
-#line 298
+#line 296
             sjf_array_weak_class_getat(_parent, sjt_functionParam42, &sjt_call12);
             if (sjt_call12 != 0) {
                 sjs_class* sjt_call14 = 0;
@@ -744,23 +729,23 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
                 sjs_class* sjt_parent29 = 0;
                 sjs_string* sjt_value5 = 0;
 
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
                 sjt_functionParam43 = i;
-#line 298
+#line 296
                 sjf_array_weak_class_getat(_parent, sjt_functionParam43, &sjt_call14);
-#line 302
+#line 300
                 sjt_parent29 = sjt_call14;
-#line 302
+#line 300
                 sjf_class_asstring(sjt_parent29, &sjt_call13);
-#line 302
+#line 300
                 sjt_value5 = &sjt_call13;
-#line 302
+#line 300
                 sjt_functionParam39 = sjt_value5;
 
                 delete_cb weakptrcb13 = { &sjt_call14, weakptr_clear };
                 if (sjt_call14 != 0) { weakptr_cb_remove(sjt_call14, weakptrcb13); }
             } else {
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
                 sjt_functionParam39 = 0;
             }
 
@@ -782,18 +767,18 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
             sjt_call15._isnullterminated = false;
 #line 16
             sjf_string(&sjt_call15);
-#line 302 "lib/sj-lib-common/array.sj"
+#line 300 "lib/sj-lib-common/array.sj"
             sjt_functionParam39 = &sjt_call15;
         }
 
-#line 298
+#line 296
         sjf_string_add(sjt_parent27, sjt_functionParam39, &sjt_funcold5);
-#line 298
+#line 296
         if (result._refCount == 1) { sjf_string_destroy(&result); }
 ;
 #line 18 "lib/sj-lib-common/string.sj"
         sjf_string_copy(&result, &sjt_funcold5);
-#line 298 "lib/sj-lib-common/array.sj"
+#line 296 "lib/sj-lib-common/array.sj"
         i++;
 
         delete_cb weakptrcb15 = { &sjt_call9, weakptr_clear };
@@ -810,11 +795,11 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
 ;
     }
 
-#line 298
-    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
-#line 298
-    (*_return)->_refCount = 1;
 #line 296
+    (*_return) = (sjs_string*)malloc(sizeof(sjs_string));
+#line 296
+    (*_return)->_refCount = 1;
+#line 294
     sjf_string_copy((*_return), &result);
 
     if (result._refCount == 1) { sjf_string_destroy(&result); }
@@ -824,36 +809,36 @@ void sjf_array_weak_class_asstring_heap(sjs_array_weak_class* _parent, sjs_strin
 void sjf_array_weak_class_copy(sjs_array_weak_class* _this, sjs_array_weak_class* _from) {
 #line 26 "lib/sj-lib-common/array.sj"
     _this->v = _from->v;
-#line 365
+#line 372
     sjs_array* arr = (sjs_array*)_this->v;
-#line 366
+#line 373
     arr->refcount++;
 }
 
 void sjf_array_weak_class_destroy(sjs_array_weak_class* _this) {
-#line 370 "lib/sj-lib-common/array.sj"
+#line 377 "lib/sj-lib-common/array.sj"
     sjs_array* arr = (sjs_array*)_this->v;
-#line 371
+#line 378
     arr->refcount--;
-#line 372
+#line 379
     if (arr->refcount == 0) {
-#line 373
+#line 380
         #if !false && !false
-#line 374
+#line 381
         sjs_class** p = (sjs_class**)arr->data;
-#line 375
+#line 382
         for (int i = 0; i < arr->count; i++) {
-#line 376
+#line 383
             delete_cb weakptrcb3 = { &p[i], weakptr_clear };
 if (p[i] != 0) { weakptr_cb_remove(p[i], weakptrcb3); }
 ;
-#line 377
+#line 384
         }
-#line 378
+#line 385
         #endif
-#line 379
+#line 386
         free(arr);
-#line 380
+#line 387
     }
 }
 
@@ -878,6 +863,26 @@ if ((*_return) != 0) { weakptr_cb_add((*_return), weakptrcb7); }
 return;;       
 }
 
+void sjf_array_weak_class_getat_heap(sjs_array_weak_class* _parent, int32_t index, sjs_class** _return) {
+#line 43 "lib/sj-lib-common/array.sj"
+    sjs_array* arr = (sjs_array*)_parent->v;
+#line 44
+    if (index >= arr->count || index < 0) {
+#line 45
+        halt("getAt: out of bounds\n");
+#line 46
+    }
+#line 47
+    sjs_class** p = (sjs_class**)arr->data;
+#line 48
+    #line 42 "lib/sj-lib-common/array.sj"
+(*_return) = p[index];
+if ((*_return) != 0) {
+    (*_return)->_refCount++;
+}
+return;;       
+}
+
 void sjf_array_weak_class_getcount(sjs_array_weak_class* _parent, int32_t* _return) {
 #line 31 "lib/sj-lib-common/array.sj"
     #line 30 "lib/sj-lib-common/array.sj"
@@ -886,15 +891,15 @@ return;;
 }
 
 void sjf_array_weak_class_heap(sjs_array_weak_class* _this) {
-#line 356 "lib/sj-lib-common/array.sj"
+#line 363 "lib/sj-lib-common/array.sj"
     if (_this->v == 0) {
-#line 357
+#line 364
         _this->v = &g_empty;
-#line 358
+#line 365
     }
-#line 359
+#line 366
     sjs_array* arr = (sjs_array*)_this->v;
-#line 360
+#line 367
     arr->refcount++;
 }
 
@@ -971,108 +976,108 @@ void sjf_debug_writeline(sjs_string* data) {
 }
 
 void sjf_hash_type_bool(sjs_hash_type_bool* _this) {
-#line 225 "lib/sj-lib-common/hash.sj"
+#line 233 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
 }
 
 void sjf_hash_type_bool__weakptrremovekey(sjs_hash_type_bool* _parent, int32_t key) {
-#line 180 "lib/sj-lib-common/hash.sj"
+#line 188 "lib/sj-lib-common/hash.sj"
     #if false
-#line 181
+#line 189
     khash_t(type_bool_hash_type)* p = (khash_t(type_bool_hash_type)*)_parent->_hash;    
-#line 182
+#line 190
     khiter_t k = kh_get(type_bool_hash_type, p, key);
-#line 183
+#line 191
     if (k != kh_end(p)) {
-#line 184
+#line 192
         kh_del(type_bool_hash_type, p, k);
-#line 185
+#line 193
     }
-#line 186
+#line 194
     #endif
 }
 
 void sjf_hash_type_bool__weakptrremovevalue(sjs_hash_type_bool* _parent, bool val) {
-#line 192 "lib/sj-lib-common/hash.sj"
+#line 200 "lib/sj-lib-common/hash.sj"
     #if false
-#line 193
-    khash_t(type_bool_hash_type)* p = (khash_t(type_bool_hash_type)*)_parent->_hash;
-#line 194
-    for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
-#line 195
-        if (kh_exist(p, k)) {
-#line 196
-            bool t = kh_value(p, k);
-#line 197
-            if (t == val) {
-#line 198
-                kh_del(type_bool_hash_type, p, k);
-#line 199
-            }
-#line 200
-        }
 #line 201
-    }
+    khash_t(type_bool_hash_type)* p = (khash_t(type_bool_hash_type)*)_parent->_hash;
 #line 202
+    for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+#line 203
+        if (kh_exist(p, k)) {
+#line 204
+            bool t = kh_value(p, k);
+#line 205
+            if (t == val) {
+#line 206
+                kh_del(type_bool_hash_type, p, k);
+#line 207
+            }
+#line 208
+        }
+#line 209
+    }
+#line 210
     #endif
 }
 
 void sjf_hash_type_bool_copy(sjs_hash_type_bool* _this, sjs_hash_type_bool* _from) {
-#line 230 "lib/sj-lib-common/hash.sj"
+#line 238 "lib/sj-lib-common/hash.sj"
     _this->_hash = _from->_hash;
-#line 231
+#line 239
     khash_t(type_bool_hash_type)* p = (khash_t(type_bool_hash_type)*)_this->_hash;
-#line 232
+#line 240
     p->refcount++;
 }
 
 void sjf_hash_type_bool_destroy(sjs_hash_type_bool* _this) {
-#line 236 "lib/sj-lib-common/hash.sj"
+#line 244 "lib/sj-lib-common/hash.sj"
     khash_t(type_bool_hash_type)* p = (khash_t(type_bool_hash_type)*)_this->_hash;
-#line 237
-    p->refcount--;
-#line 238
-    if (p->refcount == 0) {
-#line 239
-        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
-#line 240
-            if (kh_exist(p, k)) {
-#line 242
-                #if false
-#line 243
-                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_type_bool__weakptrremovekey };
-#line 244
-                weakptr_cb_remove(kh_key(p, k), cb);
 #line 245
-                #else
+    p->refcount--;
 #line 246
-                ;
+    if (p->refcount == 0) {
 #line 247
-                #endif
-#line 249
-                #if false
+        for (khiter_t k = kh_begin(p); k != kh_end(p); ++k) {
+#line 248
+            if (kh_exist(p, k)) {
 #line 250
-                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_type_bool__weakptrremovevalue };
+                #if false
 #line 251
-                weakptr_cb_remove(kh_value(p, k), cb);
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_type_bool__weakptrremovekey };
 #line 252
-                #else
+                weakptr_cb_remove(kh_key(p, k), cb);
 #line 253
-                ;
+                #else
 #line 254
-                #endif
+                ;
 #line 255
-            }
-#line 256
-        }
+                #endif
 #line 257
-        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
+                #if false
 #line 258
+                delete_cb cb = { p, (void(*)(void*, void*))sjf_hash_type_bool__weakptrremovevalue };
+#line 259
+                weakptr_cb_remove(kh_value(p, k), cb);
+#line 260
+                #else
+#line 261
+                ;
+#line 262
+                #endif
+#line 263
+            }
+#line 264
+        }
+#line 265
+        kh_destroy(type_bool_hash_type, (khash_t(type_bool_hash_type)*)_this->_hash);
+#line 266
     }
 }
 
 void sjf_hash_type_bool_heap(sjs_hash_type_bool* _this) {
-#line 225 "lib/sj-lib-common/hash.sj"
+#line 233 "lib/sj-lib-common/hash.sj"
     _this->_hash = kh_init(type_bool_hash_type);
 }
 
@@ -1437,7 +1442,7 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             sjs_array_char* sjt_parent10 = 0;
             sjs_array_char* sjt_parent11 = 0;
 
-#line 169 "lib/sj-lib-common/array.sj"
+#line 168 "lib/sj-lib-common/array.sj"
             sjt_parent10 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam13 = _parent->offset;
@@ -1601,7 +1606,7 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             sjs_array_char* sjt_parent18 = 0;
             sjs_array_char* sjt_parent19 = 0;
 
-#line 169 "lib/sj-lib-common/array.sj"
+#line 168 "lib/sj-lib-common/array.sj"
             sjt_parent18 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam22 = _parent->offset;
@@ -1716,16 +1721,13 @@ void sjf_string_nullterminate(sjs_string* _parent) {
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if ((_parent->count + 1) > sjt_capture1) {
+        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
             sjs_array_char* sjt_parent2 = 0;
 
-            sjt_funcold1._refCount = 1;
-#line 169 "lib/sj-lib-common/array.sj"
-            sjf_array_char_copy(&sjt_funcold1, &_parent->data);
-#line 169
+#line 168 "lib/sj-lib-common/array.sj"
             sjt_parent2 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
@@ -1738,14 +1740,14 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
-#line 169 "lib/sj-lib-common/array.sj"
+#line 168 "lib/sj-lib-common/array.sj"
             sjf_array_char_copy(&_parent->data, &sjt_funcold1);
 #line 136 "lib/sj-lib-common/string.sj"
             _parent->offset = 0;
         }
 
 #line 139 "lib/sj-lib-common/string.sj"
-        ((sjs_array*)_parent->data.v)->data[_parent->count] = 0;
+        ((sjs_array*)_parent->data.v)->data[_parent->offset + _parent->count] = 0;
 #line 141
         _parent->_isnullterminated = true;
     }
@@ -1931,39 +1933,35 @@ int main(int argc, char** argv) {
     if (sjt_functionParam7 != 0) { weakptr_cb_add(sjt_functionParam7, weakptrcb6); }
 #line 9
     sjf_array_weak_class_initat(sjt_parent4, sjt_functionParam6, sjt_functionParam7);
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_parent30 = &g_a;
-#line 296
+#line 294
     sjt_call16._refCount = 1;
-#line 296
+#line 294
     sjt_call16.offset = 0;
-#line 296
+#line 294
     sjt_call16.count = 2;
-#line 296
+#line 294
     sjt_call16.data._refCount = 1;
-#line 296
+#line 294
     sjt_call16.data.v = &sjg_string1;
-#line 296
+#line 294
     sjf_array_char(&sjt_call16.data);
 #line 16 "lib/sj-lib-common/string.sj"
     sjt_call16._isnullterminated = false;
 #line 16
     sjf_string(&sjt_call16);
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_functionParam44 = &sjt_call16;
-#line 296
+#line 294
     sjf_array_weak_class_asstring(sjt_parent30, sjt_functionParam44, &sjt_call1);
 #line 11 "weak2.sj"
     sjt_functionParam8 = &sjt_call1;
 #line 11
     sjf_debug_writeline(sjt_functionParam8);
-#line 2
-    sjt_funcold6 = g_c;
-#line 2
-    sjt_funcold6->_refCount++;
-#line 2
+#line 11
     sjt_funcold6 = (sjs_class*)malloc(sizeof(sjs_class));
-#line 2
+#line 11
     sjt_funcold6->_refCount = 1;
 #line 13
     sjt_funcold6->x = 3;
@@ -1981,39 +1979,35 @@ int main(int argc, char** argv) {
     g_c = sjt_funcold6;
 #line 2
     g_c->_refCount++;
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_parent31 = &g_a;
-#line 296
+#line 294
     sjt_call18._refCount = 1;
-#line 296
+#line 294
     sjt_call18.offset = 0;
-#line 296
+#line 294
     sjt_call18.count = 2;
-#line 296
+#line 294
     sjt_call18.data._refCount = 1;
-#line 296
+#line 294
     sjt_call18.data.v = &sjg_string1;
-#line 296
+#line 294
     sjf_array_char(&sjt_call18.data);
 #line 16 "lib/sj-lib-common/string.sj"
     sjt_call18._isnullterminated = false;
 #line 16
     sjf_string(&sjt_call18);
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_functionParam46 = &sjt_call18;
-#line 296
+#line 294
     sjf_array_weak_class_asstring(sjt_parent31, sjt_functionParam46, &sjt_call17);
 #line 15 "weak2.sj"
     sjt_functionParam45 = &sjt_call17;
 #line 15
     sjf_debug_writeline(sjt_functionParam45);
-#line 2
-    sjt_funcold7 = g_d;
-#line 2
-    sjt_funcold7->_refCount++;
-#line 2
+#line 15
     sjt_funcold7 = (sjs_class*)malloc(sizeof(sjs_class));
-#line 2
+#line 15
     sjt_funcold7->_refCount = 1;
 #line 17
     sjt_funcold7->x = 4;
@@ -2031,27 +2025,27 @@ int main(int argc, char** argv) {
     g_d = sjt_funcold7;
 #line 2
     g_d->_refCount++;
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_parent32 = &g_a;
-#line 296
+#line 294
     sjt_call20._refCount = 1;
-#line 296
+#line 294
     sjt_call20.offset = 0;
-#line 296
+#line 294
     sjt_call20.count = 2;
-#line 296
+#line 294
     sjt_call20.data._refCount = 1;
-#line 296
+#line 294
     sjt_call20.data.v = &sjg_string1;
-#line 296
+#line 294
     sjf_array_char(&sjt_call20.data);
 #line 16 "lib/sj-lib-common/string.sj"
     sjt_call20._isnullterminated = false;
 #line 16
     sjf_string(&sjt_call20);
-#line 296 "lib/sj-lib-common/array.sj"
+#line 294 "lib/sj-lib-common/array.sj"
     sjt_functionParam48 = &sjt_call20;
-#line 296
+#line 294
     sjf_array_weak_class_asstring(sjt_parent32, sjt_functionParam48, &sjt_call19);
 #line 19 "weak2.sj"
     sjt_functionParam47 = &sjt_call19;

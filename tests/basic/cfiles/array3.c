@@ -4,29 +4,21 @@ struct {
     int refcount;
     int size;
     int count;
-    char data[5];
-} sjg_string1 = { 1, 5, 4, "test"};
-
-struct {
-    int refcount;
-    int size;
-    int count;
     char data[0];
 } g_empty = { 1, 0, 0 };
 #define sjs_hash_type_bool_typeId 15
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
 #define sjs_string_typeId 21
-#define sjs_class_typeId 28
-#define sji_foo_typeId 29
+#define sjs_class_typeId 26
+#define sjs_array_heap_class_typeId 27
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
 typedef struct td_sjs_array_char sjs_array_char;
 typedef struct td_sjs_string sjs_string;
 typedef struct td_sjs_class sjs_class;
-typedef struct td_sji_foo_vtbl sji_foo_vtbl;
-typedef struct td_sji_foo sji_foo;
+typedef struct td_sjs_array_heap_class sjs_array_heap_class;
 
 struct td_sjs_hash_type_bool {
     int _refCount;
@@ -59,21 +51,14 @@ struct td_sjs_string {
 
 struct td_sjs_class {
     int _refCount;
+    int32_t x;
 };
 
-struct td_sji_foo_vtbl {
-    void (*destroy)(void* _this);
-    void (*asinterface)(sjs_object* _this, int typeId, sjs_interface* _return);
-    void (*getclasstype)(sjs_object* _parent, int32_t* _return);
-    void (*test)(sjs_object* _parent, int32_t* _return);
+struct td_sjs_array_heap_class {
+    int _refCount;
+    void* v;
 };
 
-struct td_sji_foo {
-    sjs_object* _parent;
-    sji_foo_vtbl* _vtbl;
-};
-
-sji_foo_vtbl sjs_class_foo_vtbl;
 #ifndef type_bool_hash_typedef
 #define type_bool_hash_typedef
 KHASH_INIT_TYPEDEF(type_bool_hash_type, int32_t, bool)
@@ -90,7 +75,8 @@ int32_t g_loglevel_info;
 int32_t g_loglevel_trace;
 int32_t g_loglevel_warn;
 
-sji_foo g_a = { 0 };
+sjs_array_heap_class* g_a = 0;
+sjs_class* g_c = 0;
 int32_t g_clocks_per_sec;
 float g_f32_pi;
 int32_t g_i32_maxvalue;
@@ -100,11 +86,18 @@ sjs_hash_type_bool g_log_excludeall = { -1 };
 sjs_hash_type_bool g_log_includeall = { -1 };
 uint32_t g_u32_maxvalue;
 int32_t result1;
-sjs_class sjt_call1 = { -1 };
-sjs_class* sjt_cast2 = 0;
-sji_foo sjt_parent3 = { 0 };
+int32_t sjt_functionParam10;
+int32_t sjt_functionParam4;
+sjs_class* sjt_functionParam5 = 0;
+int32_t sjt_functionParam6;
+sjs_class* sjt_functionParam7 = 0;
+int32_t sjt_functionParam8;
+sjs_class* sjt_functionParam9 = 0;
+sjs_array_heap_class* sjt_parent3 = 0;
+sjs_array_heap_class* sjt_parent4 = 0;
+sjs_array_heap_class* sjt_parent5 = 0;
+sjs_array_heap_class* sjt_parent6 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
-int32_t sjt_void1;
 
 void sjf_array_char(sjs_array_char* _this);
 void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char* _return);
@@ -113,15 +106,16 @@ void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
+void sjf_array_heap_class(sjs_array_heap_class* _this);
+void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from);
+void sjf_array_heap_class_destroy(sjs_array_heap_class* _this);
+void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class** _return);
+void sjf_array_heap_class_heap(sjs_array_heap_class* _this);
+void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class* item);
 void sjf_class(sjs_class* _this);
-void sjf_class_as_sji_foo(sjs_class* _this, sji_foo* _return);
-void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return);
 void sjf_class_copy(sjs_class* _this, sjs_class* _from);
 void sjf_class_destroy(sjs_class* _this);
-void sjf_class_getclasstype(sjs_object* _this, int* _return);
 void sjf_class_heap(sjs_class* _this);
-void sjf_class_test(sjs_class* _parent, int32_t* _return);
-void sjf_debug_writeline(sjs_string* data);
 void sjf_hash_type_bool(sjs_hash_type_bool* _this);
 void sjf_hash_type_bool__weakptrremovekey(sjs_hash_type_bool* _parent, int32_t key);
 void sjf_hash_type_bool__weakptrremovevalue(sjs_hash_type_bool* _parent, bool val);
@@ -132,10 +126,6 @@ void sjf_log(sjs_log* _this);
 void sjf_log_copy(sjs_log* _this, sjs_log* _from);
 void sjf_log_destroy(sjs_log* _this);
 void sjf_log_heap(sjs_log* _this);
-void sjf_string(sjs_string* _this);
-void sjf_string_copy(sjs_string* _this, sjs_string* _from);
-void sjf_string_destroy(sjs_string* _this);
-void sjf_string_heap(sjs_string* _this);
 void sjf_string_nullterminate(sjs_string* _parent);
 void sjf_type_hash(int32_t val, uint32_t* _return);
 void sjf_type_isequal(int32_t l, int32_t r, bool* _return);
@@ -353,74 +343,130 @@ void sjf_array_char_heap(sjs_array_char* _this) {
     arr->refcount++;
 }
 
-void sjf_class(sjs_class* _this) {
+void sjf_array_heap_class(sjs_array_heap_class* _this) {
+#line 363 "lib/sj-lib-common/array.sj"
+    if (_this->v == 0) {
+#line 364
+        _this->v = &g_empty;
+#line 365
+    }
+#line 366
+    sjs_array* arr = (sjs_array*)_this->v;
+#line 367
+    arr->refcount++;
 }
 
-void sjf_class_as_sji_foo(sjs_class* _this, sji_foo* _return) {
-    _return->_parent = (sjs_object*)_this;
-    _return->_vtbl = &sjs_class_foo_vtbl;
+void sjf_array_heap_class_copy(sjs_array_heap_class* _this, sjs_array_heap_class* _from) {
+#line 26 "lib/sj-lib-common/array.sj"
+    _this->v = _from->v;
+#line 372
+    sjs_array* arr = (sjs_array*)_this->v;
+#line 373
+    arr->refcount++;
 }
 
-void sjf_class_asinterface(sjs_class* _this, int typeId, sjs_interface* _return) {
-    switch (typeId) {
-        case sji_foo_typeId:  {
-            sjf_class_as_sji_foo(_this, (sji_foo*)_return);
-            break;
+void sjf_array_heap_class_destroy(sjs_array_heap_class* _this) {
+#line 377 "lib/sj-lib-common/array.sj"
+    sjs_array* arr = (sjs_array*)_this->v;
+#line 378
+    arr->refcount--;
+#line 379
+    if (arr->refcount == 0) {
+#line 380
+        #if !false && !false
+#line 381
+        sjs_class** p = (sjs_class**)arr->data;
+#line 382
+        for (int i = 0; i < arr->count; i++) {
+#line 383
+            p[i]->_refCount--;
+if (p[i]->_refCount <= 0) {
+    weakptr_release(p[i]);
+    sjf_class_destroy(p[i]);
+    free(p[i]);
+}
+;
+#line 384
         }
-
-        default: {
-            _return->_parent = 0;
-            break;
-        }
+#line 385
+        #endif
+#line 386
+        free(arr);
+#line 387
     }
 }
 
+void sjf_array_heap_class_getat_heap(sjs_array_heap_class* _parent, int32_t index, sjs_class** _return) {
+#line 43 "lib/sj-lib-common/array.sj"
+    sjs_array* arr = (sjs_array*)_parent->v;
+#line 44
+    if (index >= arr->count || index < 0) {
+#line 45
+        halt("getAt: out of bounds\n");
+#line 46
+    }
+#line 47
+    sjs_class** p = (sjs_class**)arr->data;
+#line 48
+    #line 42 "lib/sj-lib-common/array.sj"
+(*_return) = p[index];
+#line 42
+(*_return)->_refCount++;
+return;;       
+}
+
+void sjf_array_heap_class_heap(sjs_array_heap_class* _this) {
+#line 363 "lib/sj-lib-common/array.sj"
+    if (_this->v == 0) {
+#line 364
+        _this->v = &g_empty;
+#line 365
+    }
+#line 366
+    sjs_array* arr = (sjs_array*)_this->v;
+#line 367
+    arr->refcount++;
+}
+
+void sjf_array_heap_class_initat(sjs_array_heap_class* _parent, int32_t index, sjs_class* item) {
+#line 54 "lib/sj-lib-common/array.sj"
+    sjs_array* arr = (sjs_array*)_parent->v;
+#line 55
+    if (index != arr->count) {
+#line 56
+        halt("initAt: can only initialize last element\n");     
+#line 57
+    }
+#line 58
+    if (index >= arr->size || index < 0) {
+#line 59
+        halt("initAt: out of bounds %d:%d\n", index, arr->size);
+#line 60
+    }
+#line 62
+    sjs_class** p = (sjs_class**)arr->data;
+#line 63
+    #line 52 "lib/sj-lib-common/array.sj"
+p[index] = item;
+#line 52
+p[index]->_refCount++;
+;
+#line 64
+    arr->count = index + 1;
+}
+
+void sjf_class(sjs_class* _this) {
+}
+
 void sjf_class_copy(sjs_class* _this, sjs_class* _from) {
+#line 2 "array3.sj"
+    _this->x = _from->x;
 }
 
 void sjf_class_destroy(sjs_class* _this) {
 }
 
-void sjf_class_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 28;
-}
-
 void sjf_class_heap(sjs_class* _this) {
-}
-
-void sjf_class_test(sjs_class* _parent, int32_t* _return) {
-    sjs_string sjt_call2 = { -1 };
-    sjs_string* sjt_functionParam4 = 0;
-
-    sjt_call2._refCount = 1;
-#line 8 "interface2.sj"
-    sjt_call2.offset = 0;
-#line 8
-    sjt_call2.count = 4;
-#line 8
-    sjt_call2.data._refCount = 1;
-#line 8
-    sjt_call2.data.v = &sjg_string1;
-#line 8
-    sjf_array_char(&sjt_call2.data);
-#line 16 "lib/sj-lib-common/string.sj"
-    sjt_call2._isnullterminated = false;
-#line 16
-    sjf_string(&sjt_call2);
-#line 8 "interface2.sj"
-    sjt_functionParam4 = &sjt_call2;
-#line 8
-    sjf_debug_writeline(sjt_functionParam4);
-#line 9
-    (*_return) = 5;
-
-    if (sjt_call2._refCount == 1) { sjf_string_destroy(&sjt_call2); }
-;
-}
-
-void sjf_debug_writeline(sjs_string* data) {
-#line 10 "lib/sj-lib-common/debug.sj"
-    debugout("%s\n", string_char(data));
 }
 
 void sjf_hash_type_bool(sjs_hash_type_bool* _this) {
@@ -614,30 +660,6 @@ void sjf_log_destroy(sjs_log* _this) {
 void sjf_log_heap(sjs_log* _this) {
 }
 
-void sjf_string(sjs_string* _this) {
-}
-
-void sjf_string_copy(sjs_string* _this, sjs_string* _from) {
-#line 12 "lib/sj-lib-common/string.sj"
-    _this->offset = _from->offset;
-#line 12
-    _this->count = _from->count;
-#line 12
-    _this->data._refCount = 1;
-#line 12
-    sjf_array_char_copy(&_this->data, &_from->data);
-#line 12
-    _this->_isnullterminated = _from->_isnullterminated;
-}
-
-void sjf_string_destroy(sjs_string* _this) {
-    if (_this->data._refCount == 1) { sjf_array_char_destroy(&_this->data); }
-;
-}
-
-void sjf_string_heap(sjs_string* _this) {
-}
-
 void sjf_string_nullterminate(sjs_string* _parent) {
     bool result2;
     sjs_array_char sjt_funcold1 = { -1 };
@@ -702,10 +724,6 @@ void sjf_type_isequal(int32_t l, int32_t r, bool* _return) {
 }
 
 int main(int argc, char** argv) {
-    sjs_class_foo_vtbl.destroy = (void(*)(void*))sjf_class_destroy;
-    sjs_class_foo_vtbl.asinterface = (void(*)(sjs_object*,int,sjs_interface*))sjf_class_asinterface;
-    sjs_class_foo_vtbl.getclasstype = (void(*)(sjs_object*,int*))sjf_class_getclasstype;
-    sjs_class_foo_vtbl.test = (void(*)(sjs_object*, int32_t*))sjf_class_test;
 #line 1 "lib/sj-lib-common/log.sj"
     g_loglevel_trace = 0;
 #line 1
@@ -819,30 +837,106 @@ int main(int argc, char** argv) {
 #line 9
     g_clocks_per_sec = CLOCKS_PER_SEC;
 #line 9
-    sjt_call1._refCount = 1;
+    g_a = (sjs_array_heap_class*)malloc(sizeof(sjs_array_heap_class));
 #line 9
-    sjf_class(&sjt_call1);
-#line 13 "interface2.sj"
-    sjt_cast2 = &sjt_call1;
-#line 2
-    sjf_class_as_sji_foo(sjt_cast2, &g_a);
+    g_a->_refCount = 1;
+#line 3 "array3.sj"
+    g_a->v = createarray(sizeof(sjs_class*), 3);
 #line 3
-    sjt_parent3 = g_a;
-#line 14
-    sjt_parent3._vtbl->test(sjt_parent3._parent, &sjt_void1);
+    sjf_array_heap_class_heap(g_a);
+#line 3
+    sjs_array_heap_class* array1;
+#line 3
+    array1 = g_a;
+#line 3
+    sjt_parent3 = array1;
+#line 3
+    sjt_functionParam4 = 0;
+#line 3
+    sjt_functionParam5 = (sjs_class*)malloc(sizeof(sjs_class));
+#line 3
+    sjt_functionParam5->_refCount = 1;
+#line 3
+    sjt_functionParam5->x = 1;
+#line 3
+    sjf_class_heap(sjt_functionParam5);
+#line 3
+    sjf_array_heap_class_initat(sjt_parent3, sjt_functionParam4, sjt_functionParam5);
+#line 3
+    sjt_parent4 = array1;
+#line 3
+    sjt_functionParam6 = 1;
+#line 3
+    sjt_functionParam7 = (sjs_class*)malloc(sizeof(sjs_class));
+#line 3
+    sjt_functionParam7->_refCount = 1;
+#line 3
+    sjt_functionParam7->x = 2;
+#line 3
+    sjf_class_heap(sjt_functionParam7);
+#line 3
+    sjf_array_heap_class_initat(sjt_parent4, sjt_functionParam6, sjt_functionParam7);
+#line 3
+    sjt_parent5 = array1;
+#line 3
+    sjt_functionParam8 = 2;
+#line 3
+    sjt_functionParam9 = (sjs_class*)malloc(sizeof(sjs_class));
+#line 3
+    sjt_functionParam9->_refCount = 1;
+#line 3
+    sjt_functionParam9->x = 3;
+#line 3
+    sjf_class_heap(sjt_functionParam9);
+#line 3
+    sjf_array_heap_class_initat(sjt_parent5, sjt_functionParam8, sjt_functionParam9);
+#line 41 "lib/sj-lib-common/array.sj"
+    sjt_parent6 = g_a;
+#line 4 "array3.sj"
+    sjt_functionParam10 = 0;
+#line 4
+    sjf_array_heap_class_getat_heap(sjt_parent6, sjt_functionParam10, &g_c);
     main_destroy();
     return 0;
 }
 
 void main_destroy() {
 
+    g_a->_refCount--;
+    if (g_a->_refCount <= 0) {
+        weakptr_release(g_a);
+        sjf_array_heap_class_destroy(g_a);
+        free(g_a);
+    }
+    g_c->_refCount--;
+    if (g_c->_refCount <= 0) {
+        weakptr_release(g_c);
+        sjf_class_destroy(g_c);
+        free(g_c);
+    }
+    sjt_functionParam5->_refCount--;
+    if (sjt_functionParam5->_refCount <= 0) {
+        weakptr_release(sjt_functionParam5);
+        sjf_class_destroy(sjt_functionParam5);
+        free(sjt_functionParam5);
+    }
+    sjt_functionParam7->_refCount--;
+    if (sjt_functionParam7->_refCount <= 0) {
+        weakptr_release(sjt_functionParam7);
+        sjf_class_destroy(sjt_functionParam7);
+        free(sjt_functionParam7);
+    }
+    sjt_functionParam9->_refCount--;
+    if (sjt_functionParam9->_refCount <= 0) {
+        weakptr_release(sjt_functionParam9);
+        sjf_class_destroy(sjt_functionParam9);
+        free(sjt_functionParam9);
+    }
     if (g_log._refCount == 1) { sjf_log_destroy(&g_log); }
 ;
     if (g_log_excludeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_excludeall); }
 ;
     if (g_log_includeall._refCount == 1) { sjf_hash_type_bool_destroy(&g_log_includeall); }
-;
-    if (sjt_call1._refCount == 1) { sjf_class_destroy(&sjt_call1); }
 ;
     if (sjt_value1._refCount == 1) { sjf_hash_type_bool_destroy(&sjt_value1); }
 ;
