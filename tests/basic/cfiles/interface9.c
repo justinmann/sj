@@ -10,9 +10,9 @@ struct {
 #define sjs_log_typeId 21
 #define sjs_array_char_typeId 24
 #define sjs_string_typeId 22
-#define sjs_class_typeId 28
+#define sjs_class_typeId 29
 #define sjs_bar_typeId 15
-#define sji_foo_typeId 29
+#define sji_foo_typeId 30
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
@@ -106,8 +106,8 @@ sjs_class sjt_call1 = { -1 };
 sjs_class* sjt_cast2 = 0;
 int32_t sjt_interfaceParam1;
 int32_t sjt_interfaceParam2;
-sji_foo sjt_parent3 = { 0 };
 sji_foo sjt_parent4 = { 0 };
+sji_foo sjt_parent5 = { 0 };
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_array_char(sjs_array_char* _this);
@@ -115,6 +115,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_bar(sjs_bar* _this);
@@ -337,6 +338,13 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
     }
 }
 
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return) {
+#line 31 "lib/sj-lib-common/array.sj"
+    #line 30 "lib/sj-lib-common/array.sj"
+(*_return) = ((sjs_array*)_parent->v)->count;
+return;;
+}
+
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
 #line 37 "lib/sj-lib-common/array.sj"
     #line 36 "lib/sj-lib-common/array.sj"
@@ -398,7 +406,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 28;
+    *_return = 29;
 }
 
 void sjf_class_heap(sjs_class* _this) {
@@ -614,20 +622,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -635,7 +649,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -796,17 +810,17 @@ int main(int argc, char** argv) {
 #line 2
     sjf_class_as_sji_foo(sjt_cast2, &g_a);
 #line 3
-    sjt_parent3 = g_a;
+    sjt_parent4 = g_a;
 #line 15
     sjt_interfaceParam1 = 1;
 #line 15
-    sjt_parent3._vtbl->test(sjt_parent3._parent, sjt_interfaceParam1, &g_b);
+    sjt_parent4._vtbl->test(sjt_parent4._parent, sjt_interfaceParam1, &g_b);
 #line 3
-    sjt_parent4 = g_a;
+    sjt_parent5 = g_a;
 #line 16
     sjt_interfaceParam2 = 1;
 #line 16
-    sjt_parent4._vtbl->test_heap(sjt_parent4._parent, sjt_interfaceParam2, &g_c);
+    sjt_parent5._vtbl->test_heap(sjt_parent5._parent, sjt_interfaceParam2, &g_c);
     main_destroy();
     return 0;
 }

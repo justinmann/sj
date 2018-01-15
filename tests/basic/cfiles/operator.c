@@ -10,7 +10,7 @@ struct {
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
 #define sjs_string_typeId 21
-#define sjs_fancymath_typeId 26
+#define sjs_fancymath_typeId 27
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
@@ -105,9 +105,8 @@ sjs_fancymath* sjt_functionParam6 = 0;
 sjs_fancymath* sjt_functionParam7 = 0;
 sjs_fancymath* sjt_functionParam8 = 0;
 sjs_fancymath* sjt_functionParam9 = 0;
-sjs_fancymath* sjt_parent11 = 0;
-sjs_fancymath* sjt_parent14 = 0;
-sjs_fancymath* sjt_parent17 = 0;
+sjs_fancymath* sjt_parent12 = 0;
+sjs_fancymath* sjt_parent15 = 0;
 sjs_fancymath* sjt_parent18 = 0;
 sjs_fancymath* sjt_parent19 = 0;
 sjs_fancymath* sjt_parent20 = 0;
@@ -117,8 +116,9 @@ sjs_fancymath* sjt_parent23 = 0;
 sjs_fancymath* sjt_parent24 = 0;
 sjs_fancymath* sjt_parent25 = 0;
 sjs_fancymath* sjt_parent26 = 0;
-sjs_fancymath* sjt_parent5 = 0;
-sjs_fancymath* sjt_parent8 = 0;
+sjs_fancymath* sjt_parent27 = 0;
+sjs_fancymath* sjt_parent6 = 0;
+sjs_fancymath* sjt_parent9 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_array_char(sjs_array_char* _this);
@@ -126,6 +126,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_fancymath(sjs_fancymath* _this);
@@ -355,6 +356,13 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
     }
 }
 
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return) {
+#line 31 "lib/sj-lib-common/array.sj"
+    #line 30 "lib/sj-lib-common/array.sj"
+(*_return) = ((sjs_array*)_parent->v)->count;
+return;;
+}
+
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
 #line 37 "lib/sj-lib-common/array.sj"
     #line 36 "lib/sj-lib-common/array.sj"
@@ -379,32 +387,32 @@ void sjf_fancymath(sjs_fancymath* _this) {
 }
 
 void sjf_fancymath_add(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return) {
-    int32_t sjt_capture2;
-    sjs_fancymath* sjt_parent3 = 0;
-
-    _return->_refCount = 1;
-#line 4 "operator.sj"
-    sjt_parent3 = num;
-#line 4
-    sjf_fancymath_getx(sjt_parent3, &sjt_capture2);
-#line 5
-    _return->x = (_parent->x + sjt_capture2) + 1;
-#line 5
-    sjf_fancymath(_return);
-}
-
-void sjf_fancymath_add_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
     int32_t sjt_capture3;
     sjs_fancymath* sjt_parent4 = 0;
 
-    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
-    (*_return)->_refCount = 1;
+    _return->_refCount = 1;
 #line 4 "operator.sj"
     sjt_parent4 = num;
 #line 4
     sjf_fancymath_getx(sjt_parent4, &sjt_capture3);
 #line 5
-    (*_return)->x = (_parent->x + sjt_capture3) + 1;
+    _return->x = (_parent->x + sjt_capture3) + 1;
+#line 5
+    sjf_fancymath(_return);
+}
+
+void sjf_fancymath_add_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
+    int32_t sjt_capture4;
+    sjs_fancymath* sjt_parent5 = 0;
+
+    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
+    (*_return)->_refCount = 1;
+#line 4 "operator.sj"
+    sjt_parent5 = num;
+#line 4
+    sjf_fancymath_getx(sjt_parent5, &sjt_capture4);
+#line 5
+    (*_return)->x = (_parent->x + sjt_capture4) + 1;
 #line 5
     sjf_fancymath_heap((*_return));
 }
@@ -418,32 +426,32 @@ void sjf_fancymath_destroy(sjs_fancymath* _this) {
 }
 
 void sjf_fancymath_divide(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return) {
-    int32_t sjt_capture8;
-    sjs_fancymath* sjt_parent12 = 0;
-
-    _return->_refCount = 1;
-#line 16 "operator.sj"
-    sjt_parent12 = num;
-#line 16
-    sjf_fancymath_getx(sjt_parent12, &sjt_capture8);
-#line 17
-    _return->x = (_parent->x / sjt_capture8) + 1;
-#line 17
-    sjf_fancymath(_return);
-}
-
-void sjf_fancymath_divide_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
     int32_t sjt_capture9;
     sjs_fancymath* sjt_parent13 = 0;
 
-    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
-    (*_return)->_refCount = 1;
+    _return->_refCount = 1;
 #line 16 "operator.sj"
     sjt_parent13 = num;
 #line 16
     sjf_fancymath_getx(sjt_parent13, &sjt_capture9);
 #line 17
-    (*_return)->x = (_parent->x / sjt_capture9) + 1;
+    _return->x = (_parent->x / sjt_capture9) + 1;
+#line 17
+    sjf_fancymath(_return);
+}
+
+void sjf_fancymath_divide_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
+    int32_t sjt_capture10;
+    sjs_fancymath* sjt_parent14 = 0;
+
+    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
+    (*_return)->_refCount = 1;
+#line 16 "operator.sj"
+    sjt_parent14 = num;
+#line 16
+    sjf_fancymath_getx(sjt_parent14, &sjt_capture10);
+#line 17
+    (*_return)->x = (_parent->x / sjt_capture10) + 1;
 #line 17
     sjf_fancymath_heap((*_return));
 }
@@ -491,63 +499,63 @@ void sjf_fancymath_increment_heap(sjs_fancymath* _parent, sjs_fancymath** _retur
 }
 
 void sjf_fancymath_modulus(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return) {
-    int32_t sjt_capture10;
-    sjs_fancymath* sjt_parent15 = 0;
-
-    _return->_refCount = 1;
-#line 24 "operator.sj"
-    sjt_parent15 = num;
-#line 24
-    sjf_fancymath_getx(sjt_parent15, &sjt_capture10);
-#line 25
-    _return->x = (_parent->x % sjt_capture10) + 1;
-#line 25
-    sjf_fancymath(_return);
-}
-
-void sjf_fancymath_modulus_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
     int32_t sjt_capture11;
     sjs_fancymath* sjt_parent16 = 0;
 
-    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
-    (*_return)->_refCount = 1;
+    _return->_refCount = 1;
 #line 24 "operator.sj"
     sjt_parent16 = num;
 #line 24
     sjf_fancymath_getx(sjt_parent16, &sjt_capture11);
 #line 25
-    (*_return)->x = (_parent->x % sjt_capture11) + 1;
+    _return->x = (_parent->x % sjt_capture11) + 1;
+#line 25
+    sjf_fancymath(_return);
+}
+
+void sjf_fancymath_modulus_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
+    int32_t sjt_capture12;
+    sjs_fancymath* sjt_parent17 = 0;
+
+    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
+    (*_return)->_refCount = 1;
+#line 24 "operator.sj"
+    sjt_parent17 = num;
+#line 24
+    sjf_fancymath_getx(sjt_parent17, &sjt_capture12);
+#line 25
+    (*_return)->x = (_parent->x % sjt_capture12) + 1;
 #line 25
     sjf_fancymath_heap((*_return));
 }
 
 void sjf_fancymath_multiply(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return) {
-    int32_t sjt_capture6;
-    sjs_fancymath* sjt_parent9 = 0;
-
-    _return->_refCount = 1;
-#line 12 "operator.sj"
-    sjt_parent9 = num;
-#line 12
-    sjf_fancymath_getx(sjt_parent9, &sjt_capture6);
-#line 13
-    _return->x = (_parent->x * sjt_capture6) + 1;
-#line 13
-    sjf_fancymath(_return);
-}
-
-void sjf_fancymath_multiply_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
     int32_t sjt_capture7;
     sjs_fancymath* sjt_parent10 = 0;
 
-    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
-    (*_return)->_refCount = 1;
+    _return->_refCount = 1;
 #line 12 "operator.sj"
     sjt_parent10 = num;
 #line 12
     sjf_fancymath_getx(sjt_parent10, &sjt_capture7);
 #line 13
-    (*_return)->x = (_parent->x * sjt_capture7) + 1;
+    _return->x = (_parent->x * sjt_capture7) + 1;
+#line 13
+    sjf_fancymath(_return);
+}
+
+void sjf_fancymath_multiply_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
+    int32_t sjt_capture8;
+    sjs_fancymath* sjt_parent11 = 0;
+
+    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
+    (*_return)->_refCount = 1;
+#line 12 "operator.sj"
+    sjt_parent11 = num;
+#line 12
+    sjf_fancymath_getx(sjt_parent11, &sjt_capture8);
+#line 13
+    (*_return)->x = (_parent->x * sjt_capture8) + 1;
 #line 13
     sjf_fancymath_heap((*_return));
 }
@@ -560,32 +568,32 @@ void sjf_fancymath_setbob(sjs_fancymath* _parent, int32_t i, int32_t* _return) {
 }
 
 void sjf_fancymath_subtract(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath* _return) {
-    int32_t sjt_capture4;
-    sjs_fancymath* sjt_parent6 = 0;
-
-    _return->_refCount = 1;
-#line 8 "operator.sj"
-    sjt_parent6 = num;
-#line 8
-    sjf_fancymath_getx(sjt_parent6, &sjt_capture4);
-#line 9
-    _return->x = (_parent->x - sjt_capture4) + 1;
-#line 9
-    sjf_fancymath(_return);
-}
-
-void sjf_fancymath_subtract_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
     int32_t sjt_capture5;
     sjs_fancymath* sjt_parent7 = 0;
 
-    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
-    (*_return)->_refCount = 1;
+    _return->_refCount = 1;
 #line 8 "operator.sj"
     sjt_parent7 = num;
 #line 8
     sjf_fancymath_getx(sjt_parent7, &sjt_capture5);
 #line 9
-    (*_return)->x = (_parent->x - sjt_capture5) + 1;
+    _return->x = (_parent->x - sjt_capture5) + 1;
+#line 9
+    sjf_fancymath(_return);
+}
+
+void sjf_fancymath_subtract_heap(sjs_fancymath* _parent, sjs_fancymath* num, sjs_fancymath** _return) {
+    int32_t sjt_capture6;
+    sjs_fancymath* sjt_parent8 = 0;
+
+    (*_return) = (sjs_fancymath*)malloc(sizeof(sjs_fancymath));
+    (*_return)->_refCount = 1;
+#line 8 "operator.sj"
+    sjt_parent8 = num;
+#line 8
+    sjf_fancymath_getx(sjt_parent8, &sjt_capture6);
+#line 9
+    (*_return)->x = (_parent->x - sjt_capture6) + 1;
 #line 9
     sjf_fancymath_heap((*_return));
 }
@@ -789,20 +797,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -810,7 +824,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -972,113 +986,113 @@ int main(int argc, char** argv) {
 #line 47
     g_ii = 2;
 #line 4
-    sjt_parent5 = &g_a;
+    sjt_parent6 = &g_a;
 #line 48
     sjt_functionParam4 = &g_b;
 #line 48
-    sjf_fancymath_add(sjt_parent5, sjt_functionParam4, &g_c);
+    sjf_fancymath_add(sjt_parent6, sjt_functionParam4, &g_c);
 #line 8
-    sjt_parent8 = &g_a;
+    sjt_parent9 = &g_a;
 #line 49
     sjt_functionParam5 = &g_b;
 #line 49
-    sjf_fancymath_subtract(sjt_parent8, sjt_functionParam5, &g_d);
+    sjf_fancymath_subtract(sjt_parent9, sjt_functionParam5, &g_d);
 #line 12
-    sjt_parent11 = &g_a;
+    sjt_parent12 = &g_a;
 #line 50
     sjt_functionParam6 = &g_b;
 #line 50
-    sjf_fancymath_multiply(sjt_parent11, sjt_functionParam6, &g_e);
+    sjf_fancymath_multiply(sjt_parent12, sjt_functionParam6, &g_e);
 #line 16
-    sjt_parent14 = &g_a;
+    sjt_parent15 = &g_a;
 #line 51
     sjt_functionParam7 = &g_b;
 #line 51
-    sjf_fancymath_divide(sjt_parent14, sjt_functionParam7, &g_f);
+    sjf_fancymath_divide(sjt_parent15, sjt_functionParam7, &g_f);
 #line 24
-    sjt_parent17 = &g_a;
+    sjt_parent18 = &g_a;
 #line 52
     sjt_functionParam8 = &g_b;
 #line 52
-    sjf_fancymath_modulus(sjt_parent17, sjt_functionParam8, &g_g);
+    sjf_fancymath_modulus(sjt_parent18, sjt_functionParam8, &g_g);
 #line 4
-    sjt_parent18 = &g_c;
+    sjt_parent19 = &g_c;
 #line 53
     sjt_functionParam9 = &g_c;
 #line 53
-    sjf_fancymath_add(sjt_parent18, sjt_functionParam9, &sjt_funcold2);
+    sjf_fancymath_add(sjt_parent19, sjt_functionParam9, &sjt_funcold2);
 #line 53
     if (g_c._refCount == 1) { sjf_fancymath_destroy(&g_c); }
 ;
 #line 4
     sjf_fancymath_copy(&g_c, &sjt_funcold2);
 #line 8
-    sjt_parent19 = &g_d;
+    sjt_parent20 = &g_d;
 #line 54
     sjt_functionParam10 = &g_d;
 #line 54
-    sjf_fancymath_subtract(sjt_parent19, sjt_functionParam10, &sjt_funcold3);
+    sjf_fancymath_subtract(sjt_parent20, sjt_functionParam10, &sjt_funcold3);
 #line 54
     if (g_d._refCount == 1) { sjf_fancymath_destroy(&g_d); }
 ;
 #line 8
     sjf_fancymath_copy(&g_d, &sjt_funcold3);
 #line 12
-    sjt_parent20 = &g_d;
+    sjt_parent21 = &g_d;
 #line 55
     sjt_functionParam11 = &g_d;
 #line 55
-    sjf_fancymath_multiply(sjt_parent20, sjt_functionParam11, &sjt_funcold4);
+    sjf_fancymath_multiply(sjt_parent21, sjt_functionParam11, &sjt_funcold4);
 #line 55
     if (g_d._refCount == 1) { sjf_fancymath_destroy(&g_d); }
 ;
 #line 12
     sjf_fancymath_copy(&g_d, &sjt_funcold4);
 #line 16
-    sjt_parent21 = &g_d;
+    sjt_parent22 = &g_d;
 #line 56
     sjt_functionParam12 = &g_d;
 #line 56
-    sjf_fancymath_divide(sjt_parent21, sjt_functionParam12, &sjt_funcold5);
+    sjf_fancymath_divide(sjt_parent22, sjt_functionParam12, &sjt_funcold5);
 #line 56
     if (g_d._refCount == 1) { sjf_fancymath_destroy(&g_d); }
 ;
 #line 16
     sjf_fancymath_copy(&g_d, &sjt_funcold5);
 #line 28
-    sjt_parent22 = &g_e;
+    sjt_parent23 = &g_e;
 #line 28
-    sjf_fancymath_increment(sjt_parent22, &sjt_funcold6);
+    sjf_fancymath_increment(sjt_parent23, &sjt_funcold6);
 #line 28
     if (g_e._refCount == 1) { sjf_fancymath_destroy(&g_e); }
 ;
 #line 28
     sjf_fancymath_copy(&g_e, &sjt_funcold6);
 #line 28
-    sjt_parent23 = &g_f;
+    sjt_parent24 = &g_f;
 #line 28
-    sjf_fancymath_increment(sjt_parent23, &sjt_funcold7);
+    sjf_fancymath_increment(sjt_parent24, &sjt_funcold7);
 #line 28
     if (g_f._refCount == 1) { sjf_fancymath_destroy(&g_f); }
 ;
 #line 28
     sjf_fancymath_copy(&g_f, &sjt_funcold7);
 #line 36
-    sjt_parent24 = &g_f;
+    sjt_parent25 = &g_f;
 #line 36
-    sjf_fancymath_getx(sjt_parent24, &g_i);
+    sjf_fancymath_getx(sjt_parent25, &g_i);
 #line 40
-    sjt_parent25 = &g_a;
+    sjt_parent26 = &g_a;
 #line 60
     sjt_functionParam13 = 12;
 #line 60
-    sjf_fancymath_setbob(sjt_parent25, sjt_functionParam13, &g_j);
+    sjf_fancymath_setbob(sjt_parent26, sjt_functionParam13, &g_j);
 #line 20
-    sjt_parent26 = &g_a;
+    sjt_parent27 = &g_a;
 #line 61
     sjt_functionParam14 = g_ii;
 #line 61
-    sjf_fancymath_dividei32(sjt_parent26, sjt_functionParam14, &g_k);
+    sjf_fancymath_dividei32(sjt_parent27, sjt_functionParam14, &g_k);
     main_destroy();
     return 0;
 }

@@ -10,8 +10,8 @@ struct {
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
 #define sjs_string_typeId 21
-#define sjs_class_typeId 28
-#define sji_foo_typeId 26
+#define sjs_class_typeId 29
+#define sji_foo_typeId 27
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
@@ -98,8 +98,8 @@ uint32_t g_u32_maxvalue;
 int32_t result1;
 sjs_string sjt_call1 = { -1 };
 sjs_string sjt_call2 = { -1 };
-int32_option sjt_capture4;
 int32_option sjt_capture5;
+int32_option sjt_capture6;
 sjs_class* sjt_cast2 = 0;
 sjs_class* sjt_funcold2 = 0;
 sjs_string* sjt_functionParam4 = 0;
@@ -115,6 +115,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
@@ -340,6 +341,13 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
     }
 }
 
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return) {
+#line 31 "lib/sj-lib-common/array.sj"
+    #line 30 "lib/sj-lib-common/array.sj"
+(*_return) = ((sjs_array*)_parent->v)->count;
+return;;
+}
+
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
 #line 37 "lib/sj-lib-common/array.sj"
     #line 36 "lib/sj-lib-common/array.sj"
@@ -391,24 +399,24 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 28;
+    *_return = 29;
 }
 
 void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_class_isequal(sjs_class* _parent, sji_foo f, bool* _return) {
-    int32_t sjt_capture2;
     int32_t sjt_capture3;
-    sji_foo sjt_parent3 = { 0 };
+    int32_t sjt_capture4;
+    sji_foo sjt_parent4 = { 0 };
 
-    sjf_class_test(_parent, &sjt_capture2);
+    sjf_class_test(_parent, &sjt_capture3);
 #line 10 "interface11.sj"
-    sjt_parent3 = f;
+    sjt_parent4 = f;
 #line 11
-    sjt_parent3._vtbl->test(sjt_parent3._parent, &sjt_capture3);
+    sjt_parent4._vtbl->test(sjt_parent4._parent, &sjt_capture4);
 #line 11
-    (*_return) = sjt_capture2 == sjt_capture3;
+    (*_return) = sjt_capture3 == sjt_capture4;
 }
 
 void sjf_class_test(sjs_class* _parent, int32_t* _return) {
@@ -822,20 +830,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -843,7 +857,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -1012,33 +1026,33 @@ int main(int argc, char** argv) {
 #line 2
     if (g_a._parent != 0) { weakptr_cb_add(g_a._parent, weakptrcb1); }
     if (g_a._parent != 0) {
-        sji_foo sjt_parent4 = { 0 };
+        sji_foo sjt_parent5 = { 0 };
         int32_t sjt_value2;
 
 #line 3 "interface11.sj"
-        sjt_parent4 = g_a;
+        sjt_parent5 = g_a;
 #line 17
-        sjt_parent4._vtbl->test(sjt_parent4._parent, &sjt_value2);
+        sjt_parent5._vtbl->test(sjt_parent5._parent, &sjt_value2);
 #line 17
-        sjt_capture4.isvalid = true;
+        sjt_capture5.isvalid = true;
 #line 17
-        sjt_capture4.value = sjt_value2;
+        sjt_capture5.value = sjt_value2;
     } else {
 #line 17 "interface11.sj"
-        sjt_capture4 = int32_empty;
+        sjt_capture5 = int32_empty;
     }
 
-    if (sjt_capture4.isvalid) {
+    if (sjt_capture5.isvalid) {
         int32_option sjt_getValue1;
 
         if (g_a._parent != 0) {
-            sji_foo sjt_parent5 = { 0 };
+            sji_foo sjt_parent6 = { 0 };
             int32_t sjt_value3;
 
 #line 3 "interface11.sj"
-            sjt_parent5 = g_a;
+            sjt_parent6 = g_a;
 #line 17
-            sjt_parent5._vtbl->test(sjt_parent5._parent, &sjt_value3);
+            sjt_parent6._vtbl->test(sjt_parent6._parent, &sjt_value3);
 #line 17
             sjt_getValue1.isvalid = true;
 #line 17
@@ -1088,33 +1102,33 @@ int main(int argc, char** argv) {
 #line 7
     g_c->_refCount++;
     if (g_a._parent != 0) {
-        sji_foo sjt_parent6 = { 0 };
+        sji_foo sjt_parent7 = { 0 };
         int32_t sjt_value4;
 
 #line 3 "interface11.sj"
-        sjt_parent6 = g_a;
+        sjt_parent7 = g_a;
 #line 20
-        sjt_parent6._vtbl->test(sjt_parent6._parent, &sjt_value4);
+        sjt_parent7._vtbl->test(sjt_parent7._parent, &sjt_value4);
 #line 20
-        sjt_capture5.isvalid = true;
+        sjt_capture6.isvalid = true;
 #line 20
-        sjt_capture5.value = sjt_value4;
+        sjt_capture6.value = sjt_value4;
     } else {
 #line 20 "interface11.sj"
-        sjt_capture5 = int32_empty;
+        sjt_capture6 = int32_empty;
     }
 
-    if (sjt_capture5.isvalid) {
+    if (sjt_capture6.isvalid) {
         int32_option sjt_getValue2;
 
         if (g_a._parent != 0) {
-            sji_foo sjt_parent7 = { 0 };
+            sji_foo sjt_parent8 = { 0 };
             int32_t sjt_value5;
 
 #line 3 "interface11.sj"
-            sjt_parent7 = g_a;
+            sjt_parent8 = g_a;
 #line 20
-            sjt_parent7._vtbl->test(sjt_parent7._parent, &sjt_value5);
+            sjt_parent8._vtbl->test(sjt_parent8._parent, &sjt_value5);
 #line 20
             sjt_getValue2.isvalid = true;
 #line 20

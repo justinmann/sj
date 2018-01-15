@@ -17,11 +17,11 @@ struct {
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
 #define sjs_string_typeId 21
-#define sji_interface_typeId 26
-#define sjs_hash_heap_iface_interface_i32_typeId 27
-#define sjs_class_typeId 32
-#define cb_heap_iface_interface_i32_void_typeId 37
-#define cb_heap_iface_interface_i32_void_heap_typeId 37
+#define sji_interface_typeId 27
+#define sjs_hash_heap_iface_interface_i32_typeId 28
+#define sjs_class_typeId 33
+#define cb_heap_iface_interface_i32_void_typeId 38
+#define cb_heap_iface_interface_i32_void_heap_typeId 38
 #define cb_local_iface_interface_i32_void_typeId 46
 #define cb_local_iface_interface_i32_void_heap_typeId 46
 
@@ -159,9 +159,9 @@ sji_interface sjt_functionParam4 = { 0 };
 int32_t sjt_functionParam5;
 sji_interface sjt_functionParam6 = { 0 };
 cb_heap_iface_interface_i32_void sjt_functionParam7;
-sjs_hash_heap_iface_interface_i32* sjt_parent3 = 0;
-sjs_hash_heap_iface_interface_i32* sjt_parent5 = 0;
+sjs_hash_heap_iface_interface_i32* sjt_parent4 = 0;
 sjs_hash_heap_iface_interface_i32* sjt_parent6 = 0;
+sjs_hash_heap_iface_interface_i32* sjt_parent7 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_array_char(sjs_array_char* _this);
@@ -535,7 +535,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 32;
+    *_return = 33;
 }
 
 void sjf_class_hash(sjs_class* _parent, uint32_t* _return) {
@@ -550,17 +550,17 @@ void sjf_class_heap(sjs_class* _this) {
 }
 
 void sjf_class_isequal(sjs_class* _parent, sji_interface b, bool* _return) {
-    int32_t sjt_capture2;
     int32_t sjt_capture3;
-    sji_interface sjt_parent4 = { 0 };
+    int32_t sjt_capture4;
+    sji_interface sjt_parent5 = { 0 };
 
-    sjf_class_bob(_parent, &sjt_capture2);
+    sjf_class_bob(_parent, &sjt_capture3);
 #line 13 "hash4.sj"
-    sjt_parent4 = b;
+    sjt_parent5 = b;
 #line 13
-    sjt_parent4._vtbl->bob(sjt_parent4._parent, &sjt_capture3);
+    sjt_parent5._vtbl->bob(sjt_parent5._parent, &sjt_capture4);
 #line 13
-    (*_return) = sjt_capture2 == sjt_capture3;
+    (*_return) = sjt_capture3 == sjt_capture4;
 }
 
 void sjf_debug_writeline(sjs_string* data) {
@@ -1201,20 +1201,20 @@ void sjf_print(sji_interface k, int32_t v) {
     int32_t sjt_functionParam32;
     int32_t sjt_functionParam33;
     sjs_string* sjt_functionParam8 = 0;
-    sjs_string* sjt_parent24 = 0;
     sjs_string* sjt_parent25 = 0;
-    sji_interface sjt_parent26 = { 0 };
+    sjs_string* sjt_parent26 = 0;
+    sji_interface sjt_parent27 = { 0 };
 
 #line 23 "hash4.sj"
-    sjt_parent26 = k;
+    sjt_parent27 = k;
 #line 24
-    sjt_parent26._vtbl->bob(sjt_parent26._parent, &sjt_functionParam28);
+    sjt_parent27._vtbl->bob(sjt_parent27._parent, &sjt_functionParam28);
 #line 22 "lib/sj-lib-common/i32.sj"
     sjt_functionParam29 = 10;
 #line 22
     sjf_i32_asstring(sjt_functionParam28, sjt_functionParam29, &sjt_call5);
 #line 24 "hash4.sj"
-    sjt_parent25 = &sjt_call5;
+    sjt_parent26 = &sjt_call5;
 #line 24
     sjt_call6._refCount = 1;
 #line 24
@@ -1234,9 +1234,9 @@ void sjf_print(sji_interface k, int32_t v) {
 #line 24 "hash4.sj"
     sjt_functionParam30 = &sjt_call6;
 #line 24
-    sjf_string_add(sjt_parent25, sjt_functionParam30, &sjt_call4);
+    sjf_string_add(sjt_parent26, sjt_functionParam30, &sjt_call4);
 #line 24
-    sjt_parent24 = &sjt_call4;
+    sjt_parent25 = &sjt_call4;
 #line 23
     sjt_functionParam32 = v;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -1246,7 +1246,7 @@ void sjf_print(sji_interface k, int32_t v) {
 #line 24 "hash4.sj"
     sjt_functionParam31 = &sjt_call7;
 #line 24
-    sjf_string_add(sjt_parent24, sjt_functionParam31, &sjt_call3);
+    sjf_string_add(sjt_parent25, sjt_functionParam31, &sjt_call3);
 #line 24
     sjt_functionParam8 = &sjt_call3;
 #line 24
@@ -1279,30 +1279,30 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy(_return, _parent);
     } else {
-        bool sjt_capture4;
-        int32_t sjt_capture5;
-        sjs_array_char* sjt_parent7 = 0;
+        bool sjt_capture5;
+        int32_t sjt_capture6;
+        sjs_array_char* sjt_parent8 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent7 = &_parent->data;
+        sjt_parent8 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent7, &sjt_capture5);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture5) {
-            int32_t sjt_capture6;
-            sjs_array_char* sjt_parent8 = 0;
+        sjf_array_char_gettotalcount(sjt_parent8, &sjt_capture6);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture6) {
+            int32_t sjt_capture7;
+            sjs_array_char* sjt_parent9 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent8 = &_parent->data;
+            sjt_parent9 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent8, &sjt_capture6);
+            sjf_array_char_getcount(sjt_parent9, &sjt_capture7);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture4 = ((_parent->offset + _parent->count) == sjt_capture6);
+            sjt_capture5 = ((_parent->offset + _parent->count) == sjt_capture7);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture4 = false;
+            sjt_capture5 = false;
         }
 
-        if (sjt_capture4) {
+        if (sjt_capture5) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd1;
@@ -1320,21 +1320,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 char sjt_functionParam10;
                 int32_t sjt_functionParam12;
                 int32_t sjt_functionParam9;
-                sjs_string* sjt_parent11 = 0;
-                sjs_array_char* sjt_parent9 = 0;
+                sjs_array_char* sjt_parent10 = 0;
+                sjs_string* sjt_parent12 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent9 = &_parent->data;
+                sjt_parent10 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam9 = newcount;
 #line 18
-                sjt_parent11 = item;
+                sjt_parent12 = item;
 #line 27
                 sjt_functionParam12 = i;
 #line 27
-                sjf_string_getat(sjt_parent11, sjt_functionParam12, &sjt_functionParam10);
+                sjf_string_getat(sjt_parent12, sjt_functionParam12, &sjt_functionParam10);
 #line 27
-                sjf_array_char_initat(sjt_parent9, sjt_functionParam9, sjt_functionParam10);
+                sjf_array_char_initat(sjt_parent10, sjt_functionParam9, sjt_functionParam10);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -1363,11 +1363,11 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             int32_t sjt_functionParam13;
             int32_t sjt_functionParam14;
             int32_t sjt_functionParam15;
-            sjs_array_char* sjt_parent12 = 0;
             sjs_array_char* sjt_parent13 = 0;
+            sjs_array_char* sjt_parent14 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent12 = &_parent->data;
+            sjt_parent13 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam13 = _parent->offset;
 #line 34
@@ -1375,11 +1375,11 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 34
             sjt_functionParam15 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent12, sjt_functionParam13, sjt_functionParam14, sjt_functionParam15, &newdata);
+            sjf_array_char_clone(sjt_parent13, sjt_functionParam13, sjt_functionParam14, sjt_functionParam15, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent13 = &newdata;
+            sjt_parent14 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent13, &newcount);
+            sjf_array_char_getcount(sjt_parent14, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart2 = 0;
 #line 37
@@ -1390,21 +1390,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 int32_t sjt_functionParam16;
                 char sjt_functionParam17;
                 int32_t sjt_functionParam18;
-                sjs_array_char* sjt_parent14 = 0;
-                sjs_string* sjt_parent15 = 0;
+                sjs_array_char* sjt_parent15 = 0;
+                sjs_string* sjt_parent16 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent14 = &newdata;
+                sjt_parent15 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam16 = newcount;
 #line 18
-                sjt_parent15 = item;
+                sjt_parent16 = item;
 #line 37
                 sjt_functionParam18 = i;
 #line 37
-                sjf_string_getat(sjt_parent15, sjt_functionParam18, &sjt_functionParam17);
+                sjf_string_getat(sjt_parent16, sjt_functionParam18, &sjt_functionParam17);
 #line 37
-                sjf_array_char_initat(sjt_parent14, sjt_functionParam16, sjt_functionParam17);
+                sjf_array_char_initat(sjt_parent15, sjt_functionParam16, sjt_functionParam17);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -1441,30 +1441,30 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy((*_return), _parent);
     } else {
-        bool sjt_capture7;
-        int32_t sjt_capture8;
-        sjs_array_char* sjt_parent16 = 0;
+        bool sjt_capture8;
+        int32_t sjt_capture9;
+        sjs_array_char* sjt_parent17 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent16 = &_parent->data;
+        sjt_parent17 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent16, &sjt_capture8);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture8) {
-            int32_t sjt_capture9;
-            sjs_array_char* sjt_parent17 = 0;
+        sjf_array_char_gettotalcount(sjt_parent17, &sjt_capture9);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture9) {
+            int32_t sjt_capture10;
+            sjs_array_char* sjt_parent18 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent17 = &_parent->data;
+            sjt_parent18 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent17, &sjt_capture9);
+            sjf_array_char_getcount(sjt_parent18, &sjt_capture10);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture7 = ((_parent->offset + _parent->count) == sjt_capture9);
+            sjt_capture8 = ((_parent->offset + _parent->count) == sjt_capture10);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture7 = false;
+            sjt_capture8 = false;
         }
 
-        if (sjt_capture7) {
+        if (sjt_capture8) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd3;
@@ -1482,21 +1482,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam19;
                 char sjt_functionParam20;
                 int32_t sjt_functionParam21;
-                sjs_array_char* sjt_parent18 = 0;
-                sjs_string* sjt_parent19 = 0;
+                sjs_array_char* sjt_parent19 = 0;
+                sjs_string* sjt_parent20 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent18 = &_parent->data;
+                sjt_parent19 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam19 = newcount;
 #line 18
-                sjt_parent19 = item;
+                sjt_parent20 = item;
 #line 27
                 sjt_functionParam21 = i;
 #line 27
-                sjf_string_getat(sjt_parent19, sjt_functionParam21, &sjt_functionParam20);
+                sjf_string_getat(sjt_parent20, sjt_functionParam21, &sjt_functionParam20);
 #line 27
-                sjf_array_char_initat(sjt_parent18, sjt_functionParam19, sjt_functionParam20);
+                sjf_array_char_initat(sjt_parent19, sjt_functionParam19, sjt_functionParam20);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -1527,11 +1527,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             int32_t sjt_functionParam22;
             int32_t sjt_functionParam23;
             int32_t sjt_functionParam24;
-            sjs_array_char* sjt_parent20 = 0;
             sjs_array_char* sjt_parent21 = 0;
+            sjs_array_char* sjt_parent22 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent20 = &_parent->data;
+            sjt_parent21 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam22 = _parent->offset;
 #line 34
@@ -1539,11 +1539,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 34
             sjt_functionParam24 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent20, sjt_functionParam22, sjt_functionParam23, sjt_functionParam24, &newdata);
+            sjf_array_char_clone(sjt_parent21, sjt_functionParam22, sjt_functionParam23, sjt_functionParam24, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent21 = &newdata;
+            sjt_parent22 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent21, &newcount);
+            sjf_array_char_getcount(sjt_parent22, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart4 = 0;
 #line 37
@@ -1554,21 +1554,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam25;
                 char sjt_functionParam26;
                 int32_t sjt_functionParam27;
-                sjs_array_char* sjt_parent22 = 0;
-                sjs_string* sjt_parent23 = 0;
+                sjs_array_char* sjt_parent23 = 0;
+                sjs_string* sjt_parent24 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent22 = &newdata;
+                sjt_parent23 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam25 = newcount;
 #line 18
-                sjt_parent23 = item;
+                sjt_parent24 = item;
 #line 37
                 sjt_functionParam27 = i;
 #line 37
-                sjf_string_getat(sjt_parent23, sjt_functionParam27, &sjt_functionParam26);
+                sjf_string_getat(sjt_parent24, sjt_functionParam27, &sjt_functionParam26);
 #line 37
-                sjf_array_char_initat(sjt_parent22, sjt_functionParam25, sjt_functionParam26);
+                sjf_array_char_initat(sjt_parent23, sjt_functionParam25, sjt_functionParam26);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -1618,14 +1618,14 @@ void sjf_string_destroy(sjs_string* _this) {
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     int32_t sjt_functionParam11;
-    sjs_array_char* sjt_parent10 = 0;
+    sjs_array_char* sjt_parent11 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent10 = &_parent->data;
+    sjt_parent11 = &_parent->data;
 #line 64 "lib/sj-lib-common/string.sj"
     sjt_functionParam11 = _parent->offset + index;
 #line 64
-    sjf_array_char_getat(sjt_parent10, sjt_functionParam11, _return);
+    sjf_array_char_getat(sjt_parent11, sjt_functionParam11, _return);
 }
 
 void sjf_string_heap(sjs_string* _this) {
@@ -1639,20 +1639,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -1660,7 +1666,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -1826,7 +1832,7 @@ int main(int argc, char** argv) {
 #line 9
     sjf_hash_heap_iface_interface_i32(&g_a);
 #line 38 "lib/sj-lib-common/hash.sj"
-    sjt_parent3 = &g_a;
+    sjt_parent4 = &g_a;
 #line 38
     sjt_call1 = (sjs_class*)malloc(sizeof(sjs_class));
 #line 38
@@ -1846,9 +1852,9 @@ int main(int argc, char** argv) {
 #line 17
     sjt_functionParam5 = 1;
 #line 17
-    sjf_hash_heap_iface_interface_i32_setat(sjt_parent3, sjt_functionParam4, sjt_functionParam5);
+    sjf_hash_heap_iface_interface_i32_setat(sjt_parent4, sjt_functionParam4, sjt_functionParam5);
 #line 21 "lib/sj-lib-common/hash.sj"
-    sjt_parent5 = &g_a;
+    sjt_parent6 = &g_a;
 #line 21
     sjt_call2 = (sjs_class*)malloc(sizeof(sjs_class));
 #line 21
@@ -1866,15 +1872,15 @@ int main(int argc, char** argv) {
     }
 
 #line 2
-    sjf_hash_heap_iface_interface_i32_getat(sjt_parent5, sjt_functionParam6, &g_b);
+    sjf_hash_heap_iface_interface_i32_getat(sjt_parent6, sjt_functionParam6, &g_b);
 #line 96 "lib/sj-lib-common/hash.sj"
-    sjt_parent6 = &g_a;
+    sjt_parent7 = &g_a;
 #line 20 "hash4.sj"
     sjt_functionParam7._parent = (sjs_object*)1;
 #line 20
     sjt_functionParam7._cb = (void(*)(sjs_object*,sji_interface,int32_t))sjf_print_callback;
 #line 20
-    sjf_hash_heap_iface_interface_i32_each(sjt_parent6, sjt_functionParam7);
+    sjf_hash_heap_iface_interface_i32_each(sjt_parent7, sjt_functionParam7);
     if (g_b.isvalid) {
         int32_option sjt_getValue1;
 

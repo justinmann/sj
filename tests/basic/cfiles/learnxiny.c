@@ -643,8 +643,8 @@ sjs_string sjt_call96 = { -1 };
 sjs_string sjt_call97 = { -1 };
 sjs_string sjt_call98 = { -1 };
 sjs_string sjt_call99 = { -1 };
-int32_t sjt_capture12;
-int32_option sjt_capture13;
+int32_t sjt_capture13;
+int32_option sjt_capture14;
 int32_t sjt_cast2;
 int32_t sjt_cast3;
 int32_t sjt_forEnd5;
@@ -794,33 +794,33 @@ int32_t sjt_functionParam96;
 sjs_string* sjt_functionParam97 = 0;
 sjs_string* sjt_functionParam98 = 0;
 int32_t sjt_functionParam99;
-sjs_enumtest* sjt_parent100 = 0;
+sjs_bicycle* sjt_parent100 = 0;
 sjs_enumtest* sjt_parent101 = 0;
-sjs_string* sjt_parent21 = 0;
+sjs_enumtest* sjt_parent102 = 0;
 sjs_string* sjt_parent22 = 0;
 sjs_string* sjt_parent23 = 0;
 sjs_string* sjt_parent24 = 0;
 sjs_string* sjt_parent25 = 0;
-sjs_string* sjt_parent28 = 0;
+sjs_string* sjt_parent26 = 0;
 sjs_string* sjt_parent29 = 0;
-sjs_array_i32* sjt_parent30 = 0;
+sjs_string* sjt_parent30 = 0;
 sjs_array_i32* sjt_parent31 = 0;
 sjs_array_i32* sjt_parent32 = 0;
-sjs_array_obj* sjt_parent33 = 0;
+sjs_array_i32* sjt_parent33 = 0;
 sjs_array_obj* sjt_parent34 = 0;
-sjs_string* sjt_parent35 = 0;
-sjs_array_i32* sjt_parent36 = 0;
+sjs_array_obj* sjt_parent35 = 0;
+sjs_string* sjt_parent36 = 0;
 sjs_array_i32* sjt_parent37 = 0;
-sjs_string* sjt_parent38 = 0;
-sjs_array_i32* sjt_parent39 = 0;
-sjs_list_string* sjt_parent47 = 0;
+sjs_array_i32* sjt_parent38 = 0;
+sjs_string* sjt_parent39 = 0;
+sjs_array_i32* sjt_parent40 = 0;
 sjs_list_string* sjt_parent48 = 0;
 sjs_list_string* sjt_parent49 = 0;
-sjs_hash_string_i32* sjt_parent50 = 0;
+sjs_list_string* sjt_parent50 = 0;
 sjs_hash_string_i32* sjt_parent51 = 0;
 sjs_hash_string_i32* sjt_parent52 = 0;
 sjs_hash_string_i32* sjt_parent53 = 0;
-sjs_string* sjt_parent55 = 0;
+sjs_hash_string_i32* sjt_parent54 = 0;
 sjs_string* sjt_parent56 = 0;
 sjs_string* sjt_parent57 = 0;
 sjs_string* sjt_parent58 = 0;
@@ -836,7 +836,7 @@ sjs_string* sjt_parent67 = 0;
 sjs_string* sjt_parent68 = 0;
 sjs_string* sjt_parent69 = 0;
 sjs_string* sjt_parent70 = 0;
-sjs_array_i32* sjt_parent71 = 0;
+sjs_string* sjt_parent71 = 0;
 sjs_array_i32* sjt_parent72 = 0;
 sjs_array_i32* sjt_parent73 = 0;
 sjs_array_i32* sjt_parent74 = 0;
@@ -846,11 +846,11 @@ sjs_array_i32* sjt_parent77 = 0;
 sjs_array_i32* sjt_parent78 = 0;
 sjs_array_i32* sjt_parent79 = 0;
 sjs_array_i32* sjt_parent80 = 0;
-sjs_string* sjt_parent81 = 0;
-sjs_bicycle* sjt_parent82 = 0;
+sjs_array_i32* sjt_parent81 = 0;
+sjs_string* sjt_parent82 = 0;
 sjs_bicycle* sjt_parent83 = 0;
-sjs_string* sjt_parent84 = 0;
-sjs_bicycle* sjt_parent99 = 0;
+sjs_bicycle* sjt_parent84 = 0;
+sjs_string* sjt_parent85 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 int32_t sjt_void1;
 int32_t sjt_void2;
@@ -1800,13 +1800,13 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
     int32_t sjt_functionParam201;
     sjs_string* sjt_functionParam202 = 0;
     sjs_string* sjt_functionParam203 = 0;
-    sjs_string* sjt_parent85 = 0;
     sjs_string* sjt_parent86 = 0;
     sjs_string* sjt_parent87 = 0;
     sjs_string* sjt_parent88 = 0;
     sjs_string* sjt_parent89 = 0;
     sjs_string* sjt_parent90 = 0;
     sjs_string* sjt_parent91 = 0;
+    sjs_string* sjt_parent92 = 0;
 
     sjt_call106._refCount = 1;
 #line 305 "learnxiny.sj"
@@ -1824,7 +1824,7 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 16
     sjf_string(&sjt_call106);
 #line 305 "learnxiny.sj"
-    sjt_parent91 = &sjt_call106;
+    sjt_parent92 = &sjt_call106;
 #line 305
     sjt_functionParam192 = _parent->gear;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -1834,9 +1834,9 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam191 = &sjt_call107;
 #line 305
-    sjf_string_add(sjt_parent91, sjt_functionParam191, &sjt_call105);
+    sjf_string_add(sjt_parent92, sjt_functionParam191, &sjt_call105);
 #line 305
-    sjt_parent90 = &sjt_call105;
+    sjt_parent91 = &sjt_call105;
 #line 305
     sjt_call108._refCount = 1;
 #line 305
@@ -1856,9 +1856,9 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam194 = &sjt_call108;
 #line 305
-    sjf_string_add(sjt_parent90, sjt_functionParam194, &sjt_call104);
+    sjf_string_add(sjt_parent91, sjt_functionParam194, &sjt_call104);
 #line 305
-    sjt_parent89 = &sjt_call104;
+    sjt_parent90 = &sjt_call104;
 #line 305
     sjt_functionParam196 = _parent->cadence;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -1868,9 +1868,9 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam195 = &sjt_call109;
 #line 305
-    sjf_string_add(sjt_parent89, sjt_functionParam195, &sjt_call103);
+    sjf_string_add(sjt_parent90, sjt_functionParam195, &sjt_call103);
 #line 305
-    sjt_parent88 = &sjt_call103;
+    sjt_parent89 = &sjt_call103;
 #line 305
     sjt_call110._refCount = 1;
 #line 305
@@ -1890,9 +1890,9 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam198 = &sjt_call110;
 #line 305
-    sjf_string_add(sjt_parent88, sjt_functionParam198, &sjt_call102);
+    sjf_string_add(sjt_parent89, sjt_functionParam198, &sjt_call102);
 #line 305
-    sjt_parent87 = &sjt_call102;
+    sjt_parent88 = &sjt_call102;
 #line 305
     sjt_functionParam200 = _parent->_speed;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -1902,9 +1902,9 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam199 = &sjt_call111;
 #line 305
-    sjf_string_add(sjt_parent87, sjt_functionParam199, &sjt_call101);
+    sjf_string_add(sjt_parent88, sjt_functionParam199, &sjt_call101);
 #line 305
-    sjt_parent86 = &sjt_call101;
+    sjt_parent87 = &sjt_call101;
 #line 305
     sjt_call112._refCount = 1;
 #line 305
@@ -1924,13 +1924,13 @@ void sjf_bicycle_asstring(sjs_bicycle* _parent, sjs_string* _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam202 = &sjt_call112;
 #line 305
-    sjf_string_add(sjt_parent86, sjt_functionParam202, &sjt_call100);
+    sjf_string_add(sjt_parent87, sjt_functionParam202, &sjt_call100);
 #line 305
-    sjt_parent85 = &sjt_call100;
+    sjt_parent86 = &sjt_call100;
 #line 305
     sjt_functionParam203 = &_parent->name;
 #line 305
-    sjf_string_add(sjt_parent85, sjt_functionParam203, _return);
+    sjf_string_add(sjt_parent86, sjt_functionParam203, _return);
 
     if (sjt_call100._refCount == 1) { sjf_string_destroy(&sjt_call100); }
 ;
@@ -1987,13 +1987,13 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
     int32_t sjt_functionParam214;
     sjs_string* sjt_functionParam215 = 0;
     sjs_string* sjt_functionParam216 = 0;
-    sjs_string* sjt_parent92 = 0;
     sjs_string* sjt_parent93 = 0;
     sjs_string* sjt_parent94 = 0;
     sjs_string* sjt_parent95 = 0;
     sjs_string* sjt_parent96 = 0;
     sjs_string* sjt_parent97 = 0;
     sjs_string* sjt_parent98 = 0;
+    sjs_string* sjt_parent99 = 0;
 
     sjt_call119._refCount = 1;
 #line 305 "learnxiny.sj"
@@ -2011,7 +2011,7 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 16
     sjf_string(&sjt_call119);
 #line 305 "learnxiny.sj"
-    sjt_parent98 = &sjt_call119;
+    sjt_parent99 = &sjt_call119;
 #line 305
     sjt_functionParam205 = _parent->gear;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -2021,9 +2021,9 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam204 = &sjt_call120;
 #line 305
-    sjf_string_add(sjt_parent98, sjt_functionParam204, &sjt_call118);
+    sjf_string_add(sjt_parent99, sjt_functionParam204, &sjt_call118);
 #line 305
-    sjt_parent97 = &sjt_call118;
+    sjt_parent98 = &sjt_call118;
 #line 305
     sjt_call121._refCount = 1;
 #line 305
@@ -2043,9 +2043,9 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam207 = &sjt_call121;
 #line 305
-    sjf_string_add(sjt_parent97, sjt_functionParam207, &sjt_call117);
+    sjf_string_add(sjt_parent98, sjt_functionParam207, &sjt_call117);
 #line 305
-    sjt_parent96 = &sjt_call117;
+    sjt_parent97 = &sjt_call117;
 #line 305
     sjt_functionParam209 = _parent->cadence;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -2055,9 +2055,9 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam208 = &sjt_call122;
 #line 305
-    sjf_string_add(sjt_parent96, sjt_functionParam208, &sjt_call116);
+    sjf_string_add(sjt_parent97, sjt_functionParam208, &sjt_call116);
 #line 305
-    sjt_parent95 = &sjt_call116;
+    sjt_parent96 = &sjt_call116;
 #line 305
     sjt_call123._refCount = 1;
 #line 305
@@ -2077,9 +2077,9 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam211 = &sjt_call123;
 #line 305
-    sjf_string_add(sjt_parent95, sjt_functionParam211, &sjt_call115);
+    sjf_string_add(sjt_parent96, sjt_functionParam211, &sjt_call115);
 #line 305
-    sjt_parent94 = &sjt_call115;
+    sjt_parent95 = &sjt_call115;
 #line 305
     sjt_functionParam213 = _parent->_speed;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -2089,9 +2089,9 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam212 = &sjt_call124;
 #line 305
-    sjf_string_add(sjt_parent94, sjt_functionParam212, &sjt_call114);
+    sjf_string_add(sjt_parent95, sjt_functionParam212, &sjt_call114);
 #line 305
-    sjt_parent93 = &sjt_call114;
+    sjt_parent94 = &sjt_call114;
 #line 305
     sjt_call125._refCount = 1;
 #line 305
@@ -2111,13 +2111,13 @@ void sjf_bicycle_asstring_heap(sjs_bicycle* _parent, sjs_string** _return) {
 #line 305 "learnxiny.sj"
     sjt_functionParam215 = &sjt_call125;
 #line 305
-    sjf_string_add(sjt_parent93, sjt_functionParam215, &sjt_call113);
+    sjf_string_add(sjt_parent94, sjt_functionParam215, &sjt_call113);
 #line 305
-    sjt_parent92 = &sjt_call113;
+    sjt_parent93 = &sjt_call113;
 #line 305
     sjt_functionParam216 = &_parent->name;
 #line 305
-    sjf_string_add_heap(sjt_parent92, sjt_functionParam216, _return);
+    sjf_string_add_heap(sjt_parent93, sjt_functionParam216, _return);
 
     if (sjt_call113._refCount == 1) { sjf_string_destroy(&sjt_call113); }
 ;
@@ -2371,23 +2371,23 @@ void sjf_console_readline_heap(sjs_string** _return) {
 }
 
 void sjf_console_write(sjs_string* data) {
-    sjs_string* sjt_parent26 = 0;
+    sjs_string* sjt_parent27 = 0;
 
 #line 2 "lib/sj-lib-common/console.sj"
-    sjt_parent26 = data;
+    sjt_parent27 = data;
 #line 2
-    sjf_string_nullterminate(sjt_parent26);
+    sjf_string_nullterminate(sjt_parent27);
 #line 5
     printf("%s", string_char(data));
 }
 
 void sjf_console_writeline(sjs_string* data) {
-    sjs_string* sjt_parent3 = 0;
+    sjs_string* sjt_parent4 = 0;
 
 #line 9 "lib/sj-lib-common/console.sj"
-    sjt_parent3 = data;
+    sjt_parent4 = data;
 #line 9
-    sjf_string_nullterminate(sjt_parent3);
+    sjf_string_nullterminate(sjt_parent4);
 #line 12
     printf("%s\n", string_char(data));
 }
@@ -3131,54 +3131,54 @@ void sjf_list_string(sjs_list_string* _this) {
 
 void sjf_list_string_add(sjs_list_string* _parent, sjs_string* item) {
     int32_t sjt_capture10;
-    int32_t sjt_capture9;
+    int32_t sjt_capture11;
     sjs_array_string sjt_funcold2 = { -1 };
     int32_t sjt_functionParam76;
     sjs_string* sjt_functionParam77 = 0;
-    sjs_array_string* sjt_parent40 = 0;
     sjs_array_string* sjt_parent41 = 0;
-    sjs_array_string* sjt_parent45 = 0;
+    sjs_array_string* sjt_parent42 = 0;
     sjs_array_string* sjt_parent46 = 0;
+    sjs_array_string* sjt_parent47 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent40 = &_parent->arr;
-#line 29
-    sjf_array_string_getcount(sjt_parent40, &sjt_capture9);
-#line 35
     sjt_parent41 = &_parent->arr;
+#line 29
+    sjf_array_string_getcount(sjt_parent41, &sjt_capture10);
 #line 35
-    sjf_array_string_gettotalcount(sjt_parent41, &sjt_capture10);
-    if (sjt_capture9 == sjt_capture10) {
-        int32_t sjt_capture11;
+    sjt_parent42 = &_parent->arr;
+#line 35
+    sjf_array_string_gettotalcount(sjt_parent42, &sjt_capture11);
+    if (sjt_capture10 == sjt_capture11) {
+        int32_t sjt_capture12;
         int32_t sjt_functionParam71;
         int32_t sjt_functionParam72;
         int32_t sjt_functionParam73;
         int32_t sjt_functionParam74;
         int32_t sjt_functionParam75;
-        sjs_array_string* sjt_parent42 = 0;
         sjs_array_string* sjt_parent43 = 0;
         sjs_array_string* sjt_parent44 = 0;
+        sjs_array_string* sjt_parent45 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-        sjt_parent42 = &_parent->arr;
+        sjt_parent43 = &_parent->arr;
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam71 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent43 = &_parent->arr;
+        sjt_parent44 = &_parent->arr;
 #line 29
-        sjf_array_string_getcount(sjt_parent43, &sjt_functionParam72);
+        sjf_array_string_getcount(sjt_parent44, &sjt_functionParam72);
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam74 = 10;
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent44 = &_parent->arr;
+        sjt_parent45 = &_parent->arr;
 #line 35
-        sjf_array_string_gettotalcount(sjt_parent44, &sjt_capture11);
+        sjf_array_string_gettotalcount(sjt_parent45, &sjt_capture12);
 #line 46 "lib/sj-lib-common/list.sj"
-        sjt_functionParam75 = sjt_capture11 * 2;
+        sjt_functionParam75 = sjt_capture12 * 2;
 #line 46
         sjf_i32_max(sjt_functionParam74, sjt_functionParam75, &sjt_functionParam73);
 #line 46
-        sjf_array_string_clone(sjt_parent42, sjt_functionParam71, sjt_functionParam72, sjt_functionParam73, &sjt_funcold2);
+        sjf_array_string_clone(sjt_parent43, sjt_functionParam71, sjt_functionParam72, sjt_functionParam73, &sjt_funcold2);
 #line 46
         if (_parent->arr._refCount == 1) { sjf_array_string_destroy(&_parent->arr); }
 ;
@@ -3187,15 +3187,15 @@ void sjf_list_string_add(sjs_list_string* _parent, sjs_string* item) {
     }
 
 #line 52
-    sjt_parent45 = &_parent->arr;
-#line 29
     sjt_parent46 = &_parent->arr;
 #line 29
-    sjf_array_string_getcount(sjt_parent46, &sjt_functionParam76);
+    sjt_parent47 = &_parent->arr;
+#line 29
+    sjf_array_string_getcount(sjt_parent47, &sjt_functionParam76);
 #line 44 "lib/sj-lib-common/list.sj"
     sjt_functionParam77 = item;
 #line 44
-    sjf_array_string_initat(sjt_parent45, sjt_functionParam76, sjt_functionParam77);
+    sjf_array_string_initat(sjt_parent46, sjt_functionParam76, sjt_functionParam77);
 
     if (sjt_funcold2._refCount == 1) { sjf_array_string_destroy(&sjt_funcold2); }
 ;
@@ -3344,30 +3344,30 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy(_return, _parent);
     } else {
-        bool sjt_capture2;
-        int32_t sjt_capture3;
-        sjs_array_char* sjt_parent4 = 0;
+        bool sjt_capture3;
+        int32_t sjt_capture4;
+        sjs_array_char* sjt_parent5 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent4 = &_parent->data;
+        sjt_parent5 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent4, &sjt_capture3);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture3) {
-            int32_t sjt_capture4;
-            sjs_array_char* sjt_parent5 = 0;
+        sjf_array_char_gettotalcount(sjt_parent5, &sjt_capture4);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture4) {
+            int32_t sjt_capture5;
+            sjs_array_char* sjt_parent6 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent5 = &_parent->data;
+            sjt_parent6 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent5, &sjt_capture4);
+            sjf_array_char_getcount(sjt_parent6, &sjt_capture5);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture2 = ((_parent->offset + _parent->count) == sjt_capture4);
+            sjt_capture3 = ((_parent->offset + _parent->count) == sjt_capture5);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture2 = false;
+            sjt_capture3 = false;
         }
 
-        if (sjt_capture2) {
+        if (sjt_capture3) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd1;
@@ -3385,21 +3385,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 int32_t sjt_functionParam6;
                 char sjt_functionParam7;
                 int32_t sjt_functionParam9;
-                sjs_array_char* sjt_parent6 = 0;
-                sjs_string* sjt_parent8 = 0;
+                sjs_array_char* sjt_parent7 = 0;
+                sjs_string* sjt_parent9 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent6 = &_parent->data;
+                sjt_parent7 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam6 = newcount;
 #line 18
-                sjt_parent8 = item;
+                sjt_parent9 = item;
 #line 27
                 sjt_functionParam9 = i;
 #line 27
-                sjf_string_getat(sjt_parent8, sjt_functionParam9, &sjt_functionParam7);
+                sjf_string_getat(sjt_parent9, sjt_functionParam9, &sjt_functionParam7);
 #line 27
-                sjf_array_char_initat(sjt_parent6, sjt_functionParam6, sjt_functionParam7);
+                sjf_array_char_initat(sjt_parent7, sjt_functionParam6, sjt_functionParam7);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -3429,10 +3429,10 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             int32_t sjt_functionParam11;
             int32_t sjt_functionParam12;
             sjs_array_char* sjt_parent10 = 0;
-            sjs_array_char* sjt_parent9 = 0;
+            sjs_array_char* sjt_parent11 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent9 = &_parent->data;
+            sjt_parent10 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam10 = _parent->offset;
 #line 34
@@ -3440,11 +3440,11 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 34
             sjt_functionParam12 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent9, sjt_functionParam10, sjt_functionParam11, sjt_functionParam12, &newdata);
+            sjf_array_char_clone(sjt_parent10, sjt_functionParam10, sjt_functionParam11, sjt_functionParam12, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent10 = &newdata;
+            sjt_parent11 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent10, &newcount);
+            sjf_array_char_getcount(sjt_parent11, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart2 = 0;
 #line 37
@@ -3455,21 +3455,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 int32_t sjt_functionParam13;
                 char sjt_functionParam14;
                 int32_t sjt_functionParam15;
-                sjs_array_char* sjt_parent11 = 0;
-                sjs_string* sjt_parent12 = 0;
+                sjs_array_char* sjt_parent12 = 0;
+                sjs_string* sjt_parent13 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent11 = &newdata;
+                sjt_parent12 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam13 = newcount;
 #line 18
-                sjt_parent12 = item;
+                sjt_parent13 = item;
 #line 37
                 sjt_functionParam15 = i;
 #line 37
-                sjf_string_getat(sjt_parent12, sjt_functionParam15, &sjt_functionParam14);
+                sjf_string_getat(sjt_parent13, sjt_functionParam15, &sjt_functionParam14);
 #line 37
-                sjf_array_char_initat(sjt_parent11, sjt_functionParam13, sjt_functionParam14);
+                sjf_array_char_initat(sjt_parent12, sjt_functionParam13, sjt_functionParam14);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -3506,30 +3506,30 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy((*_return), _parent);
     } else {
-        bool sjt_capture5;
-        int32_t sjt_capture6;
-        sjs_array_char* sjt_parent13 = 0;
+        bool sjt_capture6;
+        int32_t sjt_capture7;
+        sjs_array_char* sjt_parent14 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent13 = &_parent->data;
+        sjt_parent14 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent13, &sjt_capture6);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture6) {
-            int32_t sjt_capture7;
-            sjs_array_char* sjt_parent14 = 0;
+        sjf_array_char_gettotalcount(sjt_parent14, &sjt_capture7);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture7) {
+            int32_t sjt_capture8;
+            sjs_array_char* sjt_parent15 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent14 = &_parent->data;
+            sjt_parent15 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent14, &sjt_capture7);
+            sjf_array_char_getcount(sjt_parent15, &sjt_capture8);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture5 = ((_parent->offset + _parent->count) == sjt_capture7);
+            sjt_capture6 = ((_parent->offset + _parent->count) == sjt_capture8);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture5 = false;
+            sjt_capture6 = false;
         }
 
-        if (sjt_capture5) {
+        if (sjt_capture6) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd3;
@@ -3547,21 +3547,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam16;
                 char sjt_functionParam17;
                 int32_t sjt_functionParam18;
-                sjs_array_char* sjt_parent15 = 0;
-                sjs_string* sjt_parent16 = 0;
+                sjs_array_char* sjt_parent16 = 0;
+                sjs_string* sjt_parent17 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent15 = &_parent->data;
+                sjt_parent16 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam16 = newcount;
 #line 18
-                sjt_parent16 = item;
+                sjt_parent17 = item;
 #line 27
                 sjt_functionParam18 = i;
 #line 27
-                sjf_string_getat(sjt_parent16, sjt_functionParam18, &sjt_functionParam17);
+                sjf_string_getat(sjt_parent17, sjt_functionParam18, &sjt_functionParam17);
 #line 27
-                sjf_array_char_initat(sjt_parent15, sjt_functionParam16, sjt_functionParam17);
+                sjf_array_char_initat(sjt_parent16, sjt_functionParam16, sjt_functionParam17);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -3592,11 +3592,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             int32_t sjt_functionParam19;
             int32_t sjt_functionParam20;
             int32_t sjt_functionParam21;
-            sjs_array_char* sjt_parent17 = 0;
             sjs_array_char* sjt_parent18 = 0;
+            sjs_array_char* sjt_parent19 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent17 = &_parent->data;
+            sjt_parent18 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam19 = _parent->offset;
 #line 34
@@ -3604,11 +3604,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 34
             sjt_functionParam21 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent17, sjt_functionParam19, sjt_functionParam20, sjt_functionParam21, &newdata);
+            sjf_array_char_clone(sjt_parent18, sjt_functionParam19, sjt_functionParam20, sjt_functionParam21, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent18 = &newdata;
+            sjt_parent19 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent18, &newcount);
+            sjf_array_char_getcount(sjt_parent19, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart4 = 0;
 #line 37
@@ -3619,21 +3619,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam22;
                 char sjt_functionParam23;
                 int32_t sjt_functionParam24;
-                sjs_array_char* sjt_parent19 = 0;
-                sjs_string* sjt_parent20 = 0;
+                sjs_array_char* sjt_parent20 = 0;
+                sjs_string* sjt_parent21 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent19 = &newdata;
+                sjt_parent20 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam22 = newcount;
 #line 18
-                sjt_parent20 = item;
+                sjt_parent21 = item;
 #line 37
                 sjt_functionParam24 = i;
 #line 37
-                sjf_string_getat(sjt_parent20, sjt_functionParam24, &sjt_functionParam23);
+                sjf_string_getat(sjt_parent21, sjt_functionParam24, &sjt_functionParam23);
 #line 37
-                sjf_array_char_initat(sjt_parent19, sjt_functionParam22, sjt_functionParam23);
+                sjf_array_char_initat(sjt_parent20, sjt_functionParam22, sjt_functionParam23);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -3665,12 +3665,12 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 
 void sjf_string_asbool(sjs_string* text, bool* _return) {
     sjs_string sjt_call15 = { -1 };
-    bool sjt_capture8;
+    bool sjt_capture9;
     sjs_string* sjt_functionParam39 = 0;
-    sjs_string* sjt_parent27 = 0;
+    sjs_string* sjt_parent28 = 0;
 
 #line 27 "lib/sj-lib-common/bool.sj"
-    sjt_parent27 = text;
+    sjt_parent28 = text;
 #line 27
     sjt_call15._refCount = 1;
 #line 28
@@ -3690,8 +3690,8 @@ void sjf_string_asbool(sjs_string* text, bool* _return) {
 #line 28 "lib/sj-lib-common/bool.sj"
     sjt_functionParam39 = &sjt_call15;
 #line 28
-    sjf_string_isequal(sjt_parent27, sjt_functionParam39, &sjt_capture8);
-    if (sjt_capture8) {
+    sjf_string_isequal(sjt_parent28, sjt_functionParam39, &sjt_capture9);
+    if (sjt_capture9) {
 #line 29 "lib/sj-lib-common/bool.sj"
         (*_return) = true;
     } else {
@@ -3798,14 +3798,14 @@ void sjf_string_destroy(sjs_string* _this) {
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     int32_t sjt_functionParam8;
-    sjs_array_char* sjt_parent7 = 0;
+    sjs_array_char* sjt_parent8 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent7 = &_parent->data;
+    sjt_parent8 = &_parent->data;
 #line 64 "lib/sj-lib-common/string.sj"
     sjt_functionParam8 = _parent->offset + index;
 #line 64
-    sjf_array_char_getat(sjt_parent7, sjt_functionParam8, _return);
+    sjf_array_char_getat(sjt_parent8, sjt_functionParam8, _return);
 }
 
 void sjf_string_hash(sjs_string* _parent, uint32_t* _return) {
@@ -3847,20 +3847,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -3868,7 +3874,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -4066,7 +4072,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call7);
 #line 18 "learnxiny.sj"
-    sjt_parent25 = &sjt_call7;
+    sjt_parent26 = &sjt_call7;
 #line 18
     sjt_functionParam26 = 10;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4076,9 +4082,9 @@ int main(int argc, char** argv) {
 #line 18 "learnxiny.sj"
     sjt_functionParam25 = &sjt_call8;
 #line 18
-    sjf_string_add(sjt_parent25, sjt_functionParam25, &sjt_call6);
+    sjf_string_add(sjt_parent26, sjt_functionParam25, &sjt_call6);
 #line 18
-    sjt_parent24 = &sjt_call6;
+    sjt_parent25 = &sjt_call6;
 #line 18
     sjt_call9._refCount = 1;
 #line 18
@@ -4098,9 +4104,9 @@ int main(int argc, char** argv) {
 #line 18 "learnxiny.sj"
     sjt_functionParam28 = &sjt_call9;
 #line 18
-    sjf_string_add(sjt_parent24, sjt_functionParam28, &sjt_call5);
+    sjf_string_add(sjt_parent25, sjt_functionParam28, &sjt_call5);
 #line 18
-    sjt_parent23 = &sjt_call5;
+    sjt_parent24 = &sjt_call5;
 #line 18
     sjt_functionParam30 = 3.14;
 #line 18
@@ -4108,9 +4114,9 @@ int main(int argc, char** argv) {
 #line 18
     sjt_functionParam29 = &sjt_call10;
 #line 18
-    sjf_string_add(sjt_parent23, sjt_functionParam29, &sjt_call4);
+    sjf_string_add(sjt_parent24, sjt_functionParam29, &sjt_call4);
 #line 18
-    sjt_parent22 = &sjt_call4;
+    sjt_parent23 = &sjt_call4;
 #line 18
     sjt_call11._refCount = 1;
 #line 18
@@ -4130,9 +4136,9 @@ int main(int argc, char** argv) {
 #line 18 "learnxiny.sj"
     sjt_functionParam31 = &sjt_call11;
 #line 18
-    sjf_string_add(sjt_parent22, sjt_functionParam31, &sjt_call3);
+    sjf_string_add(sjt_parent23, sjt_functionParam31, &sjt_call3);
 #line 18
-    sjt_parent21 = &sjt_call3;
+    sjt_parent22 = &sjt_call3;
 #line 18
     sjt_functionParam33 = true;
 #line 18
@@ -4140,7 +4146,7 @@ int main(int argc, char** argv) {
 #line 18
     sjt_functionParam32 = &sjt_call12;
 #line 18
-    sjf_string_add(sjt_parent21, sjt_functionParam32, &sjt_call2);
+    sjf_string_add(sjt_parent22, sjt_functionParam32, &sjt_call2);
 #line 18
     sjt_functionParam5 = &sjt_call2;
 #line 18
@@ -4296,7 +4302,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call17);
 #line 97 "learnxiny.sj"
-    sjt_parent29 = &sjt_call17;
+    sjt_parent30 = &sjt_call17;
 #line 97
     sjt_call18._refCount = 1;
 #line 97
@@ -4316,9 +4322,9 @@ int main(int argc, char** argv) {
 #line 97 "learnxiny.sj"
     sjt_functionParam44 = &sjt_call18;
 #line 97
-    sjf_string_add(sjt_parent29, sjt_functionParam44, &sjt_call16);
+    sjf_string_add(sjt_parent30, sjt_functionParam44, &sjt_call16);
 #line 97
-    sjt_parent28 = &sjt_call16;
+    sjt_parent29 = &sjt_call16;
 #line 97
     sjt_call19._refCount = 1;
 #line 97
@@ -4338,7 +4344,7 @@ int main(int argc, char** argv) {
 #line 97 "learnxiny.sj"
     sjt_functionParam45 = &sjt_call19;
 #line 97
-    sjf_string_add(sjt_parent28, sjt_functionParam45, &g_plusconcatenated);
+    sjf_string_add(sjt_parent29, sjt_functionParam45, &g_plusconcatenated);
 #line 98
     sjt_functionParam46 = &g_plusconcatenated;
 #line 98
@@ -4362,29 +4368,29 @@ int main(int argc, char** argv) {
 #line 106
     array1 = &g_intarray2;
 #line 106
-    sjt_parent30 = array1;
+    sjt_parent31 = array1;
 #line 106
     sjt_functionParam49 = 0;
 #line 106
     sjt_functionParam50 = 1;
 #line 106
-    sjf_array_i32_initat(sjt_parent30, sjt_functionParam49, sjt_functionParam50);
+    sjf_array_i32_initat(sjt_parent31, sjt_functionParam49, sjt_functionParam50);
 #line 106
-    sjt_parent31 = array1;
+    sjt_parent32 = array1;
 #line 106
     sjt_functionParam51 = 1;
 #line 106
     sjt_functionParam52 = 2;
 #line 106
-    sjf_array_i32_initat(sjt_parent31, sjt_functionParam51, sjt_functionParam52);
+    sjf_array_i32_initat(sjt_parent32, sjt_functionParam51, sjt_functionParam52);
 #line 106
-    sjt_parent32 = array1;
+    sjt_parent33 = array1;
 #line 106
     sjt_functionParam53 = 2;
 #line 106
     sjt_functionParam54 = 3;
 #line 106
-    sjf_array_i32_initat(sjt_parent32, sjt_functionParam53, sjt_functionParam54);
+    sjf_array_i32_initat(sjt_parent33, sjt_functionParam53, sjt_functionParam54);
 #line 106
     g_objarray._refCount = 1;
 #line 111
@@ -4396,7 +4402,7 @@ int main(int argc, char** argv) {
 #line 111
     array2 = &g_objarray;
 #line 111
-    sjt_parent33 = array2;
+    sjt_parent34 = array2;
 #line 111
     sjt_functionParam55 = 0;
 #line 111
@@ -4406,9 +4412,9 @@ int main(int argc, char** argv) {
 #line 111
     sjt_functionParam56 = &sjt_call20;
 #line 111
-    sjf_array_obj_initat(sjt_parent33, sjt_functionParam55, sjt_functionParam56);
+    sjf_array_obj_initat(sjt_parent34, sjt_functionParam55, sjt_functionParam56);
 #line 111
-    sjt_parent34 = array2;
+    sjt_parent35 = array2;
 #line 111
     sjt_functionParam57 = 1;
 #line 111
@@ -4418,7 +4424,7 @@ int main(int argc, char** argv) {
 #line 111
     sjt_functionParam58 = &sjt_call21;
 #line 111
-    sjf_array_obj_initat(sjt_parent34, sjt_functionParam57, sjt_functionParam58);
+    sjf_array_obj_initat(sjt_parent35, sjt_functionParam57, sjt_functionParam58);
 #line 111
     sjt_call23._refCount = 1;
 #line 114
@@ -4436,13 +4442,13 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call23);
 #line 114 "learnxiny.sj"
-    sjt_parent35 = &sjt_call23;
+    sjt_parent36 = &sjt_call23;
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent36 = &g_intarray1;
+    sjt_parent37 = &g_intarray1;
 #line 114 "learnxiny.sj"
     sjt_functionParam62 = 0;
 #line 114
-    sjf_array_i32_getat(sjt_parent36, sjt_functionParam62, &sjt_functionParam61);
+    sjf_array_i32_getat(sjt_parent37, sjt_functionParam62, &sjt_functionParam61);
 #line 22 "lib/sj-lib-common/i32.sj"
     sjt_functionParam63 = 10;
 #line 22
@@ -4450,19 +4456,19 @@ int main(int argc, char** argv) {
 #line 114 "learnxiny.sj"
     sjt_functionParam60 = &sjt_call24;
 #line 114
-    sjf_string_add(sjt_parent35, sjt_functionParam60, &sjt_call22);
+    sjf_string_add(sjt_parent36, sjt_functionParam60, &sjt_call22);
 #line 114
     sjt_functionParam59 = &sjt_call22;
 #line 114
     sjf_console_writeline(sjt_functionParam59);
 #line 68 "lib/sj-lib-common/array.sj"
-    sjt_parent37 = &g_intarray2;
+    sjt_parent38 = &g_intarray2;
 #line 117 "learnxiny.sj"
     sjt_functionParam64 = 1;
 #line 117
     sjt_functionParam65 = 1;
 #line 117
-    sjf_array_i32_setat(sjt_parent37, sjt_functionParam64, sjt_functionParam65);
+    sjf_array_i32_setat(sjt_parent38, sjt_functionParam64, sjt_functionParam65);
 #line 117
     sjt_call26._refCount = 1;
 #line 118
@@ -4480,13 +4486,13 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call26);
 #line 118 "learnxiny.sj"
-    sjt_parent38 = &sjt_call26;
+    sjt_parent39 = &sjt_call26;
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent39 = &g_intarray2;
+    sjt_parent40 = &g_intarray2;
 #line 118 "learnxiny.sj"
     sjt_functionParam69 = 1;
 #line 118
-    sjf_array_i32_getat(sjt_parent39, sjt_functionParam69, &sjt_functionParam68);
+    sjf_array_i32_getat(sjt_parent40, sjt_functionParam69, &sjt_functionParam68);
 #line 22 "lib/sj-lib-common/i32.sj"
     sjt_functionParam70 = 10;
 #line 22
@@ -4494,7 +4500,7 @@ int main(int argc, char** argv) {
 #line 118 "learnxiny.sj"
     sjt_functionParam67 = &sjt_call27;
 #line 118
-    sjf_string_add(sjt_parent38, sjt_functionParam67, &sjt_call25);
+    sjf_string_add(sjt_parent39, sjt_functionParam67, &sjt_call25);
 #line 118
     sjt_functionParam66 = &sjt_call25;
 #line 118
@@ -4510,7 +4516,7 @@ int main(int argc, char** argv) {
 #line 27
     sjf_list_string(&g_l);
 #line 44 "lib/sj-lib-common/list.sj"
-    sjt_parent47 = &g_l;
+    sjt_parent48 = &g_l;
 #line 44
     sjt_call28._refCount = 1;
 #line 122 "learnxiny.sj"
@@ -4530,9 +4536,9 @@ int main(int argc, char** argv) {
 #line 122 "learnxiny.sj"
     sjt_functionParam78 = &sjt_call28;
 #line 122
-    sjf_list_string_add(sjt_parent47, sjt_functionParam78);
+    sjf_list_string_add(sjt_parent48, sjt_functionParam78);
 #line 44 "lib/sj-lib-common/list.sj"
-    sjt_parent48 = &g_l;
+    sjt_parent49 = &g_l;
 #line 44
     sjt_call29._refCount = 1;
 #line 123 "learnxiny.sj"
@@ -4552,19 +4558,19 @@ int main(int argc, char** argv) {
 #line 123 "learnxiny.sj"
     sjt_functionParam79 = &sjt_call29;
 #line 123
-    sjf_list_string_add(sjt_parent48, sjt_functionParam79);
+    sjf_list_string_add(sjt_parent49, sjt_functionParam79);
 #line 53 "lib/sj-lib-common/list.sj"
-    sjt_parent49 = &g_l;
+    sjt_parent50 = &g_l;
 #line 124 "learnxiny.sj"
     sjt_functionParam80 = 0;
 #line 124
-    sjf_list_string_removeat(sjt_parent49, sjt_functionParam80);
+    sjf_list_string_removeat(sjt_parent50, sjt_functionParam80);
 #line 124
     g_h._refCount = 1;
 #line 124
     sjf_hash_string_i32(&g_h);
 #line 38 "lib/sj-lib-common/hash.sj"
-    sjt_parent50 = &g_h;
+    sjt_parent51 = &g_h;
 #line 38
     sjt_call30._refCount = 1;
 #line 128 "learnxiny.sj"
@@ -4586,9 +4592,9 @@ int main(int argc, char** argv) {
 #line 128
     sjt_functionParam82 = 1;
 #line 128
-    sjf_hash_string_i32_setat(sjt_parent50, sjt_functionParam81, sjt_functionParam82);
+    sjf_hash_string_i32_setat(sjt_parent51, sjt_functionParam81, sjt_functionParam82);
 #line 38 "lib/sj-lib-common/hash.sj"
-    sjt_parent51 = &g_h;
+    sjt_parent52 = &g_h;
 #line 38
     sjt_call31._refCount = 1;
 #line 129 "learnxiny.sj"
@@ -4610,9 +4616,9 @@ int main(int argc, char** argv) {
 #line 129
     sjt_functionParam84 = 2;
 #line 129
-    sjf_hash_string_i32_setat(sjt_parent51, sjt_functionParam83, sjt_functionParam84);
+    sjf_hash_string_i32_setat(sjt_parent52, sjt_functionParam83, sjt_functionParam84);
 #line 38 "lib/sj-lib-common/hash.sj"
-    sjt_parent52 = &g_h;
+    sjt_parent53 = &g_h;
 #line 38
     sjt_call32._refCount = 1;
 #line 130 "learnxiny.sj"
@@ -4632,7 +4638,7 @@ int main(int argc, char** argv) {
 #line 130 "learnxiny.sj"
     sjt_functionParam85 = &sjt_call32;
 #line 21 "lib/sj-lib-common/hash.sj"
-    sjt_parent53 = &g_h;
+    sjt_parent54 = &g_h;
 #line 21
     sjt_call33._refCount = 1;
 #line 130 "learnxiny.sj"
@@ -4652,14 +4658,14 @@ int main(int argc, char** argv) {
 #line 130 "learnxiny.sj"
     sjt_functionParam87 = &sjt_call33;
 #line 130
-    sjf_hash_string_i32_getat(sjt_parent53, sjt_functionParam87, &sjt_capture13);
-    if (sjt_capture13.isvalid) {
+    sjf_hash_string_i32_getat(sjt_parent54, sjt_functionParam87, &sjt_capture14);
+    if (sjt_capture14.isvalid) {
         sjs_string* sjt_functionParam88 = 0;
         int32_option sjt_getValue1;
-        sjs_hash_string_i32* sjt_parent54 = 0;
+        sjs_hash_string_i32* sjt_parent55 = 0;
 
 #line 21 "lib/sj-lib-common/hash.sj"
-        sjt_parent54 = &g_h;
+        sjt_parent55 = &g_h;
 #line 21
         sjt_call34._refCount = 1;
 #line 130 "learnxiny.sj"
@@ -4679,18 +4685,18 @@ int main(int argc, char** argv) {
 #line 130 "learnxiny.sj"
         sjt_functionParam88 = &sjt_call34;
 #line 130
-        sjf_hash_string_i32_getat(sjt_parent54, sjt_functionParam88, &sjt_getValue1);
+        sjf_hash_string_i32_getat(sjt_parent55, sjt_functionParam88, &sjt_getValue1);
 #line 130
-        sjt_capture12 = sjt_getValue1.value;
+        sjt_capture13 = sjt_getValue1.value;
     } else {
 #line 130 "learnxiny.sj"
-        sjt_capture12 = (int32_t)0;
+        sjt_capture13 = (int32_t)0;
     }
 
 #line 130
-    sjt_functionParam86 = sjt_capture12 + 1;
+    sjt_functionParam86 = sjt_capture13 + 1;
 #line 130
-    sjf_hash_string_i32_setat(sjt_parent52, sjt_functionParam85, sjt_functionParam86);
+    sjf_hash_string_i32_setat(sjt_parent53, sjt_functionParam85, sjt_functionParam86);
 #line 135
     g_i1 = 1;
 #line 136
@@ -4712,7 +4718,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call36);
 #line 139 "learnxiny.sj"
-    sjt_parent55 = &sjt_call36;
+    sjt_parent56 = &sjt_call36;
 #line 139
     sjt_functionParam91 = g_i1 + g_i2;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4722,7 +4728,7 @@ int main(int argc, char** argv) {
 #line 139 "learnxiny.sj"
     sjt_functionParam90 = &sjt_call37;
 #line 139
-    sjf_string_add(sjt_parent55, sjt_functionParam90, &sjt_call35);
+    sjf_string_add(sjt_parent56, sjt_functionParam90, &sjt_call35);
 #line 139
     sjt_functionParam89 = &sjt_call35;
 #line 139
@@ -4744,7 +4750,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call39);
 #line 140 "learnxiny.sj"
-    sjt_parent56 = &sjt_call39;
+    sjt_parent57 = &sjt_call39;
 #line 140
     sjt_functionParam95 = g_i2 - g_i1;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4754,7 +4760,7 @@ int main(int argc, char** argv) {
 #line 140 "learnxiny.sj"
     sjt_functionParam94 = &sjt_call40;
 #line 140
-    sjf_string_add(sjt_parent56, sjt_functionParam94, &sjt_call38);
+    sjf_string_add(sjt_parent57, sjt_functionParam94, &sjt_call38);
 #line 140
     sjt_functionParam93 = &sjt_call38;
 #line 140
@@ -4776,7 +4782,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call42);
 #line 141 "learnxiny.sj"
-    sjt_parent57 = &sjt_call42;
+    sjt_parent58 = &sjt_call42;
 #line 141
     sjt_functionParam99 = g_i2 * g_i1;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4786,7 +4792,7 @@ int main(int argc, char** argv) {
 #line 141 "learnxiny.sj"
     sjt_functionParam98 = &sjt_call43;
 #line 141
-    sjf_string_add(sjt_parent57, sjt_functionParam98, &sjt_call41);
+    sjf_string_add(sjt_parent58, sjt_functionParam98, &sjt_call41);
 #line 141
     sjt_functionParam97 = &sjt_call41;
 #line 141
@@ -4808,7 +4814,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call45);
 #line 142 "learnxiny.sj"
-    sjt_parent58 = &sjt_call45;
+    sjt_parent59 = &sjt_call45;
 #line 142
     sjt_functionParam103 = g_i1 / g_i2;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4818,7 +4824,7 @@ int main(int argc, char** argv) {
 #line 142 "learnxiny.sj"
     sjt_functionParam102 = &sjt_call46;
 #line 142
-    sjf_string_add(sjt_parent58, sjt_functionParam102, &sjt_call44);
+    sjf_string_add(sjt_parent59, sjt_functionParam102, &sjt_call44);
 #line 142
     sjt_functionParam101 = &sjt_call44;
 #line 142
@@ -4840,7 +4846,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call48);
 #line 143 "learnxiny.sj"
-    sjt_parent59 = &sjt_call48;
+    sjt_parent60 = &sjt_call48;
 #line 143
     sjt_cast2 = g_i1;
 #line 143
@@ -4852,7 +4858,7 @@ int main(int argc, char** argv) {
 #line 143
     sjt_functionParam106 = &sjt_call49;
 #line 143
-    sjf_string_add(sjt_parent59, sjt_functionParam106, &sjt_call47);
+    sjf_string_add(sjt_parent60, sjt_functionParam106, &sjt_call47);
 #line 143
     sjt_functionParam105 = &sjt_call47;
 #line 143
@@ -4874,7 +4880,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call51);
 #line 146 "learnxiny.sj"
-    sjt_parent60 = &sjt_call51;
+    sjt_parent61 = &sjt_call51;
 #line 146
     sjt_functionParam110 = 11 % 3;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -4884,7 +4890,7 @@ int main(int argc, char** argv) {
 #line 146 "learnxiny.sj"
     sjt_functionParam109 = &sjt_call52;
 #line 146
-    sjf_string_add(sjt_parent60, sjt_functionParam109, &sjt_call50);
+    sjf_string_add(sjt_parent61, sjt_functionParam109, &sjt_call50);
 #line 146
     sjt_functionParam108 = &sjt_call50;
 #line 146
@@ -4906,7 +4912,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call54);
 #line 149 "learnxiny.sj"
-    sjt_parent61 = &sjt_call54;
+    sjt_parent62 = &sjt_call54;
 #line 149
     sjt_functionParam114 = 3 == 2;
 #line 149
@@ -4914,7 +4920,7 @@ int main(int argc, char** argv) {
 #line 149
     sjt_functionParam113 = &sjt_call55;
 #line 149
-    sjf_string_add(sjt_parent61, sjt_functionParam113, &sjt_call53);
+    sjf_string_add(sjt_parent62, sjt_functionParam113, &sjt_call53);
 #line 149
     sjt_functionParam112 = &sjt_call53;
 #line 149
@@ -4936,7 +4942,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call57);
 #line 150 "learnxiny.sj"
-    sjt_parent62 = &sjt_call57;
+    sjt_parent63 = &sjt_call57;
 #line 150
     sjt_functionParam117 = 3 != 2;
 #line 150
@@ -4944,7 +4950,7 @@ int main(int argc, char** argv) {
 #line 150
     sjt_functionParam116 = &sjt_call58;
 #line 150
-    sjf_string_add(sjt_parent62, sjt_functionParam116, &sjt_call56);
+    sjf_string_add(sjt_parent63, sjt_functionParam116, &sjt_call56);
 #line 150
     sjt_functionParam115 = &sjt_call56;
 #line 150
@@ -4966,7 +4972,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call60);
 #line 151 "learnxiny.sj"
-    sjt_parent63 = &sjt_call60;
+    sjt_parent64 = &sjt_call60;
 #line 151
     sjt_functionParam120 = 3 > 2;
 #line 151
@@ -4974,7 +4980,7 @@ int main(int argc, char** argv) {
 #line 151
     sjt_functionParam119 = &sjt_call61;
 #line 151
-    sjf_string_add(sjt_parent63, sjt_functionParam119, &sjt_call59);
+    sjf_string_add(sjt_parent64, sjt_functionParam119, &sjt_call59);
 #line 151
     sjt_functionParam118 = &sjt_call59;
 #line 151
@@ -4996,7 +5002,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call63);
 #line 152 "learnxiny.sj"
-    sjt_parent64 = &sjt_call63;
+    sjt_parent65 = &sjt_call63;
 #line 152
     sjt_functionParam123 = 3 < 2;
 #line 152
@@ -5004,7 +5010,7 @@ int main(int argc, char** argv) {
 #line 152
     sjt_functionParam122 = &sjt_call64;
 #line 152
-    sjf_string_add(sjt_parent64, sjt_functionParam122, &sjt_call62);
+    sjf_string_add(sjt_parent65, sjt_functionParam122, &sjt_call62);
 #line 152
     sjt_functionParam121 = &sjt_call62;
 #line 152
@@ -5026,7 +5032,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call66);
 #line 153 "learnxiny.sj"
-    sjt_parent65 = &sjt_call66;
+    sjt_parent66 = &sjt_call66;
 #line 153
     sjt_functionParam126 = 2 <= 2;
 #line 153
@@ -5034,7 +5040,7 @@ int main(int argc, char** argv) {
 #line 153
     sjt_functionParam125 = &sjt_call67;
 #line 153
-    sjf_string_add(sjt_parent65, sjt_functionParam125, &sjt_call65);
+    sjf_string_add(sjt_parent66, sjt_functionParam125, &sjt_call65);
 #line 153
     sjt_functionParam124 = &sjt_call65;
 #line 153
@@ -5056,7 +5062,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call69);
 #line 154 "learnxiny.sj"
-    sjt_parent66 = &sjt_call69;
+    sjt_parent67 = &sjt_call69;
 #line 154
     sjt_functionParam129 = 2 >= 2;
 #line 154
@@ -5064,7 +5070,7 @@ int main(int argc, char** argv) {
 #line 154
     sjt_functionParam128 = &sjt_call70;
 #line 154
-    sjf_string_add(sjt_parent66, sjt_functionParam128, &sjt_call68);
+    sjf_string_add(sjt_parent67, sjt_functionParam128, &sjt_call68);
 #line 154
     sjt_functionParam127 = &sjt_call68;
 #line 154
@@ -5086,7 +5092,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call72);
 #line 157 "learnxiny.sj"
-    sjt_parent67 = &sjt_call72;
+    sjt_parent68 = &sjt_call72;
     if (3 > 2) {
 #line 157 "learnxiny.sj"
         sjt_functionParam132 = (2 > 3);
@@ -5100,7 +5106,7 @@ int main(int argc, char** argv) {
 #line 157
     sjt_functionParam131 = &sjt_call73;
 #line 157
-    sjf_string_add(sjt_parent67, sjt_functionParam131, &sjt_call71);
+    sjf_string_add(sjt_parent68, sjt_functionParam131, &sjt_call71);
 #line 157
     sjt_functionParam130 = &sjt_call71;
 #line 157
@@ -5122,7 +5128,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call75);
 #line 158 "learnxiny.sj"
-    sjt_parent68 = &sjt_call75;
+    sjt_parent69 = &sjt_call75;
 #line 158
     sjt_functionParam135 = (3 > 2) || (2 > 3);
 #line 158
@@ -5130,7 +5136,7 @@ int main(int argc, char** argv) {
 #line 158
     sjt_functionParam134 = &sjt_call76;
 #line 158
-    sjf_string_add(sjt_parent68, sjt_functionParam134, &sjt_call74);
+    sjf_string_add(sjt_parent69, sjt_functionParam134, &sjt_call74);
 #line 158
     sjt_functionParam133 = &sjt_call74;
 #line 158
@@ -5152,7 +5158,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call78);
 #line 159 "learnxiny.sj"
-    sjt_parent69 = &sjt_call78;
+    sjt_parent70 = &sjt_call78;
 #line 159
     result4 = !(3 == 2);
 #line 159
@@ -5162,7 +5168,7 @@ int main(int argc, char** argv) {
 #line 159
     sjt_functionParam137 = &sjt_call79;
 #line 159
-    sjf_string_add(sjt_parent69, sjt_functionParam137, &sjt_call77);
+    sjf_string_add(sjt_parent70, sjt_functionParam137, &sjt_call77);
 #line 159
     sjt_functionParam136 = &sjt_call77;
 #line 159
@@ -5351,7 +5357,7 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call89);
 #line 204 "learnxiny.sj"
-    sjt_parent70 = &sjt_call89;
+    sjt_parent71 = &sjt_call89;
 #line 204
     sjt_functionParam155 = g_foowhile;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -5361,7 +5367,7 @@ int main(int argc, char** argv) {
 #line 204 "learnxiny.sj"
     sjt_functionParam154 = &sjt_call90;
 #line 204
-    sjf_string_add(sjt_parent70, sjt_functionParam154, &sjt_call88);
+    sjf_string_add(sjt_parent71, sjt_functionParam154, &sjt_call88);
 #line 204
     sjt_functionParam153 = &sjt_call88;
 #line 204
@@ -5406,79 +5412,79 @@ int main(int argc, char** argv) {
 #line 216
     array3 = &g_foolist;
 #line 216
-    sjt_parent71 = array3;
+    sjt_parent72 = array3;
 #line 216
     sjt_functionParam160 = 0;
 #line 216
     sjt_functionParam161 = 1;
 #line 216
-    sjf_array_i32_initat(sjt_parent71, sjt_functionParam160, sjt_functionParam161);
+    sjf_array_i32_initat(sjt_parent72, sjt_functionParam160, sjt_functionParam161);
 #line 216
-    sjt_parent72 = array3;
+    sjt_parent73 = array3;
 #line 216
     sjt_functionParam162 = 1;
 #line 216
     sjt_functionParam163 = 2;
 #line 216
-    sjf_array_i32_initat(sjt_parent72, sjt_functionParam162, sjt_functionParam163);
+    sjf_array_i32_initat(sjt_parent73, sjt_functionParam162, sjt_functionParam163);
 #line 216
-    sjt_parent73 = array3;
+    sjt_parent74 = array3;
 #line 216
     sjt_functionParam164 = 2;
 #line 216
     sjt_functionParam165 = 3;
 #line 216
-    sjf_array_i32_initat(sjt_parent73, sjt_functionParam164, sjt_functionParam165);
+    sjf_array_i32_initat(sjt_parent74, sjt_functionParam164, sjt_functionParam165);
 #line 216
-    sjt_parent74 = array3;
+    sjt_parent75 = array3;
 #line 216
     sjt_functionParam166 = 3;
 #line 216
     sjt_functionParam167 = 4;
 #line 216
-    sjf_array_i32_initat(sjt_parent74, sjt_functionParam166, sjt_functionParam167);
+    sjf_array_i32_initat(sjt_parent75, sjt_functionParam166, sjt_functionParam167);
 #line 216
-    sjt_parent75 = array3;
+    sjt_parent76 = array3;
 #line 216
     sjt_functionParam168 = 4;
 #line 216
     sjt_functionParam169 = 5;
 #line 216
-    sjf_array_i32_initat(sjt_parent75, sjt_functionParam168, sjt_functionParam169);
+    sjf_array_i32_initat(sjt_parent76, sjt_functionParam168, sjt_functionParam169);
 #line 216
-    sjt_parent76 = array3;
+    sjt_parent77 = array3;
 #line 216
     sjt_functionParam170 = 5;
 #line 216
     sjt_functionParam171 = 6;
 #line 216
-    sjf_array_i32_initat(sjt_parent76, sjt_functionParam170, sjt_functionParam171);
+    sjf_array_i32_initat(sjt_parent77, sjt_functionParam170, sjt_functionParam171);
 #line 216
-    sjt_parent77 = array3;
+    sjt_parent78 = array3;
 #line 216
     sjt_functionParam172 = 6;
 #line 216
     sjt_functionParam173 = 7;
 #line 216
-    sjf_array_i32_initat(sjt_parent77, sjt_functionParam172, sjt_functionParam173);
+    sjf_array_i32_initat(sjt_parent78, sjt_functionParam172, sjt_functionParam173);
 #line 216
-    sjt_parent78 = array3;
+    sjt_parent79 = array3;
 #line 216
     sjt_functionParam174 = 7;
 #line 216
     sjt_functionParam175 = 8;
 #line 216
-    sjf_array_i32_initat(sjt_parent78, sjt_functionParam174, sjt_functionParam175);
+    sjf_array_i32_initat(sjt_parent79, sjt_functionParam174, sjt_functionParam175);
 #line 216
-    sjt_parent79 = array3;
+    sjt_parent80 = array3;
 #line 216
     sjt_functionParam176 = 8;
 #line 216
     sjt_functionParam177 = 9;
 #line 216
-    sjf_array_i32_initat(sjt_parent79, sjt_functionParam176, sjt_functionParam177);
+    sjf_array_i32_initat(sjt_parent80, sjt_functionParam176, sjt_functionParam177);
 #line 108 "lib/sj-lib-common/array.sj"
-    sjt_parent80 = &g_foolist;
+    sjt_parent81 = &g_foolist;
 #line 221 "learnxiny.sj"
     sjs_lambda2* lambainit1;
 #line 221
@@ -5492,7 +5498,7 @@ int main(int argc, char** argv) {
 #line 221
     sjt_functionParam180._cb = (void(*)(sjs_object*,int32_t))sjf_lambda2_invoke;
 #line 221
-    sjf_array_i32_each(sjt_parent80, sjt_functionParam180);
+    sjf_array_i32_each(sjt_parent81, sjt_functionParam180);
 #line 234
     g_month = 3;
 #line 234
@@ -5640,11 +5646,11 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call95);
 #line 242 "learnxiny.sj"
-    sjt_parent81 = &sjt_call95;
+    sjt_parent82 = &sjt_call95;
 #line 242
     sjt_functionParam185 = &g_monthstring;
 #line 242
-    sjf_string_add(sjt_parent81, sjt_functionParam185, &sjt_call94);
+    sjf_string_add(sjt_parent82, sjt_functionParam185, &sjt_call94);
 #line 242
     sjt_functionParam184 = &sjt_call94;
 #line 242
@@ -5696,17 +5702,17 @@ int main(int argc, char** argv) {
 #line 272
     sjf_bicycle(&g_trek);
 #line 287
-    sjt_parent82 = &g_trek;
+    sjt_parent83 = &g_trek;
 #line 256
     sjt_functionParam187 = 3;
 #line 256
-    sjf_bicycle_speedup(sjt_parent82, sjt_functionParam187, &sjt_void1);
+    sjf_bicycle_speedup(sjt_parent83, sjt_functionParam187, &sjt_void1);
 #line 279
-    sjt_parent83 = &g_trek;
+    sjt_parent84 = &g_trek;
 #line 257
     sjt_functionParam188 = 100;
 #line 257
-    sjf_bicycle_setcadence(sjt_parent83, sjt_functionParam188, &sjt_void2);
+    sjf_bicycle_setcadence(sjt_parent84, sjt_functionParam188, &sjt_void2);
 #line 257
     sjt_call98._refCount = 1;
 #line 260
@@ -5724,15 +5730,15 @@ int main(int argc, char** argv) {
 #line 16
     sjf_string(&sjt_call98);
 #line 260 "learnxiny.sj"
-    sjt_parent84 = &sjt_call98;
+    sjt_parent85 = &sjt_call98;
 #line 304
-    sjt_parent99 = &g_trek;
+    sjt_parent100 = &g_trek;
 #line 304
-    sjf_bicycle_asstring(sjt_parent99, &sjt_call99);
+    sjf_bicycle_asstring(sjt_parent100, &sjt_call99);
 #line 260
     sjt_functionParam190 = &sjt_call99;
 #line 260
-    sjf_string_add(sjt_parent84, sjt_functionParam190, &sjt_call97);
+    sjf_string_add(sjt_parent85, sjt_functionParam190, &sjt_call97);
 #line 260
     sjt_functionParam189 = &sjt_call97;
 #line 260
@@ -5744,9 +5750,9 @@ int main(int argc, char** argv) {
 #line 377
     sjf_enumtest(&g_firstday);
 #line 358
-    sjt_parent100 = &g_firstday;
+    sjt_parent101 = &g_firstday;
 #line 358
-    sjf_enumtest_tellitlikeitis(sjt_parent100);
+    sjf_enumtest_tellitlikeitis(sjt_parent101);
 #line 358
     g_thirdday._refCount = 1;
 #line 379
@@ -5754,9 +5760,9 @@ int main(int argc, char** argv) {
 #line 379
     sjf_enumtest(&g_thirdday);
 #line 358
-    sjt_parent101 = &g_thirdday;
+    sjt_parent102 = &g_thirdday;
 #line 358
-    sjf_enumtest_tellitlikeitis(sjt_parent101);
+    sjf_enumtest_tellitlikeitis(sjt_parent102);
     main_destroy();
     return 0;
 }

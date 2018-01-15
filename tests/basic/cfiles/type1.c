@@ -34,38 +34,38 @@ struct {
     int refcount;
     int size;
     int count;
+    char data[9];
+} sjg_string14 = { 1, 9, 8, "getcount"};
+struct {
+    int refcount;
+    int size;
+    int count;
     char data[14];
-} sjg_string14 = { 1, 14, 13, "gettotalcount"};
+} sjg_string15 = { 1, 14, 13, "gettotalcount"};
 struct {
     int refcount;
     int size;
     int count;
     char data[6];
-} sjg_string15 = { 1, 6, 5, "class"};
+} sjg_string16 = { 1, 6, 5, "class"};
 struct {
     int refcount;
     int size;
     int count;
     char data[2];
-} sjg_string16 = { 1, 2, 1, "b"};
+} sjg_string17 = { 1, 2, 1, "b"};
 struct {
     int refcount;
     int size;
     int count;
     char data[10];
-} sjg_string17 = { 1, 10, 9, "writeline"};
+} sjg_string18 = { 1, 10, 9, "writeline"};
 struct {
     int refcount;
     int size;
     int count;
     char data[7];
-} sjg_string18 = { 1, 7, 6, "global"};
-struct {
-    int refcount;
-    int size;
-    int count;
-    char data[18];
-} sjg_string19 = { 1, 18, 17, "hash![type, bool]"};
+} sjg_string19 = { 1, 7, 6, "global"};
 struct {
     int refcount;
     int size;
@@ -77,61 +77,61 @@ struct {
     int size;
     int count;
     char data[18];
-} sjg_string20 = { 1, 18, 17, "_weakptrremovekey"};
+} sjg_string20 = { 1, 18, 17, "hash![type, bool]"};
+struct {
+    int refcount;
+    int size;
+    int count;
+    char data[18];
+} sjg_string21 = { 1, 18, 17, "_weakptrremovekey"};
 struct {
     int refcount;
     int size;
     int count;
     char data[20];
-} sjg_string21 = { 1, 20, 19, "_weakptrremovevalue"};
+} sjg_string22 = { 1, 20, 19, "_weakptrremovevalue"};
 struct {
     int refcount;
     int size;
     int count;
     char data[4];
-} sjg_string22 = { 1, 4, 3, "log"};
+} sjg_string23 = { 1, 4, 3, "log"};
 struct {
     int refcount;
     int size;
     int count;
     char data[7];
-} sjg_string23 = { 1, 7, 6, "string"};
+} sjg_string24 = { 1, 7, 6, "string"};
 struct {
     int refcount;
     int size;
     int count;
     char data[14];
-} sjg_string24 = { 1, 14, 13, "nullterminate"};
+} sjg_string25 = { 1, 14, 13, "nullterminate"};
 struct {
     int refcount;
     int size;
     int count;
     char data[14];
-} sjg_string25 = { 1, 14, 13, "type_asstring"};
+} sjg_string26 = { 1, 14, 13, "type_asstring"};
 struct {
     int refcount;
     int size;
     int count;
     char data[10];
-} sjg_string26 = { 1, 10, 9, "type_hash"};
+} sjg_string27 = { 1, 10, 9, "type_hash"};
 struct {
     int refcount;
     int size;
     int count;
     char data[13];
-} sjg_string27 = { 1, 13, 12, "type_isequal"};
+} sjg_string28 = { 1, 13, 12, "type_isequal"};
 struct {
     int refcount;
     int size;
     int count;
     char data[5];
-} sjg_string28 = { 1, 5, 4, "type"};
-struct {
-    int refcount;
-    int size;
-    int count;
-    char data[4];
-} sjg_string29 = { 1, 4, 3, "u32"};
+} sjg_string29 = { 1, 5, 4, "type"};
 struct {
     int refcount;
     int size;
@@ -143,13 +143,19 @@ struct {
     int size;
     int count;
     char data[4];
-} sjg_string30 = { 1, 4, 3, "u64"};
+} sjg_string30 = { 1, 4, 3, "u32"};
+struct {
+    int refcount;
+    int size;
+    int count;
+    char data[4];
+} sjg_string31 = { 1, 4, 3, "u64"};
 struct {
     int refcount;
     int size;
     int count;
     char data[5];
-} sjg_string31 = { 1, 5, 4, "void"};
+} sjg_string32 = { 1, 5, 4, "void"};
 struct {
     int refcount;
     int size;
@@ -197,8 +203,8 @@ struct {
 #define sjs_log_typeId 20
 #define sjs_array_char_typeId 23
 #define sjs_string_typeId 21
-#define sjs_class_typeId 26
-#define sji_iface_typeId 27
+#define sjs_class_typeId 27
+#define sji_iface_typeId 28
 
 typedef struct td_sjs_hash_type_bool sjs_hash_type_bool;
 typedef struct td_sjs_log sjs_log;
@@ -317,7 +323,7 @@ sjs_string* sjt_functionParam6 = 0;
 int32_t sjt_functionParam7;
 sjs_string* sjt_functionParam8 = 0;
 int32_t sjt_functionParam9;
-sji_iface sjt_parent3 = { 0 };
+sji_iface sjt_parent4 = { 0 };
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_array_char(sjs_array_char* _this);
@@ -325,6 +331,7 @@ void sjf_array_char_clone(sjs_array_char* _parent, int32_t offset, int32_t count
 void sjf_array_char_clone_heap(sjs_array_char* _parent, int32_t offset, int32_t count, int32_t newsize, sjs_array_char** _return);
 void sjf_array_char_copy(sjs_array_char* _this, sjs_array_char* _from);
 void sjf_array_char_destroy(sjs_array_char* _this);
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return);
 void sjf_array_char_heap(sjs_array_char* _this);
 void sjf_class(sjs_class* _this);
@@ -548,6 +555,13 @@ void sjf_array_char_destroy(sjs_array_char* _this) {
     }
 }
 
+void sjf_array_char_getcount(sjs_array_char* _parent, int32_t* _return) {
+#line 31 "lib/sj-lib-common/array.sj"
+    #line 30 "lib/sj-lib-common/array.sj"
+(*_return) = ((sjs_array*)_parent->v)->count;
+return;;
+}
+
 void sjf_array_char_gettotalcount(sjs_array_char* _parent, int32_t* _return) {
 #line 37 "lib/sj-lib-common/array.sj"
     #line 36 "lib/sj-lib-common/array.sj"
@@ -597,7 +611,7 @@ void sjf_class_destroy(sjs_class* _this) {
 }
 
 void sjf_class_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 26;
+    *_return = 27;
 }
 
 void sjf_class_heap(sjs_class* _this) {
@@ -831,20 +845,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -852,7 +872,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -888,7 +908,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 29:
+        case 30:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -1048,7 +1068,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 27:
+        case 28:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -1108,7 +1128,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 25:
+        case 26:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -1128,13 +1148,13 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 24:
+        case 25:
 #line 16
         _return->_refCount = 1;
 #line 16
         _return->offset = 0;
 #line 16
-        _return->count = 13;
+        _return->count = 8;
 #line 16
         _return->data._refCount = 1;
 #line 16
@@ -1148,13 +1168,13 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 26:
+        case 24:
 #line 16
         _return->_refCount = 1;
 #line 16
         _return->offset = 0;
 #line 16
-        _return->count = 5;
+        _return->count = 13;
 #line 16
         _return->data._refCount = 1;
 #line 16
@@ -1168,13 +1188,13 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 28:
+        case 27:
 #line 16
         _return->_refCount = 1;
 #line 16
         _return->offset = 0;
 #line 16
-        _return->count = 1;
+        _return->count = 5;
 #line 16
         _return->data._refCount = 1;
 #line 16
@@ -1188,7 +1208,27 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 30:
+        case 29:
+#line 16
+        _return->_refCount = 1;
+#line 16
+        _return->offset = 0;
+#line 16
+        _return->count = 1;
+#line 16
+        _return->data._refCount = 1;
+#line 16
+        _return->data.v = &sjg_string17;
+#line 16
+        sjf_array_char(&_return->data);
+#line 16
+        _return->_isnullterminated = false;
+#line 16
+        sjf_string(_return);
+#line 16
+        break;
+#line 16
+        case 31:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -1198,7 +1238,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string17;
+        _return->data.v = &sjg_string18;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1218,7 +1258,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string18;
+        _return->data.v = &sjg_string19;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1238,7 +1278,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string19;
+        _return->data.v = &sjg_string20;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1258,7 +1298,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string20;
+        _return->data.v = &sjg_string21;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1278,7 +1318,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string21;
+        _return->data.v = &sjg_string22;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1298,7 +1338,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string22;
+        _return->data.v = &sjg_string23;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1318,7 +1358,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string23;
+        _return->data.v = &sjg_string24;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1338,7 +1378,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string24;
+        _return->data.v = &sjg_string25;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1348,7 +1388,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 31:
+        case 32:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -1358,7 +1398,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string25;
+        _return->data.v = &sjg_string26;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1378,7 +1418,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string26;
+        _return->data.v = &sjg_string27;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1398,7 +1438,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string27;
+        _return->data.v = &sjg_string28;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1418,7 +1458,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string28;
+        _return->data.v = &sjg_string29;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1438,7 +1478,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string29;
+        _return->data.v = &sjg_string30;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1458,7 +1498,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string30;
+        _return->data.v = &sjg_string31;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1478,7 +1518,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         _return->data._refCount = 1;
 #line 16
-        _return->data.v = &sjg_string31;
+        _return->data.v = &sjg_string32;
 #line 16
         sjf_array_char(&_return->data);
 #line 16
@@ -1669,25 +1709,25 @@ int main(int argc, char** argv) {
 #line 1
     sjf_class_as_sji_iface(sjt_cast2, &g_i);
 #line 9
-    g_t1 = 26;
+    g_t1 = 27;
 #line 10
     g_t2 = 1;
 #line 11
-    g_t3 = 29;
+    g_t3 = 30;
 #line 12
-    g_t4 = 27;
+    g_t4 = 28;
 #line 1
-    sjt_parent3 = g_i;
+    sjt_parent4 = g_i;
 #line 13
-    sjt_parent3._vtbl->getclasstype(sjt_parent3._parent, &g_t5);
+    sjt_parent4._vtbl->getclasstype(sjt_parent4._parent, &g_t5);
 #line 14
     g_d1 = 1;
 #line 15
-    g_d2 = 26;
+    g_d2 = 27;
 #line 16
-    g_d3 = 29;
+    g_d3 = 30;
 #line 17
-    g_d4 = 27;
+    g_d4 = 28;
 #line 19
     sjt_functionParam5 = g_t1;
 #line 19

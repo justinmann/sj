@@ -2149,60 +2149,60 @@ struct vertex_buffer_td
 #define sjs_log_typeId 41
 #define sjs_array_char_typeId 44
 #define sjs_string_typeId 42
-#define sjs_windowrenderer_typeId 47
-#define sjs_color_typeId 49
-#define sjs_size_typeId 53
-#define sjs_mat4_typeId 54
-#define sjs_rect_typeId 55
-#define sjs_scene2d_typeId 52
-#define sjs_vec3_typeId 57
-#define sjs_light_typeId 56
-#define sji_model_typeId 58
-#define sjs_array_heap_iface_model_typeId 112
-#define sjs_list_heap_iface_model_typeId 59
-#define sjs_point_typeId 108
-#define sjs_mouseevent_typeId 60
-#define sjs_hash_string_weak_iface_model_typeId 61
-#define sji_element_typeId 66
-#define sjs_hash_string_weak_iface_element_typeId 67
-#define sjs_array_heap_iface_animation_typeId 73
-#define sjs_list_heap_iface_animation_typeId 72
-#define sjs_animator_typeId 70
-#define sji_animation_typeId 71
-#define sjs_shader_typeId 74
-#define sjs_fontkey_typeId 75
-#define sjs_font_typeId 76
-#define sjs_hash_fontkey_weak_font_typeId 77
-#define sjs_array_rect_typeId 84
-#define sjs_list_rect_typeId 83
-#define sjs_array_u32_typeId 86
-#define sjs_list_u32_typeId 85
-#define sjs_style_typeId 87
-#define sjs_array_heap_iface_element_typeId 90
-#define sjs_margin_typeId 91
-#define sji_effect_typeId 94
-#define sjs_filllayout_typeId 89
-#define cb_rect_void_typeId 92
-#define cb_rect_void_heap_typeId 92
-#define cb_scene2d_void_typeId 93
-#define cb_scene2d_void_heap_typeId 93
-#define sjs_scene3delement_typeId 111
-#define cb_heap_iface_model_heap_iface_model_i32_typeId 135
-#define cb_heap_iface_model_heap_iface_model_i32_heap_typeId 135
-#define cb_local_iface_model_local_iface_model_i32_typeId 141
-#define cb_local_iface_model_local_iface_model_i32_heap_typeId 141
-#define sjs_array_i32_typeId 204
-#define sjs_array_vertex_location_texture_normal_typeId 205
-#define sjs_vertexbuffer_vertex_location_texture_normal_typeId 155
-#define sjs_vec4_typeId 163
-#define sjs_framebuffer_typeId 164
-#define sjs_texture_typeId 165
-#define sjs_renderbuffer_typeId 166
-#define sjs_scene2dmodel_typeId 153
-#define sjs_vec2_typeId 160
-#define sjs_vertex_location_texture_normal_typeId 154
-#define cb_string_heap_string_typeId 213
-#define cb_string_heap_string_heap_typeId 213
+#define sjs_windowrenderer_typeId 48
+#define sjs_color_typeId 50
+#define sjs_size_typeId 54
+#define sjs_mat4_typeId 55
+#define sjs_rect_typeId 56
+#define sjs_scene2d_typeId 53
+#define sjs_vec3_typeId 58
+#define sjs_light_typeId 57
+#define sji_model_typeId 59
+#define sjs_array_heap_iface_model_typeId 113
+#define sjs_list_heap_iface_model_typeId 60
+#define sjs_point_typeId 109
+#define sjs_mouseevent_typeId 61
+#define sjs_hash_string_weak_iface_model_typeId 62
+#define sji_element_typeId 67
+#define sjs_hash_string_weak_iface_element_typeId 68
+#define sjs_array_heap_iface_animation_typeId 74
+#define sjs_list_heap_iface_animation_typeId 73
+#define sjs_animator_typeId 71
+#define sji_animation_typeId 72
+#define sjs_shader_typeId 75
+#define sjs_fontkey_typeId 76
+#define sjs_font_typeId 77
+#define sjs_hash_fontkey_weak_font_typeId 78
+#define sjs_array_rect_typeId 85
+#define sjs_list_rect_typeId 84
+#define sjs_array_u32_typeId 87
+#define sjs_list_u32_typeId 86
+#define sjs_style_typeId 88
+#define sjs_array_heap_iface_element_typeId 91
+#define sjs_margin_typeId 92
+#define sji_effect_typeId 95
+#define sjs_filllayout_typeId 90
+#define cb_rect_void_typeId 93
+#define cb_rect_void_heap_typeId 93
+#define cb_scene2d_void_typeId 94
+#define cb_scene2d_void_heap_typeId 94
+#define sjs_scene3delement_typeId 112
+#define cb_heap_iface_model_heap_iface_model_i32_typeId 136
+#define cb_heap_iface_model_heap_iface_model_i32_heap_typeId 136
+#define cb_local_iface_model_local_iface_model_i32_typeId 142
+#define cb_local_iface_model_local_iface_model_i32_heap_typeId 142
+#define sjs_array_i32_typeId 205
+#define sjs_array_vertex_location_texture_normal_typeId 206
+#define sjs_vertexbuffer_vertex_location_texture_normal_typeId 156
+#define sjs_vec4_typeId 164
+#define sjs_framebuffer_typeId 165
+#define sjs_texture_typeId 166
+#define sjs_renderbuffer_typeId 167
+#define sjs_scene2dmodel_typeId 154
+#define sjs_vec2_typeId 161
+#define sjs_vertex_location_texture_normal_typeId 155
+#define cb_string_heap_string_typeId 214
+#define cb_string_heap_string_heap_typeId 214
 #define sjs_lambda3_typeId 231
 #define sjs_lambda2_typeId 225
 #define sjs_image_typeId 260
@@ -3749,11 +3749,11 @@ int32_t sjt_functionParam465;
 sji_element sjt_functionParam466 = { 0 };
 int32_t sjt_functionParam471;
 sji_element sjt_functionParam472 = { 0 };
-sjs_array_heap_iface_element* sjt_parent287 = 0;
-sjs_array_heap_iface_element* sjt_parent297 = 0;
-sjs_array_heap_iface_element* sjt_parent30 = 0;
-sjs_array_heap_iface_element* sjt_parent302 = 0;
-sjs_array_heap_iface_model* sjt_parent85 = 0;
+sjs_array_heap_iface_element* sjt_parent288 = 0;
+sjs_array_heap_iface_element* sjt_parent298 = 0;
+sjs_array_heap_iface_element* sjt_parent303 = 0;
+sjs_array_heap_iface_element* sjt_parent31 = 0;
+sjs_array_heap_iface_model* sjt_parent86 = 0;
 sjs_hash_type_bool sjt_value1 = { -1 };
 
 void sjf_animator(sjs_animator* _this);
@@ -7021,59 +7021,59 @@ void sjf_animator_heap(sjs_animator* _this) {
 }
 
 void sjf_animator_nextframe(sjs_animator* _parent, int32_t time) {
-    int32_t sjt_capture88;
-    sjs_list_heap_iface_animation* sjt_parent304 = 0;
+    int32_t sjt_capture89;
+    sjs_list_heap_iface_animation* sjt_parent305 = 0;
 
 #line 31 "lib/sj-lib-ui/animation.sj"
     _parent->current = time;
 #line 4 "lib/sj-lib-common/list.sj"
-    sjt_parent304 = &_parent->animations;
+    sjt_parent305 = &_parent->animations;
 #line 4
-    sjf_list_heap_iface_animation_getcount(sjt_parent304, &sjt_capture88);
-    if (sjt_capture88 > 0) {
+    sjf_list_heap_iface_animation_getcount(sjt_parent305, &sjt_capture89);
+    if (sjt_capture89 > 0) {
         int32_t i;
         int32_t sjt_forEnd28;
         int32_t sjt_forStart28;
-        sjs_list_heap_iface_animation* sjt_parent305 = 0;
+        sjs_list_heap_iface_animation* sjt_parent306 = 0;
 
 #line 35 "lib/sj-lib-ui/animation.sj"
         sjt_forStart28 = 0;
 #line 4 "lib/sj-lib-common/list.sj"
-        sjt_parent305 = &_parent->animations;
+        sjt_parent306 = &_parent->animations;
 #line 4
-        sjf_list_heap_iface_animation_getcount(sjt_parent305, &sjt_forEnd28);
+        sjf_list_heap_iface_animation_getcount(sjt_parent306, &sjt_forEnd28);
 #line 35 "lib/sj-lib-ui/animation.sj"
         i = sjt_forEnd28 - 1;
         while (i >= sjt_forStart28) {
             sji_animation a = { 0 };
-            bool sjt_capture89;
+            bool sjt_capture90;
             int32_t sjt_functionParam474;
             int32_t sjt_interfaceParam19;
-            sjs_list_heap_iface_animation* sjt_parent307 = 0;
-            sji_animation sjt_parent308 = { 0 };
+            sjs_list_heap_iface_animation* sjt_parent308 = 0;
+            sji_animation sjt_parent309 = { 0 };
 
 #line 8 "lib/sj-lib-common/list.sj"
-            sjt_parent307 = &_parent->animations;
+            sjt_parent308 = &_parent->animations;
 #line 35 "lib/sj-lib-ui/animation.sj"
             sjt_functionParam474 = i;
 #line 35
-            sjf_list_heap_iface_animation_getat_heap(sjt_parent307, sjt_functionParam474, &a);
+            sjf_list_heap_iface_animation_getat_heap(sjt_parent308, sjt_functionParam474, &a);
 #line 2
-            sjt_parent308 = a;
+            sjt_parent309 = a;
 #line 31
             sjt_interfaceParam19 = time;
 #line 37
-            sjt_parent308._vtbl->nextframe(sjt_parent308._parent, sjt_interfaceParam19, &sjt_capture89);
-            if (sjt_capture89) {
+            sjt_parent309._vtbl->nextframe(sjt_parent309._parent, sjt_interfaceParam19, &sjt_capture90);
+            if (sjt_capture90) {
                 int32_t sjt_functionParam475;
-                sjs_list_heap_iface_animation* sjt_parent309 = 0;
+                sjs_list_heap_iface_animation* sjt_parent310 = 0;
 
 #line 53 "lib/sj-lib-common/list.sj"
-                sjt_parent309 = &_parent->animations;
+                sjt_parent310 = &_parent->animations;
 #line 35 "lib/sj-lib-ui/animation.sj"
                 sjt_functionParam475 = i;
 #line 35
-                sjf_list_heap_iface_animation_removeat(sjt_parent309, sjt_functionParam475);
+                sjf_list_heap_iface_animation_removeat(sjt_parent310, sjt_functionParam475);
             }
 
 #line 35
@@ -7700,15 +7700,15 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
     sjt_while1 = i <= j;
     while (sjt_while1) {
         bool shouldcontinue;
-        int32_t sjt_capture20;
+        int32_t sjt_capture21;
         bool sjt_while2;
         bool sjt_while3;
 
 #line 240 "lib/sj-lib-common/array.sj"
         shouldcontinue = true;
 #line 240
-        sjf_array_heap_iface_model_getcount(_parent, &sjt_capture20);
-        if (i < sjt_capture20) {
+        sjf_array_heap_iface_model_getcount(_parent, &sjt_capture21);
+        if (i < sjt_capture21) {
 #line 241 "lib/sj-lib-common/array.sj"
             sjt_while2 = shouldcontinue;
         } else {
@@ -7717,8 +7717,8 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
         }
 
         while (sjt_while2) {
-            int32_t sjt_capture21;
             int32_t sjt_capture22;
+            int32_t sjt_capture23;
             sji_model sjt_functionParam69 = { 0 };
             int32_t sjt_functionParam70;
             sji_model sjt_functionParam71 = { 0 };
@@ -7734,17 +7734,17 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
             }
 
 #line 242
-            cb._cb(cb._parent, sjt_functionParam69, sjt_functionParam71, &sjt_capture21);
+            cb._cb(cb._parent, sjt_functionParam69, sjt_functionParam71, &sjt_capture22);
 #line 242
-            shouldcontinue = sjt_capture21 < 0;
+            shouldcontinue = sjt_capture22 < 0;
             if (shouldcontinue) {
 #line 244 "lib/sj-lib-common/array.sj"
                 i = i + 1;
             }
 
 #line 242
-            sjf_array_heap_iface_model_getcount(_parent, &sjt_capture22);
-            if (i < sjt_capture22) {
+            sjf_array_heap_iface_model_getcount(_parent, &sjt_capture23);
+            if (i < sjt_capture23) {
 #line 241 "lib/sj-lib-common/array.sj"
                 sjt_while2 = shouldcontinue;
             } else {
@@ -7779,7 +7779,7 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
         }
 
         while (sjt_while3) {
-            int32_t sjt_capture23;
+            int32_t sjt_capture24;
             sji_model sjt_functionParam72 = { 0 };
             int32_t sjt_functionParam73;
             sji_model sjt_functionParam74 = { 0 };
@@ -7795,9 +7795,9 @@ void sjf_array_heap_iface_model__quicksortcallback(sjs_array_heap_iface_model* _
             }
 
 #line 250
-            cb._cb(cb._parent, sjt_functionParam72, sjt_functionParam74, &sjt_capture23);
+            cb._cb(cb._parent, sjt_functionParam72, sjt_functionParam74, &sjt_capture24);
 #line 250
-            shouldcontinue = sjt_capture23 > 0;
+            shouldcontinue = sjt_capture24 > 0;
             if (shouldcontinue) {
 #line 252 "lib/sj-lib-common/array.sj"
                 j = j - 1;
@@ -8205,11 +8205,11 @@ if (p[index]._parent != 0) {
 }
 
 void sjf_array_heap_iface_model_sortcb(sjs_array_heap_iface_model* _parent, cb_heap_iface_model_heap_iface_model_i32 cb) {
-    int32_t sjt_capture19;
+    int32_t sjt_capture20;
 
-    sjf_array_heap_iface_model_getcount(_parent, &sjt_capture19);
-    if (sjt_capture19 > 1) {
-        int32_t sjt_capture24;
+    sjf_array_heap_iface_model_getcount(_parent, &sjt_capture20);
+    if (sjt_capture20 > 1) {
+        int32_t sjt_capture25;
         int32_t sjt_functionParam87;
         int32_t sjt_functionParam88;
         cb_heap_iface_model_heap_iface_model_i32 sjt_functionParam89;
@@ -8217,9 +8217,9 @@ void sjf_array_heap_iface_model_sortcb(sjs_array_heap_iface_model* _parent, cb_h
 #line 281 "lib/sj-lib-common/array.sj"
         sjt_functionParam87 = 0;
 #line 281
-        sjf_array_heap_iface_model_getcount(_parent, &sjt_capture24);
+        sjf_array_heap_iface_model_getcount(_parent, &sjt_capture25);
 #line 281
-        sjt_functionParam88 = sjt_capture24 - 1;
+        sjt_functionParam88 = sjt_capture25 - 1;
 #line 279
         sjt_functionParam89 = cb;
 #line 279
@@ -9265,17 +9265,17 @@ void sjf_crosshairselement_destroy(sjs_crosshairselement* _this) {
 }
 
 void sjf_crosshairselement_firemouseevent(sjs_crosshairselement* _parent, sjs_mouseevent* mouseevent, bool* _return) {
-    bool sjt_capture87;
+    bool sjt_capture88;
     sjs_point* sjt_functionParam470 = 0;
-    sjs_rect* sjt_parent301 = 0;
+    sjs_rect* sjt_parent302 = 0;
 
 #line 11 "lib/sj-lib-ui/rect.sj"
-    sjt_parent301 = &_parent->_rect;
+    sjt_parent302 = &_parent->_rect;
 #line 41 "lib/sj-lib-ui/crossHairsElement.sj"
     sjt_functionParam470 = &mouseevent->point;
 #line 41
-    sjf_rect_containspoint(sjt_parent301, sjt_functionParam470, &sjt_capture87);
-    if (sjt_capture87) {
+    sjf_rect_containspoint(sjt_parent302, sjt_functionParam470, &sjt_capture88);
+    if (sjt_capture88) {
         if (mouseevent->eventtype == g_mouseeventtype_move) {
             if (_parent->_point._refCount == 1) { sjf_point_destroy(&_parent->_point); }
 ;
@@ -9411,26 +9411,26 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
 
     if ((_parent->_topdownrenderer._refCount != -1 ? &_parent->_topdownrenderer : 0) != 0) {
         sjs_scene2d* sjt_functionParam468 = 0;
-        sjs_boxrenderer* sjt_parent299 = 0;
+        sjs_boxrenderer* sjt_parent300 = 0;
 
 #line 8 "lib/sj-lib-ui/boxRenderer.sj"
-        sjt_parent299 = (_parent->_topdownrenderer._refCount != -1 ? &_parent->_topdownrenderer : 0);
+        sjt_parent300 = (_parent->_topdownrenderer._refCount != -1 ? &_parent->_topdownrenderer : 0);
 #line 23 "lib/sj-lib-ui/crossHairsElement.sj"
         sjt_functionParam468 = scene;
 #line 23
-        sjf_boxrenderer_render(sjt_parent299, sjt_functionParam468);
+        sjf_boxrenderer_render(sjt_parent300, sjt_functionParam468);
     }
 
     if ((_parent->_leftrightrenderer._refCount != -1 ? &_parent->_leftrightrenderer : 0) != 0) {
         sjs_scene2d* sjt_functionParam469 = 0;
-        sjs_boxrenderer* sjt_parent300 = 0;
+        sjs_boxrenderer* sjt_parent301 = 0;
 
 #line 8 "lib/sj-lib-ui/boxRenderer.sj"
-        sjt_parent300 = (_parent->_leftrightrenderer._refCount != -1 ? &_parent->_leftrightrenderer : 0);
+        sjt_parent301 = (_parent->_leftrightrenderer._refCount != -1 ? &_parent->_leftrightrenderer : 0);
 #line 23 "lib/sj-lib-ui/crossHairsElement.sj"
         sjt_functionParam469 = scene;
 #line 23
-        sjf_boxrenderer_render(sjt_parent300, sjt_functionParam469);
+        sjf_boxrenderer_render(sjt_parent301, sjt_functionParam469);
     }
 
     if (sjt_value13._refCount == 1) { sjf_boxrenderer_destroy(&sjt_value13); }
@@ -9441,18 +9441,18 @@ void sjf_crosshairselement_render(sjs_crosshairselement* _parent, sjs_scene2d* s
 
 void sjf_crosshairselement_setrect(sjs_crosshairselement* _parent, sjs_rect* rect_) {
     bool result12;
-    bool sjt_capture84;
+    bool sjt_capture85;
     sjs_rect* sjt_functionParam467 = 0;
-    sjs_rect* sjt_parent298 = 0;
+    sjs_rect* sjt_parent299 = 0;
 
 #line 15 "lib/sj-lib-ui/rect.sj"
-    sjt_parent298 = &_parent->_rect;
+    sjt_parent299 = &_parent->_rect;
 #line 14 "lib/sj-lib-ui/crossHairsElement.sj"
     sjt_functionParam467 = rect_;
 #line 14
-    sjf_rect_isequal(sjt_parent298, sjt_functionParam467, &sjt_capture84);
+    sjf_rect_isequal(sjt_parent299, sjt_functionParam467, &sjt_capture85);
 #line 15
-    result12 = !sjt_capture84;
+    result12 = !sjt_capture85;
     if (result12) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -9687,18 +9687,18 @@ void sjf_filllayout_destroy(sjs_filllayout* _this) {
 
 void sjf_filllayout_firemouseevent(sjs_filllayout* _parent, sjs_mouseevent* mouseevent, bool* _return) {
     sjs_array_heap_iface_element* sjt_functionParam28 = 0;
-    sjs_mouseevent* sjt_parent29 = 0;
+    sjs_mouseevent* sjt_parent30 = 0;
 
 #line 55 "lib/sj-lib-ui/fillLayout.sj"
-    sjt_parent29 = mouseevent;
+    sjt_parent30 = mouseevent;
 #line 56
     sjt_functionParam28 = &_parent->children;
 #line 56
-    sjf_mouseevent_firechildren(sjt_parent29, sjt_functionParam28, _return);
+    sjf_mouseevent_firechildren(sjt_parent30, sjt_functionParam28, _return);
 }
 
 void sjf_filllayout_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 89;
+    *_return = 90;
 }
 
 void sjf_filllayout_getrect(sjs_filllayout* _parent, sjs_rect* _return) {
@@ -9722,9 +9722,9 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
     int32_t sjt_forStart1;
     sjs_margin* sjt_functionParam14 = 0;
     sjs_margin* sjt_functionParam17 = 0;
-    sjs_size* sjt_parent10 = 0;
-    sjs_size* sjt_parent5 = 0;
-    sjs_array_heap_iface_element* sjt_parent6 = 0;
+    sjs_size* sjt_parent11 = 0;
+    sjs_size* sjt_parent6 = 0;
+    sjs_array_heap_iface_element* sjt_parent7 = 0;
 
     size._refCount = 1;
 #line 2 "lib/sj-lib-ui/size.sj"
@@ -9734,17 +9734,17 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
 #line 3
     sjf_size(&size);
 #line 7 "lib/sj-lib-ui/fillLayout.sj"
-    sjt_parent5 = maxsize;
+    sjt_parent6 = maxsize;
 #line 9
     sjt_functionParam14 = &_parent->margin;
 #line 9
-    sjf_size_subtractmargin(sjt_parent5, sjt_functionParam14, &innersize);
+    sjf_size_subtractmargin(sjt_parent6, sjt_functionParam14, &innersize);
 #line 10
     sjt_forStart1 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent6 = &_parent->children;
+    sjt_parent7 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent6, &sjt_forEnd1);
+    sjf_array_heap_iface_element_getcount(sjt_parent7, &sjt_forEnd1);
 #line 10 "lib/sj-lib-ui/fillLayout.sj"
     i = sjt_forStart1;
     while (i < sjt_forEnd1) {
@@ -9754,28 +9754,28 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
         int32_t sjt_functionParam15;
         sjs_size* sjt_functionParam16 = 0;
         sjs_size* sjt_interfaceParam1 = 0;
-        sjs_array_heap_iface_element* sjt_parent7 = 0;
-        sjs_size* sjt_parent8 = 0;
-        sji_element sjt_parent9 = { 0 };
+        sji_element sjt_parent10 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent8 = 0;
+        sjs_size* sjt_parent9 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent7 = &_parent->children;
+        sjt_parent8 = &_parent->children;
 #line 10 "lib/sj-lib-ui/fillLayout.sj"
         sjt_functionParam15 = i;
 #line 10
-        sjf_array_heap_iface_element_getat_heap(sjt_parent7, sjt_functionParam15, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent8, sjt_functionParam15, &child);
 #line 12 "lib/sj-lib-ui/size.sj"
-        sjt_parent8 = &size;
+        sjt_parent9 = &size;
 #line 2 "lib/sj-lib-ui/element.sj"
-        sjt_parent9 = child;
+        sjt_parent10 = child;
 #line 12 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam1 = &innersize;
 #line 12
-        sjt_parent9._vtbl->getsize(sjt_parent9._parent, sjt_interfaceParam1, &sjt_call4);
+        sjt_parent10._vtbl->getsize(sjt_parent10._parent, sjt_interfaceParam1, &sjt_call4);
 #line 12
         sjt_functionParam16 = &sjt_call4;
 #line 12
-        sjf_size_max(sjt_parent8, sjt_functionParam16, &sjt_funcold2);
+        sjf_size_max(sjt_parent9, sjt_functionParam16, &sjt_funcold2);
 #line 12
         if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
@@ -9798,11 +9798,11 @@ void sjf_filllayout_getsize(sjs_filllayout* _parent, sjs_size* maxsize, sjs_size
     }
 
 #line 19 "lib/sj-lib-ui/size.sj"
-    sjt_parent10 = &size;
+    sjt_parent11 = &size;
 #line 14 "lib/sj-lib-ui/fillLayout.sj"
     sjt_functionParam17 = &_parent->margin;
 #line 14
-    sjf_size_addmargin(sjt_parent10, sjt_functionParam17, _return);
+    sjf_size_addmargin(sjt_parent11, sjt_functionParam17, _return);
 
     if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
@@ -9818,9 +9818,9 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
     int32_t sjt_forStart2;
     sjs_margin* sjt_functionParam18 = 0;
     sjs_margin* sjt_functionParam21 = 0;
-    sjs_size* sjt_parent11 = 0;
-    sjs_array_heap_iface_element* sjt_parent12 = 0;
-    sjs_size* sjt_parent16 = 0;
+    sjs_size* sjt_parent12 = 0;
+    sjs_array_heap_iface_element* sjt_parent13 = 0;
+    sjs_size* sjt_parent17 = 0;
 
     size._refCount = 1;
 #line 2 "lib/sj-lib-ui/size.sj"
@@ -9830,17 +9830,17 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
 #line 3
     sjf_size(&size);
 #line 7 "lib/sj-lib-ui/fillLayout.sj"
-    sjt_parent11 = maxsize;
+    sjt_parent12 = maxsize;
 #line 9
     sjt_functionParam18 = &_parent->margin;
 #line 9
-    sjf_size_subtractmargin(sjt_parent11, sjt_functionParam18, &innersize);
+    sjf_size_subtractmargin(sjt_parent12, sjt_functionParam18, &innersize);
 #line 10
     sjt_forStart2 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent12 = &_parent->children;
+    sjt_parent13 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent12, &sjt_forEnd2);
+    sjf_array_heap_iface_element_getcount(sjt_parent13, &sjt_forEnd2);
 #line 10 "lib/sj-lib-ui/fillLayout.sj"
     i = sjt_forStart2;
     while (i < sjt_forEnd2) {
@@ -9850,28 +9850,28 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
         int32_t sjt_functionParam19;
         sjs_size* sjt_functionParam20 = 0;
         sjs_size* sjt_interfaceParam2 = 0;
-        sjs_array_heap_iface_element* sjt_parent13 = 0;
-        sjs_size* sjt_parent14 = 0;
-        sji_element sjt_parent15 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent14 = 0;
+        sjs_size* sjt_parent15 = 0;
+        sji_element sjt_parent16 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent13 = &_parent->children;
+        sjt_parent14 = &_parent->children;
 #line 10 "lib/sj-lib-ui/fillLayout.sj"
         sjt_functionParam19 = i;
 #line 10
-        sjf_array_heap_iface_element_getat_heap(sjt_parent13, sjt_functionParam19, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent14, sjt_functionParam19, &child);
 #line 12 "lib/sj-lib-ui/size.sj"
-        sjt_parent14 = &size;
+        sjt_parent15 = &size;
 #line 2 "lib/sj-lib-ui/element.sj"
-        sjt_parent15 = child;
+        sjt_parent16 = child;
 #line 12 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam2 = &innersize;
 #line 12
-        sjt_parent15._vtbl->getsize(sjt_parent15._parent, sjt_interfaceParam2, &sjt_call5);
+        sjt_parent16._vtbl->getsize(sjt_parent16._parent, sjt_interfaceParam2, &sjt_call5);
 #line 12
         sjt_functionParam20 = &sjt_call5;
 #line 12
-        sjf_size_max(sjt_parent14, sjt_functionParam20, &sjt_funcold3);
+        sjf_size_max(sjt_parent15, sjt_functionParam20, &sjt_funcold3);
 #line 12
         if (size._refCount == 1) { sjf_size_destroy(&size); }
 ;
@@ -9894,11 +9894,11 @@ void sjf_filllayout_getsize_heap(sjs_filllayout* _parent, sjs_size* maxsize, sjs
     }
 
 #line 19 "lib/sj-lib-ui/size.sj"
-    sjt_parent16 = &size;
+    sjt_parent17 = &size;
 #line 14 "lib/sj-lib-ui/fillLayout.sj"
     sjt_functionParam21 = &_parent->margin;
 #line 14
-    sjf_size_addmargin_heap(sjt_parent16, sjt_functionParam21, _return);
+    sjf_size_addmargin_heap(sjt_parent17, sjt_functionParam21, _return);
 
     if (innersize._refCount == 1) { sjf_size_destroy(&innersize); }
 ;
@@ -9914,7 +9914,7 @@ void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
         sji_effect ifValue3 = { 0 };
         sjs_scene2d* sjt_interfaceParam6 = 0;
         cb_scene2d_void sjt_interfaceParam7;
-        sji_effect sjt_parent22 = { 0 };
+        sji_effect sjt_parent23 = { 0 };
 
 #line 41 "lib/sj-lib-ui/fillLayout.sj"
         ifValue3 = _parent->effect;
@@ -9923,7 +9923,7 @@ void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
         }
 
 #line 4 "lib/sj-lib-ui/effect.sj"
-        sjt_parent22 = ifValue3;
+        sjt_parent23 = ifValue3;
 #line 40 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam6 = scene;
 #line 42
@@ -9931,7 +9931,7 @@ void sjf_filllayout_render(sjs_filllayout* _parent, sjs_scene2d* scene) {
 #line 42
         sjt_interfaceParam7._cb = (void(*)(sjs_object*,sjs_scene2d*))sjf_filllayout_renderinner;
 #line 42
-        sjt_parent22._vtbl->render(sjt_parent22._parent, sjt_interfaceParam6, sjt_interfaceParam7);
+        sjt_parent23._vtbl->render(sjt_parent23._parent, sjt_interfaceParam6, sjt_interfaceParam7);
 
         if (ifValue3._parent != 0) {
             ifValue3._parent->_refCount--;
@@ -9954,35 +9954,35 @@ void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene) {
     int32_t i;
     int32_t sjt_forEnd4;
     int32_t sjt_forStart4;
-    sjs_array_heap_iface_element* sjt_parent23 = 0;
+    sjs_array_heap_iface_element* sjt_parent24 = 0;
 
 #line 49 "lib/sj-lib-ui/fillLayout.sj"
     sjt_forStart4 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent23 = &_parent->children;
+    sjt_parent24 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent23, &sjt_forEnd4);
+    sjf_array_heap_iface_element_getcount(sjt_parent24, &sjt_forEnd4);
 #line 49 "lib/sj-lib-ui/fillLayout.sj"
     i = sjt_forStart4;
     while (i < sjt_forEnd4) {
         sji_element child = { 0 };
         int32_t sjt_functionParam25;
         sjs_scene2d* sjt_interfaceParam8 = 0;
-        sjs_array_heap_iface_element* sjt_parent24 = 0;
-        sji_element sjt_parent25 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent25 = 0;
+        sji_element sjt_parent26 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent24 = &_parent->children;
+        sjt_parent25 = &_parent->children;
 #line 49 "lib/sj-lib-ui/fillLayout.sj"
         sjt_functionParam25 = i;
 #line 49
-        sjf_array_heap_iface_element_getat_heap(sjt_parent24, sjt_functionParam25, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent25, sjt_functionParam25, &child);
 #line 5 "lib/sj-lib-ui/element.sj"
-        sjt_parent25 = child;
+        sjt_parent26 = child;
 #line 48 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam8 = scene;
 #line 51
-        sjt_parent25._vtbl->render(sjt_parent25._parent, sjt_interfaceParam8);
+        sjt_parent26._vtbl->render(sjt_parent26._parent, sjt_interfaceParam8);
 #line 49
         i++;
 
@@ -9999,23 +9999,23 @@ void sjf_filllayout_renderinner(sjs_filllayout* _parent, sjs_scene2d* scene) {
 void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
     sjs_rect innerrect = { -1 };
     sjs_margin* sjt_functionParam22 = 0;
-    sjs_rect* sjt_parent17 = 0;
+    sjs_rect* sjt_parent18 = 0;
 
     if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
 #line 19 "lib/sj-lib-ui/fillLayout.sj"
     sjf_rect_copy(&_parent->_rect, rect_);
 #line 7 "lib/sj-lib-ui/rect.sj"
-    sjt_parent17 = &_parent->_rect;
+    sjt_parent18 = &_parent->_rect;
 #line 21 "lib/sj-lib-ui/fillLayout.sj"
     sjt_functionParam22 = &_parent->margin;
 #line 21
-    sjf_rect_subtractmargin(sjt_parent17, sjt_functionParam22, &innerrect);
+    sjf_rect_subtractmargin(sjt_parent18, sjt_functionParam22, &innerrect);
     if ((_parent->effect._parent != 0)) {
         sji_effect ifValue1 = { 0 };
         sjs_rect* sjt_interfaceParam3 = 0;
         cb_rect_void sjt_interfaceParam4;
-        sji_effect sjt_parent18 = { 0 };
+        sji_effect sjt_parent19 = { 0 };
 
 #line 23 "lib/sj-lib-ui/fillLayout.sj"
         ifValue1 = _parent->effect;
@@ -10024,7 +10024,7 @@ void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
         }
 
 #line 3 "lib/sj-lib-ui/effect.sj"
-        sjt_parent18 = ifValue1;
+        sjt_parent19 = ifValue1;
 #line 24 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam3 = &innerrect;
 #line 24
@@ -10032,7 +10032,7 @@ void sjf_filllayout_setrect(sjs_filllayout* _parent, sjs_rect* rect_) {
 #line 24
         sjt_interfaceParam4._cb = (void(*)(sjs_object*,sjs_rect*))sjf_filllayout_setrectinner;
 #line 24
-        sjt_parent18._vtbl->setrect(sjt_parent18._parent, sjt_interfaceParam3, sjt_interfaceParam4);
+        sjt_parent19._vtbl->setrect(sjt_parent19._parent, sjt_interfaceParam3, sjt_interfaceParam4);
 
         if (ifValue1._parent != 0) {
             ifValue1._parent->_refCount--;
@@ -10058,35 +10058,35 @@ void sjf_filllayout_setrectinner(sjs_filllayout* _parent, sjs_rect* innerrect) {
     int32_t i;
     int32_t sjt_forEnd3;
     int32_t sjt_forStart3;
-    sjs_array_heap_iface_element* sjt_parent19 = 0;
+    sjs_array_heap_iface_element* sjt_parent20 = 0;
 
 #line 33 "lib/sj-lib-ui/fillLayout.sj"
     sjt_forStart3 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent19 = &_parent->children;
+    sjt_parent20 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent19, &sjt_forEnd3);
+    sjf_array_heap_iface_element_getcount(sjt_parent20, &sjt_forEnd3);
 #line 33 "lib/sj-lib-ui/fillLayout.sj"
     i = sjt_forStart3;
     while (i < sjt_forEnd3) {
         sji_element child = { 0 };
         int32_t sjt_functionParam23;
         sjs_rect* sjt_interfaceParam5 = 0;
-        sjs_array_heap_iface_element* sjt_parent20 = 0;
-        sji_element sjt_parent21 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent21 = 0;
+        sji_element sjt_parent22 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent20 = &_parent->children;
+        sjt_parent21 = &_parent->children;
 #line 33 "lib/sj-lib-ui/fillLayout.sj"
         sjt_functionParam23 = i;
 #line 33
-        sjf_array_heap_iface_element_getat_heap(sjt_parent20, sjt_functionParam23, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent21, sjt_functionParam23, &child);
 #line 4 "lib/sj-lib-ui/element.sj"
-        sjt_parent21 = child;
+        sjt_parent22 = child;
 #line 32 "lib/sj-lib-ui/fillLayout.sj"
         sjt_interfaceParam5 = innerrect;
 #line 35
-        sjt_parent21._vtbl->setrect(sjt_parent21._parent, sjt_interfaceParam5);
+        sjt_parent22._vtbl->setrect(sjt_parent22._parent, sjt_interfaceParam5);
 #line 33
         i++;
 
@@ -10209,38 +10209,38 @@ void sjf_fontkey_destroy(sjs_fontkey* _this) {
 }
 
 void sjf_fontkey_hash(sjs_fontkey* _parent, uint32_t* _return) {
-    uint32_t sjt_capture2;
     uint32_t sjt_capture3;
+    uint32_t sjt_capture4;
     float sjt_functionParam12;
-    sjs_string* sjt_parent3 = 0;
+    sjs_string* sjt_parent4 = 0;
 
 #line 146 "lib/sj-lib-common/string.sj"
-    sjt_parent3 = &_parent->src;
+    sjt_parent4 = &_parent->src;
 #line 146
-    sjf_string_hash(sjt_parent3, &sjt_capture2);
+    sjf_string_hash(sjt_parent4, &sjt_capture3);
 #line 25 "lib/sj-lib-ui/font.sj"
     sjt_functionParam12 = _parent->size;
 #line 25
-    sjf_f32_hash(sjt_functionParam12, &sjt_capture3);
+    sjf_f32_hash(sjt_functionParam12, &sjt_capture4);
 #line 25
-    (*_return) = sjt_capture2 ^ sjt_capture3;
+    (*_return) = sjt_capture3 ^ sjt_capture4;
 }
 
 void sjf_fontkey_heap(sjs_fontkey* _this) {
 }
 
 void sjf_fontkey_isequal(sjs_fontkey* _parent, sjs_fontkey* x, bool* _return) {
-    bool sjt_capture4;
+    bool sjt_capture5;
     sjs_string* sjt_functionParam13 = 0;
-    sjs_string* sjt_parent4 = 0;
+    sjs_string* sjt_parent5 = 0;
 
 #line 71 "lib/sj-lib-common/string.sj"
-    sjt_parent4 = &_parent->src;
+    sjt_parent5 = &_parent->src;
 #line 29 "lib/sj-lib-ui/font.sj"
     sjt_functionParam13 = &x->src;
 #line 29
-    sjf_string_isequal(sjt_parent4, sjt_functionParam13, &sjt_capture4);
-    if (sjt_capture4) {
+    sjf_string_isequal(sjt_parent5, sjt_functionParam13, &sjt_capture5);
+    if (sjt_capture5) {
 #line 29 "lib/sj-lib-ui/font.sj"
         (*_return) = (_parent->size == x->size);
     } else {
@@ -10462,29 +10462,29 @@ return;;
 void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
     uint32_t id;
     sjs_string sjt_call13 = { -1 };
-    int32_t sjt_capture33;
-    uint32_t sjt_capture34;
-    int32_t sjt_capture35;
+    int32_t sjt_capture34;
+    uint32_t sjt_capture35;
     int32_t sjt_capture36;
+    int32_t sjt_capture37;
     int32_t sjt_functionParam154;
     int32_t sjt_functionParam156;
     sjs_list_u32* sjt_parent100 = 0;
     sjs_list_u32* sjt_parent101 = 0;
-    sjs_list_u32* sjt_parent96 = 0;
-    sjs_list_u32* sjt_parent98 = 0;
+    sjs_list_u32* sjt_parent102 = 0;
+    sjs_list_u32* sjt_parent97 = 0;
     sjs_list_u32* sjt_parent99 = 0;
 
 #line 8 "lib/sj-lib-common/list.sj"
-    sjt_parent96 = &g_glframebuffers;
+    sjt_parent97 = &g_glframebuffers;
 #line 4
-    sjt_parent98 = &g_glframebuffers;
+    sjt_parent99 = &g_glframebuffers;
 #line 4
-    sjf_list_u32_getcount(sjt_parent98, &sjt_capture33);
+    sjf_list_u32_getcount(sjt_parent99, &sjt_capture34);
 #line 155 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam154 = sjt_capture33 - 1;
+    sjt_functionParam154 = sjt_capture34 - 1;
 #line 155
-    sjf_list_u32_getat(sjt_parent96, sjt_functionParam154, &sjt_capture34);
-    if (sjt_capture34 != framebuffer->id) {
+    sjf_list_u32_getat(sjt_parent97, sjt_functionParam154, &sjt_capture35);
+    if (sjt_capture35 != framebuffer->id) {
         sjs_string* sjt_functionParam155 = 0;
 
         sjt_call13._refCount = 1;
@@ -10509,35 +10509,35 @@ void sjf_glpopframebuffer(sjs_framebuffer* framebuffer) {
     }
 
 #line 53 "lib/sj-lib-common/list.sj"
-    sjt_parent99 = &g_glframebuffers;
-#line 4
     sjt_parent100 = &g_glframebuffers;
 #line 4
-    sjf_list_u32_getcount(sjt_parent100, &sjt_capture35);
-#line 158 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam156 = sjt_capture35 - 1;
-#line 158
-    sjf_list_u32_removeat(sjt_parent99, sjt_functionParam156);
-#line 4 "lib/sj-lib-common/list.sj"
     sjt_parent101 = &g_glframebuffers;
 #line 4
     sjf_list_u32_getcount(sjt_parent101, &sjt_capture36);
-    if (sjt_capture36 > 0) {
-        int32_t sjt_capture37;
+#line 158 "lib/sj-lib-ui/gl.sj"
+    sjt_functionParam156 = sjt_capture36 - 1;
+#line 158
+    sjf_list_u32_removeat(sjt_parent100, sjt_functionParam156);
+#line 4 "lib/sj-lib-common/list.sj"
+    sjt_parent102 = &g_glframebuffers;
+#line 4
+    sjf_list_u32_getcount(sjt_parent102, &sjt_capture37);
+    if (sjt_capture37 > 0) {
+        int32_t sjt_capture38;
         int32_t sjt_functionParam157;
-        sjs_list_u32* sjt_parent102 = 0;
         sjs_list_u32* sjt_parent103 = 0;
+        sjs_list_u32* sjt_parent104 = 0;
 
 #line 8 "lib/sj-lib-common/list.sj"
-        sjt_parent102 = &g_glframebuffers;
-#line 4
         sjt_parent103 = &g_glframebuffers;
 #line 4
-        sjf_list_u32_getcount(sjt_parent103, &sjt_capture37);
+        sjt_parent104 = &g_glframebuffers;
+#line 4
+        sjf_list_u32_getcount(sjt_parent104, &sjt_capture38);
 #line 159 "lib/sj-lib-ui/gl.sj"
-        sjt_functionParam157 = sjt_capture37 - 1;
+        sjt_functionParam157 = sjt_capture38 - 1;
 #line 159
-        sjf_list_u32_getat(sjt_parent102, sjt_functionParam157, &id);
+        sjf_list_u32_getat(sjt_parent103, sjt_functionParam157, &id);
     } else {
 #line 159 "lib/sj-lib-ui/gl.sj"
         id = (uint32_t)0u;
@@ -10556,19 +10556,19 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     bool result5;
     sjs_string sjt_call10 = { -1 };
     sjs_rect sjt_call9 = { -1 };
-    int32_t sjt_capture25;
-    bool sjt_capture26;
-    int32_t sjt_capture27;
+    int32_t sjt_capture26;
+    bool sjt_capture27;
     int32_t sjt_capture28;
+    int32_t sjt_capture29;
     int32_t sjt_functionParam101;
     int32_t sjt_functionParam98;
     sjs_rect* sjt_functionParam99 = 0;
-    sjs_rect* sjt_parent71 = 0;
-    sjs_list_rect* sjt_parent74 = 0;
-    sjs_list_rect* sjt_parent76 = 0;
+    sjs_rect* sjt_parent72 = 0;
+    sjs_list_rect* sjt_parent75 = 0;
     sjs_list_rect* sjt_parent77 = 0;
     sjs_list_rect* sjt_parent78 = 0;
     sjs_list_rect* sjt_parent79 = 0;
+    sjs_list_rect* sjt_parent80 = 0;
 
     oldrect._refCount = 1;
 #line 134 "lib/sj-lib-ui/gl.sj"
@@ -10582,23 +10582,23 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 134
     sjf_rect(&oldrect);
 #line 8 "lib/sj-lib-common/list.sj"
-    sjt_parent74 = &g_glviewports;
+    sjt_parent75 = &g_glviewports;
 #line 4
-    sjt_parent76 = &g_glviewports;
+    sjt_parent77 = &g_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent76, &sjt_capture25);
+    sjf_list_rect_getcount(sjt_parent77, &sjt_capture26);
 #line 135 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam98 = sjt_capture25 - 1;
+    sjt_functionParam98 = sjt_capture26 - 1;
 #line 135
-    sjf_list_rect_getat(sjt_parent74, sjt_functionParam98, &sjt_call9);
+    sjf_list_rect_getat(sjt_parent75, sjt_functionParam98, &sjt_call9);
 #line 135
-    sjt_parent71 = &sjt_call9;
+    sjt_parent72 = &sjt_call9;
 #line 135
     sjt_functionParam99 = &oldrect;
 #line 135
-    sjf_rect_isequal(sjt_parent71, sjt_functionParam99, &sjt_capture26);
+    sjf_rect_isequal(sjt_parent72, sjt_functionParam99, &sjt_capture27);
 #line 135
-    result5 = !sjt_capture26;
+    result5 = !sjt_capture27;
     if (result5) {
         sjs_string* sjt_functionParam100 = 0;
 
@@ -10624,35 +10624,35 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
     }
 
 #line 53 "lib/sj-lib-common/list.sj"
-    sjt_parent77 = &g_glviewports;
-#line 4
     sjt_parent78 = &g_glviewports;
 #line 4
-    sjf_list_rect_getcount(sjt_parent78, &sjt_capture27);
-#line 138 "lib/sj-lib-ui/gl.sj"
-    sjt_functionParam101 = sjt_capture27 - 1;
-#line 138
-    sjf_list_rect_removeat(sjt_parent77, sjt_functionParam101);
-#line 4 "lib/sj-lib-common/list.sj"
     sjt_parent79 = &g_glviewports;
 #line 4
     sjf_list_rect_getcount(sjt_parent79, &sjt_capture28);
-    if (sjt_capture28 > 0) {
-        int32_t sjt_capture29;
+#line 138 "lib/sj-lib-ui/gl.sj"
+    sjt_functionParam101 = sjt_capture28 - 1;
+#line 138
+    sjf_list_rect_removeat(sjt_parent78, sjt_functionParam101);
+#line 4 "lib/sj-lib-common/list.sj"
+    sjt_parent80 = &g_glviewports;
+#line 4
+    sjf_list_rect_getcount(sjt_parent80, &sjt_capture29);
+    if (sjt_capture29 > 0) {
+        int32_t sjt_capture30;
         int32_t sjt_functionParam102;
-        sjs_list_rect* sjt_parent80 = 0;
         sjs_list_rect* sjt_parent81 = 0;
+        sjs_list_rect* sjt_parent82 = 0;
 
 #line 8 "lib/sj-lib-common/list.sj"
-        sjt_parent80 = &g_glviewports;
-#line 4
         sjt_parent81 = &g_glviewports;
 #line 4
-        sjf_list_rect_getcount(sjt_parent81, &sjt_capture29);
+        sjt_parent82 = &g_glviewports;
+#line 4
+        sjf_list_rect_getcount(sjt_parent82, &sjt_capture30);
 #line 139 "lib/sj-lib-ui/gl.sj"
-        sjt_functionParam102 = sjt_capture29 - 1;
+        sjt_functionParam102 = sjt_capture30 - 1;
 #line 139
-        sjf_list_rect_getat(sjt_parent80, sjt_functionParam102, &newrect);
+        sjf_list_rect_getat(sjt_parent81, sjt_functionParam102, &newrect);
     } else {
         newrect._refCount = 1;
 #line 2 "lib/sj-lib-ui/rect.sj"
@@ -10682,14 +10682,14 @@ void sjf_glpopviewport(sjs_rect* rect, sjs_rect* scenerect) {
 
 void sjf_glpushframebuffer(sjs_framebuffer* framebuffer) {
     uint32_t sjt_functionParam121;
-    sjs_list_u32* sjt_parent94 = 0;
+    sjs_list_u32* sjt_parent95 = 0;
 
 #line 44 "lib/sj-lib-common/list.sj"
-    sjt_parent94 = &g_glframebuffers;
+    sjt_parent95 = &g_glframebuffers;
 #line 148 "lib/sj-lib-ui/gl.sj"
     sjt_functionParam121 = framebuffer->id;
 #line 148
-    sjf_list_u32_add(sjt_parent94, sjt_functionParam121);
+    sjf_list_u32_add(sjt_parent95, sjt_functionParam121);
 #line 150
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->id);
 }
@@ -10697,7 +10697,7 @@ void sjf_glpushframebuffer(sjs_framebuffer* framebuffer) {
 void sjf_glpushviewport(sjs_rect* rect, sjs_rect* scenerect) {
     sjs_rect newrect = { -1 };
     sjs_rect* sjt_functionParam64 = 0;
-    sjs_list_rect* sjt_parent58 = 0;
+    sjs_list_rect* sjt_parent59 = 0;
 
     newrect._refCount = 1;
 #line 126 "lib/sj-lib-ui/gl.sj"
@@ -10711,11 +10711,11 @@ void sjf_glpushviewport(sjs_rect* rect, sjs_rect* scenerect) {
 #line 126
     sjf_rect(&newrect);
 #line 44 "lib/sj-lib-common/list.sj"
-    sjt_parent58 = &g_glviewports;
+    sjt_parent59 = &g_glviewports;
 #line 127 "lib/sj-lib-ui/gl.sj"
     sjt_functionParam64 = &newrect;
 #line 127
-    sjf_list_rect_add(sjt_parent58, sjt_functionParam64);
+    sjf_list_rect_add(sjt_parent59, sjt_functionParam64);
 #line 129
     glViewport(newrect.x, newrect.y, newrect.w, newrect.h);
 
@@ -11486,24 +11486,24 @@ void sjf_i32_max(int32_t a, int32_t b, int32_t* _return) {
 
 void sjf_image(sjs_image* _this) {
     sjs_size size = { -1 };
-    bool sjt_capture81;
+    bool sjt_capture82;
     sjs_rect sjt_funcold21 = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture81 = ((&_this->rect)->h == 0);
+        sjt_capture82 = ((&_this->rect)->h == 0);
     } else {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture81 = false;
+        sjt_capture82 = false;
     }
 
-    if (sjt_capture81) {
-        sjs_texture* sjt_parent288 = 0;
+    if (sjt_capture82) {
+        sjs_texture* sjt_parent289 = 0;
 
 #line 1 "lib/sj-lib-ui/image.sj"
-        sjt_parent288 = &_this->texture;
+        sjt_parent289 = &_this->texture;
 #line 1
-        sjf_texture_getsize(sjt_parent288, &size);
+        sjf_texture_getsize(sjt_parent289, &size);
 #line 1
         sjt_funcold21._refCount = 1;
 #line 8
@@ -11554,24 +11554,24 @@ void sjf_image_destroy(sjs_image* _this) {
 
 void sjf_image_heap(sjs_image* _this) {
     sjs_size size = { -1 };
-    bool sjt_capture82;
+    bool sjt_capture83;
     sjs_rect sjt_funcold22 = { -1 };
 
     if ((&_this->rect)->w == 0) {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture82 = ((&_this->rect)->h == 0);
+        sjt_capture83 = ((&_this->rect)->h == 0);
     } else {
 #line 6 "lib/sj-lib-ui/image.sj"
-        sjt_capture82 = false;
+        sjt_capture83 = false;
     }
 
-    if (sjt_capture82) {
-        sjs_texture* sjt_parent289 = 0;
+    if (sjt_capture83) {
+        sjs_texture* sjt_parent290 = 0;
 
 #line 5 "lib/sj-lib-ui/texture.sj"
-        sjt_parent289 = &_this->texture;
+        sjt_parent290 = &_this->texture;
 #line 5
-        sjf_texture_getsize(sjt_parent289, &size);
+        sjf_texture_getsize(sjt_parent290, &size);
 #line 5
         sjt_funcold22._refCount = 1;
 #line 8 "lib/sj-lib-ui/image.sj"
@@ -11707,15 +11707,15 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 
     if ((_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0) == 0) {
         sjs_margin* sjt_functionParam440 = 0;
-        sjs_rect* sjt_parent291 = 0;
+        sjs_rect* sjt_parent292 = 0;
         int32_t underscore3;
 
 #line 7 "lib/sj-lib-ui/rect.sj"
-        sjt_parent291 = &_parent->_rect;
+        sjt_parent292 = &_parent->_rect;
 #line 30 "lib/sj-lib-ui/imageElement.sj"
         sjt_functionParam440 = &_parent->margin;
 #line 30
-        sjf_rect_subtractmargin(sjt_parent291, sjt_functionParam440, &r);
+        sjf_rect_subtractmargin(sjt_parent292, sjt_functionParam440, &r);
 #line 31
         underscore3 = _parent->stretch;
         if (underscore3 == g_imagestretch_fill) {
@@ -11726,8 +11726,8 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
                 sjs_size sjt_call113 = { -1 };
                 sjs_rect sjt_funcold23 = { -1 };
                 sjs_size* sjt_functionParam441 = 0;
-                sjs_size* sjt_parent292 = 0;
-                sjs_texture* sjt_parent293 = 0;
+                sjs_size* sjt_parent293 = 0;
+                sjs_texture* sjt_parent294 = 0;
 
                 s._refCount = 1;
 #line 34 "lib/sj-lib-ui/imageElement.sj"
@@ -11737,15 +11737,15 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 #line 34
                 sjf_size(&s);
 #line 5 "lib/sj-lib-ui/size.sj"
-                sjt_parent292 = &s;
+                sjt_parent293 = &s;
 #line 5 "lib/sj-lib-ui/texture.sj"
-                sjt_parent293 = &(&_parent->image)->texture;
+                sjt_parent294 = &(&_parent->image)->texture;
 #line 5
-                sjf_texture_getsize(sjt_parent293, &sjt_call113);
+                sjf_texture_getsize(sjt_parent294, &sjt_call113);
 #line 35 "lib/sj-lib-ui/imageElement.sj"
                 sjt_functionParam441 = &sjt_call113;
 #line 35
-                sjf_size_min(sjt_parent292, sjt_functionParam441, &finalsize);
+                sjf_size_min(sjt_parent293, sjt_functionParam441, &finalsize);
 #line 35
                 sjt_funcold23._refCount = 1;
 #line 37
@@ -11784,19 +11784,19 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
                     int32_t sjt_cast42;
                     int32_t sjt_cast43;
                     sjs_rect sjt_funcold24 = { -1 };
-                    sjs_texture* sjt_parent294 = 0;
                     sjs_texture* sjt_parent295 = 0;
+                    sjs_texture* sjt_parent296 = 0;
 
-#line 5 "lib/sj-lib-ui/texture.sj"
-                    sjt_parent294 = &(&_parent->image)->texture;
-#line 5
-                    sjf_texture_getsize(sjt_parent294, &sjt_call114);
-#line 45 "lib/sj-lib-ui/imageElement.sj"
-                    sjt_cast40 = (&sjt_call114)->w;
 #line 5 "lib/sj-lib-ui/texture.sj"
                     sjt_parent295 = &(&_parent->image)->texture;
 #line 5
-                    sjf_texture_getsize(sjt_parent295, &sjt_call115);
+                    sjf_texture_getsize(sjt_parent295, &sjt_call114);
+#line 45 "lib/sj-lib-ui/imageElement.sj"
+                    sjt_cast40 = (&sjt_call114)->w;
+#line 5 "lib/sj-lib-ui/texture.sj"
+                    sjt_parent296 = &(&_parent->image)->texture;
+#line 5
+                    sjf_texture_getsize(sjt_parent296, &sjt_call115);
 #line 45 "lib/sj-lib-ui/imageElement.sj"
                     sjt_cast41 = (&sjt_call115)->h;
 #line 45
@@ -11897,14 +11897,14 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 
     if ((_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0) != 0) {
         sjs_scene2d* sjt_functionParam463 = 0;
-        sjs_imagerenderer* sjt_parent296 = 0;
+        sjs_imagerenderer* sjt_parent297 = 0;
 
 #line 8 "lib/sj-lib-ui/imageRenderer.sj"
-        sjt_parent296 = (_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0);
+        sjt_parent297 = (_parent->_imagerenderer._refCount != -1 ? &_parent->_imagerenderer : 0);
 #line 28 "lib/sj-lib-ui/imageElement.sj"
         sjt_functionParam463 = scene;
 #line 28
-        sjf_imagerenderer_render(sjt_parent296, sjt_functionParam463);
+        sjf_imagerenderer_render(sjt_parent297, sjt_functionParam463);
     }
 
     if (r._refCount == 1) { sjf_rect_destroy(&r); }
@@ -11915,18 +11915,18 @@ void sjf_imageelement_render(sjs_imageelement* _parent, sjs_scene2d* scene) {
 
 void sjf_imageelement_setrect(sjs_imageelement* _parent, sjs_rect* rect_) {
     bool result11;
-    bool sjt_capture83;
+    bool sjt_capture84;
     sjs_rect* sjt_functionParam439 = 0;
-    sjs_rect* sjt_parent290 = 0;
+    sjs_rect* sjt_parent291 = 0;
 
 #line 15 "lib/sj-lib-ui/rect.sj"
-    sjt_parent290 = &_parent->_rect;
+    sjt_parent291 = &_parent->_rect;
 #line 20 "lib/sj-lib-ui/imageElement.sj"
     sjt_functionParam439 = rect_;
 #line 20
-    sjf_rect_isequal(sjt_parent290, sjt_functionParam439, &sjt_capture83);
+    sjf_rect_isequal(sjt_parent291, sjt_functionParam439, &sjt_capture84);
 #line 21
-    result11 = !sjt_capture83;
+    result11 = !sjt_capture84;
     if (result11) {
         if (_parent->_rect._refCount == 1) { sjf_rect_destroy(&_parent->_rect); }
 ;
@@ -12705,59 +12705,59 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
     sjs_vec3* sjt_functionParam248 = 0;
     sjs_vec3* sjt_functionParam249 = 0;
     sjs_vec3* sjt_functionParam250 = 0;
-    sjs_vec3* sjt_parent159 = 0;
     sjs_vec3* sjt_parent160 = 0;
     sjs_vec3* sjt_parent161 = 0;
     sjs_vec3* sjt_parent162 = 0;
+    sjs_vec3* sjt_parent163 = 0;
     sjs_vec3 sjt_value2 = { -1 };
     sjs_vec3 tvec = { -1 };
 
 #line 135 "lib/sj-lib-ui/vertexBuffer.sj"
-    sjt_parent159 = v1;
+    sjt_parent160 = v1;
 #line 135
     sjt_functionParam247 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent159, sjt_functionParam247, &edge1);
+    sjf_vec3_subtract(sjt_parent160, sjt_functionParam247, &edge1);
 #line 135
-    sjt_parent160 = v2;
+    sjt_parent161 = v2;
 #line 135
     sjt_functionParam248 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent160, sjt_functionParam248, &edge2);
+    sjf_vec3_subtract(sjt_parent161, sjt_functionParam248, &edge2);
 #line 135
-    sjt_parent161 = dir;
+    sjt_parent162 = dir;
 #line 139
     sjt_functionParam249 = &edge2;
 #line 139
-    sjf_vec3_cross(sjt_parent161, sjt_functionParam249, &pvec);
+    sjf_vec3_cross(sjt_parent162, sjt_functionParam249, &pvec);
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent162 = &edge1;
+    sjt_parent163 = &edge1;
 #line 140 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam250 = &pvec;
 #line 140
-    sjf_vec3_dot(sjt_parent162, sjt_functionParam250, &det);
+    sjf_vec3_dot(sjt_parent163, sjt_functionParam250, &det);
     if (det > 0.0f) {
         sjs_vec3* sjt_functionParam251 = 0;
-        sjs_vec3* sjt_parent163 = 0;
+        sjs_vec3* sjt_parent164 = 0;
 
 #line 135 "lib/sj-lib-ui/vertexBuffer.sj"
-        sjt_parent163 = orig;
+        sjt_parent164 = orig;
 #line 135
         sjt_functionParam251 = v0;
 #line 135
-        sjf_vec3_subtract(sjt_parent163, sjt_functionParam251, &tvec);
+        sjf_vec3_subtract(sjt_parent164, sjt_functionParam251, &tvec);
     } else {
         sjs_vec3* sjt_functionParam252 = 0;
-        sjs_vec3* sjt_parent164 = 0;
+        sjs_vec3* sjt_parent165 = 0;
 
 #line 144 "lib/sj-lib-ui/vertexBuffer.sj"
         det = 0.0f - det;
 #line 135
-        sjt_parent164 = v0;
+        sjt_parent165 = v0;
 #line 135
         sjt_functionParam252 = orig;
 #line 135
-        sjf_vec3_subtract(sjt_parent164, sjt_functionParam252, &tvec);
+        sjf_vec3_subtract(sjt_parent165, sjt_functionParam252, &tvec);
     }
 
     if (det < 0.0001f) {
@@ -12765,52 +12765,52 @@ void sjf_intersecttriangle(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs_vec3
         _return->_refCount = -1;
     } else {
         sjs_vec3* sjt_functionParam253 = 0;
-        sjs_vec3* sjt_parent165 = 0;
+        sjs_vec3* sjt_parent166 = 0;
         float u;
 
 #line 55 "lib/sj-lib-ui/vec3.sj"
-        sjt_parent165 = &tvec;
+        sjt_parent166 = &tvec;
 #line 151 "lib/sj-lib-ui/vertexBuffer.sj"
         sjt_functionParam253 = &pvec;
 #line 151
-        sjf_vec3_dot(sjt_parent165, sjt_functionParam253, &u);
+        sjf_vec3_dot(sjt_parent166, sjt_functionParam253, &u);
         if ((u < 0.0f) || (u > det)) {
 #line 153 "lib/sj-lib-ui/vertexBuffer.sj"
             _return->_refCount = -1;
         } else {
             sjs_vec3* sjt_functionParam254 = 0;
             sjs_vec3* sjt_functionParam255 = 0;
-            sjs_vec3* sjt_parent166 = 0;
             sjs_vec3* sjt_parent167 = 0;
+            sjs_vec3* sjt_parent168 = 0;
             float v;
 
 #line 47 "lib/sj-lib-ui/vec3.sj"
-            sjt_parent166 = &tvec;
+            sjt_parent167 = &tvec;
 #line 155 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam254 = &edge1;
 #line 155
-            sjf_vec3_cross(sjt_parent166, sjt_functionParam254, &qvec);
+            sjf_vec3_cross(sjt_parent167, sjt_functionParam254, &qvec);
 #line 135
-            sjt_parent167 = dir;
+            sjt_parent168 = dir;
 #line 156
             sjt_functionParam255 = &qvec;
 #line 156
-            sjf_vec3_dot(sjt_parent167, sjt_functionParam255, &v);
+            sjf_vec3_dot(sjt_parent168, sjt_functionParam255, &v);
             if ((v < 0.0f) || ((u + v) > det)) {
 #line 158 "lib/sj-lib-ui/vertexBuffer.sj"
                 _return->_refCount = -1;
             } else {
                 float finvdet;
                 sjs_vec3* sjt_functionParam256 = 0;
-                sjs_vec3* sjt_parent168 = 0;
+                sjs_vec3* sjt_parent169 = 0;
                 float t;
 
 #line 55 "lib/sj-lib-ui/vec3.sj"
-                sjt_parent168 = &edge2;
+                sjt_parent169 = &edge2;
 #line 161 "lib/sj-lib-ui/vertexBuffer.sj"
                 sjt_functionParam256 = &qvec;
 #line 161
-                sjf_vec3_dot(sjt_parent168, sjt_functionParam256, &t);
+                sjf_vec3_dot(sjt_parent169, sjt_functionParam256, &t);
 #line 162
                 finvdet = 1.0f / det;
 #line 162
@@ -12860,58 +12860,58 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
     sjs_vec3* sjt_functionParam258 = 0;
     sjs_vec3* sjt_functionParam259 = 0;
     sjs_vec3* sjt_functionParam260 = 0;
-    sjs_vec3* sjt_parent169 = 0;
     sjs_vec3* sjt_parent170 = 0;
     sjs_vec3* sjt_parent171 = 0;
     sjs_vec3* sjt_parent172 = 0;
+    sjs_vec3* sjt_parent173 = 0;
     sjs_vec3 tvec = { -1 };
 
 #line 135 "lib/sj-lib-ui/vertexBuffer.sj"
-    sjt_parent169 = v1;
+    sjt_parent170 = v1;
 #line 135
     sjt_functionParam257 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent169, sjt_functionParam257, &edge1);
+    sjf_vec3_subtract(sjt_parent170, sjt_functionParam257, &edge1);
 #line 135
-    sjt_parent170 = v2;
+    sjt_parent171 = v2;
 #line 135
     sjt_functionParam258 = v0;
 #line 135
-    sjf_vec3_subtract(sjt_parent170, sjt_functionParam258, &edge2);
+    sjf_vec3_subtract(sjt_parent171, sjt_functionParam258, &edge2);
 #line 135
-    sjt_parent171 = dir;
+    sjt_parent172 = dir;
 #line 139
     sjt_functionParam259 = &edge2;
 #line 139
-    sjf_vec3_cross(sjt_parent171, sjt_functionParam259, &pvec);
+    sjf_vec3_cross(sjt_parent172, sjt_functionParam259, &pvec);
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent172 = &edge1;
+    sjt_parent173 = &edge1;
 #line 140 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam260 = &pvec;
 #line 140
-    sjf_vec3_dot(sjt_parent172, sjt_functionParam260, &det);
+    sjf_vec3_dot(sjt_parent173, sjt_functionParam260, &det);
     if (det > 0.0f) {
         sjs_vec3* sjt_functionParam261 = 0;
-        sjs_vec3* sjt_parent173 = 0;
+        sjs_vec3* sjt_parent174 = 0;
 
 #line 135 "lib/sj-lib-ui/vertexBuffer.sj"
-        sjt_parent173 = orig;
+        sjt_parent174 = orig;
 #line 135
         sjt_functionParam261 = v0;
 #line 135
-        sjf_vec3_subtract(sjt_parent173, sjt_functionParam261, &tvec);
+        sjf_vec3_subtract(sjt_parent174, sjt_functionParam261, &tvec);
     } else {
         sjs_vec3* sjt_functionParam262 = 0;
-        sjs_vec3* sjt_parent174 = 0;
+        sjs_vec3* sjt_parent175 = 0;
 
 #line 144 "lib/sj-lib-ui/vertexBuffer.sj"
         det = 0.0f - det;
 #line 135
-        sjt_parent174 = v0;
+        sjt_parent175 = v0;
 #line 135
         sjt_functionParam262 = orig;
 #line 135
-        sjf_vec3_subtract(sjt_parent174, sjt_functionParam262, &tvec);
+        sjf_vec3_subtract(sjt_parent175, sjt_functionParam262, &tvec);
     }
 
     if (det < 0.0001f) {
@@ -12922,15 +12922,15 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
         }
     } else {
         sjs_vec3* sjt_functionParam263 = 0;
-        sjs_vec3* sjt_parent175 = 0;
+        sjs_vec3* sjt_parent176 = 0;
         float u;
 
 #line 55 "lib/sj-lib-ui/vec3.sj"
-        sjt_parent175 = &tvec;
+        sjt_parent176 = &tvec;
 #line 151 "lib/sj-lib-ui/vertexBuffer.sj"
         sjt_functionParam263 = &pvec;
 #line 151
-        sjf_vec3_dot(sjt_parent175, sjt_functionParam263, &u);
+        sjf_vec3_dot(sjt_parent176, sjt_functionParam263, &u);
         if ((u < 0.0f) || (u > det)) {
 #line 153 "lib/sj-lib-ui/vertexBuffer.sj"
             (*_return) = 0;
@@ -12940,22 +12940,22 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
         } else {
             sjs_vec3* sjt_functionParam264 = 0;
             sjs_vec3* sjt_functionParam265 = 0;
-            sjs_vec3* sjt_parent176 = 0;
             sjs_vec3* sjt_parent177 = 0;
+            sjs_vec3* sjt_parent178 = 0;
             float v;
 
 #line 47 "lib/sj-lib-ui/vec3.sj"
-            sjt_parent176 = &tvec;
+            sjt_parent177 = &tvec;
 #line 155 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam264 = &edge1;
 #line 155
-            sjf_vec3_cross(sjt_parent176, sjt_functionParam264, &qvec);
+            sjf_vec3_cross(sjt_parent177, sjt_functionParam264, &qvec);
 #line 135
-            sjt_parent177 = dir;
+            sjt_parent178 = dir;
 #line 156
             sjt_functionParam265 = &qvec;
 #line 156
-            sjf_vec3_dot(sjt_parent177, sjt_functionParam265, &v);
+            sjf_vec3_dot(sjt_parent178, sjt_functionParam265, &v);
             if ((v < 0.0f) || ((u + v) > det)) {
 #line 158 "lib/sj-lib-ui/vertexBuffer.sj"
                 (*_return) = 0;
@@ -12965,16 +12965,16 @@ void sjf_intersecttriangle_heap(sjs_vec3* orig, sjs_vec3* dir, sjs_vec3* v0, sjs
             } else {
                 float finvdet;
                 sjs_vec3* sjt_functionParam266 = 0;
-                sjs_vec3* sjt_parent178 = 0;
+                sjs_vec3* sjt_parent179 = 0;
                 sjs_vec3* sjt_value3 = 0;
                 float t;
 
 #line 55 "lib/sj-lib-ui/vec3.sj"
-                sjt_parent178 = &edge2;
+                sjt_parent179 = &edge2;
 #line 161 "lib/sj-lib-ui/vertexBuffer.sj"
                 sjt_functionParam266 = &qvec;
 #line 161
-                sjf_vec3_dot(sjt_parent178, sjt_functionParam266, &t);
+                sjf_vec3_dot(sjt_parent179, sjt_functionParam266, &t);
 #line 162
                 finvdet = 1.0f / det;
 #line 162
@@ -13037,15 +13037,15 @@ void sjf_lambda2_invoke(sjs_lambda2* _parent, sjs_string* _return) {
     sjs_string sjt_call104 = { -1 };
     sjs_string sjt_call105 = { -1 };
     sjs_string* sjt_functionParam387 = 0;
-    sjs_string* sjt_parent267 = 0;
-    sjs_mouseevent* sjt_parent268 = 0;
+    sjs_string* sjt_parent268 = 0;
+    sjs_mouseevent* sjt_parent269 = 0;
 
 #line 55 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent268 = _parent->lambdaparam1;
+    sjt_parent269 = _parent->lambdaparam1;
 #line 55
-    sjf_mouseevent_asstring(sjt_parent268, &sjt_call104);
+    sjf_mouseevent_asstring(sjt_parent269, &sjt_call104);
 #line 88 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_parent267 = &sjt_call104;
+    sjt_parent268 = &sjt_call104;
 #line 88
     sjt_call105._refCount = 1;
 #line 88
@@ -13065,7 +13065,7 @@ void sjf_lambda2_invoke(sjs_lambda2* _parent, sjs_string* _return) {
 #line 88 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam387 = &sjt_call105;
 #line 88
-    sjf_string_add(sjt_parent267, sjt_functionParam387, _return);
+    sjf_string_add(sjt_parent268, sjt_functionParam387, _return);
 
     if (sjt_call104._refCount == 1) { sjf_string_destroy(&sjt_call104); }
 ;
@@ -13077,15 +13077,15 @@ void sjf_lambda2_invoke_heap(sjs_lambda2* _parent, sjs_string** _return) {
     sjs_string sjt_call106 = { -1 };
     sjs_string sjt_call107 = { -1 };
     sjs_string* sjt_functionParam388 = 0;
-    sjs_string* sjt_parent269 = 0;
-    sjs_mouseevent* sjt_parent270 = 0;
+    sjs_string* sjt_parent270 = 0;
+    sjs_mouseevent* sjt_parent271 = 0;
 
 #line 55 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent270 = _parent->lambdaparam2;
+    sjt_parent271 = _parent->lambdaparam2;
 #line 55
-    sjf_mouseevent_asstring(sjt_parent270, &sjt_call106);
+    sjf_mouseevent_asstring(sjt_parent271, &sjt_call106);
 #line 88 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_parent269 = &sjt_call106;
+    sjt_parent270 = &sjt_call106;
 #line 88
     sjt_call107._refCount = 1;
 #line 88
@@ -13105,7 +13105,7 @@ void sjf_lambda2_invoke_heap(sjs_lambda2* _parent, sjs_string** _return) {
 #line 88 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam388 = &sjt_call107;
 #line 88
-    sjf_string_add_heap(sjt_parent269, sjt_functionParam388, _return);
+    sjf_string_add_heap(sjt_parent270, sjt_functionParam388, _return);
 
     if (sjt_call106._refCount == 1) { sjf_string_destroy(&sjt_call106); }
 ;
@@ -13138,17 +13138,17 @@ void sjf_lambda3_invoke(sjs_lambda3* _parent, sjs_string* _return) {
     sjs_string sjt_call90 = { -1 };
     sjs_string* sjt_functionParam372 = 0;
     sjs_string* sjt_functionParam373 = 0;
-    sjs_string* sjt_parent237 = 0;
     sjs_string* sjt_parent238 = 0;
-    sjs_mouseevent* sjt_parent255 = 0;
-    sjs_vec2* sjt_parent260 = 0;
+    sjs_string* sjt_parent239 = 0;
+    sjs_mouseevent* sjt_parent256 = 0;
+    sjs_vec2* sjt_parent261 = 0;
 
 #line 55 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent255 = _parent->lambdaparam3;
+    sjt_parent256 = _parent->lambdaparam3;
 #line 55
-    sjf_mouseevent_asstring(sjt_parent255, &sjt_call60);
+    sjf_mouseevent_asstring(sjt_parent256, &sjt_call60);
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_parent238 = &sjt_call60;
+    sjt_parent239 = &sjt_call60;
 #line 74
     sjt_call89._refCount = 1;
 #line 74
@@ -13168,17 +13168,17 @@ void sjf_lambda3_invoke(sjs_lambda3* _parent, sjs_string* _return) {
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam372 = &sjt_call89;
 #line 74
-    sjf_string_add(sjt_parent238, sjt_functionParam372, &sjt_call59);
+    sjf_string_add(sjt_parent239, sjt_functionParam372, &sjt_call59);
 #line 74
-    sjt_parent237 = &sjt_call59;
+    sjt_parent238 = &sjt_call59;
 #line 5 "lib/sj-lib-ui/vec2.sj"
-    sjt_parent260 = _parent->lambdaparam4;
+    sjt_parent261 = _parent->lambdaparam4;
 #line 5
-    sjf_vec2_asstring(sjt_parent260, &sjt_call90);
+    sjf_vec2_asstring(sjt_parent261, &sjt_call90);
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam373 = &sjt_call90;
 #line 74
-    sjf_string_add(sjt_parent237, sjt_functionParam373, _return);
+    sjf_string_add(sjt_parent238, sjt_functionParam373, _return);
 
     if (sjt_call59._refCount == 1) { sjf_string_destroy(&sjt_call59); }
 ;
@@ -13197,17 +13197,17 @@ void sjf_lambda3_invoke_heap(sjs_lambda3* _parent, sjs_string** _return) {
     sjs_string sjt_call99 = { -1 };
     sjs_string* sjt_functionParam382 = 0;
     sjs_string* sjt_functionParam383 = 0;
-    sjs_string* sjt_parent261 = 0;
     sjs_string* sjt_parent262 = 0;
-    sjs_mouseevent* sjt_parent263 = 0;
-    sjs_vec2* sjt_parent264 = 0;
+    sjs_string* sjt_parent263 = 0;
+    sjs_mouseevent* sjt_parent264 = 0;
+    sjs_vec2* sjt_parent265 = 0;
 
 #line 55 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent263 = _parent->lambdaparam5;
+    sjt_parent264 = _parent->lambdaparam5;
 #line 55
-    sjf_mouseevent_asstring(sjt_parent263, &sjt_call100);
+    sjf_mouseevent_asstring(sjt_parent264, &sjt_call100);
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_parent262 = &sjt_call100;
+    sjt_parent263 = &sjt_call100;
 #line 74
     sjt_call101._refCount = 1;
 #line 74
@@ -13227,17 +13227,17 @@ void sjf_lambda3_invoke_heap(sjs_lambda3* _parent, sjs_string** _return) {
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam382 = &sjt_call101;
 #line 74
-    sjf_string_add(sjt_parent262, sjt_functionParam382, &sjt_call99);
+    sjf_string_add(sjt_parent263, sjt_functionParam382, &sjt_call99);
 #line 74
-    sjt_parent261 = &sjt_call99;
+    sjt_parent262 = &sjt_call99;
 #line 5 "lib/sj-lib-ui/vec2.sj"
-    sjt_parent264 = _parent->lambdaparam4;
+    sjt_parent265 = _parent->lambdaparam4;
 #line 5
-    sjf_vec2_asstring(sjt_parent264, &sjt_call102);
+    sjf_vec2_asstring(sjt_parent265, &sjt_call102);
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam383 = &sjt_call102;
 #line 74
-    sjf_string_add_heap(sjt_parent261, sjt_functionParam383, _return);
+    sjf_string_add_heap(sjt_parent262, sjt_functionParam383, _return);
 
     if (sjt_call100._refCount == 1) { sjf_string_destroy(&sjt_call100); }
 ;
@@ -13294,23 +13294,23 @@ void sjf_list_heap_iface_animation_destroy(sjs_list_heap_iface_animation* _this)
 
 void sjf_list_heap_iface_animation_getat_heap(sjs_list_heap_iface_animation* _parent, int32_t index, sji_animation* _return) {
     int32_t sjt_functionParam473;
-    sjs_array_heap_iface_animation* sjt_parent306 = 0;
+    sjs_array_heap_iface_animation* sjt_parent307 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent306 = &_parent->arr;
+    sjt_parent307 = &_parent->arr;
 #line 8 "lib/sj-lib-common/list.sj"
     sjt_functionParam473 = index;
 #line 8
-    sjf_array_heap_iface_animation_getat_heap(sjt_parent306, sjt_functionParam473, _return);
+    sjf_array_heap_iface_animation_getat_heap(sjt_parent307, sjt_functionParam473, _return);
 }
 
 void sjf_list_heap_iface_animation_getcount(sjs_list_heap_iface_animation* _parent, int32_t* _return) {
-    sjs_array_heap_iface_animation* sjt_parent303 = 0;
+    sjs_array_heap_iface_animation* sjt_parent304 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent303 = &_parent->arr;
+    sjt_parent304 = &_parent->arr;
 #line 29
-    sjf_array_heap_iface_animation_getcount(sjt_parent303, _return);
+    sjf_array_heap_iface_animation_getcount(sjt_parent304, _return);
 }
 
 void sjf_list_heap_iface_animation_heap(sjs_list_heap_iface_animation* _this) {
@@ -13348,55 +13348,55 @@ void sjf_list_heap_iface_model(sjs_list_heap_iface_model* _this) {
 }
 
 void sjf_list_heap_iface_model_add(sjs_list_heap_iface_model* _parent, sji_model item) {
-    int32_t sjt_capture42;
     int32_t sjt_capture43;
+    int32_t sjt_capture44;
     sjs_array_heap_iface_model sjt_funcold19 = { -1 };
     int32_t sjt_functionParam188;
     sji_model sjt_functionParam189 = { 0 };
-    sjs_array_heap_iface_model* sjt_parent115 = 0;
     sjs_array_heap_iface_model* sjt_parent116 = 0;
-    sjs_array_heap_iface_model* sjt_parent120 = 0;
+    sjs_array_heap_iface_model* sjt_parent117 = 0;
     sjs_array_heap_iface_model* sjt_parent121 = 0;
+    sjs_array_heap_iface_model* sjt_parent122 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent115 = &_parent->arr;
-#line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent115, &sjt_capture42);
-#line 35
     sjt_parent116 = &_parent->arr;
+#line 29
+    sjf_array_heap_iface_model_getcount(sjt_parent116, &sjt_capture43);
 #line 35
-    sjf_array_heap_iface_model_gettotalcount(sjt_parent116, &sjt_capture43);
-    if (sjt_capture42 == sjt_capture43) {
-        int32_t sjt_capture44;
+    sjt_parent117 = &_parent->arr;
+#line 35
+    sjf_array_heap_iface_model_gettotalcount(sjt_parent117, &sjt_capture44);
+    if (sjt_capture43 == sjt_capture44) {
+        int32_t sjt_capture45;
         int32_t sjt_functionParam183;
         int32_t sjt_functionParam184;
         int32_t sjt_functionParam185;
         int32_t sjt_functionParam186;
         int32_t sjt_functionParam187;
-        sjs_array_heap_iface_model* sjt_parent117 = 0;
         sjs_array_heap_iface_model* sjt_parent118 = 0;
         sjs_array_heap_iface_model* sjt_parent119 = 0;
+        sjs_array_heap_iface_model* sjt_parent120 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-        sjt_parent117 = &_parent->arr;
+        sjt_parent118 = &_parent->arr;
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam183 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent118 = &_parent->arr;
+        sjt_parent119 = &_parent->arr;
 #line 29
-        sjf_array_heap_iface_model_getcount(sjt_parent118, &sjt_functionParam184);
+        sjf_array_heap_iface_model_getcount(sjt_parent119, &sjt_functionParam184);
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam186 = 10;
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent119 = &_parent->arr;
+        sjt_parent120 = &_parent->arr;
 #line 35
-        sjf_array_heap_iface_model_gettotalcount(sjt_parent119, &sjt_capture44);
+        sjf_array_heap_iface_model_gettotalcount(sjt_parent120, &sjt_capture45);
 #line 46 "lib/sj-lib-common/list.sj"
-        sjt_functionParam187 = sjt_capture44 * 2;
+        sjt_functionParam187 = sjt_capture45 * 2;
 #line 46
         sjf_i32_max(sjt_functionParam186, sjt_functionParam187, &sjt_functionParam185);
 #line 46
-        sjf_array_heap_iface_model_clone(sjt_parent117, sjt_functionParam183, sjt_functionParam184, sjt_functionParam185, &sjt_funcold19);
+        sjf_array_heap_iface_model_clone(sjt_parent118, sjt_functionParam183, sjt_functionParam184, sjt_functionParam185, &sjt_funcold19);
 #line 46
         if (_parent->arr._refCount == 1) { sjf_array_heap_iface_model_destroy(&_parent->arr); }
 ;
@@ -13405,11 +13405,11 @@ void sjf_list_heap_iface_model_add(sjs_list_heap_iface_model* _parent, sji_model
     }
 
 #line 52
-    sjt_parent120 = &_parent->arr;
-#line 29
     sjt_parent121 = &_parent->arr;
 #line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent121, &sjt_functionParam188);
+    sjt_parent122 = &_parent->arr;
+#line 29
+    sjf_array_heap_iface_model_getcount(sjt_parent122, &sjt_functionParam188);
 #line 44 "lib/sj-lib-common/list.sj"
     sjt_functionParam189 = item;
     if (sjt_functionParam189._parent != 0) {
@@ -13417,7 +13417,7 @@ void sjf_list_heap_iface_model_add(sjs_list_heap_iface_model* _parent, sji_model
     }
 
 #line 44
-    sjf_array_heap_iface_model_initat(sjt_parent120, sjt_functionParam188, sjt_functionParam189);
+    sjf_array_heap_iface_model_initat(sjt_parent121, sjt_functionParam188, sjt_functionParam189);
 
     if (sjt_functionParam189._parent != 0) {
         sjt_functionParam189._parent->_refCount--;
@@ -13443,23 +13443,23 @@ void sjf_list_heap_iface_model_destroy(sjs_list_heap_iface_model* _this) {
 
 void sjf_list_heap_iface_model_getat_heap(sjs_list_heap_iface_model* _parent, int32_t index, sji_model* _return) {
     int32_t sjt_functionParam94;
-    sjs_array_heap_iface_model* sjt_parent68 = 0;
+    sjs_array_heap_iface_model* sjt_parent69 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent68 = &_parent->arr;
+    sjt_parent69 = &_parent->arr;
 #line 8 "lib/sj-lib-common/list.sj"
     sjt_functionParam94 = index;
 #line 8
-    sjf_array_heap_iface_model_getat_heap(sjt_parent68, sjt_functionParam94, _return);
+    sjf_array_heap_iface_model_getat_heap(sjt_parent69, sjt_functionParam94, _return);
 }
 
 void sjf_list_heap_iface_model_getcount(sjs_list_heap_iface_model* _parent, int32_t* _return) {
-    sjs_array_heap_iface_model* sjt_parent66 = 0;
+    sjs_array_heap_iface_model* sjt_parent67 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent66 = &_parent->arr;
+    sjt_parent67 = &_parent->arr;
 #line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent66, _return);
+    sjf_array_heap_iface_model_getcount(sjt_parent67, _return);
 }
 
 void sjf_list_heap_iface_model_heap(sjs_list_heap_iface_model* _this) {
@@ -13467,69 +13467,69 @@ void sjf_list_heap_iface_model_heap(sjs_list_heap_iface_model* _this) {
 
 void sjf_list_heap_iface_model_sortcb(sjs_list_heap_iface_model* _parent, cb_heap_iface_model_heap_iface_model_i32 cb) {
     cb_heap_iface_model_heap_iface_model_i32 sjt_functionParam90;
-    sjs_array_heap_iface_model* sjt_parent62 = 0;
+    sjs_array_heap_iface_model* sjt_parent63 = 0;
 
 #line 279 "lib/sj-lib-common/array.sj"
-    sjt_parent62 = &_parent->arr;
+    sjt_parent63 = &_parent->arr;
 #line 28 "lib/sj-lib-common/list.sj"
     sjt_functionParam90 = cb;
 #line 28
-    sjf_array_heap_iface_model_sortcb(sjt_parent62, sjt_functionParam90);
+    sjf_array_heap_iface_model_sortcb(sjt_parent63, sjt_functionParam90);
 }
 
 void sjf_list_rect(sjs_list_rect* _this) {
 }
 
 void sjf_list_rect_add(sjs_list_rect* _parent, sjs_rect* item) {
-    int32_t sjt_capture16;
     int32_t sjt_capture17;
+    int32_t sjt_capture18;
     sjs_array_rect sjt_funcold7 = { -1 };
     int32_t sjt_functionParam62;
     sjs_rect* sjt_functionParam63 = 0;
-    sjs_array_rect* sjt_parent51 = 0;
     sjs_array_rect* sjt_parent52 = 0;
-    sjs_array_rect* sjt_parent56 = 0;
+    sjs_array_rect* sjt_parent53 = 0;
     sjs_array_rect* sjt_parent57 = 0;
+    sjs_array_rect* sjt_parent58 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent51 = &_parent->arr;
-#line 29
-    sjf_array_rect_getcount(sjt_parent51, &sjt_capture16);
-#line 35
     sjt_parent52 = &_parent->arr;
+#line 29
+    sjf_array_rect_getcount(sjt_parent52, &sjt_capture17);
 #line 35
-    sjf_array_rect_gettotalcount(sjt_parent52, &sjt_capture17);
-    if (sjt_capture16 == sjt_capture17) {
-        int32_t sjt_capture18;
+    sjt_parent53 = &_parent->arr;
+#line 35
+    sjf_array_rect_gettotalcount(sjt_parent53, &sjt_capture18);
+    if (sjt_capture17 == sjt_capture18) {
+        int32_t sjt_capture19;
         int32_t sjt_functionParam57;
         int32_t sjt_functionParam58;
         int32_t sjt_functionParam59;
         int32_t sjt_functionParam60;
         int32_t sjt_functionParam61;
-        sjs_array_rect* sjt_parent53 = 0;
         sjs_array_rect* sjt_parent54 = 0;
         sjs_array_rect* sjt_parent55 = 0;
+        sjs_array_rect* sjt_parent56 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-        sjt_parent53 = &_parent->arr;
+        sjt_parent54 = &_parent->arr;
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam57 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent54 = &_parent->arr;
+        sjt_parent55 = &_parent->arr;
 #line 29
-        sjf_array_rect_getcount(sjt_parent54, &sjt_functionParam58);
+        sjf_array_rect_getcount(sjt_parent55, &sjt_functionParam58);
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam60 = 10;
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent55 = &_parent->arr;
+        sjt_parent56 = &_parent->arr;
 #line 35
-        sjf_array_rect_gettotalcount(sjt_parent55, &sjt_capture18);
+        sjf_array_rect_gettotalcount(sjt_parent56, &sjt_capture19);
 #line 46 "lib/sj-lib-common/list.sj"
-        sjt_functionParam61 = sjt_capture18 * 2;
+        sjt_functionParam61 = sjt_capture19 * 2;
 #line 46
         sjf_i32_max(sjt_functionParam60, sjt_functionParam61, &sjt_functionParam59);
 #line 46
-        sjf_array_rect_clone(sjt_parent53, sjt_functionParam57, sjt_functionParam58, sjt_functionParam59, &sjt_funcold7);
+        sjf_array_rect_clone(sjt_parent54, sjt_functionParam57, sjt_functionParam58, sjt_functionParam59, &sjt_funcold7);
 #line 46
         if (_parent->arr._refCount == 1) { sjf_array_rect_destroy(&_parent->arr); }
 ;
@@ -13538,15 +13538,15 @@ void sjf_list_rect_add(sjs_list_rect* _parent, sjs_rect* item) {
     }
 
 #line 52
-    sjt_parent56 = &_parent->arr;
-#line 29
     sjt_parent57 = &_parent->arr;
 #line 29
-    sjf_array_rect_getcount(sjt_parent57, &sjt_functionParam62);
+    sjt_parent58 = &_parent->arr;
+#line 29
+    sjf_array_rect_getcount(sjt_parent58, &sjt_functionParam62);
 #line 44 "lib/sj-lib-common/list.sj"
     sjt_functionParam63 = item;
 #line 44
-    sjf_array_rect_initat(sjt_parent56, sjt_functionParam62, sjt_functionParam63);
+    sjf_array_rect_initat(sjt_parent57, sjt_functionParam62, sjt_functionParam63);
 
     if (sjt_funcold7._refCount == 1) { sjf_array_rect_destroy(&sjt_funcold7); }
 ;
@@ -13565,35 +13565,35 @@ void sjf_list_rect_destroy(sjs_list_rect* _this) {
 
 void sjf_list_rect_getat(sjs_list_rect* _parent, int32_t index, sjs_rect* _return) {
     int32_t sjt_functionParam96;
-    sjs_array_rect* sjt_parent72 = 0;
-
-#line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent72 = &_parent->arr;
-#line 8 "lib/sj-lib-common/list.sj"
-    sjt_functionParam96 = index;
-#line 8
-    sjf_array_rect_getat(sjt_parent72, sjt_functionParam96, _return);
-}
-
-void sjf_list_rect_getat_heap(sjs_list_rect* _parent, int32_t index, sjs_rect** _return) {
-    int32_t sjt_functionParam97;
     sjs_array_rect* sjt_parent73 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
     sjt_parent73 = &_parent->arr;
 #line 8 "lib/sj-lib-common/list.sj"
+    sjt_functionParam96 = index;
+#line 8
+    sjf_array_rect_getat(sjt_parent73, sjt_functionParam96, _return);
+}
+
+void sjf_list_rect_getat_heap(sjs_list_rect* _parent, int32_t index, sjs_rect** _return) {
+    int32_t sjt_functionParam97;
+    sjs_array_rect* sjt_parent74 = 0;
+
+#line 41 "lib/sj-lib-common/array.sj"
+    sjt_parent74 = &_parent->arr;
+#line 8 "lib/sj-lib-common/list.sj"
     sjt_functionParam97 = index;
 #line 8
-    sjf_array_rect_getat_heap(sjt_parent73, sjt_functionParam97, _return);
+    sjf_array_rect_getat_heap(sjt_parent74, sjt_functionParam97, _return);
 }
 
 void sjf_list_rect_getcount(sjs_list_rect* _parent, int32_t* _return) {
-    sjs_array_rect* sjt_parent75 = 0;
+    sjs_array_rect* sjt_parent76 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent75 = &_parent->arr;
+    sjt_parent76 = &_parent->arr;
 #line 29
-    sjf_array_rect_getcount(sjt_parent75, _return);
+    sjf_array_rect_getcount(sjt_parent76, _return);
 }
 
 void sjf_list_rect_heap(sjs_list_rect* _this) {
@@ -13624,55 +13624,55 @@ void sjf_list_u32(sjs_list_u32* _this) {
 }
 
 void sjf_list_u32_add(sjs_list_u32* _parent, uint32_t item) {
-    int32_t sjt_capture30;
     int32_t sjt_capture31;
+    int32_t sjt_capture32;
     sjs_array_u32 sjt_funcold11 = { -1 };
     int32_t sjt_functionParam119;
     uint32_t sjt_functionParam120;
-    sjs_array_u32* sjt_parent87 = 0;
     sjs_array_u32* sjt_parent88 = 0;
-    sjs_array_u32* sjt_parent92 = 0;
+    sjs_array_u32* sjt_parent89 = 0;
     sjs_array_u32* sjt_parent93 = 0;
+    sjs_array_u32* sjt_parent94 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent87 = &_parent->arr;
-#line 29
-    sjf_array_u32_getcount(sjt_parent87, &sjt_capture30);
-#line 35
     sjt_parent88 = &_parent->arr;
+#line 29
+    sjf_array_u32_getcount(sjt_parent88, &sjt_capture31);
 #line 35
-    sjf_array_u32_gettotalcount(sjt_parent88, &sjt_capture31);
-    if (sjt_capture30 == sjt_capture31) {
-        int32_t sjt_capture32;
+    sjt_parent89 = &_parent->arr;
+#line 35
+    sjf_array_u32_gettotalcount(sjt_parent89, &sjt_capture32);
+    if (sjt_capture31 == sjt_capture32) {
+        int32_t sjt_capture33;
         int32_t sjt_functionParam114;
         int32_t sjt_functionParam115;
         int32_t sjt_functionParam116;
         int32_t sjt_functionParam117;
         int32_t sjt_functionParam118;
-        sjs_array_u32* sjt_parent89 = 0;
         sjs_array_u32* sjt_parent90 = 0;
         sjs_array_u32* sjt_parent91 = 0;
+        sjs_array_u32* sjt_parent92 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-        sjt_parent89 = &_parent->arr;
+        sjt_parent90 = &_parent->arr;
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam114 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent90 = &_parent->arr;
+        sjt_parent91 = &_parent->arr;
 #line 29
-        sjf_array_u32_getcount(sjt_parent90, &sjt_functionParam115);
+        sjf_array_u32_getcount(sjt_parent91, &sjt_functionParam115);
 #line 46 "lib/sj-lib-common/list.sj"
         sjt_functionParam117 = 10;
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent91 = &_parent->arr;
+        sjt_parent92 = &_parent->arr;
 #line 35
-        sjf_array_u32_gettotalcount(sjt_parent91, &sjt_capture32);
+        sjf_array_u32_gettotalcount(sjt_parent92, &sjt_capture33);
 #line 46 "lib/sj-lib-common/list.sj"
-        sjt_functionParam118 = sjt_capture32 * 2;
+        sjt_functionParam118 = sjt_capture33 * 2;
 #line 46
         sjf_i32_max(sjt_functionParam117, sjt_functionParam118, &sjt_functionParam116);
 #line 46
-        sjf_array_u32_clone(sjt_parent89, sjt_functionParam114, sjt_functionParam115, sjt_functionParam116, &sjt_funcold11);
+        sjf_array_u32_clone(sjt_parent90, sjt_functionParam114, sjt_functionParam115, sjt_functionParam116, &sjt_funcold11);
 #line 46
         if (_parent->arr._refCount == 1) { sjf_array_u32_destroy(&_parent->arr); }
 ;
@@ -13681,15 +13681,15 @@ void sjf_list_u32_add(sjs_list_u32* _parent, uint32_t item) {
     }
 
 #line 52
-    sjt_parent92 = &_parent->arr;
-#line 29
     sjt_parent93 = &_parent->arr;
 #line 29
-    sjf_array_u32_getcount(sjt_parent93, &sjt_functionParam119);
+    sjt_parent94 = &_parent->arr;
+#line 29
+    sjf_array_u32_getcount(sjt_parent94, &sjt_functionParam119);
 #line 44 "lib/sj-lib-common/list.sj"
     sjt_functionParam120 = item;
 #line 44
-    sjf_array_u32_initat(sjt_parent92, sjt_functionParam119, sjt_functionParam120);
+    sjf_array_u32_initat(sjt_parent93, sjt_functionParam119, sjt_functionParam120);
 
     if (sjt_funcold11._refCount == 1) { sjf_array_u32_destroy(&sjt_funcold11); }
 ;
@@ -13708,23 +13708,23 @@ void sjf_list_u32_destroy(sjs_list_u32* _this) {
 
 void sjf_list_u32_getat(sjs_list_u32* _parent, int32_t index, uint32_t* _return) {
     int32_t sjt_functionParam153;
-    sjs_array_u32* sjt_parent95 = 0;
+    sjs_array_u32* sjt_parent96 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent95 = &_parent->arr;
+    sjt_parent96 = &_parent->arr;
 #line 8 "lib/sj-lib-common/list.sj"
     sjt_functionParam153 = index;
 #line 8
-    sjf_array_u32_getat(sjt_parent95, sjt_functionParam153, _return);
+    sjf_array_u32_getat(sjt_parent96, sjt_functionParam153, _return);
 }
 
 void sjf_list_u32_getcount(sjs_list_u32* _parent, int32_t* _return) {
-    sjs_array_u32* sjt_parent97 = 0;
+    sjs_array_u32* sjt_parent98 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent97 = &_parent->arr;
+    sjt_parent98 = &_parent->arr;
 #line 29
-    sjf_array_u32_getcount(sjt_parent97, _return);
+    sjf_array_u32_getcount(sjt_parent98, _return);
 }
 
 void sjf_list_u32_heap(sjs_list_u32* _this) {
@@ -13768,38 +13768,38 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
             sjs_string sjt_call45 = { -1 };
             sjs_string sjt_call46 = { -1 };
             sjs_string sjt_call47 = { -1 };
-            bool sjt_capture67;
-            bool_option sjt_capture68;
+            bool sjt_capture68;
+            bool_option sjt_capture69;
             int32_t sjt_functionParam297;
-            sjs_hash_type_bool* sjt_parent203 = 0;
+            sjs_hash_type_bool* sjt_parent204 = 0;
 
 #line 46 "lib/sj-lib-common/log.sj"
             ifValue8 = includes;
 #line 21 "lib/sj-lib-common/hash.sj"
-            sjt_parent203 = ifValue8;
+            sjt_parent204 = ifValue8;
 #line 46 "lib/sj-lib-common/log.sj"
             sjt_functionParam297 = t;
 #line 46
-            sjf_hash_type_bool_getat(sjt_parent203, sjt_functionParam297, &sjt_capture68);
-            if (sjt_capture68.isvalid) {
+            sjf_hash_type_bool_getat(sjt_parent204, sjt_functionParam297, &sjt_capture69);
+            if (sjt_capture69.isvalid) {
                 int32_t sjt_functionParam298;
                 bool_option sjt_getValue3;
-                sjs_hash_type_bool* sjt_parent204 = 0;
+                sjs_hash_type_bool* sjt_parent205 = 0;
 
 #line 21 "lib/sj-lib-common/hash.sj"
-                sjt_parent204 = ifValue8;
+                sjt_parent205 = ifValue8;
 #line 46 "lib/sj-lib-common/log.sj"
                 sjt_functionParam298 = t;
 #line 46
-                sjf_hash_type_bool_getat(sjt_parent204, sjt_functionParam298, &sjt_getValue3);
+                sjf_hash_type_bool_getat(sjt_parent205, sjt_functionParam298, &sjt_getValue3);
 #line 49
-                sjt_capture67 = sjt_getValue3.value;
+                sjt_capture68 = sjt_getValue3.value;
             } else {
 #line 49 "lib/sj-lib-common/log.sj"
-                sjt_capture67 = false;
+                sjt_capture68 = false;
             }
 
-            if (sjt_capture67) {
+            if (sjt_capture68) {
                 sjs_string* sjt_functionParam299 = 0;
                 int32_t sjt_functionParam327;
                 sjs_string* sjt_functionParam328 = 0;
@@ -13807,22 +13807,22 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
                 int32_t sjt_functionParam330;
                 sjs_string* sjt_functionParam331 = 0;
                 sjs_string* sjt_functionParam332 = 0;
-                sjs_string* sjt_parent222 = 0;
                 sjs_string* sjt_parent223 = 0;
                 sjs_string* sjt_parent224 = 0;
                 sjs_string* sjt_parent225 = 0;
-                sjs_string* sjt_parent230 = 0;
+                sjs_string* sjt_parent226 = 0;
+                sjs_string* sjt_parent231 = 0;
 
 #line 46 "lib/sj-lib-common/log.sj"
                 sjt_functionParam327 = level;
 #line 46
                 sjf_loglevel_asstring(sjt_functionParam327, &sjt_call36);
 #line 50
-                sjt_parent230 = &sjt_call36;
+                sjt_parent231 = &sjt_call36;
 #line 50
-                sjf_string_touppercase(sjt_parent230, &sjt_call35);
+                sjf_string_touppercase(sjt_parent231, &sjt_call35);
 #line 50
-                sjt_parent225 = &sjt_call35;
+                sjt_parent226 = &sjt_call35;
 #line 50
                 sjt_call44._refCount = 1;
 #line 50
@@ -13842,9 +13842,9 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 50 "lib/sj-lib-common/log.sj"
                 sjt_functionParam328 = &sjt_call44;
 #line 50
-                sjf_string_add(sjt_parent225, sjt_functionParam328, &sjt_call34);
+                sjf_string_add(sjt_parent226, sjt_functionParam328, &sjt_call34);
 #line 50
-                sjt_parent224 = &sjt_call34;
+                sjt_parent225 = &sjt_call34;
 #line 46
                 sjt_functionParam330 = t;
 #line 46
@@ -13852,9 +13852,9 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 50
                 sjt_functionParam329 = &sjt_call45;
 #line 50
-                sjf_string_add(sjt_parent224, sjt_functionParam329, &sjt_call33);
+                sjf_string_add(sjt_parent225, sjt_functionParam329, &sjt_call33);
 #line 50
-                sjt_parent223 = &sjt_call33;
+                sjt_parent224 = &sjt_call33;
 #line 50
                 sjt_call46._refCount = 1;
 #line 50
@@ -13874,15 +13874,15 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 50 "lib/sj-lib-common/log.sj"
                 sjt_functionParam331 = &sjt_call46;
 #line 50
-                sjf_string_add(sjt_parent223, sjt_functionParam331, &sjt_call32);
+                sjf_string_add(sjt_parent224, sjt_functionParam331, &sjt_call32);
 #line 50
-                sjt_parent222 = &sjt_call32;
+                sjt_parent223 = &sjt_call32;
 #line 50
                 cb._cb(cb._parent, &sjt_call47);
 #line 50
                 sjt_functionParam332 = &sjt_call47;
 #line 50
-                sjf_string_add(sjt_parent222, sjt_functionParam332, &sjt_call31);
+                sjf_string_add(sjt_parent223, sjt_functionParam332, &sjt_call31);
 #line 50
                 sjt_functionParam299 = &sjt_call31;
 #line 50
@@ -13927,22 +13927,22 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
             int32_t sjt_functionParam337;
             sjs_string* sjt_functionParam338 = 0;
             sjs_string* sjt_functionParam339 = 0;
-            sjs_string* sjt_parent231 = 0;
             sjs_string* sjt_parent232 = 0;
             sjs_string* sjt_parent233 = 0;
             sjs_string* sjt_parent234 = 0;
             sjs_string* sjt_parent235 = 0;
+            sjs_string* sjt_parent236 = 0;
 
 #line 46 "lib/sj-lib-common/log.sj"
             sjt_functionParam334 = level;
 #line 46
             sjf_loglevel_asstring(sjt_functionParam334, &sjt_call53);
 #line 53
-            sjt_parent235 = &sjt_call53;
+            sjt_parent236 = &sjt_call53;
 #line 53
-            sjf_string_touppercase(sjt_parent235, &sjt_call52);
+            sjf_string_touppercase(sjt_parent236, &sjt_call52);
 #line 53
-            sjt_parent234 = &sjt_call52;
+            sjt_parent235 = &sjt_call52;
 #line 53
             sjt_call54._refCount = 1;
 #line 53
@@ -13962,9 +13962,9 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 53 "lib/sj-lib-common/log.sj"
             sjt_functionParam335 = &sjt_call54;
 #line 53
-            sjf_string_add(sjt_parent234, sjt_functionParam335, &sjt_call51);
+            sjf_string_add(sjt_parent235, sjt_functionParam335, &sjt_call51);
 #line 53
-            sjt_parent233 = &sjt_call51;
+            sjt_parent234 = &sjt_call51;
 #line 46
             sjt_functionParam337 = t;
 #line 46
@@ -13972,9 +13972,9 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 53
             sjt_functionParam336 = &sjt_call55;
 #line 53
-            sjf_string_add(sjt_parent233, sjt_functionParam336, &sjt_call50);
+            sjf_string_add(sjt_parent234, sjt_functionParam336, &sjt_call50);
 #line 53
-            sjt_parent232 = &sjt_call50;
+            sjt_parent233 = &sjt_call50;
 #line 53
             sjt_call56._refCount = 1;
 #line 53
@@ -13994,15 +13994,15 @@ void sjf_log__write(sjs_log* _parent, int32_t level, sjs_hash_type_bool* include
 #line 53 "lib/sj-lib-common/log.sj"
             sjt_functionParam338 = &sjt_call56;
 #line 53
-            sjf_string_add(sjt_parent232, sjt_functionParam338, &sjt_call49);
+            sjf_string_add(sjt_parent233, sjt_functionParam338, &sjt_call49);
 #line 53
-            sjt_parent231 = &sjt_call49;
+            sjt_parent232 = &sjt_call49;
 #line 53
             cb._cb(cb._parent, &sjt_call57);
 #line 53
             sjt_functionParam339 = &sjt_call57;
 #line 53
-            sjf_string_add(sjt_parent231, sjt_functionParam339, &sjt_call48);
+            sjf_string_add(sjt_parent232, sjt_functionParam339, &sjt_call48);
 #line 53
             sjt_functionParam333 = &sjt_call48;
 #line 53
@@ -14482,19 +14482,19 @@ void sjf_mainloop(void) {
     sjs_string sjt_call123 = { -1 };
     sjs_string sjt_call124 = { -1 };
     sjs_string sjt_call125 = { -1 };
-    bool sjt_capture90;
+    bool sjt_capture91;
     int32_t sjt_functionParam476;
     sjs_size* sjt_functionParam480 = 0;
     sjs_rect* sjt_functionParam481 = 0;
     sjs_scene2d* sjt_interfaceParam21 = 0;
-    sjs_animator* sjt_parent310 = 0;
-    sjs_windowrenderer* sjt_parent312 = 0;
-    sjs_scene2d* sjt_parent313 = 0;
+    sjs_animator* sjt_parent311 = 0;
+    sjs_windowrenderer* sjt_parent313 = 0;
     sjs_scene2d* sjt_parent314 = 0;
-    sjs_rect* sjt_parent315 = 0;
-    sji_element sjt_parent317 = { 0 };
-    sjs_scene2d* sjt_parent318 = 0;
-    sjs_windowrenderer* sjt_parent319 = 0;
+    sjs_scene2d* sjt_parent315 = 0;
+    sjs_rect* sjt_parent316 = 0;
+    sji_element sjt_parent318 = { 0 };
+    sjs_scene2d* sjt_parent319 = 0;
+    sjs_windowrenderer* sjt_parent320 = 0;
     int32_t ticks;
 
 #line 9 "lib/sj-lib-ui/loop.sj"
@@ -14504,11 +14504,11 @@ void sjf_mainloop(void) {
 #line 12
     ticks = SDL_GetTicks();
 #line 31 "lib/sj-lib-ui/animation.sj"
-    sjt_parent310 = &g_animator;
+    sjt_parent311 = &g_animator;
 #line 14 "lib/sj-lib-ui/loop.sj"
     sjt_functionParam476 = ticks;
 #line 14
-    sjf_animator_nextframe(sjt_parent310, sjt_functionParam476);
+    sjf_animator_nextframe(sjt_parent311, sjt_functionParam476);
     if (g_mainloop_showfps) {
 #line 17 "lib/sj-lib-ui/loop.sj"
         g_mainloop_frames = g_mainloop_frames + 1;
@@ -14519,7 +14519,7 @@ void sjf_mainloop(void) {
             sjs_string* sjt_functionParam477 = 0;
             sjs_string* sjt_functionParam478 = 0;
             float sjt_functionParam479;
-            sjs_string* sjt_parent311 = 0;
+            sjs_string* sjt_parent312 = 0;
 
 #line 19 "lib/sj-lib-ui/loop.sj"
             sjt_cast50 = g_mainloop_frames;
@@ -14544,7 +14544,7 @@ void sjf_mainloop(void) {
 #line 16
             sjf_string(&sjt_call124);
 #line 20 "lib/sj-lib-ui/loop.sj"
-            sjt_parent311 = &sjt_call124;
+            sjt_parent312 = &sjt_call124;
 #line 20
             sjt_functionParam479 = fps;
 #line 20
@@ -14552,7 +14552,7 @@ void sjf_mainloop(void) {
 #line 20
             sjt_functionParam478 = &sjt_call125;
 #line 20
-            sjf_string_add(sjt_parent311, sjt_functionParam478, &sjt_call123);
+            sjf_string_add(sjt_parent312, sjt_functionParam478, &sjt_call123);
 #line 20
             sjt_functionParam477 = &sjt_call123;
 #line 20
@@ -14565,19 +14565,19 @@ void sjf_mainloop(void) {
     }
 
 #line 7 "lib/sj-lib-ui/windowRenderer.sj"
-    sjt_parent312 = &g_rootwindowrenderer;
+    sjt_parent313 = &g_rootwindowrenderer;
 #line 7
-    sjf_windowrenderer_getsize(sjt_parent312, &size);
+    sjf_windowrenderer_getsize(sjt_parent313, &size);
 #line 27 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent313 = &g_rootscene;
+    sjt_parent314 = &g_rootscene;
 #line 27 "lib/sj-lib-ui/loop.sj"
     sjt_functionParam480 = &size;
 #line 27
-    sjf_scene2d_setsize(sjt_parent313, sjt_functionParam480);
+    sjf_scene2d_setsize(sjt_parent314, sjt_functionParam480);
 #line 8 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent314 = &g_rootscene;
+    sjt_parent315 = &g_rootscene;
 #line 8
-    sjf_scene2d_start(sjt_parent314);
+    sjf_scene2d_start(sjt_parent315);
 #line 8
     rect._refCount = 1;
 #line 29 "lib/sj-lib-ui/loop.sj"
@@ -14591,39 +14591,39 @@ void sjf_mainloop(void) {
 #line 29
     sjf_rect(&rect);
 #line 15 "lib/sj-lib-ui/rect.sj"
-    sjt_parent315 = &g_looplastrect;
+    sjt_parent316 = &g_looplastrect;
 #line 30 "lib/sj-lib-ui/loop.sj"
     sjt_functionParam481 = &rect;
 #line 30
-    sjf_rect_isequal(sjt_parent315, sjt_functionParam481, &sjt_capture90);
+    sjf_rect_isequal(sjt_parent316, sjt_functionParam481, &sjt_capture91);
 #line 30
-    result14 = !sjt_capture90;
+    result14 = !sjt_capture91;
     if (result14) {
         sjs_rect* sjt_interfaceParam20 = 0;
-        sji_element sjt_parent316 = { 0 };
+        sji_element sjt_parent317 = { 0 };
 
 #line 4 "lib/sj-lib-ui/element.sj"
-        sjt_parent316 = g_root;
+        sjt_parent317 = g_root;
 #line 31 "lib/sj-lib-ui/loop.sj"
         sjt_interfaceParam20 = &rect;
 #line 31
-        sjt_parent316._vtbl->setrect(sjt_parent316._parent, sjt_interfaceParam20);
+        sjt_parent317._vtbl->setrect(sjt_parent317._parent, sjt_interfaceParam20);
     }
 
 #line 5 "lib/sj-lib-ui/element.sj"
-    sjt_parent317 = g_root;
+    sjt_parent318 = g_root;
 #line 33 "lib/sj-lib-ui/loop.sj"
     sjt_interfaceParam21 = &g_rootscene;
 #line 33
-    sjt_parent317._vtbl->render(sjt_parent317._parent, sjt_interfaceParam21);
+    sjt_parent318._vtbl->render(sjt_parent318._parent, sjt_interfaceParam21);
 #line 19 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent318 = &g_rootscene;
+    sjt_parent319 = &g_rootscene;
 #line 19
-    sjf_scene2d_end(sjt_parent318);
+    sjf_scene2d_end(sjt_parent319);
 #line 22 "lib/sj-lib-ui/windowRenderer.sj"
-    sjt_parent319 = &g_rootwindowrenderer;
+    sjt_parent320 = &g_rootwindowrenderer;
 #line 22
-    sjf_windowrenderer_present(sjt_parent319);
+    sjf_windowrenderer_present(sjt_parent320);
 #line 38 "lib/sj-lib-ui/loop.sj"
     SDL_Event e;
 #line 39
@@ -14703,7 +14703,7 @@ void sjf_mainloop(void) {
                 sjs_mouseevent sjt_call126 = { -1 };
                 bool sjt_funcold25;
                 sjs_mouseevent* sjt_interfaceParam22 = 0;
-                sji_element sjt_parent320 = { 0 };
+                sji_element sjt_parent321 = { 0 };
 
 #line 77 "lib/sj-lib-ui/loop.sj"
                 ifValue14 = g_mouse_captureelement;
@@ -14712,7 +14712,7 @@ void sjf_mainloop(void) {
                 }
 
 #line 6 "lib/sj-lib-ui/element.sj"
-                sjt_parent320 = ifValue14;
+                sjt_parent321 = ifValue14;
 #line 6
                 sjt_funcold25 = shouldcontinue;
 #line 6
@@ -14736,7 +14736,7 @@ void sjf_mainloop(void) {
 #line 78
                 sjt_interfaceParam22 = &sjt_call126;
 #line 78
-                sjt_parent320._vtbl->firemouseevent(sjt_parent320._parent, sjt_interfaceParam22, &sjt_funcold25);
+                sjt_parent321._vtbl->firemouseevent(sjt_parent321._parent, sjt_interfaceParam22, &sjt_funcold25);
 #line 6 "lib/sj-lib-ui/element.sj"
                 shouldcontinue = sjt_funcold25;
 
@@ -14753,10 +14753,10 @@ void sjf_mainloop(void) {
                 sjs_mouseevent sjt_call127 = { -1 };
                 bool sjt_funcold26;
                 sjs_mouseevent* sjt_interfaceParam23 = 0;
-                sji_element sjt_parent321 = { 0 };
+                sji_element sjt_parent322 = { 0 };
 
 #line 6 "lib/sj-lib-ui/element.sj"
-                sjt_parent321 = g_root;
+                sjt_parent322 = g_root;
 #line 6
                 sjt_funcold26 = shouldcontinue;
 #line 6
@@ -14780,7 +14780,7 @@ void sjf_mainloop(void) {
 #line 86
                 sjt_interfaceParam23 = &sjt_call127;
 #line 86
-                sjt_parent321._vtbl->firemouseevent(sjt_parent321._parent, sjt_interfaceParam23, &sjt_funcold26);
+                sjt_parent322._vtbl->firemouseevent(sjt_parent322._parent, sjt_interfaceParam23, &sjt_funcold26);
 #line 6 "lib/sj-lib-ui/element.sj"
                 shouldcontinue = sjt_funcold26;
 
@@ -14953,62 +14953,8 @@ void sjf_mat4_identity_heap(sjs_mat4** _return) {
 }
 
 void sjf_mat4_invert(sjs_mat4* _parent, sjs_mat4* _return) {
-    float sjt_capture45;
-    float sjt_functionParam201;
-    sjs_mat4* sjt_parent131 = 0;
-    sjs_mat4 t = { -1 };
-
-    t._refCount = 1;
-#line 73 "lib/sj-lib-ui/mat4.sj"
-    t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
-#line 74
-    t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
-#line 75
-    t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
-#line 76
-    t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
-#line 77
-    t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
-#line 78
-    t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
-#line 79
-    t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
-#line 80
-    t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
-#line 81
-    t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
-#line 82
-    t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
-#line 83
-    t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
-#line 84
-    t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
-#line 85
-    t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
-#line 86
-    t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
-#line 87
-    t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
-#line 88
-    t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
-#line 88
-    sjf_mat4(&t);
-#line 40
-    sjt_parent131 = &t;
-#line 40
-    sjf_mat4_determinant(_parent, &sjt_capture45);
-#line 91
-    sjt_functionParam201 = 1.0f / sjt_capture45;
-#line 91
-    sjf_mat4_multiplyf32(sjt_parent131, sjt_functionParam201, _return);
-
-    if (t._refCount == 1) { sjf_mat4_destroy(&t); }
-;
-}
-
-void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
     float sjt_capture46;
-    float sjt_functionParam202;
+    float sjt_functionParam201;
     sjs_mat4* sjt_parent132 = 0;
     sjs_mat4 t = { -1 };
 
@@ -15052,9 +14998,63 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
 #line 40
     sjf_mat4_determinant(_parent, &sjt_capture46);
 #line 91
-    sjt_functionParam202 = 1.0f / sjt_capture46;
+    sjt_functionParam201 = 1.0f / sjt_capture46;
 #line 91
-    sjf_mat4_multiplyf32_heap(sjt_parent132, sjt_functionParam202, _return);
+    sjf_mat4_multiplyf32(sjt_parent132, sjt_functionParam201, _return);
+
+    if (t._refCount == 1) { sjf_mat4_destroy(&t); }
+;
+}
+
+void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
+    float sjt_capture47;
+    float sjt_functionParam202;
+    sjs_mat4* sjt_parent133 = 0;
+    sjs_mat4 t = { -1 };
+
+    t._refCount = 1;
+#line 73 "lib/sj-lib-ui/mat4.sj"
+    t.m00 = ((((((_parent->m12 * _parent->m23) * _parent->m31) - ((_parent->m13 * _parent->m22) * _parent->m31)) + ((_parent->m13 * _parent->m21) * _parent->m32)) - ((_parent->m11 * _parent->m23) * _parent->m32)) - ((_parent->m12 * _parent->m21) * _parent->m33)) + ((_parent->m11 * _parent->m22) * _parent->m33);
+#line 74
+    t.m01 = ((((((_parent->m03 * _parent->m22) * _parent->m31) - ((_parent->m02 * _parent->m23) * _parent->m31)) - ((_parent->m03 * _parent->m21) * _parent->m32)) + ((_parent->m01 * _parent->m23) * _parent->m32)) + ((_parent->m02 * _parent->m21) * _parent->m33)) - ((_parent->m01 * _parent->m22) * _parent->m33);
+#line 75
+    t.m02 = ((((((_parent->m02 * _parent->m13) * _parent->m31) - ((_parent->m03 * _parent->m12) * _parent->m31)) + ((_parent->m03 * _parent->m11) * _parent->m32)) - ((_parent->m01 * _parent->m13) * _parent->m32)) - ((_parent->m02 * _parent->m11) * _parent->m33)) + ((_parent->m01 * _parent->m12) * _parent->m33);
+#line 76
+    t.m03 = ((((((_parent->m03 * _parent->m12) * _parent->m21) - ((_parent->m02 * _parent->m13) * _parent->m21)) - ((_parent->m03 * _parent->m11) * _parent->m22)) + ((_parent->m01 * _parent->m13) * _parent->m22)) + ((_parent->m02 * _parent->m11) * _parent->m23)) - ((_parent->m01 * _parent->m12) * _parent->m23);
+#line 77
+    t.m10 = ((((((_parent->m13 * _parent->m22) * _parent->m30) - ((_parent->m12 * _parent->m23) * _parent->m30)) - ((_parent->m13 * _parent->m20) * _parent->m32)) + ((_parent->m10 * _parent->m23) * _parent->m32)) + ((_parent->m12 * _parent->m20) * _parent->m33)) - ((_parent->m10 * _parent->m22) * _parent->m33);
+#line 78
+    t.m11 = ((((((_parent->m02 * _parent->m23) * _parent->m30) - ((_parent->m03 * _parent->m22) * _parent->m30)) + ((_parent->m03 * _parent->m20) * _parent->m32)) - ((_parent->m00 * _parent->m23) * _parent->m32)) - ((_parent->m02 * _parent->m20) * _parent->m33)) + ((_parent->m00 * _parent->m22) * _parent->m33);
+#line 79
+    t.m12 = ((((((_parent->m03 * _parent->m12) * _parent->m30) - ((_parent->m02 * _parent->m13) * _parent->m30)) - ((_parent->m03 * _parent->m10) * _parent->m32)) + ((_parent->m00 * _parent->m13) * _parent->m32)) + ((_parent->m02 * _parent->m10) * _parent->m33)) - ((_parent->m00 * _parent->m12) * _parent->m33);
+#line 80
+    t.m13 = ((((((_parent->m02 * _parent->m13) * _parent->m20) - ((_parent->m03 * _parent->m12) * _parent->m20)) + ((_parent->m03 * _parent->m10) * _parent->m22)) - ((_parent->m00 * _parent->m13) * _parent->m22)) - ((_parent->m02 * _parent->m10) * _parent->m23)) + ((_parent->m00 * _parent->m12) * _parent->m23);
+#line 81
+    t.m20 = ((((((_parent->m11 * _parent->m23) * _parent->m30) - ((_parent->m13 * _parent->m21) * _parent->m30)) + ((_parent->m13 * _parent->m20) * _parent->m31)) - ((_parent->m10 * _parent->m23) * _parent->m31)) - ((_parent->m11 * _parent->m20) * _parent->m33)) + ((_parent->m10 * _parent->m21) * _parent->m33);
+#line 82
+    t.m21 = ((((((_parent->m03 * _parent->m21) * _parent->m30) - ((_parent->m01 * _parent->m23) * _parent->m30)) - ((_parent->m03 * _parent->m20) * _parent->m31)) + ((_parent->m00 * _parent->m23) * _parent->m31)) + ((_parent->m01 * _parent->m20) * _parent->m33)) - ((_parent->m00 * _parent->m21) * _parent->m33);
+#line 83
+    t.m22 = ((((((_parent->m01 * _parent->m13) * _parent->m30) - ((_parent->m03 * _parent->m11) * _parent->m30)) + ((_parent->m03 * _parent->m10) * _parent->m31)) - ((_parent->m00 * _parent->m13) * _parent->m31)) - ((_parent->m01 * _parent->m10) * _parent->m33)) + ((_parent->m00 * _parent->m11) * _parent->m33);
+#line 84
+    t.m23 = ((((((_parent->m03 * _parent->m11) * _parent->m20) - ((_parent->m01 * _parent->m13) * _parent->m20)) - ((_parent->m03 * _parent->m10) * _parent->m21)) + ((_parent->m00 * _parent->m13) * _parent->m21)) + ((_parent->m01 * _parent->m10) * _parent->m23)) - ((_parent->m00 * _parent->m11) * _parent->m23);
+#line 85
+    t.m30 = ((((((_parent->m12 * _parent->m21) * _parent->m30) - ((_parent->m11 * _parent->m22) * _parent->m30)) - ((_parent->m12 * _parent->m20) * _parent->m31)) + ((_parent->m10 * _parent->m22) * _parent->m31)) + ((_parent->m11 * _parent->m20) * _parent->m32)) - ((_parent->m10 * _parent->m21) * _parent->m32);
+#line 86
+    t.m31 = ((((((_parent->m01 * _parent->m22) * _parent->m30) - ((_parent->m02 * _parent->m21) * _parent->m30)) + ((_parent->m02 * _parent->m20) * _parent->m31)) - ((_parent->m00 * _parent->m22) * _parent->m31)) - ((_parent->m01 * _parent->m20) * _parent->m32)) + ((_parent->m00 * _parent->m21) * _parent->m32);
+#line 87
+    t.m32 = ((((((_parent->m02 * _parent->m11) * _parent->m30) - ((_parent->m01 * _parent->m12) * _parent->m30)) - ((_parent->m02 * _parent->m10) * _parent->m31)) + ((_parent->m00 * _parent->m12) * _parent->m31)) + ((_parent->m01 * _parent->m10) * _parent->m32)) - ((_parent->m00 * _parent->m11) * _parent->m32);
+#line 88
+    t.m33 = ((((((_parent->m01 * _parent->m12) * _parent->m20) - ((_parent->m02 * _parent->m11) * _parent->m20)) + ((_parent->m02 * _parent->m10) * _parent->m21)) - ((_parent->m00 * _parent->m12) * _parent->m21)) - ((_parent->m01 * _parent->m10) * _parent->m22)) + ((_parent->m00 * _parent->m11) * _parent->m22);
+#line 88
+    sjf_mat4(&t);
+#line 40
+    sjt_parent133 = &t;
+#line 40
+    sjf_mat4_determinant(_parent, &sjt_capture47);
+#line 91
+    sjt_functionParam202 = 1.0f / sjt_capture47;
+#line 91
+    sjf_mat4_multiplyf32_heap(sjt_parent133, sjt_functionParam202, _return);
 
     if (t._refCount == 1) { sjf_mat4_destroy(&t); }
 ;
@@ -15062,16 +15062,15 @@ void sjf_mat4_invert_heap(sjs_mat4* _parent, sjs_mat4** _return) {
 
 void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat4* _return) {
     sjs_vec3 sjt_call7 = { -1 };
-    float sjt_capture10;
     float sjt_capture11;
     float sjt_capture12;
+    float sjt_capture13;
     sjs_vec3* sjt_functionParam38 = 0;
     sjs_vec3* sjt_functionParam41 = 0;
     sjs_vec3* sjt_functionParam42 = 0;
     sjs_vec3* sjt_functionParam43 = 0;
     sjs_vec3* sjt_functionParam44 = 0;
     sjs_vec3* sjt_functionParam45 = 0;
-    sjs_vec3* sjt_parent32 = 0;
     sjs_vec3* sjt_parent33 = 0;
     sjs_vec3* sjt_parent34 = 0;
     sjs_vec3* sjt_parent35 = 0;
@@ -15079,37 +15078,38 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
     sjs_vec3* sjt_parent37 = 0;
     sjs_vec3* sjt_parent38 = 0;
     sjs_vec3* sjt_parent39 = 0;
+    sjs_vec3* sjt_parent40 = 0;
     sjs_vec3 temp = { -1 };
     sjs_vec3 xaxis = { -1 };
     sjs_vec3 yaxis = { -1 };
     sjs_vec3 zaxis = { -1 };
 
 #line 133 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent32 = target;
+    sjt_parent33 = target;
 #line 133
     sjt_functionParam38 = camera;
 #line 133
-    sjf_vec3_subtract(sjt_parent32, sjt_functionParam38, &temp);
+    sjf_vec3_subtract(sjt_parent33, sjt_functionParam38, &temp);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent33 = &temp;
+    sjt_parent34 = &temp;
 #line 38
-    sjf_vec3_normalize(sjt_parent33, &zaxis);
+    sjf_vec3_normalize(sjt_parent34, &zaxis);
 #line 133 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent35 = up;
+    sjt_parent36 = up;
 #line 136
     sjt_functionParam41 = &zaxis;
 #line 136
-    sjf_vec3_cross(sjt_parent35, sjt_functionParam41, &sjt_call7);
+    sjf_vec3_cross(sjt_parent36, sjt_functionParam41, &sjt_call7);
 #line 136
-    sjt_parent34 = &sjt_call7;
+    sjt_parent35 = &sjt_call7;
 #line 136
-    sjf_vec3_normalize(sjt_parent34, &xaxis);
+    sjf_vec3_normalize(sjt_parent35, &xaxis);
 #line 47 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent36 = &zaxis;
+    sjt_parent37 = &zaxis;
 #line 137 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam42 = &xaxis;
 #line 137
-    sjf_vec3_cross(sjt_parent36, sjt_functionParam42, &yaxis);
+    sjf_vec3_cross(sjt_parent37, sjt_functionParam42, &yaxis);
 #line 137
     _return->_refCount = 1;
 #line 138
@@ -15137,29 +15137,29 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 #line 150
     _return->m23 = 0.0f;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent37 = &xaxis;
+    sjt_parent38 = &xaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam43 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent37, sjt_functionParam43, &sjt_capture10);
+    sjf_vec3_dot(sjt_parent38, sjt_functionParam43, &sjt_capture11);
 #line 151
-    _return->m30 = 0.0f - sjt_capture10;
+    _return->m30 = 0.0f - sjt_capture11;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent38 = &yaxis;
+    sjt_parent39 = &yaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam44 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent38, sjt_functionParam44, &sjt_capture11);
+    sjf_vec3_dot(sjt_parent39, sjt_functionParam44, &sjt_capture12);
 #line 152
-    _return->m31 = 0.0f - sjt_capture11;
+    _return->m31 = 0.0f - sjt_capture12;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent39 = &zaxis;
+    sjt_parent40 = &zaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam45 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent39, sjt_functionParam45, &sjt_capture12);
+    sjf_vec3_dot(sjt_parent40, sjt_functionParam45, &sjt_capture13);
 #line 153
-    _return->m32 = 0.0f - sjt_capture12;
+    _return->m32 = 0.0f - sjt_capture13;
 #line 154
     _return->m33 = 1.0f;
 #line 154
@@ -15179,16 +15179,15 @@ void sjf_mat4_lookatlh(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat
 
 void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sjs_mat4** _return) {
     sjs_vec3 sjt_call8 = { -1 };
-    float sjt_capture13;
     float sjt_capture14;
     float sjt_capture15;
+    float sjt_capture16;
     sjs_vec3* sjt_functionParam46 = 0;
     sjs_vec3* sjt_functionParam47 = 0;
     sjs_vec3* sjt_functionParam48 = 0;
     sjs_vec3* sjt_functionParam49 = 0;
     sjs_vec3* sjt_functionParam50 = 0;
     sjs_vec3* sjt_functionParam51 = 0;
-    sjs_vec3* sjt_parent40 = 0;
     sjs_vec3* sjt_parent41 = 0;
     sjs_vec3* sjt_parent42 = 0;
     sjs_vec3* sjt_parent43 = 0;
@@ -15196,37 +15195,38 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
     sjs_vec3* sjt_parent45 = 0;
     sjs_vec3* sjt_parent46 = 0;
     sjs_vec3* sjt_parent47 = 0;
+    sjs_vec3* sjt_parent48 = 0;
     sjs_vec3 temp = { -1 };
     sjs_vec3 xaxis = { -1 };
     sjs_vec3 yaxis = { -1 };
     sjs_vec3 zaxis = { -1 };
 
 #line 133 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent40 = target;
+    sjt_parent41 = target;
 #line 133
     sjt_functionParam46 = camera;
 #line 133
-    sjf_vec3_subtract(sjt_parent40, sjt_functionParam46, &temp);
+    sjf_vec3_subtract(sjt_parent41, sjt_functionParam46, &temp);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent41 = &temp;
+    sjt_parent42 = &temp;
 #line 38
-    sjf_vec3_normalize(sjt_parent41, &zaxis);
+    sjf_vec3_normalize(sjt_parent42, &zaxis);
 #line 133 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent43 = up;
+    sjt_parent44 = up;
 #line 136
     sjt_functionParam47 = &zaxis;
 #line 136
-    sjf_vec3_cross(sjt_parent43, sjt_functionParam47, &sjt_call8);
+    sjf_vec3_cross(sjt_parent44, sjt_functionParam47, &sjt_call8);
 #line 136
-    sjt_parent42 = &sjt_call8;
+    sjt_parent43 = &sjt_call8;
 #line 136
-    sjf_vec3_normalize(sjt_parent42, &xaxis);
+    sjf_vec3_normalize(sjt_parent43, &xaxis);
 #line 47 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent44 = &zaxis;
+    sjt_parent45 = &zaxis;
 #line 137 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam48 = &xaxis;
 #line 137
-    sjf_vec3_cross(sjt_parent44, sjt_functionParam48, &yaxis);
+    sjf_vec3_cross(sjt_parent45, sjt_functionParam48, &yaxis);
 #line 137
     (*_return) = (sjs_mat4*)malloc(sizeof(sjs_mat4));
 #line 137
@@ -15256,29 +15256,29 @@ void sjf_mat4_lookatlh_heap(sjs_vec3* camera, sjs_vec3* target, sjs_vec3* up, sj
 #line 150
     (*_return)->m23 = 0.0f;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent45 = &xaxis;
+    sjt_parent46 = &xaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam49 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent45, sjt_functionParam49, &sjt_capture13);
+    sjf_vec3_dot(sjt_parent46, sjt_functionParam49, &sjt_capture14);
 #line 151
-    (*_return)->m30 = 0.0f - sjt_capture13;
+    (*_return)->m30 = 0.0f - sjt_capture14;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent46 = &yaxis;
+    sjt_parent47 = &yaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam50 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent46, sjt_functionParam50, &sjt_capture14);
+    sjf_vec3_dot(sjt_parent47, sjt_functionParam50, &sjt_capture15);
 #line 152
-    (*_return)->m31 = 0.0f - sjt_capture14;
+    (*_return)->m31 = 0.0f - sjt_capture15;
 #line 55 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent47 = &zaxis;
+    sjt_parent48 = &zaxis;
 #line 133 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam51 = camera;
 #line 133
-    sjf_vec3_dot(sjt_parent47, sjt_functionParam51, &sjt_capture15);
+    sjf_vec3_dot(sjt_parent48, sjt_functionParam51, &sjt_capture16);
 #line 153
-    (*_return)->m32 = 0.0f - sjt_capture15;
+    (*_return)->m32 = 0.0f - sjt_capture16;
 #line 154
     (*_return)->m33 = 1.0f;
 #line 154
@@ -15565,7 +15565,7 @@ void sjf_mat4_orthographic_heap(float left, float right, float bottom, float top
 }
 
 void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs_mat4* _return) {
-    float sjt_capture8;
+    float sjt_capture9;
     float sjt_functionParam32;
     float xscale;
     float yscale;
@@ -15573,9 +15573,9 @@ void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs
 #line 159 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam32 = (fovy / 180.0f) / 2.0f;
 #line 159
-    sjf_f32_tan(sjt_functionParam32, &sjt_capture8);
+    sjf_f32_tan(sjt_functionParam32, &sjt_capture9);
 #line 159
-    yscale = 1.0f / sjt_capture8;
+    yscale = 1.0f / sjt_capture9;
 #line 160
     xscale = yscale * aspect;
 #line 160
@@ -15617,7 +15617,7 @@ void sjf_mat4_perspective(float fovy, float aspect, float znear, float zfar, sjs
 }
 
 void sjf_mat4_perspective_heap(float fovy, float aspect, float znear, float zfar, sjs_mat4** _return) {
-    float sjt_capture9;
+    float sjt_capture10;
     float sjt_functionParam33;
     float xscale;
     float yscale;
@@ -15625,9 +15625,9 @@ void sjf_mat4_perspective_heap(float fovy, float aspect, float znear, float zfar
 #line 159 "lib/sj-lib-ui/mat4.sj"
     sjt_functionParam33 = (fovy / 180.0f) / 2.0f;
 #line 159
-    sjf_f32_tan(sjt_functionParam33, &sjt_capture9);
+    sjf_f32_tan(sjt_functionParam33, &sjt_capture10);
 #line 159
-    yscale = 1.0f / sjt_capture9;
+    yscale = 1.0f / sjt_capture10;
 #line 160
     xscale = yscale * aspect;
 #line 160
@@ -15827,17 +15827,17 @@ void sjf_mat4_transpose_heap(sjs_mat4* _parent, sjs_mat4** _return) {
 void sjf_model_zsort(sji_model l, sji_model r, int32_t* _return) {
     float sjt_functionParam92;
     float sjt_functionParam93;
-    sji_model sjt_parent64 = { 0 };
     sji_model sjt_parent65 = { 0 };
+    sji_model sjt_parent66 = { 0 };
 
 #line 11 "lib/sj-lib-ui/model.sj"
-    sjt_parent64 = l;
+    sjt_parent65 = l;
 #line 12
-    sjt_parent64._vtbl->getz(sjt_parent64._parent, &sjt_functionParam92);
+    sjt_parent65._vtbl->getz(sjt_parent65._parent, &sjt_functionParam92);
 #line 11
-    sjt_parent65 = r;
+    sjt_parent66 = r;
 #line 12
-    sjt_parent65._vtbl->getz(sjt_parent65._parent, &sjt_functionParam93);
+    sjt_parent66._vtbl->getz(sjt_parent66._parent, &sjt_functionParam93);
 #line 12
     sjf_f32_compare(sjt_functionParam92, sjt_functionParam93, _return);
 }
@@ -15867,12 +15867,12 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
     sjs_string* sjt_functionParam362 = 0;
     sjs_string* sjt_functionParam363 = 0;
     bool sjt_functionParam364;
-    sjs_string* sjt_parent239 = 0;
     sjs_string* sjt_parent240 = 0;
     sjs_string* sjt_parent241 = 0;
     sjs_string* sjt_parent242 = 0;
     sjs_string* sjt_parent243 = 0;
-    sjs_point* sjt_parent248 = 0;
+    sjs_string* sjt_parent244 = 0;
+    sjs_point* sjt_parent249 = 0;
 
     sjt_call65._refCount = 1;
 #line 56 "lib/sj-lib-ui/mouse.sj"
@@ -15890,17 +15890,17 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
 #line 16
     sjf_string(&sjt_call65);
 #line 56 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent243 = &sjt_call65;
+    sjt_parent244 = &sjt_call65;
 #line 5 "lib/sj-lib-ui/point.sj"
-    sjt_parent248 = &_parent->point;
+    sjt_parent249 = &_parent->point;
 #line 5
-    sjf_point_asstring(sjt_parent248, &sjt_call66);
+    sjf_point_asstring(sjt_parent249, &sjt_call66);
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam346 = &sjt_call66;
 #line 56
-    sjf_string_add(sjt_parent243, sjt_functionParam346, &sjt_call64);
+    sjf_string_add(sjt_parent244, sjt_functionParam346, &sjt_call64);
 #line 56
-    sjt_parent242 = &sjt_call64;
+    sjt_parent243 = &sjt_call64;
 #line 56
     sjt_call75._refCount = 1;
 #line 56
@@ -15920,9 +15920,9 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam359 = &sjt_call75;
 #line 56
-    sjf_string_add(sjt_parent242, sjt_functionParam359, &sjt_call63);
+    sjf_string_add(sjt_parent243, sjt_functionParam359, &sjt_call63);
 #line 56
-    sjt_parent241 = &sjt_call63;
+    sjt_parent242 = &sjt_call63;
 #line 56
     sjt_functionParam361 = _parent->iscaptured;
 #line 56
@@ -15930,9 +15930,9 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
 #line 56
     sjt_functionParam360 = &sjt_call76;
 #line 56
-    sjf_string_add(sjt_parent241, sjt_functionParam360, &sjt_call62);
+    sjf_string_add(sjt_parent242, sjt_functionParam360, &sjt_call62);
 #line 56
-    sjt_parent240 = &sjt_call62;
+    sjt_parent241 = &sjt_call62;
 #line 56
     sjt_call77._refCount = 1;
 #line 56
@@ -15952,9 +15952,9 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam362 = &sjt_call77;
 #line 56
-    sjf_string_add(sjt_parent240, sjt_functionParam362, &sjt_call61);
+    sjf_string_add(sjt_parent241, sjt_functionParam362, &sjt_call61);
 #line 56
-    sjt_parent239 = &sjt_call61;
+    sjt_parent240 = &sjt_call61;
 #line 56
     sjt_functionParam364 = _parent->isleftdown;
 #line 56
@@ -15962,7 +15962,7 @@ void sjf_mouseevent_asstring(sjs_mouseevent* _parent, sjs_string* _return) {
 #line 56
     sjt_functionParam363 = &sjt_call78;
 #line 56
-    sjf_string_add(sjt_parent239, sjt_functionParam363, _return);
+    sjf_string_add(sjt_parent240, sjt_functionParam363, _return);
 
     if (sjt_call61._refCount == 1) { sjf_string_destroy(&sjt_call61); }
 ;
@@ -16004,12 +16004,12 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
     sjs_string* sjt_functionParam369 = 0;
     sjs_string* sjt_functionParam370 = 0;
     bool sjt_functionParam371;
-    sjs_string* sjt_parent249 = 0;
     sjs_string* sjt_parent250 = 0;
     sjs_string* sjt_parent251 = 0;
     sjs_string* sjt_parent252 = 0;
     sjs_string* sjt_parent253 = 0;
-    sjs_point* sjt_parent254 = 0;
+    sjs_string* sjt_parent254 = 0;
+    sjs_point* sjt_parent255 = 0;
 
     sjt_call83._refCount = 1;
 #line 56 "lib/sj-lib-ui/mouse.sj"
@@ -16027,17 +16027,17 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
 #line 16
     sjf_string(&sjt_call83);
 #line 56 "lib/sj-lib-ui/mouse.sj"
-    sjt_parent253 = &sjt_call83;
+    sjt_parent254 = &sjt_call83;
 #line 5 "lib/sj-lib-ui/point.sj"
-    sjt_parent254 = &_parent->point;
+    sjt_parent255 = &_parent->point;
 #line 5
-    sjf_point_asstring(sjt_parent254, &sjt_call84);
+    sjf_point_asstring(sjt_parent255, &sjt_call84);
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam365 = &sjt_call84;
 #line 56
-    sjf_string_add(sjt_parent253, sjt_functionParam365, &sjt_call82);
+    sjf_string_add(sjt_parent254, sjt_functionParam365, &sjt_call82);
 #line 56
-    sjt_parent252 = &sjt_call82;
+    sjt_parent253 = &sjt_call82;
 #line 56
     sjt_call85._refCount = 1;
 #line 56
@@ -16057,9 +16057,9 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam366 = &sjt_call85;
 #line 56
-    sjf_string_add(sjt_parent252, sjt_functionParam366, &sjt_call81);
+    sjf_string_add(sjt_parent253, sjt_functionParam366, &sjt_call81);
 #line 56
-    sjt_parent251 = &sjt_call81;
+    sjt_parent252 = &sjt_call81;
 #line 56
     sjt_functionParam368 = _parent->iscaptured;
 #line 56
@@ -16067,9 +16067,9 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
 #line 56
     sjt_functionParam367 = &sjt_call86;
 #line 56
-    sjf_string_add(sjt_parent251, sjt_functionParam367, &sjt_call80);
+    sjf_string_add(sjt_parent252, sjt_functionParam367, &sjt_call80);
 #line 56
-    sjt_parent250 = &sjt_call80;
+    sjt_parent251 = &sjt_call80;
 #line 56
     sjt_call87._refCount = 1;
 #line 56
@@ -16089,9 +16089,9 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
 #line 56 "lib/sj-lib-ui/mouse.sj"
     sjt_functionParam369 = &sjt_call87;
 #line 56
-    sjf_string_add(sjt_parent250, sjt_functionParam369, &sjt_call79);
+    sjf_string_add(sjt_parent251, sjt_functionParam369, &sjt_call79);
 #line 56
-    sjt_parent249 = &sjt_call79;
+    sjt_parent250 = &sjt_call79;
 #line 56
     sjt_functionParam371 = _parent->isleftdown;
 #line 56
@@ -16099,7 +16099,7 @@ void sjf_mouseevent_asstring_heap(sjs_mouseevent* _parent, sjs_string** _return)
 #line 56
     sjt_functionParam370 = &sjt_call88;
 #line 56
-    sjf_string_add_heap(sjt_parent249, sjt_functionParam370, _return);
+    sjf_string_add_heap(sjt_parent250, sjt_functionParam370, _return);
 
     if (sjt_call79._refCount == 1) { sjf_string_destroy(&sjt_call79); }
 ;
@@ -16146,16 +16146,16 @@ void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_e
     bool shouldcontinue;
     int32_t sjt_forEnd5;
     int32_t sjt_forStart5;
-    sjs_array_heap_iface_element* sjt_parent26 = 0;
+    sjs_array_heap_iface_element* sjt_parent27 = 0;
 
 #line 45 "lib/sj-lib-ui/mouse.sj"
     shouldcontinue = true;
 #line 46
     sjt_forStart5 = 0;
 #line 44
-    sjt_parent26 = children;
+    sjt_parent27 = children;
 #line 44
-    sjf_array_heap_iface_element_getcount(sjt_parent26, &sjt_forEnd5);
+    sjf_array_heap_iface_element_getcount(sjt_parent27, &sjt_forEnd5);
 #line 46
     i = sjt_forEnd5 - 1;
     while (i >= sjt_forStart5) {
@@ -16164,23 +16164,23 @@ void sjf_mouseevent_firechildren(sjs_mouseevent* _parent, sjs_array_heap_iface_e
             bool sjt_funcold4;
             int32_t sjt_functionParam27;
             sjs_mouseevent* sjt_interfaceParam9 = 0;
-            sjs_array_heap_iface_element* sjt_parent27 = 0;
-            sji_element sjt_parent28 = { 0 };
+            sjs_array_heap_iface_element* sjt_parent28 = 0;
+            sji_element sjt_parent29 = { 0 };
 
 #line 44 "lib/sj-lib-ui/mouse.sj"
-            sjt_parent27 = children;
+            sjt_parent28 = children;
 #line 46
             sjt_functionParam27 = i;
 #line 46
-            sjf_array_heap_iface_element_getat_heap(sjt_parent27, sjt_functionParam27, &child);
+            sjf_array_heap_iface_element_getat_heap(sjt_parent28, sjt_functionParam27, &child);
 #line 6 "lib/sj-lib-ui/element.sj"
-            sjt_parent28 = child;
+            sjt_parent29 = child;
 #line 6
             sjt_funcold4 = shouldcontinue;
 #line 49 "lib/sj-lib-ui/mouse.sj"
             sjt_interfaceParam9 = _parent;
 #line 49
-            sjt_parent28._vtbl->firemouseevent(sjt_parent28._parent, sjt_interfaceParam9, &sjt_funcold4);
+            sjt_parent29._vtbl->firemouseevent(sjt_parent29._parent, sjt_interfaceParam9, &sjt_funcold4);
 #line 6 "lib/sj-lib-ui/element.sj"
             shouldcontinue = sjt_funcold4;
 
@@ -16218,8 +16218,8 @@ void sjf_point_asstring(sjs_point* _parent, sjs_string* _return) {
     sjs_string* sjt_functionParam350 = 0;
     int32_t sjt_functionParam351;
     int32_t sjt_functionParam352;
-    sjs_string* sjt_parent244 = 0;
     sjs_string* sjt_parent245 = 0;
+    sjs_string* sjt_parent246 = 0;
 
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam347 = _parent->x;
@@ -16228,7 +16228,7 @@ void sjf_point_asstring(sjs_point* _parent, sjs_string* _return) {
 #line 22
     sjf_i32_asstring(sjt_functionParam347, sjt_functionParam348, &sjt_call68);
 #line 5 "lib/sj-lib-ui/point.sj"
-    sjt_parent245 = &sjt_call68;
+    sjt_parent246 = &sjt_call68;
 #line 5
     sjt_call69._refCount = 1;
 #line 5
@@ -16248,9 +16248,9 @@ void sjf_point_asstring(sjs_point* _parent, sjs_string* _return) {
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam349 = &sjt_call69;
 #line 5
-    sjf_string_add(sjt_parent245, sjt_functionParam349, &sjt_call67);
+    sjf_string_add(sjt_parent246, sjt_functionParam349, &sjt_call67);
 #line 5
-    sjt_parent244 = &sjt_call67;
+    sjt_parent245 = &sjt_call67;
 #line 5
     sjt_functionParam351 = _parent->y;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -16260,7 +16260,7 @@ void sjf_point_asstring(sjs_point* _parent, sjs_string* _return) {
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam350 = &sjt_call70;
 #line 5
-    sjf_string_add(sjt_parent244, sjt_functionParam350, _return);
+    sjf_string_add(sjt_parent245, sjt_functionParam350, _return);
 
     if (sjt_call67._refCount == 1) { sjf_string_destroy(&sjt_call67); }
 ;
@@ -16283,8 +16283,8 @@ void sjf_point_asstring_heap(sjs_point* _parent, sjs_string** _return) {
     sjs_string* sjt_functionParam356 = 0;
     int32_t sjt_functionParam357;
     int32_t sjt_functionParam358;
-    sjs_string* sjt_parent246 = 0;
     sjs_string* sjt_parent247 = 0;
+    sjs_string* sjt_parent248 = 0;
 
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam353 = _parent->x;
@@ -16293,7 +16293,7 @@ void sjf_point_asstring_heap(sjs_point* _parent, sjs_string** _return) {
 #line 22
     sjf_i32_asstring(sjt_functionParam353, sjt_functionParam354, &sjt_call72);
 #line 5 "lib/sj-lib-ui/point.sj"
-    sjt_parent247 = &sjt_call72;
+    sjt_parent248 = &sjt_call72;
 #line 5
     sjt_call73._refCount = 1;
 #line 5
@@ -16313,9 +16313,9 @@ void sjf_point_asstring_heap(sjs_point* _parent, sjs_string** _return) {
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam355 = &sjt_call73;
 #line 5
-    sjf_string_add(sjt_parent247, sjt_functionParam355, &sjt_call71);
+    sjf_string_add(sjt_parent248, sjt_functionParam355, &sjt_call71);
 #line 5
-    sjt_parent246 = &sjt_call71;
+    sjt_parent247 = &sjt_call71;
 #line 5
     sjt_functionParam357 = _parent->y;
 #line 22 "lib/sj-lib-common/i32.sj"
@@ -16325,7 +16325,7 @@ void sjf_point_asstring_heap(sjs_point* _parent, sjs_string** _return) {
 #line 5 "lib/sj-lib-ui/point.sj"
     sjt_functionParam356 = &sjt_call74;
 #line 5
-    sjf_string_add_heap(sjt_parent246, sjt_functionParam356, _return);
+    sjf_string_add_heap(sjt_parent247, sjt_functionParam356, _return);
 
     if (sjt_call71._refCount == 1) { sjf_string_destroy(&sjt_call71); }
 ;
@@ -16355,28 +16355,28 @@ void sjf_rect(sjs_rect* _this) {
 
 void sjf_rect_containspoint(sjs_rect* _parent, sjs_point* point, bool* _return) {
     if (_parent->x <= point->x) {
-        bool sjt_capture85;
+        bool sjt_capture86;
 
         if (_parent->y <= point->y) {
-            bool sjt_capture86;
+            bool sjt_capture87;
 
             if (point->x < (_parent->x + _parent->w)) {
 #line 12 "lib/sj-lib-ui/rect.sj"
-                sjt_capture86 = (point->y < (_parent->y + _parent->h));
+                sjt_capture87 = (point->y < (_parent->y + _parent->h));
             } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
-                sjt_capture86 = false;
+                sjt_capture87 = false;
             }
 
 #line 12 "lib/sj-lib-ui/rect.sj"
-            sjt_capture85 = sjt_capture86;
+            sjt_capture86 = sjt_capture87;
         } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
-            sjt_capture85 = false;
+            sjt_capture86 = false;
         }
 
 #line 12 "lib/sj-lib-ui/rect.sj"
-        (*_return) = sjt_capture85;
+        (*_return) = sjt_capture86;
     } else {
 #line 12 "lib/sj-lib-ui/rect.sj"
         (*_return) = false;
@@ -16402,28 +16402,28 @@ void sjf_rect_heap(sjs_rect* _this) {
 
 void sjf_rect_isequal(sjs_rect* _parent, sjs_rect* rect, bool* _return) {
     if (_parent->x == rect->x) {
-        bool sjt_capture5;
+        bool sjt_capture6;
 
         if (_parent->y == rect->y) {
-            bool sjt_capture6;
+            bool sjt_capture7;
 
             if (_parent->w == rect->w) {
 #line 16 "lib/sj-lib-ui/rect.sj"
-                sjt_capture6 = (_parent->h == rect->h);
+                sjt_capture7 = (_parent->h == rect->h);
             } else {
 #line 16 "lib/sj-lib-ui/rect.sj"
-                sjt_capture6 = false;
+                sjt_capture7 = false;
             }
 
 #line 16 "lib/sj-lib-ui/rect.sj"
-            sjt_capture5 = sjt_capture6;
+            sjt_capture6 = sjt_capture7;
         } else {
 #line 16 "lib/sj-lib-ui/rect.sj"
-            sjt_capture5 = false;
+            sjt_capture6 = false;
         }
 
 #line 16 "lib/sj-lib-ui/rect.sj"
-        (*_return) = sjt_capture5;
+        (*_return) = sjt_capture6;
     } else {
 #line 16 "lib/sj-lib-ui/rect.sj"
         (*_return) = false;
@@ -16563,21 +16563,21 @@ void sjf_scene2d_heap(sjs_scene2d* _this) {
 
 void sjf_scene2d_setsize(sjs_scene2d* _parent, sjs_size* size) {
     bool result6;
-    bool sjt_capture38;
+    bool sjt_capture39;
     sjs_mat4 sjt_funcold12 = { -1 };
     sjs_mat4 sjt_funcold13 = { -1 };
     sjs_mat4 sjt_funcold14 = { -1 };
     sjs_size* sjt_functionParam159 = 0;
-    sjs_size* sjt_parent104 = 0;
+    sjs_size* sjt_parent105 = 0;
 
 #line 27 "lib/sj-lib-ui/size.sj"
-    sjt_parent104 = &_parent->_size;
+    sjt_parent105 = &_parent->_size;
 #line 27 "lib/sj-lib-ui/scene2d.sj"
     sjt_functionParam159 = size;
 #line 27
-    sjf_size_isequal(sjt_parent104, sjt_functionParam159, &sjt_capture38);
+    sjf_size_isequal(sjt_parent105, sjt_functionParam159, &sjt_capture39);
 #line 28
-    result6 = !sjt_capture38;
+    result6 = !sjt_capture39;
     if (result6) {
         float result10;
         float result9;
@@ -16835,12 +16835,12 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
     sjs_mat4* sjt_functionParam294 = 0;
     sjs_mat4* sjt_functionParam295 = 0;
     sjs_mat4* sjt_functionParam296 = 0;
-    sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent201 = 0;
-    sjs_mat4* sjt_parent202 = 0;
+    sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent202 = 0;
+    sjs_mat4* sjt_parent203 = 0;
     sjs_vec2 texture = { -1 };
 
 #line 43 "lib/sj-lib-ui/vertexBuffer.sj"
-    sjt_parent201 = &_parent->vertexbuffer;
+    sjt_parent202 = &_parent->vertexbuffer;
 #line 72 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam291 = &mouseevent->point;
 #line 72
@@ -16850,15 +16850,15 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 72
     sjt_functionParam294 = &_parent->_view;
 #line 19 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent202 = &_parent->_world;
+    sjt_parent203 = &_parent->_world;
 #line 72 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam296 = &_parent->model;
 #line 72
-    sjf_mat4_multiply(sjt_parent202, sjt_functionParam296, &sjt_call30);
+    sjf_mat4_multiply(sjt_parent203, sjt_functionParam296, &sjt_call30);
 #line 72
     sjt_functionParam295 = &sjt_call30;
 #line 72
-    sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sjt_parent201, sjt_functionParam291, sjt_functionParam292, sjt_functionParam293, sjt_functionParam294, sjt_functionParam295, &texture);
+    sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sjt_parent202, sjt_functionParam291, sjt_functionParam292, sjt_functionParam293, sjt_functionParam294, sjt_functionParam295, &texture);
     if (((texture._refCount != -1 ? &texture : 0) != 0)) {
         sjs_vec2* ifValue7 = 0;
         sjs_mouseevent newmouseevent = { -1 };
@@ -16871,16 +16871,16 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
         int32_t sjt_functionParam344;
         cb_string_heap_string sjt_functionParam345;
         sjs_array_heap_iface_element* sjt_functionParam384 = 0;
-        sjs_log* sjt_parent236 = 0;
-        sjs_mouseevent* sjt_parent265 = 0;
+        sjs_log* sjt_parent237 = 0;
+        sjs_mouseevent* sjt_parent266 = 0;
         bool sjt_void1;
 
 #line 73 "lib/sj-lib-ui/scene2dModel.sj"
         ifValue7 = (texture._refCount != -1 ? &texture : 0);
 #line 22 "lib/sj-lib-common/log.sj"
-        sjt_parent236 = &g_log;
+        sjt_parent237 = &g_log;
 #line 74 "lib/sj-lib-ui/scene2dModel.sj"
-        sjt_functionParam344 = 153;
+        sjt_functionParam344 = 154;
 #line 74
         sjs_lambda3* lambainit2;
 #line 74
@@ -16902,7 +16902,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 74
         sjt_functionParam345._cb_heap = (void(*)(sjs_object*, sjs_string**))sjf_lambda3_invoke_heap;
 #line 74
-        sjf_log_trace(sjt_parent236, sjt_functionParam344, sjt_functionParam345);
+        sjf_log_trace(sjt_parent237, sjt_functionParam344, sjt_functionParam345);
 #line 74
         scenepoint._refCount = 1;
 #line 76
@@ -16934,11 +16934,11 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 79
         sjf_mouseevent(&newmouseevent);
 #line 44 "lib/sj-lib-ui/mouse.sj"
-        sjt_parent265 = &newmouseevent;
+        sjt_parent266 = &newmouseevent;
 #line 86 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_functionParam384 = &_parent->children;
 #line 86
-        sjf_mouseevent_firechildren(sjt_parent265, sjt_functionParam384, &sjt_void1);
+        sjf_mouseevent_firechildren(sjt_parent266, sjt_functionParam384, &sjt_void1);
 
         if (newmouseevent._refCount == 1) { sjf_mouseevent_destroy(&newmouseevent); }
 ;
@@ -16950,12 +16950,12 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
         sjs_lambda2 sjt_call103 = { -1 };
         int32_t sjt_functionParam385;
         cb_string_heap_string sjt_functionParam386;
-        sjs_log* sjt_parent266 = 0;
+        sjs_log* sjt_parent267 = 0;
 
 #line 22 "lib/sj-lib-common/log.sj"
-        sjt_parent266 = &g_log;
+        sjt_parent267 = &g_log;
 #line 88 "lib/sj-lib-ui/scene2dModel.sj"
-        sjt_functionParam385 = 153;
+        sjt_functionParam385 = 154;
 #line 88
         sjs_lambda2* lambainit1;
 #line 88
@@ -16975,7 +16975,7 @@ void sjf_scene2dmodel_firemouseevent(sjs_scene2dmodel* _parent, sjs_mouseevent* 
 #line 88
         sjt_functionParam386._cb_heap = (void(*)(sjs_object*, sjs_string**))sjf_lambda2_invoke_heap;
 #line 88
-        sjf_log_trace(sjt_parent266, sjt_functionParam385, sjt_functionParam386);
+        sjf_log_trace(sjt_parent267, sjt_functionParam385, sjt_functionParam386);
 
         if (sjt_call103._refCount == 1) { sjf_lambda2_destroy(&sjt_call103); }
 ;
@@ -17001,31 +17001,31 @@ void sjf_scene2dmodel_getcenter_heap(sjs_scene2dmodel* _parent, sjs_vec3** _retu
 }
 
 void sjf_scene2dmodel_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 153;
+    *_return = 154;
 }
 
 void sjf_scene2dmodel_getworld(sjs_scene2dmodel* _parent, sjs_mat4* _return) {
     sjs_mat4* sjt_functionParam181 = 0;
-    sjs_mat4* sjt_parent113 = 0;
-
-#line 19 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent113 = &_parent->_world;
-#line 34 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_functionParam181 = &_parent->model;
-#line 34
-    sjf_mat4_multiply(sjt_parent113, sjt_functionParam181, _return);
-}
-
-void sjf_scene2dmodel_getworld_heap(sjs_scene2dmodel* _parent, sjs_mat4** _return) {
-    sjs_mat4* sjt_functionParam182 = 0;
     sjs_mat4* sjt_parent114 = 0;
 
 #line 19 "lib/sj-lib-ui/mat4.sj"
     sjt_parent114 = &_parent->_world;
 #line 34 "lib/sj-lib-ui/scene2dModel.sj"
+    sjt_functionParam181 = &_parent->model;
+#line 34
+    sjf_mat4_multiply(sjt_parent114, sjt_functionParam181, _return);
+}
+
+void sjf_scene2dmodel_getworld_heap(sjs_scene2dmodel* _parent, sjs_mat4** _return) {
+    sjs_mat4* sjt_functionParam182 = 0;
+    sjs_mat4* sjt_parent115 = 0;
+
+#line 19 "lib/sj-lib-ui/mat4.sj"
+    sjt_parent115 = &_parent->_world;
+#line 34 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam182 = &_parent->model;
 #line 34
-    sjf_mat4_multiply_heap(sjt_parent114, sjt_functionParam182, _return);
+    sjf_mat4_multiply_heap(sjt_parent115, sjt_functionParam182, _return);
 }
 
 void sjf_scene2dmodel_getz(sjs_scene2dmodel* _parent, float* _return) {
@@ -17077,8 +17077,8 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
     sjs_renderbuffer* sjt_functionParam151 = 0;
     sjs_framebuffer* sjt_functionParam158 = 0;
     sjs_size* sjt_functionParam169 = 0;
-    sjs_scene2d* sjt_parent105 = 0;
-    sjs_array_heap_iface_element* sjt_parent106 = 0;
+    sjs_scene2d* sjt_parent106 = 0;
+    sjs_array_heap_iface_element* sjt_parent107 = 0;
     int32_t status;
 
     if (((_this->id._refCount != -1 ? &_this->id : 0) != 0)) {
@@ -17086,12 +17086,12 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
         sjs_scene2dmodel* sjt_cast7 = 0;
         sjs_string* sjt_functionParam109 = 0;
         sji_model sjt_functionParam110 = { 0 };
-        sjs_hash_string_weak_iface_model* sjt_parent86 = 0;
+        sjs_hash_string_weak_iface_model* sjt_parent87 = 0;
 
 #line 92 "lib/sj-lib-ui/scene2dModel.sj"
         ifValue12 = (_this->id._refCount != -1 ? &_this->id : 0);
 #line 38 "lib/sj-lib-common/hash.sj"
-        sjt_parent86 = &g_modelsbyid;
+        sjt_parent87 = &g_modelsbyid;
 #line 93 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_functionParam109 = ifValue12;
 #line 1
@@ -17103,7 +17103,7 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 1
         if (sjt_functionParam110._parent != 0) { weakptr_cb_add(sjt_functionParam110._parent, weakptrcb14); }
 #line 1
-        sjf_hash_string_weak_iface_model_setat(sjt_parent86, sjt_functionParam109, sjt_functionParam110);
+        sjf_hash_string_weak_iface_model_setat(sjt_parent87, sjt_functionParam109, sjt_functionParam110);
 
         delete_cb weakptrcb15 = { &sjt_functionParam110._parent, weakptr_clear };
         if (sjt_functionParam110._parent != 0) { weakptr_cb_remove(sjt_functionParam110._parent, weakptrcb15); }
@@ -17249,11 +17249,11 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 117
     sjf_glpopframebuffer(sjt_functionParam158);
 #line 27 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent105 = &_this->_innerscene;
+    sjt_parent106 = &_this->_innerscene;
 #line 119 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam169 = &_this->texturesize;
 #line 119
-    sjf_scene2d_setsize(sjt_parent105, sjt_functionParam169);
+    sjf_scene2d_setsize(sjt_parent106, sjt_functionParam169);
 #line 119
     rect._refCount = 1;
 #line 120
@@ -17269,30 +17269,30 @@ void sjf_scene2dmodel_heap(sjs_scene2dmodel* _this) {
 #line 121
     sjt_forStart10 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent106 = &_this->children;
+    sjt_parent107 = &_this->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent106, &sjt_forEnd10);
+    sjf_array_heap_iface_element_getcount(sjt_parent107, &sjt_forEnd10);
 #line 121 "lib/sj-lib-ui/scene2dModel.sj"
     i = sjt_forStart10;
     while (i < sjt_forEnd10) {
         sji_element child = { 0 };
         int32_t sjt_functionParam170;
         sjs_rect* sjt_interfaceParam17 = 0;
-        sjs_array_heap_iface_element* sjt_parent107 = 0;
-        sji_element sjt_parent108 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent108 = 0;
+        sji_element sjt_parent109 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent107 = &_this->children;
+        sjt_parent108 = &_this->children;
 #line 121 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_functionParam170 = i;
 #line 121
-        sjf_array_heap_iface_element_getat_heap(sjt_parent107, sjt_functionParam170, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent108, sjt_functionParam170, &child);
 #line 4 "lib/sj-lib-ui/element.sj"
-        sjt_parent108 = child;
+        sjt_parent109 = child;
 #line 123 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_interfaceParam17 = &rect;
 #line 123
-        sjt_parent108._vtbl->setrect(sjt_parent108._parent, sjt_interfaceParam17);
+        sjt_parent109._vtbl->setrect(sjt_parent109._parent, sjt_interfaceParam17);
 #line 121
         i++;
 
@@ -17367,16 +17367,16 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     sjs_string* sjt_functionParam230 = 0;
     sjs_vec3* sjt_functionParam231 = 0;
     int32_t sjt_functionParam232;
-    sjs_scene2d* sjt_parent123 = 0;
-    sjs_array_heap_iface_element* sjt_parent124 = 0;
-    sjs_scene2d* sjt_parent127 = 0;
-    sjs_mat4* sjt_parent128 = 0;
+    sjs_scene2d* sjt_parent124 = 0;
+    sjs_array_heap_iface_element* sjt_parent125 = 0;
+    sjs_scene2d* sjt_parent128 = 0;
     sjs_mat4* sjt_parent129 = 0;
     sjs_mat4* sjt_parent130 = 0;
-    sjs_mat4* sjt_parent133 = 0;
-    sjs_color* sjt_parent134 = 0;
+    sjs_mat4* sjt_parent131 = 0;
+    sjs_mat4* sjt_parent134 = 0;
     sjs_color* sjt_parent135 = 0;
-    sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent136 = 0;
+    sjs_color* sjt_parent136 = 0;
+    sjs_vertexbuffer_vertex_location_texture_normal* sjt_parent137 = 0;
     sjs_mat4 viewworld = { -1 };
 
 #line 45 "lib/sj-lib-ui/scene2dModel.sj"
@@ -17384,36 +17384,36 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 45
     sjf_glpushframebuffer(sjt_functionParam191);
 #line 8 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent123 = &_parent->_innerscene;
+    sjt_parent124 = &_parent->_innerscene;
 #line 8
-    sjf_scene2d_start(sjt_parent123);
+    sjf_scene2d_start(sjt_parent124);
 #line 48 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_forStart11 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent124 = &_parent->children;
+    sjt_parent125 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_element_getcount(sjt_parent124, &sjt_forEnd11);
+    sjf_array_heap_iface_element_getcount(sjt_parent125, &sjt_forEnd11);
 #line 48 "lib/sj-lib-ui/scene2dModel.sj"
     i = sjt_forStart11;
     while (i < sjt_forEnd11) {
         sji_element child = { 0 };
         int32_t sjt_functionParam194;
         sjs_scene2d* sjt_interfaceParam18 = 0;
-        sjs_array_heap_iface_element* sjt_parent125 = 0;
-        sji_element sjt_parent126 = { 0 };
+        sjs_array_heap_iface_element* sjt_parent126 = 0;
+        sji_element sjt_parent127 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent125 = &_parent->children;
+        sjt_parent126 = &_parent->children;
 #line 48 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_functionParam194 = i;
 #line 48
-        sjf_array_heap_iface_element_getat_heap(sjt_parent125, sjt_functionParam194, &child);
+        sjf_array_heap_iface_element_getat_heap(sjt_parent126, sjt_functionParam194, &child);
 #line 5 "lib/sj-lib-ui/element.sj"
-        sjt_parent126 = child;
+        sjt_parent127 = child;
 #line 50 "lib/sj-lib-ui/scene2dModel.sj"
         sjt_interfaceParam18 = &_parent->_innerscene;
 #line 50
-        sjt_parent126._vtbl->render(sjt_parent126._parent, sjt_interfaceParam18);
+        sjt_parent127._vtbl->render(sjt_parent127._parent, sjt_interfaceParam18);
 #line 48
         i++;
 
@@ -17427,9 +17427,9 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
     }
 
 #line 19 "lib/sj-lib-ui/scene2d.sj"
-    sjt_parent127 = &_parent->_innerscene;
+    sjt_parent128 = &_parent->_innerscene;
 #line 19
-    sjf_scene2d_end(sjt_parent127);
+    sjf_scene2d_end(sjt_parent128);
 #line 54 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam197 = &_parent->_framebuffer;
 #line 54
@@ -17439,25 +17439,25 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 56
     sjf_glenable(sjt_functionParam198);
 #line 19 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent129 = &_parent->_view;
+    sjt_parent130 = &_parent->_view;
 #line 57 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam199 = &_parent->_world;
 #line 57
-    sjf_mat4_multiply(sjt_parent129, sjt_functionParam199, &sjt_call18);
+    sjf_mat4_multiply(sjt_parent130, sjt_functionParam199, &sjt_call18);
 #line 57
-    sjt_parent128 = &sjt_call18;
+    sjt_parent129 = &sjt_call18;
 #line 57
     sjt_functionParam200 = &_parent->model;
 #line 57
-    sjf_mat4_multiply(sjt_parent128, sjt_functionParam200, &viewworld);
+    sjf_mat4_multiply(sjt_parent129, sjt_functionParam200, &viewworld);
 #line 71 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent133 = &viewworld;
+    sjt_parent134 = &viewworld;
 #line 71
-    sjf_mat4_invert(sjt_parent133, &sjt_call19);
+    sjf_mat4_invert(sjt_parent134, &sjt_call19);
 #line 58 "lib/sj-lib-ui/scene2dModel.sj"
-    sjt_parent130 = &sjt_call19;
+    sjt_parent131 = &sjt_call19;
 #line 58
-    sjf_mat4_transpose(sjt_parent130, &normalmat);
+    sjf_mat4_transpose(sjt_parent131, &normalmat);
 #line 59
     sjt_functionParam203 = &_parent->shader;
 #line 59
@@ -17601,9 +17601,9 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 66
     sjf_glgetuniformlocation(sjt_functionParam225, sjt_functionParam226, &sjt_functionParam224);
 #line 20 "lib/sj-lib-ui/color.sj"
-    sjt_parent134 = &(&_parent->_light)->diffusecolor;
+    sjt_parent135 = &(&_parent->_light)->diffusecolor;
 #line 20
-    sjf_color_asvec3(sjt_parent134, &sjt_call25);
+    sjf_color_asvec3(sjt_parent135, &sjt_call25);
 #line 66 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam227 = &sjt_call25;
 #line 66
@@ -17631,19 +17631,19 @@ void sjf_scene2dmodel_render(sjs_scene2dmodel* _parent) {
 #line 67
     sjf_glgetuniformlocation(sjt_functionParam229, sjt_functionParam230, &sjt_functionParam228);
 #line 20 "lib/sj-lib-ui/color.sj"
-    sjt_parent135 = &(&_parent->_light)->speccolor;
+    sjt_parent136 = &(&_parent->_light)->speccolor;
 #line 20
-    sjf_color_asvec3(sjt_parent135, &sjt_call27);
+    sjf_color_asvec3(sjt_parent136, &sjt_call27);
 #line 67 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam231 = &sjt_call27;
 #line 67
     sjf_gluniformvec3(sjt_functionParam228, sjt_functionParam231);
 #line 94 "lib/sj-lib-ui/vertexBuffer.sj"
-    sjt_parent136 = &_parent->vertexbuffer;
+    sjt_parent137 = &_parent->vertexbuffer;
 #line 68 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam232 = g_gldrawmode_gl_triangles;
 #line 68
-    sjf_vertexbuffer_vertex_location_texture_normal_render(sjt_parent136, sjt_functionParam232);
+    sjf_vertexbuffer_vertex_location_texture_normal_render(sjt_parent137, sjt_functionParam232);
 
     if (normalmat._refCount == 1) { sjf_mat4_destroy(&normalmat); }
 ;
@@ -17675,10 +17675,10 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_ifa
     if (_parent->hasalpha) {
         sjs_scene2dmodel* sjt_cast10 = 0;
         sji_model sjt_functionParam190 = { 0 };
-        sjs_list_heap_iface_model* sjt_parent122 = 0;
+        sjs_list_heap_iface_model* sjt_parent123 = 0;
 
 #line 36 "lib/sj-lib-ui/scene2dModel.sj"
-        sjt_parent122 = alphamodels;
+        sjt_parent123 = alphamodels;
 #line 38
         sjt_cast10 = _parent;
 #line 1 "lib/sj-lib-ui/model.sj"
@@ -17688,7 +17688,7 @@ void sjf_scene2dmodel_renderorqueue(sjs_scene2dmodel* _parent, sjs_list_heap_ifa
         }
 
 #line 1
-        sjf_list_heap_iface_model_add(sjt_parent122, sjt_functionParam190);
+        sjf_list_heap_iface_model_add(sjt_parent123, sjt_functionParam190);
 
         if (sjt_functionParam190._parent != 0) {
             sjt_functionParam190._parent->_refCount--;
@@ -17712,10 +17712,10 @@ void sjf_scene2dmodel_update(sjs_scene2dmodel* _parent, sjs_rect* scenerect, sjs
     sjs_mat4* sjt_functionParam178 = 0;
     sjs_mat4* sjt_functionParam179 = 0;
     sjs_vec4* sjt_functionParam180 = 0;
-    sjs_mat4* sjt_parent109 = 0;
     sjs_mat4* sjt_parent110 = 0;
     sjs_mat4* sjt_parent111 = 0;
     sjs_mat4* sjt_parent112 = 0;
+    sjs_mat4* sjt_parent113 = 0;
 
     if (_parent->_scenerect._refCount == 1) { sjf_rect_destroy(&_parent->_scenerect); }
 ;
@@ -17742,25 +17742,25 @@ void sjf_scene2dmodel_update(sjs_scene2dmodel* _parent, sjs_rect* scenerect, sjs
 #line 22
     sjf_light_copy(&_parent->_light, light);
 #line 19 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent112 = &_parent->_projection;
+    sjt_parent113 = &_parent->_projection;
 #line 28 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_functionParam177 = &_parent->_view;
 #line 28
-    sjf_mat4_multiply(sjt_parent112, sjt_functionParam177, &sjt_call16);
+    sjf_mat4_multiply(sjt_parent113, sjt_functionParam177, &sjt_call16);
 #line 28
-    sjt_parent111 = &sjt_call16;
+    sjt_parent112 = &sjt_call16;
 #line 28
     sjt_functionParam178 = &_parent->_world;
 #line 28
-    sjf_mat4_multiply(sjt_parent111, sjt_functionParam178, &sjt_call15);
+    sjf_mat4_multiply(sjt_parent112, sjt_functionParam178, &sjt_call15);
 #line 28
-    sjt_parent110 = &sjt_call15;
+    sjt_parent111 = &sjt_call15;
 #line 28
     sjt_functionParam179 = &_parent->model;
 #line 28
-    sjf_mat4_multiply(sjt_parent110, sjt_functionParam179, &sjt_call14);
+    sjf_mat4_multiply(sjt_parent111, sjt_functionParam179, &sjt_call14);
 #line 28
-    sjt_parent109 = &sjt_call14;
+    sjt_parent110 = &sjt_call14;
 #line 28
     sjt_call17._refCount = 1;
 #line 28
@@ -17776,7 +17776,7 @@ void sjf_scene2dmodel_update(sjs_scene2dmodel* _parent, sjs_rect* scenerect, sjs
 #line 28
     sjt_functionParam180 = &sjt_call17;
 #line 28
-    sjf_mat4_multiplyvec4(sjt_parent109, sjt_functionParam180, &sjt_funcold18);
+    sjf_mat4_multiplyvec4(sjt_parent110, sjt_functionParam180, &sjt_funcold18);
 #line 28
     if (_parent->_projectedcenter._refCount == 1) { sjf_vec4_destroy(&_parent->_projectedcenter); }
 ;
@@ -17886,35 +17886,35 @@ void sjf_scene3delement_firemouseevent(sjs_scene3delement* _parent, sjs_mouseeve
     int32_t i;
     int32_t sjt_forEnd9;
     int32_t sjt_forStart9;
-    sjs_array_heap_iface_model* sjt_parent82 = 0;
+    sjs_array_heap_iface_model* sjt_parent83 = 0;
 
 #line 67 "lib/sj-lib-ui/scene3dElement.sj"
     sjt_forStart9 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent82 = &_parent->children;
+    sjt_parent83 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent82, &sjt_forEnd9);
+    sjf_array_heap_iface_model_getcount(sjt_parent83, &sjt_forEnd9);
 #line 67 "lib/sj-lib-ui/scene3dElement.sj"
     i = sjt_forStart9;
     while (i < sjt_forEnd9) {
         sji_model child = { 0 };
         int32_t sjt_functionParam106;
         sjs_mouseevent* sjt_interfaceParam16 = 0;
-        sjs_array_heap_iface_model* sjt_parent83 = 0;
-        sji_model sjt_parent84 = { 0 };
+        sjs_array_heap_iface_model* sjt_parent84 = 0;
+        sji_model sjt_parent85 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent83 = &_parent->children;
+        sjt_parent84 = &_parent->children;
 #line 67 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_functionParam106 = i;
 #line 67
-        sjf_array_heap_iface_model_getat_heap(sjt_parent83, sjt_functionParam106, &child);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent84, sjt_functionParam106, &child);
 #line 8 "lib/sj-lib-ui/model.sj"
-        sjt_parent84 = child;
+        sjt_parent85 = child;
 #line 66 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_interfaceParam16 = mouseevent;
 #line 69
-        sjt_parent84._vtbl->firemouseevent(sjt_parent84._parent, sjt_interfaceParam16);
+        sjt_parent85._vtbl->firemouseevent(sjt_parent85._parent, sjt_interfaceParam16);
 #line 67
         i++;
 
@@ -17932,7 +17932,7 @@ void sjf_scene3delement_firemouseevent(sjs_scene3delement* _parent, sjs_mouseeve
 }
 
 void sjf_scene3delement_getclasstype(sjs_object* _this, int* _return) {
-    *_return = 111;
+    *_return = 112;
 }
 
 void sjf_scene3delement_getrect(sjs_scene3delement* _parent, sjs_rect* _return) {
@@ -17988,17 +17988,17 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
     sjs_rect* sjt_functionParam65 = 0;
     sjs_rect* sjt_functionParam66 = 0;
     cb_heap_iface_model_heap_iface_model_i32 sjt_functionParam91;
-    sjs_array_heap_iface_model* sjt_parent48 = 0;
-    sjs_array_heap_iface_model* sjt_parent59 = 0;
-    sjs_list_heap_iface_model* sjt_parent63 = 0;
-    sjs_list_heap_iface_model* sjt_parent67 = 0;
+    sjs_array_heap_iface_model* sjt_parent49 = 0;
+    sjs_array_heap_iface_model* sjt_parent60 = 0;
+    sjs_list_heap_iface_model* sjt_parent64 = 0;
+    sjs_list_heap_iface_model* sjt_parent68 = 0;
 
 #line 41 "lib/sj-lib-ui/scene3dElement.sj"
     sjt_forStart6 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent48 = &_parent->children;
+    sjt_parent49 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent48, &sjt_forEnd6);
+    sjf_array_heap_iface_model_getcount(sjt_parent49, &sjt_forEnd6);
 #line 41 "lib/sj-lib-ui/scene3dElement.sj"
     i = sjt_forStart6;
     while (i < sjt_forEnd6) {
@@ -18009,17 +18009,17 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
         sjs_mat4* sjt_interfaceParam12 = 0;
         sjs_mat4* sjt_interfaceParam13 = 0;
         sjs_light* sjt_interfaceParam14 = 0;
-        sjs_array_heap_iface_model* sjt_parent49 = 0;
-        sji_model sjt_parent50 = { 0 };
+        sjs_array_heap_iface_model* sjt_parent50 = 0;
+        sji_model sjt_parent51 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent49 = &_parent->children;
+        sjt_parent50 = &_parent->children;
 #line 41 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_functionParam55 = i;
 #line 41
-        sjf_array_heap_iface_model_getat_heap(sjt_parent49, sjt_functionParam55, &child);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent50, sjt_functionParam55, &child);
 #line 2 "lib/sj-lib-ui/model.sj"
-        sjt_parent50 = child;
+        sjt_parent51 = child;
 #line 43 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_interfaceParam10 = &_parent->_rect;
 #line 43
@@ -18031,7 +18031,7 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 #line 43
         sjt_interfaceParam14 = &_parent->light;
 #line 43
-        sjt_parent50._vtbl->update(sjt_parent50._parent, sjt_interfaceParam10, sjt_interfaceParam11, sjt_interfaceParam12, sjt_interfaceParam13, sjt_interfaceParam14);
+        sjt_parent51._vtbl->update(sjt_parent51._parent, sjt_interfaceParam10, sjt_interfaceParam11, sjt_interfaceParam12, sjt_interfaceParam13, sjt_interfaceParam14);
 #line 41
         i++;
 
@@ -18067,30 +18067,30 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 #line 51 "lib/sj-lib-ui/scene3dElement.sj"
     sjt_forStart7 = 0;
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent59 = &_parent->children;
+    sjt_parent60 = &_parent->children;
 #line 29
-    sjf_array_heap_iface_model_getcount(sjt_parent59, &sjt_forEnd7);
+    sjf_array_heap_iface_model_getcount(sjt_parent60, &sjt_forEnd7);
 #line 51 "lib/sj-lib-ui/scene3dElement.sj"
     i = sjt_forStart7;
     while (i < sjt_forEnd7) {
         sji_model child = { 0 };
         int32_t sjt_functionParam67;
         sjs_list_heap_iface_model* sjt_interfaceParam15 = 0;
-        sjs_array_heap_iface_model* sjt_parent60 = 0;
-        sji_model sjt_parent61 = { 0 };
+        sjs_array_heap_iface_model* sjt_parent61 = 0;
+        sji_model sjt_parent62 = { 0 };
 
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent60 = &_parent->children;
+        sjt_parent61 = &_parent->children;
 #line 51 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_functionParam67 = i;
 #line 51
-        sjf_array_heap_iface_model_getat_heap(sjt_parent60, sjt_functionParam67, &child);
+        sjf_array_heap_iface_model_getat_heap(sjt_parent61, sjt_functionParam67, &child);
 #line 6 "lib/sj-lib-ui/model.sj"
-        sjt_parent61 = child;
+        sjt_parent62 = child;
 #line 53 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_interfaceParam15 = &a;
 #line 53
-        sjt_parent61._vtbl->renderorqueue(sjt_parent61._parent, sjt_interfaceParam15);
+        sjt_parent62._vtbl->renderorqueue(sjt_parent62._parent, sjt_interfaceParam15);
 #line 51
         i++;
 
@@ -18104,37 +18104,37 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
     }
 
 #line 28 "lib/sj-lib-common/list.sj"
-    sjt_parent63 = &a;
+    sjt_parent64 = &a;
 #line 56 "lib/sj-lib-ui/scene3dElement.sj"
     sjt_functionParam91._parent = (sjs_object*)1;
 #line 56
     sjt_functionParam91._cb = (void(*)(sjs_object*,sji_model,sji_model, int32_t*))sjf_model_zsort_callback;
 #line 56
-    sjf_list_heap_iface_model_sortcb(sjt_parent63, sjt_functionParam91);
+    sjf_list_heap_iface_model_sortcb(sjt_parent64, sjt_functionParam91);
 #line 57
     sjt_forStart8 = 0;
 #line 4 "lib/sj-lib-common/list.sj"
-    sjt_parent67 = &a;
+    sjt_parent68 = &a;
 #line 4
-    sjf_list_heap_iface_model_getcount(sjt_parent67, &sjt_forEnd8);
+    sjf_list_heap_iface_model_getcount(sjt_parent68, &sjt_forEnd8);
 #line 57 "lib/sj-lib-ui/scene3dElement.sj"
     i = sjt_forEnd8 - 1;
     while (i >= sjt_forStart8) {
         sji_model child = { 0 };
         int32_t sjt_functionParam95;
-        sjs_list_heap_iface_model* sjt_parent69 = 0;
-        sji_model sjt_parent70 = { 0 };
+        sjs_list_heap_iface_model* sjt_parent70 = 0;
+        sji_model sjt_parent71 = { 0 };
 
 #line 8 "lib/sj-lib-common/list.sj"
-        sjt_parent69 = &a;
+        sjt_parent70 = &a;
 #line 57 "lib/sj-lib-ui/scene3dElement.sj"
         sjt_functionParam95 = i;
 #line 57
-        sjf_list_heap_iface_model_getat_heap(sjt_parent69, sjt_functionParam95, &child);
+        sjf_list_heap_iface_model_getat_heap(sjt_parent70, sjt_functionParam95, &child);
 #line 7 "lib/sj-lib-ui/model.sj"
-        sjt_parent70 = child;
+        sjt_parent71 = child;
 #line 59 "lib/sj-lib-ui/scene3dElement.sj"
-        sjt_parent70._vtbl->render(sjt_parent70._parent);
+        sjt_parent71._vtbl->render(sjt_parent71._parent);
 #line 57
         i--;
 
@@ -18164,20 +18164,20 @@ void sjf_scene3delement_render(sjs_scene3delement* _parent, sjs_scene2d* scene) 
 
 void sjf_scene3delement_setrect(sjs_scene3delement* _parent, sjs_rect* rect_) {
     bool result3;
-    bool sjt_capture7;
+    bool sjt_capture8;
     sjs_mat4 sjt_funcold5 = { -1 };
     sjs_mat4 sjt_funcold6 = { -1 };
     sjs_rect* sjt_functionParam31 = 0;
-    sjs_rect* sjt_parent31 = 0;
+    sjs_rect* sjt_parent32 = 0;
 
 #line 15 "lib/sj-lib-ui/rect.sj"
-    sjt_parent31 = &_parent->_rect;
+    sjt_parent32 = &_parent->_rect;
 #line 31 "lib/sj-lib-ui/scene3dElement.sj"
     sjt_functionParam31 = rect_;
 #line 31
-    sjf_rect_isequal(sjt_parent31, sjt_functionParam31, &sjt_capture7);
+    sjf_rect_isequal(sjt_parent32, sjt_functionParam31, &sjt_capture8);
 #line 32
-    result3 = !sjt_capture7;
+    result3 = !sjt_capture8;
     if (result3) {
         int32_t sjt_cast4;
         int32_t sjt_cast5;
@@ -18486,7 +18486,7 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
     slice = sjt_forStart20;
     while (slice < sjt_forEnd20) {
         float r0;
-        float sjt_capture75;
+        float sjt_capture76;
         int32_t sjt_cast23;
         int32_t sjt_cast24;
         int32_t sjt_cast25;
@@ -18515,9 +18515,9 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
 #line 112
         sjt_functionParam391 = theta;
 #line 112
-        sjf_f32_cos(sjt_functionParam391, &sjt_capture75);
+        sjf_f32_cos(sjt_functionParam391, &sjt_capture76);
 #line 112
-        y0 = sjt_capture75 * radius->y;
+        y0 = sjt_capture76 * radius->y;
 #line 113
         sjt_functionParam392 = theta;
 #line 113
@@ -18531,8 +18531,8 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
         while (wedge < sjt_forEnd21) {
             float angle;
             sjs_vec3 normal = { -1 };
-            float sjt_capture76;
             float sjt_capture77;
+            float sjt_capture78;
             int32_t sjt_cast27;
             int32_t sjt_cast28;
             int32_t sjt_cast29;
@@ -18541,8 +18541,8 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
             float sjt_functionParam394;
             int32_t sjt_functionParam395;
             sjs_vertex_location_texture_normal* sjt_functionParam396 = 0;
-            sjs_vec3* sjt_parent271 = 0;
-            sjs_array_vertex_location_texture_normal* sjt_parent272 = 0;
+            sjs_vec3* sjt_parent272 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent273 = 0;
             float tu;
             sjs_vertex_location_texture_normal v = { -1 };
             float x0;
@@ -18563,15 +18563,15 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
 #line 117
             sjt_functionParam393 = angle;
 #line 117
-            sjf_f32_sin(sjt_functionParam393, &sjt_capture76);
+            sjf_f32_sin(sjt_functionParam393, &sjt_capture77);
 #line 117
-            x0 = (sjt_capture76 * r0) * radius->x;
+            x0 = (sjt_capture77 * r0) * radius->x;
 #line 118
             sjt_functionParam394 = angle;
 #line 118
-            sjf_f32_cos(sjt_functionParam394, &sjt_capture77);
+            sjf_f32_cos(sjt_functionParam394, &sjt_capture78);
 #line 118
-            z0 = (sjt_capture77 * r0) * radius->y;
+            z0 = (sjt_capture78 * r0) * radius->y;
 #line 118
             normal._refCount = 1;
 #line 119
@@ -18603,19 +18603,19 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
 #line 123
             sjf_vec2(&v.texture);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-            sjt_parent271 = &normal;
+            sjt_parent272 = &normal;
 #line 38
-            sjf_vec3_normalize(sjt_parent271, &v.normal);
+            sjf_vec3_normalize(sjt_parent272, &v.normal);
 #line 38
             sjf_vertex_location_texture_normal(&v);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent272 = &vertices;
+            sjt_parent273 = &vertices;
 #line 126 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam395 = (slice * (wedges + 1)) + wedge;
 #line 126
             sjt_functionParam396 = &v;
 #line 126
-            sjf_array_vertex_location_texture_normal_setat(sjt_parent272, sjt_functionParam395, sjt_functionParam396);
+            sjf_array_vertex_location_texture_normal_setat(sjt_parent273, sjt_functionParam395, sjt_functionParam396);
 #line 114
             wedge++;
 
@@ -18669,12 +18669,12 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
             int32_t sjt_functionParam408;
             int32_t sjt_functionParam409;
             int32_t sjt_functionParam410;
-            sjs_array_i32* sjt_parent273 = 0;
             sjs_array_i32* sjt_parent274 = 0;
             sjs_array_i32* sjt_parent275 = 0;
             sjs_array_i32* sjt_parent276 = 0;
             sjs_array_i32* sjt_parent277 = 0;
             sjs_array_i32* sjt_parent278 = 0;
+            sjs_array_i32* sjt_parent279 = 0;
             int32_t wedge0;
             int32_t wedge1;
 
@@ -18691,53 +18691,53 @@ void sjf_spherevertexbuffer(int32_t slices, int32_t wedges, sjs_vec3* origin, sj
 #line 139
             index3 = ((slice + 1) * (wedges + 1)) + wedge0;
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent273 = &indices;
+            sjt_parent274 = &indices;
 #line 141 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam399 = (((slice * wedges) + wedge) * 6) + 0;
 #line 141
             sjt_functionParam400 = index0;
 #line 141
-            sjf_array_i32_setat(sjt_parent273, sjt_functionParam399, sjt_functionParam400);
+            sjf_array_i32_setat(sjt_parent274, sjt_functionParam399, sjt_functionParam400);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent274 = &indices;
+            sjt_parent275 = &indices;
 #line 142 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam401 = (((slice * wedges) + wedge) * 6) + 1;
 #line 142
             sjt_functionParam402 = index1;
 #line 142
-            sjf_array_i32_setat(sjt_parent274, sjt_functionParam401, sjt_functionParam402);
+            sjf_array_i32_setat(sjt_parent275, sjt_functionParam401, sjt_functionParam402);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent275 = &indices;
+            sjt_parent276 = &indices;
 #line 143 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam403 = (((slice * wedges) + wedge) * 6) + 2;
 #line 143
             sjt_functionParam404 = index2;
 #line 143
-            sjf_array_i32_setat(sjt_parent275, sjt_functionParam403, sjt_functionParam404);
+            sjf_array_i32_setat(sjt_parent276, sjt_functionParam403, sjt_functionParam404);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent276 = &indices;
+            sjt_parent277 = &indices;
 #line 144 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam405 = (((slice * wedges) + wedge) * 6) + 3;
 #line 144
             sjt_functionParam406 = index2;
 #line 144
-            sjf_array_i32_setat(sjt_parent276, sjt_functionParam405, sjt_functionParam406);
+            sjf_array_i32_setat(sjt_parent277, sjt_functionParam405, sjt_functionParam406);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent277 = &indices;
+            sjt_parent278 = &indices;
 #line 145 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam407 = (((slice * wedges) + wedge) * 6) + 4;
 #line 145
             sjt_functionParam408 = index3;
 #line 145
-            sjf_array_i32_setat(sjt_parent277, sjt_functionParam407, sjt_functionParam408);
+            sjf_array_i32_setat(sjt_parent278, sjt_functionParam407, sjt_functionParam408);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent278 = &indices;
+            sjt_parent279 = &indices;
 #line 146 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam409 = (((slice * wedges) + wedge) * 6) + 5;
 #line 146
             sjt_functionParam410 = index0;
 #line 146
-            sjf_array_i32_setat(sjt_parent278, sjt_functionParam409, sjt_functionParam410);
+            sjf_array_i32_setat(sjt_parent279, sjt_functionParam409, sjt_functionParam410);
 #line 132
             wedge++;
         }
@@ -18831,7 +18831,7 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
     slice = sjt_forStart24;
     while (slice < sjt_forEnd24) {
         float r0;
-        float sjt_capture78;
+        float sjt_capture79;
         int32_t sjt_cast31;
         int32_t sjt_cast32;
         int32_t sjt_cast33;
@@ -18860,9 +18860,9 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
 #line 112
         sjt_functionParam413 = theta;
 #line 112
-        sjf_f32_cos(sjt_functionParam413, &sjt_capture78);
+        sjf_f32_cos(sjt_functionParam413, &sjt_capture79);
 #line 112
-        y0 = sjt_capture78 * radius->y;
+        y0 = sjt_capture79 * radius->y;
 #line 113
         sjt_functionParam414 = theta;
 #line 113
@@ -18876,8 +18876,8 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
         while (wedge < sjt_forEnd25) {
             float angle;
             sjs_vec3 normal = { -1 };
-            float sjt_capture79;
             float sjt_capture80;
+            float sjt_capture81;
             int32_t sjt_cast35;
             int32_t sjt_cast36;
             int32_t sjt_cast37;
@@ -18886,8 +18886,8 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
             float sjt_functionParam416;
             int32_t sjt_functionParam417;
             sjs_vertex_location_texture_normal* sjt_functionParam418 = 0;
-            sjs_vec3* sjt_parent279 = 0;
-            sjs_array_vertex_location_texture_normal* sjt_parent280 = 0;
+            sjs_vec3* sjt_parent280 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent281 = 0;
             float tu;
             sjs_vertex_location_texture_normal v = { -1 };
             float x0;
@@ -18908,15 +18908,15 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
 #line 117
             sjt_functionParam415 = angle;
 #line 117
-            sjf_f32_sin(sjt_functionParam415, &sjt_capture79);
+            sjf_f32_sin(sjt_functionParam415, &sjt_capture80);
 #line 117
-            x0 = (sjt_capture79 * r0) * radius->x;
+            x0 = (sjt_capture80 * r0) * radius->x;
 #line 118
             sjt_functionParam416 = angle;
 #line 118
-            sjf_f32_cos(sjt_functionParam416, &sjt_capture80);
+            sjf_f32_cos(sjt_functionParam416, &sjt_capture81);
 #line 118
-            z0 = (sjt_capture80 * r0) * radius->y;
+            z0 = (sjt_capture81 * r0) * radius->y;
 #line 118
             normal._refCount = 1;
 #line 119
@@ -18948,19 +18948,19 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
 #line 123
             sjf_vec2(&v.texture);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-            sjt_parent279 = &normal;
+            sjt_parent280 = &normal;
 #line 38
-            sjf_vec3_normalize(sjt_parent279, &v.normal);
+            sjf_vec3_normalize(sjt_parent280, &v.normal);
 #line 38
             sjf_vertex_location_texture_normal(&v);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent280 = &vertices;
+            sjt_parent281 = &vertices;
 #line 126 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam417 = (slice * (wedges + 1)) + wedge;
 #line 126
             sjt_functionParam418 = &v;
 #line 126
-            sjf_array_vertex_location_texture_normal_setat(sjt_parent280, sjt_functionParam417, sjt_functionParam418);
+            sjf_array_vertex_location_texture_normal_setat(sjt_parent281, sjt_functionParam417, sjt_functionParam418);
 #line 114
             wedge++;
 
@@ -19014,12 +19014,12 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
             int32_t sjt_functionParam430;
             int32_t sjt_functionParam431;
             int32_t sjt_functionParam432;
-            sjs_array_i32* sjt_parent281 = 0;
             sjs_array_i32* sjt_parent282 = 0;
             sjs_array_i32* sjt_parent283 = 0;
             sjs_array_i32* sjt_parent284 = 0;
             sjs_array_i32* sjt_parent285 = 0;
             sjs_array_i32* sjt_parent286 = 0;
+            sjs_array_i32* sjt_parent287 = 0;
             int32_t wedge0;
             int32_t wedge1;
 
@@ -19036,53 +19036,53 @@ void sjf_spherevertexbuffer_heap(int32_t slices, int32_t wedges, sjs_vec3* origi
 #line 139
             index3 = ((slice + 1) * (wedges + 1)) + wedge0;
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent281 = &indices;
+            sjt_parent282 = &indices;
 #line 141 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam421 = (((slice * wedges) + wedge) * 6) + 0;
 #line 141
             sjt_functionParam422 = index0;
 #line 141
-            sjf_array_i32_setat(sjt_parent281, sjt_functionParam421, sjt_functionParam422);
+            sjf_array_i32_setat(sjt_parent282, sjt_functionParam421, sjt_functionParam422);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent282 = &indices;
+            sjt_parent283 = &indices;
 #line 142 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam423 = (((slice * wedges) + wedge) * 6) + 1;
 #line 142
             sjt_functionParam424 = index1;
 #line 142
-            sjf_array_i32_setat(sjt_parent282, sjt_functionParam423, sjt_functionParam424);
+            sjf_array_i32_setat(sjt_parent283, sjt_functionParam423, sjt_functionParam424);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent283 = &indices;
+            sjt_parent284 = &indices;
 #line 143 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam425 = (((slice * wedges) + wedge) * 6) + 2;
 #line 143
             sjt_functionParam426 = index2;
 #line 143
-            sjf_array_i32_setat(sjt_parent283, sjt_functionParam425, sjt_functionParam426);
+            sjf_array_i32_setat(sjt_parent284, sjt_functionParam425, sjt_functionParam426);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent284 = &indices;
+            sjt_parent285 = &indices;
 #line 144 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam427 = (((slice * wedges) + wedge) * 6) + 3;
 #line 144
             sjt_functionParam428 = index2;
 #line 144
-            sjf_array_i32_setat(sjt_parent284, sjt_functionParam427, sjt_functionParam428);
+            sjf_array_i32_setat(sjt_parent285, sjt_functionParam427, sjt_functionParam428);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent285 = &indices;
+            sjt_parent286 = &indices;
 #line 145 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam429 = (((slice * wedges) + wedge) * 6) + 4;
 #line 145
             sjt_functionParam430 = index3;
 #line 145
-            sjf_array_i32_setat(sjt_parent285, sjt_functionParam429, sjt_functionParam430);
+            sjf_array_i32_setat(sjt_parent286, sjt_functionParam429, sjt_functionParam430);
 #line 68 "lib/sj-lib-common/array.sj"
-            sjt_parent286 = &indices;
+            sjt_parent287 = &indices;
 #line 146 "lib/sj-lib-ui/vertexBufferBuilders.sj"
             sjt_functionParam431 = (((slice * wedges) + wedge) * 6) + 5;
 #line 146
             sjt_functionParam432 = index0;
 #line 146
-            sjf_array_i32_setat(sjt_parent286, sjt_functionParam431, sjt_functionParam432);
+            sjf_array_i32_setat(sjt_parent287, sjt_functionParam431, sjt_functionParam432);
 #line 132
             wedge++;
         }
@@ -19129,30 +19129,30 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy(_return, _parent);
     } else {
-        bool sjt_capture69;
-        int32_t sjt_capture70;
-        sjs_array_char* sjt_parent205 = 0;
+        bool sjt_capture70;
+        int32_t sjt_capture71;
+        sjs_array_char* sjt_parent206 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent205 = &_parent->data;
+        sjt_parent206 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent205, &sjt_capture70);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture70) {
-            int32_t sjt_capture71;
-            sjs_array_char* sjt_parent206 = 0;
+        sjf_array_char_gettotalcount(sjt_parent206, &sjt_capture71);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture71) {
+            int32_t sjt_capture72;
+            sjs_array_char* sjt_parent207 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent206 = &_parent->data;
+            sjt_parent207 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent206, &sjt_capture71);
+            sjf_array_char_getcount(sjt_parent207, &sjt_capture72);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture69 = ((_parent->offset + _parent->count) == sjt_capture71);
+            sjt_capture70 = ((_parent->offset + _parent->count) == sjt_capture72);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture69 = false;
+            sjt_capture70 = false;
         }
 
-        if (sjt_capture69) {
+        if (sjt_capture70) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd14;
@@ -19170,21 +19170,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 int32_t sjt_functionParam300;
                 char sjt_functionParam301;
                 int32_t sjt_functionParam303;
-                sjs_array_char* sjt_parent207 = 0;
-                sjs_string* sjt_parent209 = 0;
+                sjs_array_char* sjt_parent208 = 0;
+                sjs_string* sjt_parent210 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent207 = &_parent->data;
+                sjt_parent208 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam300 = newcount;
 #line 18
-                sjt_parent209 = item;
+                sjt_parent210 = item;
 #line 27
                 sjt_functionParam303 = i;
 #line 27
-                sjf_string_getat(sjt_parent209, sjt_functionParam303, &sjt_functionParam301);
+                sjf_string_getat(sjt_parent210, sjt_functionParam303, &sjt_functionParam301);
 #line 27
-                sjf_array_char_initat(sjt_parent207, sjt_functionParam300, sjt_functionParam301);
+                sjf_array_char_initat(sjt_parent208, sjt_functionParam300, sjt_functionParam301);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -19213,11 +19213,11 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
             int32_t sjt_functionParam304;
             int32_t sjt_functionParam305;
             int32_t sjt_functionParam306;
-            sjs_array_char* sjt_parent210 = 0;
             sjs_array_char* sjt_parent211 = 0;
+            sjs_array_char* sjt_parent212 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent210 = &_parent->data;
+            sjt_parent211 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam304 = _parent->offset;
 #line 34
@@ -19225,11 +19225,11 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
 #line 34
             sjt_functionParam306 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent210, sjt_functionParam304, sjt_functionParam305, sjt_functionParam306, &newdata);
+            sjf_array_char_clone(sjt_parent211, sjt_functionParam304, sjt_functionParam305, sjt_functionParam306, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent211 = &newdata;
+            sjt_parent212 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent211, &newcount);
+            sjf_array_char_getcount(sjt_parent212, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart15 = 0;
 #line 37
@@ -19240,21 +19240,21 @@ void sjf_string_add(sjs_string* _parent, sjs_string* item, sjs_string* _return) 
                 int32_t sjt_functionParam307;
                 char sjt_functionParam308;
                 int32_t sjt_functionParam309;
-                sjs_array_char* sjt_parent212 = 0;
-                sjs_string* sjt_parent213 = 0;
+                sjs_array_char* sjt_parent213 = 0;
+                sjs_string* sjt_parent214 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent212 = &newdata;
+                sjt_parent213 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam307 = newcount;
 #line 18
-                sjt_parent213 = item;
+                sjt_parent214 = item;
 #line 37
                 sjt_functionParam309 = i;
 #line 37
-                sjf_string_getat(sjt_parent213, sjt_functionParam309, &sjt_functionParam308);
+                sjf_string_getat(sjt_parent214, sjt_functionParam309, &sjt_functionParam308);
 #line 37
-                sjf_array_char_initat(sjt_parent212, sjt_functionParam307, sjt_functionParam308);
+                sjf_array_char_initat(sjt_parent213, sjt_functionParam307, sjt_functionParam308);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -19291,30 +19291,30 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 20 "lib/sj-lib-common/string.sj"
         sjf_string_copy((*_return), _parent);
     } else {
-        bool sjt_capture72;
-        int32_t sjt_capture73;
-        sjs_array_char* sjt_parent214 = 0;
+        bool sjt_capture73;
+        int32_t sjt_capture74;
+        sjs_array_char* sjt_parent215 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
-        sjt_parent214 = &_parent->data;
+        sjt_parent215 = &_parent->data;
 #line 35
-        sjf_array_char_gettotalcount(sjt_parent214, &sjt_capture73);
-        if (((_parent->offset + _parent->count) + item->count) < sjt_capture73) {
-            int32_t sjt_capture74;
-            sjs_array_char* sjt_parent215 = 0;
+        sjf_array_char_gettotalcount(sjt_parent215, &sjt_capture74);
+        if (((_parent->offset + _parent->count) + item->count) < sjt_capture74) {
+            int32_t sjt_capture75;
+            sjs_array_char* sjt_parent216 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent215 = &_parent->data;
+            sjt_parent216 = &_parent->data;
 #line 29
-            sjf_array_char_getcount(sjt_parent215, &sjt_capture74);
+            sjf_array_char_getcount(sjt_parent216, &sjt_capture75);
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture72 = ((_parent->offset + _parent->count) == sjt_capture74);
+            sjt_capture73 = ((_parent->offset + _parent->count) == sjt_capture75);
         } else {
 #line 24 "lib/sj-lib-common/string.sj"
-            sjt_capture72 = false;
+            sjt_capture73 = false;
         }
 
-        if (sjt_capture72) {
+        if (sjt_capture73) {
             int32_t i;
             int32_t newcount;
             int32_t sjt_forEnd16;
@@ -19332,21 +19332,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam310;
                 char sjt_functionParam311;
                 int32_t sjt_functionParam312;
-                sjs_array_char* sjt_parent216 = 0;
-                sjs_string* sjt_parent217 = 0;
+                sjs_array_char* sjt_parent217 = 0;
+                sjs_string* sjt_parent218 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent216 = &_parent->data;
+                sjt_parent217 = &_parent->data;
 #line 28 "lib/sj-lib-common/string.sj"
                 sjt_functionParam310 = newcount;
 #line 18
-                sjt_parent217 = item;
+                sjt_parent218 = item;
 #line 27
                 sjt_functionParam312 = i;
 #line 27
-                sjf_string_getat(sjt_parent217, sjt_functionParam312, &sjt_functionParam311);
+                sjf_string_getat(sjt_parent218, sjt_functionParam312, &sjt_functionParam311);
 #line 27
-                sjf_array_char_initat(sjt_parent216, sjt_functionParam310, sjt_functionParam311);
+                sjf_array_char_initat(sjt_parent217, sjt_functionParam310, sjt_functionParam311);
 #line 29
                 newcount = newcount + 1;
 #line 27
@@ -19377,11 +19377,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
             int32_t sjt_functionParam313;
             int32_t sjt_functionParam314;
             int32_t sjt_functionParam315;
-            sjs_array_char* sjt_parent218 = 0;
             sjs_array_char* sjt_parent219 = 0;
+            sjs_array_char* sjt_parent220 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent218 = &_parent->data;
+            sjt_parent219 = &_parent->data;
 #line 34 "lib/sj-lib-common/string.sj"
             sjt_functionParam313 = _parent->offset;
 #line 34
@@ -19389,11 +19389,11 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
 #line 34
             sjt_functionParam315 = ((((_parent->count + item->count) - 1) / 256) + 1) * 256;
 #line 34
-            sjf_array_char_clone(sjt_parent218, sjt_functionParam313, sjt_functionParam314, sjt_functionParam315, &newdata);
+            sjf_array_char_clone(sjt_parent219, sjt_functionParam313, sjt_functionParam314, sjt_functionParam315, &newdata);
 #line 29 "lib/sj-lib-common/array.sj"
-            sjt_parent219 = &newdata;
+            sjt_parent220 = &newdata;
 #line 29
-            sjf_array_char_getcount(sjt_parent219, &newcount);
+            sjf_array_char_getcount(sjt_parent220, &newcount);
 #line 37 "lib/sj-lib-common/string.sj"
             sjt_forStart17 = 0;
 #line 37
@@ -19404,21 +19404,21 @@ void sjf_string_add_heap(sjs_string* _parent, sjs_string* item, sjs_string** _re
                 int32_t sjt_functionParam316;
                 char sjt_functionParam317;
                 int32_t sjt_functionParam318;
-                sjs_array_char* sjt_parent220 = 0;
-                sjs_string* sjt_parent221 = 0;
+                sjs_array_char* sjt_parent221 = 0;
+                sjs_string* sjt_parent222 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-                sjt_parent220 = &newdata;
+                sjt_parent221 = &newdata;
 #line 38 "lib/sj-lib-common/string.sj"
                 sjt_functionParam316 = newcount;
 #line 18
-                sjt_parent221 = item;
+                sjt_parent222 = item;
 #line 37
                 sjt_functionParam318 = i;
 #line 37
-                sjf_string_getat(sjt_parent221, sjt_functionParam318, &sjt_functionParam317);
+                sjf_string_getat(sjt_parent222, sjt_functionParam318, &sjt_functionParam317);
 #line 37
-                sjf_array_char_initat(sjt_parent220, sjt_functionParam316, sjt_functionParam317);
+                sjf_array_char_initat(sjt_parent221, sjt_functionParam316, sjt_functionParam317);
 #line 39
                 newcount = newcount + 1;
 #line 37
@@ -19468,14 +19468,14 @@ void sjf_string_destroy(sjs_string* _this) {
 
 void sjf_string_getat(sjs_string* _parent, int32_t index, char* _return) {
     int32_t sjt_functionParam302;
-    sjs_array_char* sjt_parent208 = 0;
+    sjs_array_char* sjt_parent209 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-    sjt_parent208 = &_parent->data;
+    sjt_parent209 = &_parent->data;
 #line 64 "lib/sj-lib-common/string.sj"
     sjt_functionParam302 = _parent->offset + index;
 #line 64
-    sjf_array_char_getat(sjt_parent208, sjt_functionParam302, _return);
+    sjf_array_char_getat(sjt_parent209, sjt_functionParam302, _return);
 }
 
 void sjf_string_hash(sjs_string* _parent, uint32_t* _return) {
@@ -19517,20 +19517,26 @@ void sjf_string_nullterminate(sjs_string* _parent) {
     result2 = !_parent->_isnullterminated;
     if (result2) {
         int32_t sjt_capture1;
+        int32_t sjt_capture2;
         sjs_array_char* sjt_parent1 = 0;
+        sjs_array_char* sjt_parent2 = 0;
 
 #line 35 "lib/sj-lib-common/array.sj"
         sjt_parent1 = &_parent->data;
 #line 35
         sjf_array_char_gettotalcount(sjt_parent1, &sjt_capture1);
-        if (((_parent->offset + _parent->count) + 1) > sjt_capture1) {
+#line 29
+        sjt_parent2 = &_parent->data;
+#line 29
+        sjf_array_char_getcount(sjt_parent2, &sjt_capture2);
+        if ((((_parent->offset + _parent->count) + 1) > sjt_capture1) || ((_parent->offset + _parent->count) != sjt_capture2)) {
             int32_t sjt_functionParam1;
             int32_t sjt_functionParam2;
             int32_t sjt_functionParam3;
-            sjs_array_char* sjt_parent2 = 0;
+            sjs_array_char* sjt_parent3 = 0;
 
 #line 168 "lib/sj-lib-common/array.sj"
-            sjt_parent2 = &_parent->data;
+            sjt_parent3 = &_parent->data;
 #line 135 "lib/sj-lib-common/string.sj"
             sjt_functionParam1 = _parent->offset;
 #line 135
@@ -19538,7 +19544,7 @@ void sjf_string_nullterminate(sjs_string* _parent) {
 #line 135
             sjt_functionParam3 = _parent->count + 1;
 #line 135
-            sjf_array_char_clone(sjt_parent2, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
+            sjf_array_char_clone(sjt_parent3, sjt_functionParam1, sjt_functionParam2, sjt_functionParam3, &sjt_funcold1);
 #line 135
             if (_parent->data._refCount == 1) { sjf_array_char_destroy(&_parent->data); }
 ;
@@ -19588,23 +19594,23 @@ void sjf_string_touppercase(sjs_string* _parent, sjs_string* _return) {
         char sjt_functionParam320;
         char sjt_functionParam321;
         int32_t sjt_functionParam322;
-        sjs_array_char* sjt_parent226 = 0;
         sjs_array_char* sjt_parent227 = 0;
+        sjs_array_char* sjt_parent228 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-        sjt_parent226 = &a;
+        sjt_parent227 = &a;
 #line 126 "lib/sj-lib-common/string.sj"
         sjt_functionParam319 = i;
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent227 = &_parent->data;
+        sjt_parent228 = &_parent->data;
 #line 126 "lib/sj-lib-common/string.sj"
         sjt_functionParam322 = i;
 #line 126
-        sjf_array_char_getat(sjt_parent227, sjt_functionParam322, &sjt_functionParam321);
+        sjf_array_char_getat(sjt_parent228, sjt_functionParam322, &sjt_functionParam321);
 #line 126
         sjf_char_touppercase(sjt_functionParam321, &sjt_functionParam320);
 #line 126
-        sjf_array_char_initat(sjt_parent226, sjt_functionParam319, sjt_functionParam320);
+        sjf_array_char_initat(sjt_parent227, sjt_functionParam319, sjt_functionParam320);
 #line 126
         i++;
     }
@@ -19658,23 +19664,23 @@ void sjf_string_touppercase_heap(sjs_string* _parent, sjs_string** _return) {
         char sjt_functionParam324;
         char sjt_functionParam325;
         int32_t sjt_functionParam326;
-        sjs_array_char* sjt_parent228 = 0;
         sjs_array_char* sjt_parent229 = 0;
+        sjs_array_char* sjt_parent230 = 0;
 
 #line 52 "lib/sj-lib-common/array.sj"
-        sjt_parent228 = &a;
+        sjt_parent229 = &a;
 #line 126 "lib/sj-lib-common/string.sj"
         sjt_functionParam323 = i;
 #line 41 "lib/sj-lib-common/array.sj"
-        sjt_parent229 = &_parent->data;
+        sjt_parent230 = &_parent->data;
 #line 126 "lib/sj-lib-common/string.sj"
         sjt_functionParam326 = i;
 #line 126
-        sjf_array_char_getat(sjt_parent229, sjt_functionParam326, &sjt_functionParam325);
+        sjf_array_char_getat(sjt_parent230, sjt_functionParam326, &sjt_functionParam325);
 #line 126
         sjf_char_touppercase(sjt_functionParam325, &sjt_functionParam324);
 #line 126
-        sjf_array_char_initat(sjt_parent228, sjt_functionParam323, sjt_functionParam324);
+        sjf_array_char_initat(sjt_parent229, sjt_functionParam323, sjt_functionParam324);
 #line 126
         i++;
     }
@@ -19857,7 +19863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 135:
+        case 136:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -19877,7 +19883,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 141:
+        case 142:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -19897,7 +19903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 92:
+        case 93:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -19917,7 +19923,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 93:
+        case 94:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -19937,7 +19943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 213:
+        case 214:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20457,7 +20463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 71:
+        case 72:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20477,7 +20483,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 94:
+        case 95:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20497,7 +20503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 66:
+        case 67:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20517,7 +20523,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 58:
+        case 59:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20557,7 +20563,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 70:
+        case 71:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20617,7 +20623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 46:
+        case 47:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20637,7 +20643,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 218:
+        case 219:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20657,7 +20663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 221:
+        case 46:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20697,7 +20703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 217:
+        case 218:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20757,7 +20763,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 73:
+        case 74:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20817,7 +20823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 90:
+        case 91:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20837,7 +20843,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 97:
+        case 98:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20857,7 +20863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 96:
+        case 97:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20897,7 +20903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 112:
+        case 113:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20917,7 +20923,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 137:
+        case 138:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20937,7 +20943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 200:
+        case 201:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20957,7 +20963,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 126:
+        case 127:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20977,7 +20983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 125:
+        case 126:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -20997,7 +21003,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 199:
+        case 200:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21017,7 +21023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 201:
+        case 202:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21037,7 +21043,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 138:
+        case 139:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21057,7 +21063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 136:
+        case 137:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21077,7 +21083,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 204:
+        case 205:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21097,7 +21103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 209:
+        case 210:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21117,7 +21123,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 206:
+        case 207:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21157,7 +21163,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 84:
+        case 85:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21177,7 +21183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 131:
+        case 132:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21197,7 +21203,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 146:
+        case 147:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21217,7 +21223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 129:
+        case 130:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21237,7 +21243,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 130:
+        case 131:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21257,7 +21263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 133:
+        case 134:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21277,7 +21283,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 86:
+        case 87:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21297,7 +21303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 178:
+        case 179:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21317,7 +21323,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 184:
+        case 185:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21337,7 +21343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 176:
+        case 177:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21357,7 +21363,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 177:
+        case 178:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21377,7 +21383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 179:
+        case 180:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21397,7 +21403,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 205:
+        case 206:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21417,7 +21423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 208:
+        case 209:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21437,7 +21443,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 207:
+        case 208:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21537,7 +21543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 219:
+        case 220:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21557,7 +21563,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 49:
+        case 50:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21577,7 +21583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 196:
+        case 197:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21717,7 +21723,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 214:
+        case 215:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21757,7 +21763,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 140:
+        case 141:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21797,7 +21803,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 79:
+        case 80:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21837,7 +21843,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 121:
+        case 122:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21857,7 +21863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 117:
+        case 118:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21877,7 +21883,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 89:
+        case 90:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21897,7 +21903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 106:
+        case 107:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21917,7 +21923,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 100:
+        case 101:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21937,7 +21943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 88:
+        case 89:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21957,7 +21963,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 104:
+        case 105:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21977,7 +21983,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 105:
+        case 106:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -21997,7 +22003,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 101:
+        case 102:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22017,7 +22023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 103:
+        case 104:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22037,7 +22043,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 76:
+        case 77:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22057,7 +22063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 75:
+        case 76:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22077,7 +22083,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 78:
+        case 79:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22097,7 +22103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 80:
+        case 81:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22117,7 +22123,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 164:
+        case 165:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22157,7 +22163,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 192:
+        case 193:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22177,7 +22183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 50:
+        case 51:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22217,7 +22223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 48:
+        case 49:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22237,7 +22243,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 150:
+        case 151:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22257,7 +22263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 51:
+        case 52:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22377,7 +22383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 194:
+        case 195:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22417,7 +22423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 182:
+        case 183:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22437,7 +22443,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 144:
+        case 145:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22457,7 +22463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 174:
+        case 175:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22477,7 +22483,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 127:
+        case 128:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22577,7 +22583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 193:
+        case 194:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22597,7 +22603,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 195:
+        case 196:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22617,7 +22623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 191:
+        case 192:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22637,7 +22643,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 148:
+        case 149:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22657,7 +22663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 77:
+        case 78:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22677,7 +22683,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 81:
+        case 82:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22697,7 +22703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 82:
+        case 83:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22717,7 +22723,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 67:
+        case 68:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22737,7 +22743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 68:
+        case 69:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22757,7 +22763,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 69:
+        case 70:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22777,7 +22783,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 61:
+        case 62:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22797,7 +22803,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 64:
+        case 65:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22817,7 +22823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 65:
+        case 66:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -22957,7 +22963,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 132:
+        case 133:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23157,7 +23163,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 210:
+        case 211:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23257,7 +23263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 56:
+        case 57:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23277,7 +23283,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 72:
+        case 73:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23357,7 +23363,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 59:
+        case 60:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23377,7 +23383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 198:
+        case 199:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23397,7 +23403,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 143:
+        case 144:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23417,7 +23423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 142:
+        case 143:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23437,7 +23443,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 134:
+        case 135:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23457,7 +23463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 83:
+        case 84:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23477,7 +23483,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 128:
+        case 129:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23497,7 +23503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 145:
+        case 146:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23517,7 +23523,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 147:
+        case 148:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23537,7 +23543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 149:
+        case 150:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23557,7 +23563,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 85:
+        case 86:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23577,7 +23583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 175:
+        case 176:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23597,7 +23603,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 183:
+        case 184:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23617,7 +23623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 185:
+        case 186:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23637,7 +23643,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 186:
+        case 187:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23677,7 +23683,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 212:
+        case 213:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23697,7 +23703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 211:
+        case 212:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23717,7 +23723,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 215:
+        case 216:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23757,7 +23763,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 91:
+        case 92:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23777,7 +23783,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 54:
+        case 55:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23797,7 +23803,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 188:
+        case 189:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23817,7 +23823,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 113:
+        case 114:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23837,7 +23843,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 187:
+        case 188:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23857,7 +23863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 118:
+        case 119:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23877,7 +23883,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 167:
+        case 168:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23897,7 +23903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 189:
+        case 190:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23917,7 +23923,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 168:
+        case 169:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23957,7 +23963,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 116:
+        case 117:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -23997,7 +24003,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 190:
+        case 191:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24017,7 +24023,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 139:
+        case 140:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24037,7 +24043,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 60:
+        case 61:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24077,7 +24083,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 107:
+        case 108:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24097,7 +24103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 108:
+        case 109:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24137,7 +24143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 55:
+        case 56:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24177,7 +24183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 115:
+        case 116:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24197,7 +24203,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 102:
+        case 103:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24217,7 +24223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 166:
+        case 167:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24257,7 +24263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 52:
+        case 53:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24277,7 +24283,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 181:
+        case 182:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24317,7 +24323,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 180:
+        case 181:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24337,7 +24343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 153:
+        case 154:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24357,7 +24363,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 202:
+        case 203:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24377,7 +24383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 170:
+        case 171:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24397,7 +24403,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 171:
+        case 172:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24417,7 +24423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 169:
+        case 170:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24437,7 +24443,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 173:
+        case 174:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24457,7 +24463,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 172:
+        case 173:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24477,7 +24483,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 152:
+        case 153:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24497,7 +24503,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 111:
+        case 112:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24517,7 +24523,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 151:
+        case 152:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24537,7 +24543,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 110:
+        case 111:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24557,7 +24563,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 109:
+        case 110:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24577,7 +24583,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 124:
+        case 125:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24597,7 +24603,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 114:
+        case 115:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24617,7 +24623,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 74:
+        case 75:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24637,7 +24643,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 53:
+        case 54:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24657,7 +24663,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 99:
+        case 100:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24697,7 +24703,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 98:
+        case 99:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24737,7 +24743,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 95:
+        case 96:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24797,7 +24803,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 220:
+        case 221:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24837,7 +24843,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 62:
+        case 63:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24857,7 +24863,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 63:
+        case 64:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24897,7 +24903,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 216:
+        case 217:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24917,7 +24923,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 87:
+        case 88:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -24937,7 +24943,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 165:
+        case 166:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25057,7 +25063,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 160:
+        case 161:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25097,7 +25103,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 158:
+        case 159:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25117,7 +25123,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 162:
+        case 163:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25137,7 +25143,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 57:
+        case 58:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25157,7 +25163,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 122:
+        case 123:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25177,7 +25183,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 123:
+        case 124:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25197,7 +25203,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 157:
+        case 158:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25217,7 +25223,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 120:
+        case 121:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25237,7 +25243,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 161:
+        case 162:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25257,7 +25263,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 119:
+        case 120:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25277,7 +25283,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 163:
+        case 164:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25297,7 +25303,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 154:
+        case 155:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25317,7 +25323,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 156:
+        case 157:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25337,7 +25343,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 159:
+        case 160:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25357,7 +25363,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 155:
+        case 156:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25377,7 +25383,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 197:
+        case 198:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25397,7 +25403,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 203:
+        case 204:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25417,7 +25423,7 @@ void sjf_type_asstring(int32_t t, sjs_string* _return) {
 #line 16
         break;
 #line 16
-        case 47:
+        case 48:
 #line 16
         _return->_refCount = 1;
 #line 16
@@ -25665,15 +25671,15 @@ void sjf_vec2_asstring(sjs_vec2* _parent, sjs_string* _return) {
     sjs_string* sjt_functionParam375 = 0;
     sjs_string* sjt_functionParam376 = 0;
     float sjt_functionParam377;
-    sjs_string* sjt_parent256 = 0;
     sjs_string* sjt_parent257 = 0;
+    sjs_string* sjt_parent258 = 0;
 
 #line 6 "lib/sj-lib-ui/vec2.sj"
     sjt_functionParam374 = _parent->x;
 #line 6
     sjf_f32_asstring(sjt_functionParam374, &sjt_call92);
 #line 6
-    sjt_parent257 = &sjt_call92;
+    sjt_parent258 = &sjt_call92;
 #line 6
     sjt_call93._refCount = 1;
 #line 6
@@ -25693,9 +25699,9 @@ void sjf_vec2_asstring(sjs_vec2* _parent, sjs_string* _return) {
 #line 6 "lib/sj-lib-ui/vec2.sj"
     sjt_functionParam375 = &sjt_call93;
 #line 6
-    sjf_string_add(sjt_parent257, sjt_functionParam375, &sjt_call91);
+    sjf_string_add(sjt_parent258, sjt_functionParam375, &sjt_call91);
 #line 6
-    sjt_parent256 = &sjt_call91;
+    sjt_parent257 = &sjt_call91;
 #line 6
     sjt_functionParam377 = _parent->y;
 #line 6
@@ -25703,7 +25709,7 @@ void sjf_vec2_asstring(sjs_vec2* _parent, sjs_string* _return) {
 #line 6
     sjt_functionParam376 = &sjt_call94;
 #line 6
-    sjf_string_add(sjt_parent256, sjt_functionParam376, _return);
+    sjf_string_add(sjt_parent257, sjt_functionParam376, _return);
 
     if (sjt_call91._refCount == 1) { sjf_string_destroy(&sjt_call91); }
 ;
@@ -25724,15 +25730,15 @@ void sjf_vec2_asstring_heap(sjs_vec2* _parent, sjs_string** _return) {
     sjs_string* sjt_functionParam379 = 0;
     sjs_string* sjt_functionParam380 = 0;
     float sjt_functionParam381;
-    sjs_string* sjt_parent258 = 0;
     sjs_string* sjt_parent259 = 0;
+    sjs_string* sjt_parent260 = 0;
 
 #line 6 "lib/sj-lib-ui/vec2.sj"
     sjt_functionParam378 = _parent->x;
 #line 6
     sjf_f32_asstring(sjt_functionParam378, &sjt_call96);
 #line 6
-    sjt_parent259 = &sjt_call96;
+    sjt_parent260 = &sjt_call96;
 #line 6
     sjt_call97._refCount = 1;
 #line 6
@@ -25752,9 +25758,9 @@ void sjf_vec2_asstring_heap(sjs_vec2* _parent, sjs_string** _return) {
 #line 6 "lib/sj-lib-ui/vec2.sj"
     sjt_functionParam379 = &sjt_call97;
 #line 6
-    sjf_string_add(sjt_parent259, sjt_functionParam379, &sjt_call95);
+    sjf_string_add(sjt_parent260, sjt_functionParam379, &sjt_call95);
 #line 6
-    sjt_parent258 = &sjt_call95;
+    sjt_parent259 = &sjt_call95;
 #line 6
     sjt_functionParam381 = _parent->y;
 #line 6
@@ -25762,7 +25768,7 @@ void sjf_vec2_asstring_heap(sjs_vec2* _parent, sjs_string** _return) {
 #line 6
     sjt_functionParam380 = &sjt_call98;
 #line 6
-    sjf_string_add_heap(sjt_parent258, sjt_functionParam380, _return);
+    sjf_string_add_heap(sjt_parent259, sjt_functionParam380, _return);
 
     if (sjt_call95._refCount == 1) { sjf_string_destroy(&sjt_call95); }
 ;
@@ -26005,15 +26011,15 @@ void sjf_vertex_location_texture_normal_destroy(sjs_vertex_location_texture_norm
 }
 
 void sjf_vertex_location_texture_normal_getrawsize(int32_t* _return) {
-    int32_t sjt_capture39;
     int32_t sjt_capture40;
     int32_t sjt_capture41;
+    int32_t sjt_capture42;
 
-    sjf_vec3_getrawsize(&sjt_capture39);
-    sjf_vec2_getrawsize(&sjt_capture40);
-    sjf_vec3_getrawsize(&sjt_capture41);
+    sjf_vec3_getrawsize(&sjt_capture40);
+    sjf_vec2_getrawsize(&sjt_capture41);
+    sjf_vec3_getrawsize(&sjt_capture42);
 #line 9 "lib/sj-lib-ui/vertexBufferBuilders.sj"
-    (*_return) = (sjt_capture39 + sjt_capture40) + sjt_capture41;
+    (*_return) = (sjt_capture40 + sjt_capture41) + sjt_capture42;
 }
 
 void sjf_vertex_location_texture_normal_heap(sjs_vertex_location_texture_normal* _this) {
@@ -26180,7 +26186,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
     int32_t i;
     sjs_vec3 intersection = { -1 };
     sjs_mat4 sjt_call28 = { -1 };
-    int32_t sjt_capture47;
+    int32_t sjt_capture48;
     int32_t sjt_cast11;
     int32_t sjt_cast12;
     int32_t sjt_cast13;
@@ -26192,14 +26198,14 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
     sjs_vec4* sjt_functionParam235 = 0;
     sjs_vec4* sjt_functionParam236 = 0;
     sjs_vec3* sjt_functionParam237 = 0;
-    sjs_mat4* sjt_parent137 = 0;
     sjs_mat4* sjt_parent138 = 0;
     sjs_mat4* sjt_parent139 = 0;
     sjs_mat4* sjt_parent140 = 0;
     sjs_mat4* sjt_parent141 = 0;
-    sjs_vec3* sjt_parent142 = 0;
+    sjs_mat4* sjt_parent142 = 0;
     sjs_vec3* sjt_parent143 = 0;
-    sjs_array_i32* sjt_parent144 = 0;
+    sjs_vec3* sjt_parent144 = 0;
+    sjs_array_i32* sjt_parent145 = 0;
     sjs_vec2 start = { -1 };
     sjs_vec2 texture = { -1 };
     sjs_vec3 vflatteneddir = { -1 };
@@ -26257,33 +26263,33 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 53
     sjf_vec4(&vscreenorigin2);
 #line 43
-    sjt_parent138 = projection;
+    sjt_parent139 = projection;
 #line 43
     sjt_functionParam233 = view;
 #line 43
-    sjf_mat4_multiply(sjt_parent138, sjt_functionParam233, &sjt_call28);
+    sjf_mat4_multiply(sjt_parent139, sjt_functionParam233, &sjt_call28);
 #line 54
-    sjt_parent137 = &sjt_call28;
+    sjt_parent138 = &sjt_call28;
 #line 43
     sjt_functionParam234 = world;
 #line 43
-    sjf_mat4_multiply(sjt_parent137, sjt_functionParam234, &all);
+    sjf_mat4_multiply(sjt_parent138, sjt_functionParam234, &all);
 #line 71 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent139 = &all;
+    sjt_parent140 = &all;
 #line 71
-    sjf_mat4_invert(sjt_parent139, &allinverse);
+    sjf_mat4_invert(sjt_parent140, &allinverse);
 #line 62
-    sjt_parent140 = &allinverse;
+    sjt_parent141 = &allinverse;
 #line 56 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam235 = &vscreenorigin1;
 #line 56
-    sjf_mat4_multiplyvec4(sjt_parent140, sjt_functionParam235, &vprojectedorigin1);
+    sjf_mat4_multiplyvec4(sjt_parent141, sjt_functionParam235, &vprojectedorigin1);
 #line 62 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent141 = &allinverse;
+    sjt_parent142 = &allinverse;
 #line 57 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam236 = &vscreenorigin2;
 #line 57
-    sjf_mat4_multiplyvec4(sjt_parent141, sjt_functionParam236, &vprojectedorigin2);
+    sjf_mat4_multiplyvec4(sjt_parent142, sjt_functionParam236, &vprojectedorigin2);
 #line 57
     vflattenedorigin1._refCount = 1;
 #line 58
@@ -26305,43 +26311,43 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
 #line 59
     sjf_vec3(&vflattenedorigin2);
 #line 30 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent142 = &vflattenedorigin2;
+    sjt_parent143 = &vflattenedorigin2;
 #line 60 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam237 = &vflattenedorigin1;
 #line 60
-    sjf_vec3_subtract(sjt_parent142, sjt_functionParam237, &vflatteneddir);
+    sjf_vec3_subtract(sjt_parent143, sjt_functionParam237, &vflatteneddir);
 #line 60
     vpickrayorig._refCount = 1;
 #line 62
     sjf_vec3_copy(&vpickrayorig, &vflattenedorigin1);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent143 = &vflatteneddir;
+    sjt_parent144 = &vflatteneddir;
 #line 38
-    sjf_vec3_normalize(sjt_parent143, &vpickraydir);
+    sjf_vec3_normalize(sjt_parent144, &vpickraydir);
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent144 = &_parent->indices;
+    sjt_parent145 = &_parent->indices;
 #line 29
-    sjf_array_i32_getcount(sjt_parent144, &sjt_capture47);
-    if (sjt_capture47 > 0) {
-        int32_t sjt_capture48;
-        sjs_array_i32* sjt_parent145 = 0;
-
-#line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent145 = &_parent->indices;
-#line 29
-        sjf_array_i32_getcount(sjt_parent145, &sjt_capture48);
-#line 65 "lib/sj-lib-ui/vertexBuffer.sj"
-        ctriangles = sjt_capture48 / 3;
-    } else {
+    sjf_array_i32_getcount(sjt_parent145, &sjt_capture48);
+    if (sjt_capture48 > 0) {
         int32_t sjt_capture49;
-        sjs_array_vertex_location_texture_normal* sjt_parent146 = 0;
+        sjs_array_i32* sjt_parent146 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent146 = &_parent->vertices;
+        sjt_parent146 = &_parent->indices;
 #line 29
-        sjf_array_vertex_location_texture_normal_getcount(sjt_parent146, &sjt_capture49);
+        sjf_array_i32_getcount(sjt_parent146, &sjt_capture49);
 #line 65 "lib/sj-lib-ui/vertexBuffer.sj"
         ctriangles = sjt_capture49 / 3;
+    } else {
+        int32_t sjt_capture50;
+        sjs_array_vertex_location_texture_normal* sjt_parent147 = 0;
+
+#line 29 "lib/sj-lib-common/array.sj"
+        sjt_parent147 = &_parent->vertices;
+#line 29
+        sjf_array_vertex_location_texture_normal_getcount(sjt_parent147, &sjt_capture50);
+#line 65 "lib/sj-lib-ui/vertexBuffer.sj"
+        ctriangles = sjt_capture50 / 3;
     }
 
 #line 66 "lib/sj-lib-ui/vertexBuffer.sj"
@@ -26352,115 +26358,115 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
     i = sjt_forStart12;
     while (i < sjt_forEnd12) {
         sjs_vec3 result = { -1 };
-        int32_t sjt_capture50;
         int32_t sjt_capture51;
         int32_t sjt_capture52;
+        int32_t sjt_capture53;
         sjs_vec3* sjt_functionParam267 = 0;
         sjs_vec3* sjt_functionParam268 = 0;
         sjs_vec3* sjt_functionParam269 = 0;
         sjs_vec3* sjt_functionParam270 = 0;
         sjs_vec3* sjt_functionParam271 = 0;
-        sjs_array_i32* sjt_parent147 = 0;
-        sjs_array_i32* sjt_parent151 = 0;
-        sjs_array_i32* sjt_parent155 = 0;
+        sjs_array_i32* sjt_parent148 = 0;
+        sjs_array_i32* sjt_parent152 = 0;
+        sjs_array_i32* sjt_parent156 = 0;
         sjs_vertex_location_texture_normal vertex0 = { -1 };
         sjs_vertex_location_texture_normal vertex1 = { -1 };
         sjs_vertex_location_texture_normal vertex2 = { -1 };
 
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent147 = &_parent->indices;
+        sjt_parent148 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent147, &sjt_capture50);
-        if (sjt_capture50 > 0) {
+        sjf_array_i32_getcount(sjt_parent148, &sjt_capture51);
+        if (sjt_capture51 > 0) {
             int32_t sjt_functionParam238;
             int32_t sjt_functionParam239;
-            sjs_array_vertex_location_texture_normal* sjt_parent148 = 0;
-            sjs_array_i32* sjt_parent149 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent149 = 0;
+            sjs_array_i32* sjt_parent150 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent148 = &_parent->vertices;
+            sjt_parent149 = &_parent->vertices;
 #line 41
-            sjt_parent149 = &_parent->indices;
+            sjt_parent150 = &_parent->indices;
 #line 67 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam239 = (i * 3) + 0;
 #line 67
-            sjf_array_i32_getat(sjt_parent149, sjt_functionParam239, &sjt_functionParam238);
+            sjf_array_i32_getat(sjt_parent150, sjt_functionParam239, &sjt_functionParam238);
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent148, sjt_functionParam238, &vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent149, sjt_functionParam238, &vertex0);
         } else {
             int32_t sjt_functionParam240;
-            sjs_array_vertex_location_texture_normal* sjt_parent150 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent151 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent150 = &_parent->vertices;
+            sjt_parent151 = &_parent->vertices;
 #line 67 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam240 = (i * 3) + 0;
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent150, sjt_functionParam240, &vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent151, sjt_functionParam240, &vertex0);
         }
 
 #line 29
-        sjt_parent151 = &_parent->indices;
+        sjt_parent152 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent151, &sjt_capture51);
-        if (sjt_capture51 > 0) {
+        sjf_array_i32_getcount(sjt_parent152, &sjt_capture52);
+        if (sjt_capture52 > 0) {
             int32_t sjt_functionParam241;
             int32_t sjt_functionParam242;
-            sjs_array_vertex_location_texture_normal* sjt_parent152 = 0;
-            sjs_array_i32* sjt_parent153 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent153 = 0;
+            sjs_array_i32* sjt_parent154 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent152 = &_parent->vertices;
+            sjt_parent153 = &_parent->vertices;
 #line 41
-            sjt_parent153 = &_parent->indices;
+            sjt_parent154 = &_parent->indices;
 #line 68 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam242 = (i * 3) + 1;
 #line 68
-            sjf_array_i32_getat(sjt_parent153, sjt_functionParam242, &sjt_functionParam241);
+            sjf_array_i32_getat(sjt_parent154, sjt_functionParam242, &sjt_functionParam241);
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent152, sjt_functionParam241, &vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent153, sjt_functionParam241, &vertex1);
         } else {
             int32_t sjt_functionParam243;
-            sjs_array_vertex_location_texture_normal* sjt_parent154 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent155 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent154 = &_parent->vertices;
+            sjt_parent155 = &_parent->vertices;
 #line 68 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam243 = (i * 3) + 1;
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent154, sjt_functionParam243, &vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent155, sjt_functionParam243, &vertex1);
         }
 
 #line 29
-        sjt_parent155 = &_parent->indices;
+        sjt_parent156 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent155, &sjt_capture52);
-        if (sjt_capture52 > 0) {
+        sjf_array_i32_getcount(sjt_parent156, &sjt_capture53);
+        if (sjt_capture53 > 0) {
             int32_t sjt_functionParam244;
             int32_t sjt_functionParam245;
-            sjs_array_vertex_location_texture_normal* sjt_parent156 = 0;
-            sjs_array_i32* sjt_parent157 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent157 = 0;
+            sjs_array_i32* sjt_parent158 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent156 = &_parent->vertices;
+            sjt_parent157 = &_parent->vertices;
 #line 41
-            sjt_parent157 = &_parent->indices;
+            sjt_parent158 = &_parent->indices;
 #line 69 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam245 = (i * 3) + 2;
 #line 69
-            sjf_array_i32_getat(sjt_parent157, sjt_functionParam245, &sjt_functionParam244);
+            sjf_array_i32_getat(sjt_parent158, sjt_functionParam245, &sjt_functionParam244);
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent156, sjt_functionParam244, &vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent157, sjt_functionParam244, &vertex2);
         } else {
             int32_t sjt_functionParam246;
-            sjs_array_vertex_location_texture_normal* sjt_parent158 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent159 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent158 = &_parent->vertices;
+            sjt_parent159 = &_parent->vertices;
 #line 69 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam246 = (i * 3) + 2;
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent158, sjt_functionParam246, &vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent159, sjt_functionParam246, &vertex2);
         }
 
 #line 72 "lib/sj-lib-ui/vertexBuffer.sj"
@@ -26477,41 +26483,41 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
         sjf_intersecttriangle(sjt_functionParam267, sjt_functionParam268, sjt_functionParam269, sjt_functionParam270, sjt_functionParam271, &result);
         if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue5 = 0;
-            float sjt_capture53;
-            float_option sjt_capture54;
+            float sjt_capture54;
+            float_option sjt_capture55;
             sjs_vec3 sjt_value6 = { -1 };
             sjs_vec2 sjt_value7 = { -1 };
 
 #line 73 "lib/sj-lib-ui/vertexBuffer.sj"
             ifValue5 = (result._refCount != -1 ? &result : 0);
             if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                sjs_vec3* sjt_capture55 = 0;
+                sjs_vec3* sjt_capture56 = 0;
                 float sjt_value4;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                sjt_capture55 = (intersection._refCount != -1 ? &intersection : 0);
+                sjt_capture56 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_value4 = sjt_capture55->z;
+                sjt_value4 = sjt_capture56->z;
 #line 74
-                sjt_capture54.isvalid = true;
+                sjt_capture55.isvalid = true;
 #line 74
-                sjt_capture54.value = sjt_value4;
+                sjt_capture55.value = sjt_value4;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture54 = float_empty;
+                sjt_capture55 = float_empty;
             }
 
-            if (sjt_capture54.isvalid) {
+            if (sjt_capture55.isvalid) {
                 float_option sjt_getValue1;
 
                 if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                    sjs_vec3* sjt_capture56 = 0;
+                    sjs_vec3* sjt_capture57 = 0;
                     float sjt_value5;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                    sjt_capture56 = (intersection._refCount != -1 ? &intersection : 0);
+                    sjt_capture57 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                    sjt_value5 = sjt_capture56->z;
+                    sjt_value5 = sjt_capture57->z;
 #line 74
                     sjt_getValue1.isvalid = true;
 #line 74
@@ -26522,13 +26528,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture(sj
                 }
 
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture53 = sjt_getValue1.value;
+                sjt_capture54 = sjt_getValue1.value;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture53 = 0.0f;
+                sjt_capture54 = 0.0f;
             }
 
-            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue5->z < sjt_capture53)) {
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue5->z < sjt_capture54)) {
                 float dtu1;
                 float dtu2;
                 float dtv1;
@@ -26648,7 +26654,7 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
     int32_t i;
     sjs_vec3 intersection = { -1 };
     sjs_mat4 sjt_call29 = { -1 };
-    int32_t sjt_capture57;
+    int32_t sjt_capture58;
     int32_t sjt_cast15;
     int32_t sjt_cast16;
     int32_t sjt_cast17;
@@ -26660,14 +26666,14 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
     sjs_vec4* sjt_functionParam274 = 0;
     sjs_vec4* sjt_functionParam275 = 0;
     sjs_vec3* sjt_functionParam276 = 0;
-    sjs_mat4* sjt_parent179 = 0;
     sjs_mat4* sjt_parent180 = 0;
     sjs_mat4* sjt_parent181 = 0;
     sjs_mat4* sjt_parent182 = 0;
     sjs_mat4* sjt_parent183 = 0;
-    sjs_vec3* sjt_parent184 = 0;
+    sjs_mat4* sjt_parent184 = 0;
     sjs_vec3* sjt_parent185 = 0;
-    sjs_array_i32* sjt_parent186 = 0;
+    sjs_vec3* sjt_parent186 = 0;
+    sjs_array_i32* sjt_parent187 = 0;
     sjs_vec2 start = { -1 };
     sjs_vec2 texture = { -1 };
     sjs_vec3 vflatteneddir = { -1 };
@@ -26725,33 +26731,33 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 53
     sjf_vec4(&vscreenorigin2);
 #line 43
-    sjt_parent180 = projection;
+    sjt_parent181 = projection;
 #line 43
     sjt_functionParam272 = view;
 #line 43
-    sjf_mat4_multiply(sjt_parent180, sjt_functionParam272, &sjt_call29);
+    sjf_mat4_multiply(sjt_parent181, sjt_functionParam272, &sjt_call29);
 #line 54
-    sjt_parent179 = &sjt_call29;
+    sjt_parent180 = &sjt_call29;
 #line 43
     sjt_functionParam273 = world;
 #line 43
-    sjf_mat4_multiply(sjt_parent179, sjt_functionParam273, &all);
+    sjf_mat4_multiply(sjt_parent180, sjt_functionParam273, &all);
 #line 71 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent181 = &all;
+    sjt_parent182 = &all;
 #line 71
-    sjf_mat4_invert(sjt_parent181, &allinverse);
+    sjf_mat4_invert(sjt_parent182, &allinverse);
 #line 62
-    sjt_parent182 = &allinverse;
+    sjt_parent183 = &allinverse;
 #line 56 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam274 = &vscreenorigin1;
 #line 56
-    sjf_mat4_multiplyvec4(sjt_parent182, sjt_functionParam274, &vprojectedorigin1);
+    sjf_mat4_multiplyvec4(sjt_parent183, sjt_functionParam274, &vprojectedorigin1);
 #line 62 "lib/sj-lib-ui/mat4.sj"
-    sjt_parent183 = &allinverse;
+    sjt_parent184 = &allinverse;
 #line 57 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam275 = &vscreenorigin2;
 #line 57
-    sjf_mat4_multiplyvec4(sjt_parent183, sjt_functionParam275, &vprojectedorigin2);
+    sjf_mat4_multiplyvec4(sjt_parent184, sjt_functionParam275, &vprojectedorigin2);
 #line 57
     vflattenedorigin1._refCount = 1;
 #line 58
@@ -26773,43 +26779,43 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
 #line 59
     sjf_vec3(&vflattenedorigin2);
 #line 30 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent184 = &vflattenedorigin2;
+    sjt_parent185 = &vflattenedorigin2;
 #line 60 "lib/sj-lib-ui/vertexBuffer.sj"
     sjt_functionParam276 = &vflattenedorigin1;
 #line 60
-    sjf_vec3_subtract(sjt_parent184, sjt_functionParam276, &vflatteneddir);
+    sjf_vec3_subtract(sjt_parent185, sjt_functionParam276, &vflatteneddir);
 #line 60
     vpickrayorig._refCount = 1;
 #line 62
     sjf_vec3_copy(&vpickrayorig, &vflattenedorigin1);
 #line 38 "lib/sj-lib-ui/vec3.sj"
-    sjt_parent185 = &vflatteneddir;
+    sjt_parent186 = &vflatteneddir;
 #line 38
-    sjf_vec3_normalize(sjt_parent185, &vpickraydir);
+    sjf_vec3_normalize(sjt_parent186, &vpickraydir);
 #line 29 "lib/sj-lib-common/array.sj"
-    sjt_parent186 = &_parent->indices;
+    sjt_parent187 = &_parent->indices;
 #line 29
-    sjf_array_i32_getcount(sjt_parent186, &sjt_capture57);
-    if (sjt_capture57 > 0) {
-        int32_t sjt_capture58;
-        sjs_array_i32* sjt_parent187 = 0;
-
-#line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent187 = &_parent->indices;
-#line 29
-        sjf_array_i32_getcount(sjt_parent187, &sjt_capture58);
-#line 65 "lib/sj-lib-ui/vertexBuffer.sj"
-        ctriangles = sjt_capture58 / 3;
-    } else {
+    sjf_array_i32_getcount(sjt_parent187, &sjt_capture58);
+    if (sjt_capture58 > 0) {
         int32_t sjt_capture59;
-        sjs_array_vertex_location_texture_normal* sjt_parent188 = 0;
+        sjs_array_i32* sjt_parent188 = 0;
 
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent188 = &_parent->vertices;
+        sjt_parent188 = &_parent->indices;
 #line 29
-        sjf_array_vertex_location_texture_normal_getcount(sjt_parent188, &sjt_capture59);
+        sjf_array_i32_getcount(sjt_parent188, &sjt_capture59);
 #line 65 "lib/sj-lib-ui/vertexBuffer.sj"
         ctriangles = sjt_capture59 / 3;
+    } else {
+        int32_t sjt_capture60;
+        sjs_array_vertex_location_texture_normal* sjt_parent189 = 0;
+
+#line 29 "lib/sj-lib-common/array.sj"
+        sjt_parent189 = &_parent->vertices;
+#line 29
+        sjf_array_vertex_location_texture_normal_getcount(sjt_parent189, &sjt_capture60);
+#line 65 "lib/sj-lib-ui/vertexBuffer.sj"
+        ctriangles = sjt_capture60 / 3;
     }
 
 #line 66 "lib/sj-lib-ui/vertexBuffer.sj"
@@ -26820,115 +26826,115 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
     i = sjt_forStart13;
     while (i < sjt_forEnd13) {
         sjs_vec3 result = { -1 };
-        int32_t sjt_capture60;
         int32_t sjt_capture61;
         int32_t sjt_capture62;
+        int32_t sjt_capture63;
         sjs_vec3* sjt_functionParam286 = 0;
         sjs_vec3* sjt_functionParam287 = 0;
         sjs_vec3* sjt_functionParam288 = 0;
         sjs_vec3* sjt_functionParam289 = 0;
         sjs_vec3* sjt_functionParam290 = 0;
-        sjs_array_i32* sjt_parent189 = 0;
-        sjs_array_i32* sjt_parent193 = 0;
-        sjs_array_i32* sjt_parent197 = 0;
+        sjs_array_i32* sjt_parent190 = 0;
+        sjs_array_i32* sjt_parent194 = 0;
+        sjs_array_i32* sjt_parent198 = 0;
         sjs_vertex_location_texture_normal vertex0 = { -1 };
         sjs_vertex_location_texture_normal vertex1 = { -1 };
         sjs_vertex_location_texture_normal vertex2 = { -1 };
 
 #line 29 "lib/sj-lib-common/array.sj"
-        sjt_parent189 = &_parent->indices;
+        sjt_parent190 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent189, &sjt_capture60);
-        if (sjt_capture60 > 0) {
+        sjf_array_i32_getcount(sjt_parent190, &sjt_capture61);
+        if (sjt_capture61 > 0) {
             int32_t sjt_functionParam277;
             int32_t sjt_functionParam278;
-            sjs_array_vertex_location_texture_normal* sjt_parent190 = 0;
-            sjs_array_i32* sjt_parent191 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent191 = 0;
+            sjs_array_i32* sjt_parent192 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent190 = &_parent->vertices;
+            sjt_parent191 = &_parent->vertices;
 #line 41
-            sjt_parent191 = &_parent->indices;
+            sjt_parent192 = &_parent->indices;
 #line 67 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam278 = (i * 3) + 0;
 #line 67
-            sjf_array_i32_getat(sjt_parent191, sjt_functionParam278, &sjt_functionParam277);
+            sjf_array_i32_getat(sjt_parent192, sjt_functionParam278, &sjt_functionParam277);
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent190, sjt_functionParam277, &vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent191, sjt_functionParam277, &vertex0);
         } else {
             int32_t sjt_functionParam279;
-            sjs_array_vertex_location_texture_normal* sjt_parent192 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent193 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent192 = &_parent->vertices;
+            sjt_parent193 = &_parent->vertices;
 #line 67 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam279 = (i * 3) + 0;
 #line 67
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent192, sjt_functionParam279, &vertex0);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent193, sjt_functionParam279, &vertex0);
         }
 
 #line 29
-        sjt_parent193 = &_parent->indices;
+        sjt_parent194 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent193, &sjt_capture61);
-        if (sjt_capture61 > 0) {
+        sjf_array_i32_getcount(sjt_parent194, &sjt_capture62);
+        if (sjt_capture62 > 0) {
             int32_t sjt_functionParam280;
             int32_t sjt_functionParam281;
-            sjs_array_vertex_location_texture_normal* sjt_parent194 = 0;
-            sjs_array_i32* sjt_parent195 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent195 = 0;
+            sjs_array_i32* sjt_parent196 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent194 = &_parent->vertices;
+            sjt_parent195 = &_parent->vertices;
 #line 41
-            sjt_parent195 = &_parent->indices;
+            sjt_parent196 = &_parent->indices;
 #line 68 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam281 = (i * 3) + 1;
 #line 68
-            sjf_array_i32_getat(sjt_parent195, sjt_functionParam281, &sjt_functionParam280);
+            sjf_array_i32_getat(sjt_parent196, sjt_functionParam281, &sjt_functionParam280);
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent194, sjt_functionParam280, &vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent195, sjt_functionParam280, &vertex1);
         } else {
             int32_t sjt_functionParam282;
-            sjs_array_vertex_location_texture_normal* sjt_parent196 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent197 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent196 = &_parent->vertices;
+            sjt_parent197 = &_parent->vertices;
 #line 68 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam282 = (i * 3) + 1;
 #line 68
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent196, sjt_functionParam282, &vertex1);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent197, sjt_functionParam282, &vertex1);
         }
 
 #line 29
-        sjt_parent197 = &_parent->indices;
+        sjt_parent198 = &_parent->indices;
 #line 29
-        sjf_array_i32_getcount(sjt_parent197, &sjt_capture62);
-        if (sjt_capture62 > 0) {
+        sjf_array_i32_getcount(sjt_parent198, &sjt_capture63);
+        if (sjt_capture63 > 0) {
             int32_t sjt_functionParam283;
             int32_t sjt_functionParam284;
-            sjs_array_vertex_location_texture_normal* sjt_parent198 = 0;
-            sjs_array_i32* sjt_parent199 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent199 = 0;
+            sjs_array_i32* sjt_parent200 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent198 = &_parent->vertices;
+            sjt_parent199 = &_parent->vertices;
 #line 41
-            sjt_parent199 = &_parent->indices;
+            sjt_parent200 = &_parent->indices;
 #line 69 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam284 = (i * 3) + 2;
 #line 69
-            sjf_array_i32_getat(sjt_parent199, sjt_functionParam284, &sjt_functionParam283);
+            sjf_array_i32_getat(sjt_parent200, sjt_functionParam284, &sjt_functionParam283);
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent198, sjt_functionParam283, &vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent199, sjt_functionParam283, &vertex2);
         } else {
             int32_t sjt_functionParam285;
-            sjs_array_vertex_location_texture_normal* sjt_parent200 = 0;
+            sjs_array_vertex_location_texture_normal* sjt_parent201 = 0;
 
 #line 41 "lib/sj-lib-common/array.sj"
-            sjt_parent200 = &_parent->vertices;
+            sjt_parent201 = &_parent->vertices;
 #line 69 "lib/sj-lib-ui/vertexBuffer.sj"
             sjt_functionParam285 = (i * 3) + 2;
 #line 69
-            sjf_array_vertex_location_texture_normal_getat(sjt_parent200, sjt_functionParam285, &vertex2);
+            sjf_array_vertex_location_texture_normal_getat(sjt_parent201, sjt_functionParam285, &vertex2);
         }
 
 #line 72 "lib/sj-lib-ui/vertexBuffer.sj"
@@ -26945,41 +26951,41 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
         sjf_intersecttriangle(sjt_functionParam286, sjt_functionParam287, sjt_functionParam288, sjt_functionParam289, sjt_functionParam290, &result);
         if (((result._refCount != -1 ? &result : 0) != 0)) {
             sjs_vec3* ifValue6 = 0;
-            float sjt_capture63;
-            float_option sjt_capture64;
+            float sjt_capture64;
+            float_option sjt_capture65;
             sjs_vec3 sjt_value10 = { -1 };
             sjs_vec2 sjt_value11 = { -1 };
 
 #line 73 "lib/sj-lib-ui/vertexBuffer.sj"
             ifValue6 = (result._refCount != -1 ? &result : 0);
             if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                sjs_vec3* sjt_capture65 = 0;
+                sjs_vec3* sjt_capture66 = 0;
                 float sjt_value8;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                sjt_capture65 = (intersection._refCount != -1 ? &intersection : 0);
+                sjt_capture66 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_value8 = sjt_capture65->z;
+                sjt_value8 = sjt_capture66->z;
 #line 74
-                sjt_capture64.isvalid = true;
+                sjt_capture65.isvalid = true;
 #line 74
-                sjt_capture64.value = sjt_value8;
+                sjt_capture65.value = sjt_value8;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture64 = float_empty;
+                sjt_capture65 = float_empty;
             }
 
-            if (sjt_capture64.isvalid) {
+            if (sjt_capture65.isvalid) {
                 float_option sjt_getValue2;
 
                 if ((intersection._refCount != -1 ? &intersection : 0) != 0) {
-                    sjs_vec3* sjt_capture66 = 0;
+                    sjs_vec3* sjt_capture67 = 0;
                     float sjt_value9;
 
 #line 1 "lib/sj-lib-ui/vec3.sj"
-                    sjt_capture66 = (intersection._refCount != -1 ? &intersection : 0);
+                    sjt_capture67 = (intersection._refCount != -1 ? &intersection : 0);
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                    sjt_value9 = sjt_capture66->z;
+                    sjt_value9 = sjt_capture67->z;
 #line 74
                     sjt_getValue2.isvalid = true;
 #line 74
@@ -26990,13 +26996,13 @@ void sjf_vertexbuffer_vertex_location_texture_normal_translatescreentotexture_he
                 }
 
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture63 = sjt_getValue2.value;
+                sjt_capture64 = sjt_getValue2.value;
             } else {
 #line 74 "lib/sj-lib-ui/vertexBuffer.sj"
-                sjt_capture63 = 0.0f;
+                sjt_capture64 = 0.0f;
             }
 
-            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue6->z < sjt_capture63)) {
+            if (((intersection._refCount != -1 ? &intersection : 0) == 0) || (ifValue6->z < sjt_capture64)) {
                 float dtu1;
                 float dtu2;
                 float dtv1;
@@ -28386,7 +28392,7 @@ int main(int argc, char** argv) {
 #line 4
     array3 = &sjt_call3->children;
 #line 4
-    sjt_parent30 = array3;
+    sjt_parent31 = array3;
 #line 4
     sjt_functionParam29 = 0;
 #line 4
@@ -28404,7 +28410,7 @@ int main(int argc, char** argv) {
 #line 6
     array2 = &sjt_call6->children;
 #line 6
-    sjt_parent85 = array2;
+    sjt_parent86 = array2;
 #line 6
     sjt_functionParam107 = 0;
 #line 6
@@ -28466,7 +28472,7 @@ int main(int argc, char** argv) {
 #line 10
     array1 = &sjt_call11->children;
 #line 10
-    sjt_parent287 = array1;
+    sjt_parent288 = array1;
 #line 10
     sjt_functionParam437 = 0;
 #line 10
@@ -28560,9 +28566,9 @@ int main(int argc, char** argv) {
     }
 
 #line 1
-    sjf_array_heap_iface_element_initat(sjt_parent287, sjt_functionParam437, sjt_functionParam438);
+    sjf_array_heap_iface_element_initat(sjt_parent288, sjt_functionParam437, sjt_functionParam438);
 #line 10 "timer.sj"
-    sjt_parent297 = array1;
+    sjt_parent298 = array1;
 #line 10
     sjt_functionParam465 = 1;
 #line 10
@@ -28608,7 +28614,7 @@ int main(int argc, char** argv) {
     }
 
 #line 1
-    sjf_array_heap_iface_element_initat(sjt_parent297, sjt_functionParam465, sjt_functionParam466);
+    sjf_array_heap_iface_element_initat(sjt_parent298, sjt_functionParam465, sjt_functionParam466);
 #line 8 "lib/sj-lib-ui/scene2dModel.sj"
     sjt_call11->hasalpha = false;
 #line 8
@@ -28978,7 +28984,7 @@ int main(int argc, char** argv) {
     }
 
 #line 1
-    sjf_array_heap_iface_model_initat(sjt_parent85, sjt_functionParam107, sjt_functionParam108);
+    sjf_array_heap_iface_model_initat(sjt_parent86, sjt_functionParam107, sjt_functionParam108);
 #line 1
     sjt_call6->camera._refCount = 1;
 #line 13 "lib/sj-lib-ui/scene3dElement.sj"
@@ -29152,9 +29158,9 @@ int main(int argc, char** argv) {
     }
 
 #line 1
-    sjf_array_heap_iface_element_initat(sjt_parent30, sjt_functionParam29, sjt_functionParam30);
+    sjf_array_heap_iface_element_initat(sjt_parent31, sjt_functionParam29, sjt_functionParam30);
 #line 4 "timer.sj"
-    sjt_parent302 = array3;
+    sjt_parent303 = array3;
 #line 4
     sjt_functionParam471 = 1;
 #line 4
@@ -29200,7 +29206,7 @@ int main(int argc, char** argv) {
     }
 
 #line 1
-    sjf_array_heap_iface_element_initat(sjt_parent302, sjt_functionParam471, sjt_functionParam472);
+    sjf_array_heap_iface_element_initat(sjt_parent303, sjt_functionParam471, sjt_functionParam472);
 #line 1
     sjt_call3->margin._refCount = 1;
 #line 2 "lib/sj-lib-ui/margin.sj"
