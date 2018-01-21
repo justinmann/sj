@@ -1,9 +1,3 @@
--- ui --
-* text input
-* wrapping text
-* style switch based on #element.type & #element.class
-
--- language --
 * heap local to stop most of intrafunction refcount'ing
 * property
 
