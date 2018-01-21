@@ -24,11 +24,8 @@ clean:
 	-rm -f binary/*
 
 cfiles/%.c: %.sj
-	../../sjc $^ --c-file=$@ --debug --debug-file=$(subst cfiles,debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst cfiles,errors,$(patsubst %.c,%.error,$@))
+	../sjc $^ --c-file=$@ --debug --debug-file=$(subst cfiles,debug,$(patsubst %.c,%.debug,$@)) --error-file=$(subst cfiles,errors,$(patsubst %.c,%.error,$@))
 
 binary/%: cfiles/%.c
-ifeq ($(platform),windows)
-	$(CC) $^ $(CFLAGS) -I/mingw64/include/freetype2 -I/mingw64/include/SDL2 -L/mingw64/lib -Dmain=SDL_main -DWIN32 -lmingw32 -lSDL2main -lSDL2 -llibpng16 -lopengl32 -lfreetype -lglew32 -lglu32 -o $@
-else
-	$(CC) $^ $(CFLAGS) -I/usr/local/include/freetype2 -I/usr/local/include -L/usr/local/lib -lSDL2main -lSDL2 -lpng16 -lfreetype -framework OpenGL -o $@
-endif
+	if [ -f $^ ]; then $(CC) $(CFLAGS) $^ -o $@; fi
+

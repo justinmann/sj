@@ -1,16 +1,4 @@
-[submodule "tests/basic/lib/sj-lib-ui"]
-	path = tests/basic/lib/sj-lib-ui
-	url = https://github.com/justinmann/sj-lib-ui.git
-	branch = release-1.0
-[submodule "tests/basic/lib/sj-lib-common"]
-	path = tests/basic/lib/sj-lib-common
+[submodule "tests/lib/sj-lib-common"]
+	path = tests/lib/sj-lib-common
 	url = https://github.com/justinmann/sj-lib-common.git
-	branch = release-1.0
-[submodule "tests/app/lib/sj-lib-common"]
-	path = tests/app/lib/sj-lib-common
-	url = https://github.com/justinmann/sj-lib-common.git
-	branch = release-1.0
-[submodule "tests/app/lib/sj-lib-ui"]
-	path = tests/app/lib/sj-lib-ui
-	url = https://github.com/justinmann/sj-lib-ui.git
 	branch = release-1.0

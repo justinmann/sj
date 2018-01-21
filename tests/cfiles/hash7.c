@@ -16,14 +16,14 @@ struct {
     int refcount;
     int size;
     int count;
-    char data[4];
-} sjg_string3 = { 1, 4, 3, "bye"};
+    char data[9];
+} sjg_string3 = { 1, 9, 8, "good bye"};
 struct {
     int refcount;
     int size;
     int count;
-    char data[9];
-} sjg_string4 = { 1, 9, 8, "good bye"};
+    char data[4];
+} sjg_string4 = { 1, 4, 3, "bye"};
 struct {
     int refcount;
     int size;
@@ -1807,7 +1807,7 @@ int main(int argc, char** argv) {
 #line 4
     sjt_call3.data._refCount = 1;
 #line 4
-    sjt_call3.data.v = &sjg_string3;
+    sjt_call3.data.v = &sjg_string4;
 #line 4
     sjf_array_char(&sjt_call3.data);
 #line 16 "lib/sj-lib-common/string.sj"
@@ -1825,7 +1825,7 @@ int main(int argc, char** argv) {
 #line 4
     sjt_call4.data._refCount = 1;
 #line 4
-    sjt_call4.data.v = &sjg_string4;
+    sjt_call4.data.v = &sjg_string3;
 #line 4
     sjf_array_char(&sjt_call4.data);
 #line 16 "lib/sj-lib-common/string.sj"
@@ -1933,7 +1933,7 @@ int main(int argc, char** argv) {
 #line 9
     sjt_call12.data._refCount = 1;
 #line 9
-    sjt_call12.data.v = &sjg_string3;
+    sjt_call12.data.v = &sjg_string4;
 #line 9
     sjf_array_char(&sjt_call12.data);
 #line 16 "lib/sj-lib-common/string.sj"
